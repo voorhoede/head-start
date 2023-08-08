@@ -19,3 +19,7 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
+
+# generated files
+src/lib/datocms.d.ts
+src/lib/i18n.messages.json

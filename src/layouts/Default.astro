@@ -1,0 +1,47 @@
+--- 
+import type { DefaultLayoutQuery } from '../lib/datocms.d'
+import { datocmsRequest } from '../lib/datocms'
+import { setLocale, t } from '../lib/i18n'
+import DynamicTag from '../components/DynamicTag.astro'
+import query from './default.query.graphql?raw'
+import LocaleSelector from '../components/LocaleSelector/LocaleSelector.astro'
+
+const locale = setLocale(Astro.params.locale)
+const data = await datocmsRequest({ query, variables: { locale } }) as DefaultLayoutQuery
+---
+
+<!DOCTYPE html>
+<html lang={ locale }>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		{ 
+			data.site.faviconMetaTags.map(tag => (
+				<DynamicTag as={ tag.tag } { ...tag.attributes } />
+			))
+		}
+	</head>
+	<body>
+		{ t('skip_to_content') }
+		<LocaleSelector />
+		<slot />
+	</body>
+</html>
+<style is:global>
+	:root {
+		--accent: 136, 58, 234;
+		--accent-light: 224, 204, 250;
+		--accent-dark: 49, 10, 101;
+		--accent-gradient: linear-gradient(45deg, rgb(var(--accent)), rgb(var(--accent-light)) 30%, white 60%);
+	}
+	html {
+		font-family: system-ui, sans-serif;
+		background: #13151A;
+		color: white;
+		background-size: 224px;
+	}
+	code {
+		font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
+			Bitstream Vera Sans Mono, Courier New, monospace;
+	}
+</style>
