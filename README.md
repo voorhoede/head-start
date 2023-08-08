@@ -1,20 +1,20 @@
-# Astro Starter Kit: Basics
+# Head Start
 
-```
-npm create astro@latest -- --template basics
-```
+**Base setup on top of headless services to help you quickly start a new website**
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+## Architecture
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+The site is created as lightweight progressively enhanced website connected to a headless CMS:
 
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
+- [Astro](https://astro.build/) - web framework to structure this project.
+- [Svelte](https://svelte.dev/) - JS framework used to add interactivity to pages. Svelte is selected for its small footprint (no framework bundle). A [community version of Headless UI in Svelte](https://svelte-headlessui.goss.io/) is used for fully accessible, unstyled and well-tested common components (dialogs, popovers, tabs, etc).
+- [DatoCMS](https://www.datocms.com/) - a headless CMS is connected to manage web content. DatoCMS is selected for its modular and structured content options, advanced image service, multi-language support and GraphQL API.
+- [Rosetta](https://github.com/lukeed/rosetta) - is an internationalization (i18n) library. Rosetta is selected for its small footprint (<300 bytes) and for being framework agnostic.
+- [Cloudflare Pages](https://pages.cloudflare.com/) - is a JAMstack hosting platform. Cloudflare Pages is selected for its reliable CDN, zero cold-start workers, green hosting and affordable pricing.
 
 ## 🚀 Project Structure
 
-Inside of your Astro project, you'll see the following folders and files:
+Inside of this project, you'll see the following folders and files:
 
 ```
 /
@@ -24,9 +24,10 @@ Inside of your Astro project, you'll see the following folders and files:
 │   ├── components/
 │   │   └── Card.astro
 │   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
+│   │   └── Default.astro
+│   └── pages/[locale]/
+│       ├── index.astro
+│       └── [slug].astro
 └── package.json
 ```
 
@@ -36,19 +37,23 @@ There's nothing special about `src/components/`, but that's where we like to put
 
 Any static assets, like images, can be placed in the `public/` directory.
 
+## Getting started
+
+1. Select "Use this template" > "Create a new repository".
+2. Clone the new repository.
+3. [Create a DatoCMS instance](https://dashboard.datocms.com/personal-account/projects/browse/new).
+4. Copy `.env.example` to `.env` and fill it out.
+5. Install the dependenies (`npm install`)
+6. You're good to go. Follow any of the [commands](#commands) below.
+
 ## 🧞 Commands
 
 All commands are run from the root of the project, from a terminal:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:3000`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+| Command (`npm run ...`) | Action                                          
+| :---------------------- | :-----------------------------------------------
+| `dev`                   | Starts local dev server at `localhost:4323` (head in T9)
+| `build`                 | Build your production site to `./dist/`
+| `preview`               | Preview your build locally, before deploying
+| `astro ...`             | Run CLI commands like `astro add`, `astro check`
+| `astro -- --help`       | Get help using the Astro CLI
