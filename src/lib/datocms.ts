@@ -1,9 +1,10 @@
-export const datocmsRequest = ({ query, variables = {}, preview = false }) => {
-  const endpoint = preview
-    ? "https://graphql.datocms.com/preview"
-    : "https://graphql.datocms.com/"
+wtype DatocmsRequestType = {
+  query: string;
+  variables?: { [key: string]: string };
+};
 
-  return fetch(endpoint, {
+export const datocmsRequest = ({ query, variables = {} }: DatocmsRequestType) => {
+  return fetch('https://graphql.datocms.com/', {
     method: "post",
     headers: {
       Authorization: import.meta.env.DATOCMS_READONLY_API_TOKEN,
@@ -19,24 +20,4 @@ export const datocmsRequest = ({ query, variables = {}, preview = false }) => {
       if (response.errors) throw Error(JSON.stringify(response, null, 4))
       return response.data;
     })
-}
-
-/**
- * Returns a DatoCMS subscription
- * token is only exposed when app is in preview mode
- */
-export const datocmsSubscription = async ({
-  query,
-  variables = {},
-  preview = false,
-}) => {
-  const initialData = await datocmsRequest({ query, variables, preview })
-  return {
-    query,
-    variables,
-    preview,
-    initialData,
-    enabled: preview,
-    token: preview && process.env.DATOCMS_READONLY_API_TOKEN,
-  }
 }
