@@ -51,9 +51,10 @@ Any static assets, like images, can be placed in the `public/` directory.
 All commands are run from the root of the project, from a terminal:
 
 | Command (`npm run ...`) | Action                                          
-| :---------------------- | :-----------------------------------------------
+|:------------------------| :-----------------------------------------------
 | `dev`                   | Starts local dev server at `localhost:4323` (head in T9)
 | `build`                 | Build your production site to `./dist/`
 | `preview`               | Preview your build locally, before deploying
 | `astro ...`             | Run CLI commands like `astro add`, `astro check`
 | `astro -- --help`       | Get help using the Astro CLI
+| `lint`                  | Lint the project

@@ -7,30 +7,30 @@ export function getStaticPaths() {
   return locales.map(locale => ({ params: { locale } }))
 }
 
-const locale = setLocale(Astro.params.locale)
+setLocale(Astro.params.locale)
 ---
 
 <Layout>
-	<main>
-		<h1>Welcome to Head Start</h1>
-		{ t('share_on_social') }
-	</main>
+  <main>
+    <h1>Welcome to Head Start</h1>
+    { t('share_on_social') }
+  </main>
 </Layout>
 
 <style>
-	main {
-		margin: auto;
-		padding: 1rem;
-		width: 800px;
-		max-width: calc(100% - 2rem);
-		font-size: 20px;
-		line-height: 1.6;
-	}
-	h1 {
-		font-size: 4rem;
-		font-weight: 700;
-		line-height: 1;
-		text-align: center;
-		margin-bottom: 1em;
-	}
+  main {
+    margin: auto;
+    padding: 1rem;
+    width: 800px;
+    max-width: calc(100% - 2rem);
+    font-size: 20px;
+    line-height: 1.6;
+  }
+  h1 {
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    margin-bottom: 1em;
+  }
 </style>

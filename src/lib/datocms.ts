@@ -5,12 +5,12 @@ type DatocmsRequestType = {
 
 export const datocmsRequest = ({ query, variables = {} }: DatocmsRequestType) => {
   return fetch('https://graphql.datocms.com/', {
-    method: "post",
+    method: 'post',
     headers: {
       Authorization: import.meta.env.DATOCMS_READONLY_API_TOKEN,
-      "Content-Type": "application/json",
-      "X-Environment": import.meta.env.DATOCMS_ENVIRONMENT,
-      "X-Exclude-Invalid": "true", // https://www.datocms.com/docs/content-delivery-api/api-endpoints#strict-mode-for-non-nullable-graphql-types
+      'Content-Type': 'application/json',
+      'X-Environment': import.meta.env.DATOCMS_ENVIRONMENT,
+      'X-Exclude-Invalid': 'true', // https://www.datocms.com/docs/content-delivery-api/api-endpoints#strict-mode-for-non-nullable-graphql-types
       // "X-Include-Drafts": preview ? "true" : "false",
     },
     body: JSON.stringify({ query, variables }),
