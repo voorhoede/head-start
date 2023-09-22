@@ -1,5 +1,8 @@
+import { print } from 'graphql/language/printer';
+import type { DocumentNode } from 'graphql';
+
 type DatocmsRequestType = {
-  query: string;
+  query: DocumentNode;
   variables?: { [key: string]: string };
 };
 
@@ -13,7 +16,7 @@ export const datocmsRequest = ({ query, variables = {} }: DatocmsRequestType) =>
       'X-Exclude-Invalid': 'true', // https://www.datocms.com/docs/content-delivery-api/api-endpoints#strict-mode-for-non-nullable-graphql-types
       // "X-Include-Drafts": preview ? "true" : "false",
     },
-    body: JSON.stringify({ query, variables }),
+    body: JSON.stringify({ query: print(query), variables }),
   })
     .then((response) => response.json())
     .then((response) => {
