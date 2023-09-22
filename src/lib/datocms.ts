@@ -1,4 +1,4 @@
-wtype DatocmsRequestType = {
+type DatocmsRequestType = {
   query: string;
   variables?: { [key: string]: string };
 };
