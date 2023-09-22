@@ -12,7 +12,8 @@
     "prep:datocms-types": "graphql-codegen --config .graphqlrc.cjs",
     "prep:download-translations": "node scripts/download-translations.mjs",
     "preview": "astro preview",
-    "start": "astro dev"
+    "start": "astro dev",
+    "lint": "eslint . --ext .js,.ts,.astro"
   },
   "dependencies": {
     "astro": "^2.10.1",
@@ -27,7 +28,11 @@
     "@graphql-codegen/typescript": "^4.0.1",
     "@graphql-codegen/typescript-operations": "^4.0.1",
     "@graphql-typed-document-node/core": "^3.2.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.2",
+    "@typescript-eslint/parser": "^6.7.2",
     "dotenv-safe": "^8.2.0",
+    "eslint": "^8.49.0",
+    "eslint-plugin-astro": "^0.29.0",
     "npm-run-all": "^4.1.5"
   }
 }
