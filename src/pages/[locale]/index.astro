@@ -1,13 +1,13 @@
 ---
-import Layout from '../../layouts/Default.astro'
+import Layout from '../../layouts/Default.astro';
 
-import { locales, setLocale, t } from '../../lib/i18n'
+import { locales, setLocale, t } from '../../lib/i18n';
 
 export function getStaticPaths() {
-  return locales.map(locale => ({ params: { locale } }))
+  return locales.map(locale => ({ params: { locale } }));
 }
 
-setLocale(Astro.params.locale)
+setLocale(Astro.params.locale);
 ---
 
 <Layout>

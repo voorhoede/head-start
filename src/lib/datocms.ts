@@ -20,7 +20,7 @@ export const datocmsRequest = ({ query, variables = {} }: DatocmsRequestType) =>
   })
     .then((response) => response.json())
     .then((response) => {
-      if (response.errors) throw Error(JSON.stringify(response, null, 4))
+      if (response.errors) throw Error(JSON.stringify(response, null, 4));
       return response.data;
-    })
-}
+    });
+};

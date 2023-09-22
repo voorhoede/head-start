@@ -1,13 +1,13 @@
 --- 
-import type { DefaultLayoutQuery } from '../lib/datocms.d'
-import { datocmsRequest } from '../lib/datocms'
-import { setLocale, t } from '../lib/i18n'
-import DynamicTag from '../components/DynamicTag.astro'
-import query from './default.query.graphql'
-import LocaleSelector from '../components/LocaleSelector/LocaleSelector.astro'
+import type { DefaultLayoutQuery } from '../lib/datocms.d';
+import { datocmsRequest } from '../lib/datocms';
+import { setLocale, t } from '../lib/i18n';
+import DynamicTag from '../components/DynamicTag.astro';
+import query from './default.query.graphql';
+import LocaleSelector from '../components/LocaleSelector/LocaleSelector.astro';
 
-const locale = setLocale(Astro.params.locale)
-const data = await datocmsRequest({ query, variables: { locale } }) as DefaultLayoutQuery
+const locale = setLocale(Astro.params.locale);
+const data = await datocmsRequest({ query, variables: { locale } }) as DefaultLayoutQuery;
 ---
 
 <!DOCTYPE html>
