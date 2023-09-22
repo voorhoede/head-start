@@ -4,17 +4,17 @@ import Layout from '../../layouts/Default.astro'
 import { locales, setLocale, t } from '../../lib/i18n'
 
 export function getStaticPaths() {
-  return locales.map(locale => ({ params: { locale } }))
+	return locales.map(locale => ({ params: { locale } }))
 }
 
 setLocale(Astro.params.locale)
 ---
 
 <Layout>
-  <main>
-    <h1>Welcome to Head Start</h1>
-    { t('share_on_social') }
-  </main>
+	<main>
+		<h1>Welcome to Head Start</h1>
+		{ t('share_on_social') }
+	</main>
 </Layout>
 
 <style>
