@@ -12,18 +12,18 @@ const data = await datocmsRequest({ query, variables: { locale } }) as DefaultLa
 
 <!DOCTYPE html>
 <html lang={ locale }>
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		{ 
-			data.site.faviconMetaTags.map(tag => (
-				<DynamicTag as={ tag.tag } { ...tag.attributes } />
-			))
-		}
-	</head>
-	<body>
-		{ t('skip_to_content') }
-		<LocaleSelector />
-		<slot />
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    { 
+      data.site.faviconMetaTags.map(tag => (
+        <DynamicTag as={ tag.tag } { ...tag.attributes } />
+      ))
+    }
+  </head>
+  <body>
+    { t('skip_to_content') }
+    <LocaleSelector />
+    <slot />
+  </body>
 </html>
