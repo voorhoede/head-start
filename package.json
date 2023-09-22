@@ -3,13 +3,31 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
+    "astro": "astro",
+    "prebuild": "run-s prep",
     "build": "astro build",
+    "predev": "run-s prep",
+    "dev": "astro dev",
+    "prep": "run-s prep:* --print-label",
+    "prep:datocms-types": "graphql-codegen --config .graphqlrc.cjs",
+    "prep:download-translations": "node scripts/download-translations.mjs",
     "preview": "astro preview",
-    "astro": "astro"
+    "start": "astro dev"
   },
   "dependencies": {
-    "astro": "^2.10.1"
+    "astro": "^2.10.1",
+    "rosetta": "^1.1.0"
+  },
+  "devDependencies": {
+    "@datocms/cli": "^1.1.10",
+    "@datocms/cma-client-node": "^2.0.0",
+    "@graphql-codegen/cli": "^5.0.0",
+    "@graphql-codegen/introspection": "^4.0.0",
+    "@graphql-codegen/typed-document-node": "^5.0.1",
+    "@graphql-codegen/typescript": "^4.0.1",
+    "@graphql-codegen/typescript-operations": "^4.0.1",
+    "@graphql-typed-document-node/core": "^3.2.0",
+    "dotenv-safe": "^8.2.0",
+    "npm-run-all": "^4.1.5"
   }
 }

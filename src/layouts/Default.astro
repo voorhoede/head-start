@@ -1,0 +1,29 @@
+--- 
+import type { DefaultLayoutQuery } from '../lib/datocms.d'
+import { datocmsRequest } from '../lib/datocms'
+import { setLocale, t } from '../lib/i18n'
+import DynamicTag from '../components/DynamicTag.astro'
+import query from './default.query.graphql?raw'
+import LocaleSelector from '../components/LocaleSelector/LocaleSelector.astro'
+
+const locale = setLocale(Astro.params.locale)
+const data = await datocmsRequest({ query, variables: { locale } }) as DefaultLayoutQuery
+---
+
+<!DOCTYPE html>
+<html lang={ locale }>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		{ 
+			data.site.faviconMetaTags.map(tag => (
+				<DynamicTag as={ tag.tag } { ...tag.attributes } />
+			))
+		}
+	</head>
+	<body>
+		{ t('skip_to_content') }
+		<LocaleSelector />
+		<slot />
+	</body>
+</html>
