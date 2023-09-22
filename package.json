@@ -16,6 +16,7 @@
     "lint": "eslint . --ext .js,.ts,.astro"
   },
   "dependencies": {
+    "@rollup/plugin-graphql": "^2.0.3",
     "astro": "^2.10.1",
     "rosetta": "^1.1.0"
   },
