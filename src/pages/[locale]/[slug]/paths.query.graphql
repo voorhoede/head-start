@@ -1,0 +1,8 @@
+query SlugPaths {
+  pages: allPages {
+    slugs: _allSlugLocales {
+      locale
+      value
+    }
+  }
+}
