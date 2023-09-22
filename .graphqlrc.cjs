@@ -8,7 +8,7 @@ module.exports = {
     'https://graphql.datocms.com': {
       headers: {
         Authorization: process.env.DATOCMS_READONLY_API_TOKEN,
-        "X-Environment": process.env.DATOCMS_ENVIRONMENT,
+        "X-Environment": 'page-blocks', // process.env.DATOCMS_ENVIRONMENT,
         "X-Exclude-Invalid": "true",
       },
     },

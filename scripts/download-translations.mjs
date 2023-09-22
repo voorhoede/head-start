@@ -1,15 +1,13 @@
 import { writeFile } from 'node:fs/promises'
-import { buildClient } from '@datocms/cma-client-node'
 import dotenv from 'dotenv-safe'
+import { getClient } from './lib/datocms.mjs'
 
 dotenv.config()
 
 async function fetchTranslations() {
-    // use client instead of http api for pagination support
-    const client = buildClient({
-        apiToken: process.env.DATOCMS_READONLY_API_TOKEN,
-        environment: process.env.DATOCMS_ENVIRONMENT,
-    })
+    // use DatoCMS client instead of http api for pagination support
+    const client = await getClient()
+
     const { locales } = await client.site.find()
     const translations = Object.fromEntries(locales.map(locale => [locale, {}]))
     

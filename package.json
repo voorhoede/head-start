@@ -9,7 +9,8 @@
     "predev": "run-s prep",
     "dev": "astro dev",
     "prep": "run-s prep:* --print-label",
-    "prep:datocms-types": "graphql-codegen --config .graphqlrc.cjs",
+    "prep:datocms-environment": "node scripts/set-datocms-environment.mjs",
+    "prep:datocms-types": "node scripts/set-datocms-environment.mjs && graphql-codegen --config .graphqlrc.cjs",
     "prep:download-translations": "node scripts/download-translations.mjs",
     "preview": "astro preview",
     "start": "astro dev"
