@@ -12,7 +12,7 @@ const locale = setLocale(Astro.params.locale)
 
 <Layout>
 	<main>
-		<h1>Welcome to <span class="text-gradient">Head Start</span></h1>
+		<h1>Welcome to Head Start</h1>
 		{ t('share_on_social') }
 	</main>
 </Layout>
@@ -32,12 +32,5 @@ const locale = setLocale(Astro.params.locale)
 		line-height: 1;
 		text-align: center;
 		margin-bottom: 1em;
-	}
-	.text-gradient {
-		background-image: var(--accent-gradient);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-size: 400%;
-		background-position: 0%;
 	}
 </style>
