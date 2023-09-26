@@ -6,7 +6,6 @@ import dotenv from 'dotenv-safe'
 dotenv.config()
 
 const apiToken = process.env.DATOCMS_READONLY_API_TOKEN
-const defaultEnvironment = process.env.DATOCMS_DEFAULT_ENVIRONMENT
 const execAsync = promisify(exec)
 
 async function getGitBranch() {
@@ -21,18 +20,21 @@ async function getGitBranch() {
 
 export async function getEnvironment() {
     const branch = await getGitBranch()
-    if (!branch) {
-        return defaultEnvironment
-    }
-    // datocms environment names can only contain letters, numbers, and dashes:
-    const branchEnvironment = branch.replace(/[^a-z0-9]/gi, '-')
     const client = buildClient({ apiToken })
     const availableEnvironments = await client.environments.list()
+    const primaryEnvironment = availableEnvironments.find(environment => environment.meta.primary === true).id
+
+    if (!branch) {
+        return primaryEnvironment
+    }
+
+    // datocms environment names can only contain letters, numbers, and dashes:
+    const branchEnvironment = branch.replace(/[^a-z0-9]/gi, '-')
     if (availableEnvironments.includes(branchEnvironment)) {
         return branchEnvironment
     } else {
-        console.warn(`Environment '${branchEnvironment}' not found, using default environment '${defaultEnvironment}' instead.`)
-        return defaultEnvironment
+        console.warn(`Environment '${branchEnvironment}' not found, using primary environment '${primaryEnvironment}' instead.`)
+        return primaryEnvironment
     }
 }
 
