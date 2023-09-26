@@ -1,5 +1,9 @@
 require('dotenv-safe').config()
 
+const outputFilename = 'src/lib/datocms.d.ts'
+
+console.log(`Saving generated types for DatoCMS (environment: '${process.env.DATOCMS_ENVIRONMENT}') to '${outputFilename}'.`)
+
 /**
  * @link https://graphql-config.com/introduction
  */
@@ -8,7 +12,7 @@ module.exports = {
     'https://graphql.datocms.com': {
       headers: {
         Authorization: process.env.DATOCMS_READONLY_API_TOKEN,
-        "X-Environment": 'page-blocks', // process.env.DATOCMS_ENVIRONMENT,
+        "X-Environment": process.env.DATOCMS_ENVIRONMENT,
         "X-Exclude-Invalid": "true",
       },
     },
@@ -18,7 +22,7 @@ module.exports = {
     codegen: {
       overwrite: true,
       generates: {
-        'src/lib/datocms.d.ts': {
+        [outputFilename]: {
           plugins: [
             'typescript',
             'typescript-operations',
