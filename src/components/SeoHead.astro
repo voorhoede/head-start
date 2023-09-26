@@ -1,0 +1,15 @@
+---
+// source https://docs.astro.build/en/guides/typescript/#polymorphic-type
+import DynamicTag from './DynamicTag.astro';
+
+const { tags } = Astro.props;
+
+const metaTags = tags.filter(tag => tag.tag !== 'title');
+const titleTag = tags.find(tag => tag.tag === 'title');
+---
+<title>{titleTag.content}</title>
+{
+  metaTags.map(tag => (
+    <DynamicTag as={tag.tag} { ...tag.attributes } />
+  ))
+}

@@ -1,6 +1,6 @@
 ---
-import { datocmsRequest, PageQuery } from '../../../lib/datocms';
-import type { SlugPathsQuery } from '../../../lib/datocms.d';
+import { datocmsRequest } from '../../../lib/datocms';
+import type { SlugPathsQuery, PageQuery } from '../../../lib/datocms.d';
 import slugPathsQuery from './paths.query.graphql';
 import pageQuery from './index.query.graphql';
 import Layout from '../../../layouts/Default.astro';
@@ -19,7 +19,7 @@ const locale = setLocale(Astro.params.locale);
 const { page } = await datocmsRequest({ query: pageQuery, variables: { locale, slug: Astro.params.slug } }) as PageQuery;
 ---
 
-<Layout>
+<Layout seoMetaTags={page._seoMetaTags}>
   <h1>{page.title}</h1>
   { t('share_on_social') }
 </Layout>
