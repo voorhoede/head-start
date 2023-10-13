@@ -6,7 +6,7 @@ type DatocmsRequestType = {
   variables?: { [key: string]: string };
 };
 
-export const datocmsRequest = ({ query, variables = {} }: DatocmsRequestType) => {
+export const datocmsRequest = <T>({ query, variables = {} }: DatocmsRequestType): Promise<T> => {
   return fetch('https://graphql.datocms.com/', {
     method: 'post',
     headers: {
