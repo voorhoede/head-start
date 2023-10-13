@@ -1,1 +1,10 @@
-
+query Home($locale: SiteLocale!) {
+  home(locale: $locale) {
+    title
+    _seoMetaTags {
+      attributes
+      content
+      tag
+    }
+  }
+}

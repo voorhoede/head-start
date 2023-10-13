@@ -1,0 +1,8 @@
+query HomePaths {
+  home {
+    titles: _allTitleLocales {
+      locale
+      value
+    }
+  }
+}

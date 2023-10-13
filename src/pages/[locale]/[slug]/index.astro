@@ -1,6 +1,6 @@
 ---
 import { datocmsRequest } from '../../../lib/datocms';
-import type { SlugPathsQuery, PageQuery } from '../../../lib/datocms.d';
+import type { SlugPathsQuery, PageQuery } from '../../../lib/datocms.d.ts';
 import slugPathsQuery from './paths.query.graphql';
 import pageQuery from './index.query.graphql';
 import Layout from '../../../layouts/Default.astro';
@@ -8,7 +8,7 @@ import Layout from '../../../layouts/Default.astro';
 import { setLocale, t } from '../../../lib/i18n';
 
 export async function getStaticPaths() {
-  const data = await datocmsRequest({ query: slugPathsQuery }) as SlugPathsQuery;
+  const data = await datocmsRequest<SlugPathsQuery>({ query: slugPathsQuery });
 
   return data.pages.flatMap(page => page.slugs.map((slug) => ({
     params: { locale: slug.locale, slug: slug.value }
@@ -16,7 +16,7 @@ export async function getStaticPaths() {
 }
 
 const locale = setLocale(Astro.params.locale);
-const { page } = await datocmsRequest({ query: pageQuery, variables: { locale, slug: Astro.params.slug } }) as PageQuery;
+const { page } = await datocmsRequest<PageQuery>({ query: pageQuery, variables: { locale, slug: Astro.params.slug } });
 ---
 
 <Layout seoMetaTags={page._seoMetaTags}>
