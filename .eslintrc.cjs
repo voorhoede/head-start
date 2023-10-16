@@ -11,7 +11,10 @@ module.exports = {
   },
   rules: {
     indent: ["warn", 2],
-    quotes: ["warn", "single"]
+    quotes: ["warn", "single"],
+    "object-curly-spacing": ["warn", "always"],
+    "no-unused-vars": ["warn"],
+    semi: ["warn", "always"]
   },
   overrides: [
     {

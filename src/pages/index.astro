@@ -1,9 +1,5 @@
 ---
-import { defaultLocale } from '../lib/i18n'
+import { defaultLocale } from '../lib/i18n';
 // use Astro recipe for i18n redirects, see https://docs.astro.build/en/recipes/i18n/#set-up-pages-for-each-language
-return Astro.redirect(`/${ defaultLocale }/`)
+return Astro.redirect(`/${ defaultLocale }/`);
 ---
-<!-- Redirect rule for local development. In production a server-side redirect rule is used. -->
-<head>
-  <meta http-equiv="Refresh" content={ `0; URL=/${ defaultLocale }/` }>
-</head>

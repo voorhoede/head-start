@@ -6,7 +6,7 @@ type DatocmsRequestType = {
   variables?: { [key: string]: string };
 };
 
-export const datocmsRequest = ({ query, variables = {} }: DatocmsRequestType) => {
+export const datocmsRequest = <T>({ query, variables = {} }: DatocmsRequestType): Promise<T> => {
   return fetch('https://graphql.datocms.com/', {
     method: 'post',
     headers: {
@@ -20,7 +20,7 @@ export const datocmsRequest = ({ query, variables = {} }: DatocmsRequestType) =>
   })
     .then((response) => response.json())
     .then((response) => {
-      if (response.errors) throw Error(JSON.stringify(response, null, 4))
+      if (response.errors) throw Error(JSON.stringify(response, null, 4));
       return response.data;
-    })
-}
+    });
+};

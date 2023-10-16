@@ -1,13 +1,18 @@
---- 
-import type { DefaultLayoutQuery } from '../lib/datocms.d'
-import { datocmsRequest } from '../lib/datocms'
-import { setLocale, t } from '../lib/i18n'
-import DynamicTag from '../components/DynamicTag.astro'
-import query from './default.query.graphql'
-import LocaleSelector from '../components/LocaleSelector/LocaleSelector.astro'
+---
+import type { DefaultLayoutQuery, Tag } from '../lib/datocms.d.ts';
+import { datocmsRequest } from '../lib/datocms';
+import { setLocale, t } from '../lib/i18n';
+import query from './default.query.graphql';
+import LocaleSelector from '../components/LocaleSelector/LocaleSelector.astro';
+import SeoHead from '../components/SeoHead.astro';
 
-const locale = setLocale(Astro.params.locale)
-const data = await datocmsRequest({ query, variables: { locale } }) as DefaultLayoutQuery
+interface Props {
+  seoMetaTags: Tag[];
+}
+
+const locale = setLocale(Astro.params.locale);
+const data = await datocmsRequest<DefaultLayoutQuery>({ query, variables: { locale } });
+const { seoMetaTags } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -15,15 +20,31 @@ const data = await datocmsRequest({ query, variables: { locale } }) as DefaultLa
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    { 
-      data.site.faviconMetaTags.map(tag => (
-        <DynamicTag as={ tag.tag } { ...tag.attributes } />
-      ))
-    }
+    <SeoHead tags={[...data.site.faviconMetaTags, ...seoMetaTags]} />
   </head>
   <body>
     { t('skip_to_content') }
     <LocaleSelector />
-    <slot />
+    <main>
+      <slot />
+    </main>
   </body>
 </html>
+
+<style>
+  main {
+    margin: auto;
+    padding: 1rem;
+    width: 800px;
+    max-width: calc(100% - 2rem);
+    font-size: 20px;
+    line-height: 1.6;
+  }
+  h1 {
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    margin-bottom: 1em;
+  }
+</style>
