@@ -6,6 +6,7 @@
     "astro": "astro",
     "prebuild": "run-s prep",
     "build": "astro build",
+    "postbuild": "npm run create-404-pages",
     "predev": "run-s prep",
     "dev": "astro dev",
     "prep": "run-s prep:* --print-label",
@@ -13,15 +14,17 @@
     "prep:download-translations": "node scripts/download-translations.mjs",
     "preview": "astro preview",
     "start": "astro dev",
-    "lint": "eslint . --ext .js,.ts,.astro"
+    "lint": "eslint . --ext .js,.ts,.astro",
+    "create-404-pages": "node scripts/create-404-pages.mjs"
   },
   "dependencies": {
     "@rollup/plugin-graphql": "^2.0.3",
     "astro": "^2.10.1",
+    "globby": "^13.2.2",
     "rosetta": "^1.1.0"
   },
   "devDependencies": {
-    "@datocms/cli": "^1.1.10",
+    "@datocms/cli": "^1.2.1",
     "@datocms/cma-client-node": "^2.0.0",
     "@graphql-codegen/cli": "^5.0.0",
     "@graphql-codegen/introspection": "^4.0.0",

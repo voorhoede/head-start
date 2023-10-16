@@ -1,0 +1,19 @@
+---
+import { datocmsRequest } from '../../lib/datocms';
+import type { NotFoundQuery } from '../../lib/datocms.d.ts';
+import query from './404.query.graphql';
+import Layout from '../../layouts/Default.astro';
+import { locales, setLocale } from '../../lib/i18n';
+
+export async function getStaticPaths() {
+  return locales.map(locale => ({
+    params: { locale }
+  }));
+}
+
+const locale = setLocale(Astro.params.locale);
+const { notFound } = await datocmsRequest<NotFoundQuery>({ query, variables: { locale } });
+---
+<Layout seoMetaTags={notFound._seoMetaTags}>
+  <h1>{ notFound.title }</h1>
+</Layout>

@@ -1,0 +1,10 @@
+query NotFound($locale: SiteLocale!) {
+  notFound(locale: $locale) {
+    title
+    _seoMetaTags {
+      attributes
+      content
+      tag
+    }
+  }
+}
