@@ -17,8 +17,7 @@ export async function getStaticPaths() {
 const locale = setLocale(Astro.params.locale);
 const { home } = await datocmsRequest<HomeQuery>({ query: homeQuery, variables: { locale } });
 ---
-
-<Layout>
+<Layout seoMetaTags={home._seoMetaTags}>
   <h1>{home.title}</h1>
   { t('share_on_social') }
 </Layout>
