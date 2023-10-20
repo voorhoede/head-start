@@ -40,18 +40,6 @@ export default async function (client: Client) {
     default_value: { en: '', nl: '' },
   });
 
-  console.log(
-    'Create SEO meta tags field "SEO" (`seo`) in model "Not found" (`not_found`)'
-  );
-  newFields['14562164'] = await client.fields.create(newItemTypes['2776649'], {
-    label: 'SEO',
-    field_type: 'seo',
-    api_key: 'seo',
-    localized: true,
-    validators: { title_length: { max: 60 }, description_length: { max: 160 } },
-    appearance: { addons: [], editor: 'seo', parameters: {} },
-  });
-
   console.log('Finalize models/block models');
 
   console.log('Update model "Not found" (`not_found`)');
