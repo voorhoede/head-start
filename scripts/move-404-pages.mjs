@@ -12,17 +12,20 @@ import { globby } from 'globby';
 async function move404Pages() {
   return globby(path.join(__dirname, '../dist/**/404/index.html'))
     .then(async filepaths => {
-      return filepaths.map(async filepath => {
-        const content = await readFile(filepath, 'utf8');
-        const notFoundPath = filepath.replace('404/index.html', '404.html');
-
-        // create new file and remove old one
-        return Promise.all([
-          writeFile(notFoundPath, content, 'utf8'),
-          unlink(filepath)
-        ]);
+      return filepaths.map(filepath => {
+        return moveFile(filepath, filepath.replace('404/index.html', '404.html'));
       });
     });
+}
+
+async function moveFile(filepath, newFilepath) {
+  const content = await readFile(filepath, 'utf8');
+
+  // create new file and remove old one
+  return Promise.all([
+    writeFile(newFilepath, content, 'utf8'),
+    unlink(filepath)
+  ]);
 }
 
 move404Pages()
