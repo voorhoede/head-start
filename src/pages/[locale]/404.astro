@@ -15,6 +15,6 @@ export async function getStaticPaths() {
 const locale = setLocale(Astro.params.locale);
 const { notFound } = await datocmsRequest<NotFoundQuery>({ query, variables: { locale } });
 ---
-<Layout seoMetaTags={[noIndexTag]}>
+<Layout seoMetaTags={[noIndexTag, { tag: 'title', content: notFound.title }]}>
   <h1>{ notFound.title }</h1>
 </Layout>
