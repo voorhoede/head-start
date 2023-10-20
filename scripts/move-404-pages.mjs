@@ -9,7 +9,7 @@ import { globby } from 'globby';
  * Rewrite localised "/:locale/404/index.html" to "/:locale/404.html" so Cloudflare picks them up automatically.
  * See https://developers.cloudflare.com/pages/platform/serving-pages/#not-found-behavior
  */
-async function create404Pages() {
+async function move404Pages() {
   return globby(path.join(__dirname, '../dist/**/404/index.html'))
     .then(async filepaths => {
       return filepaths.map(async filepath => {
@@ -25,5 +25,5 @@ async function create404Pages() {
     });
 }
 
-create404Pages()
+move404Pages()
   .then(() => console.log('Created 404 pages'));

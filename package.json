@@ -6,7 +6,7 @@
     "astro": "astro",
     "prebuild": "run-s prep",
     "build": "astro build",
-    "postbuild": "npm run create-404-pages",
+    "postbuild": "npm run move-404-pages",
     "predev": "run-s prep",
     "dev": "astro dev",
     "prep": "run-s prep:* --print-label",
@@ -15,7 +15,7 @@
     "preview": "astro preview",
     "start": "astro dev",
     "lint": "eslint . --ext .js,.ts,.astro",
-    "create-404-pages": "node scripts/create-404-pages.mjs"
+    "move-404-pages": "node scripts/move-404-pages.mjs"
   },
   "dependencies": {
     "@rollup/plugin-graphql": "^2.0.3",
