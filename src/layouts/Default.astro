@@ -5,6 +5,7 @@ import { setLocale, t } from '../lib/i18n';
 import query from './default.query.graphql';
 import LocaleSelector from '../components/LocaleSelector/LocaleSelector.astro';
 import SeoHead from '../components/SeoHead.astro';
+import SkipLink from '../components/SkipLink/SkipLink.astro'
 
 interface Props {
   seoMetaTags: Tag[];
@@ -13,6 +14,7 @@ interface Props {
 const locale = setLocale(Astro.params.locale);
 const data = await datocmsRequest<DefaultLayoutQuery>({ query, variables: { locale } });
 const { seoMetaTags } = Astro.props;
+const mainContentId = 'content';
 ---
 
 <!DOCTYPE html>
@@ -23,9 +25,10 @@ const { seoMetaTags } = Astro.props;
     <SeoHead tags={[...data.site.faviconMetaTags, ...seoMetaTags]} />
   </head>
   <body>
-    { t('skip_to_content') }
+    <SkipLink targetId={ mainContentId } />
     <LocaleSelector />
-    <main>
+    <!-- main element requires tabindex to be focusable, see SkipLink/README.md -->
+    <main id={ mainContentId } tabindex="-1">
       <slot />
     </main>
   </body>
