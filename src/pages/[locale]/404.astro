@@ -13,8 +13,8 @@ export async function getStaticPaths() {
 }
 
 const locale = setLocale(Astro.params.locale);
-const { notFound } = await datocmsRequest<NotFoundQuery>({ query, variables: { locale } });
+const { page } = await datocmsRequest<NotFoundQuery>({ query, variables: { locale } });
 ---
-<Layout seoMetaTags={[noIndexTag, { tag: 'title', content: notFound.title }]}>
-  <h1>{ notFound.title }</h1>
+<Layout seoMetaTags={[noIndexTag, { tag: 'title', content: page.title }]}>
+  <h1>{ page.title }</h1>
 </Layout>
