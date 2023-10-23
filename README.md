@@ -2,6 +2,15 @@
 
 **Base setup on top of headless services to help you quickly start a new website**
 
+## Philosophy
+
+- Provide a generic template to help develop new websites (not web apps) faster.
+- Provide a pre-defined setup for composable pages with common components.
+- Provide pre-configured services like a CMS and deployment platform.
+- Support common needs like internationalisation (i18n), SEO, redirects and analytics.
+- Provide functional interactivity without specific styling ("unstyled").
+- Provide a fully accessible and highly performant baseline for every project.
+
 ## Architecture
 
 The site is created as lightweight progressively enhanced website connected to a headless CMS:
@@ -57,4 +66,4 @@ All commands are run from the root of the project, from a terminal:
 | `preview`               | Preview your build locally, before deploying
 | `astro ...`             | Run CLI commands like `astro add`, `astro check`
 | `astro -- --help`       | Get help using the Astro CLI
-| `lint`                  | Lint the project
+| `lint`                  | Check code style (add `-- --fix` to fix issues)
