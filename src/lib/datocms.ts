@@ -1,5 +1,6 @@
 import { print } from 'graphql/language/printer';
 import type { DocumentNode } from 'graphql';
+import 'vite/client';
 
 type DatocmsRequestType = {
   query: DocumentNode;
