@@ -18,7 +18,7 @@ async function move404Pages() {
     });
 }
 
-async function moveFile(filepath, newFilepath) {
+async function moveFile(filepath: string, newFilepath: string ) {
   const content = await readFile(filepath, 'utf8');
 
   // create new file and remove old one
