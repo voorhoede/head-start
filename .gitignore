@@ -12,5 +12,5 @@ node_modules/
 .env.production
 
 # generated files
-src/lib/datocms.d.ts
+src/lib/types/datocms.d.ts
 src/lib/i18n.messages.json

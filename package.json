@@ -6,22 +6,28 @@
     "astro": "astro",
     "prebuild": "run-s prep",
     "build": "astro build",
+    "postbuild": "npm run post",
     "predev": "run-s prep",
     "dev": "astro dev",
     "prep": "run-s prep:* --print-label",
     "prep:datocms-types": "graphql-codegen --config .graphqlrc.cjs",
-    "prep:download-translations": "node scripts/download-translations.mjs",
+    "prep:download-translations": "jiti scripts/download-translations.ts",
     "preview": "astro preview",
     "start": "astro dev",
-    "lint": "eslint . --ext .js,.ts,.astro"
+    "lint": "eslint . --ext .js,.ts,.astro",
+    "post": "run-s post:* --print-label",
+    "post:move-404-pages": "jiti scripts/move-404-pages.ts"
   },
   "dependencies": {
     "@rollup/plugin-graphql": "^2.0.3",
+    "@types/dotenv-safe": "^8.1.4",
     "astro": "^2.10.1",
+    "globby": "^13.2.2",
+    "jiti": "^1.20.0",
     "rosetta": "^1.1.0"
   },
   "devDependencies": {
-    "@datocms/cli": "^1.1.10",
+    "@datocms/cli": "^1.2.1",
     "@datocms/cma-client-node": "^2.0.0",
     "@graphql-codegen/cli": "^5.0.0",
     "@graphql-codegen/introspection": "^4.0.0",
