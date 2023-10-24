@@ -1,8 +1,9 @@
 require('dotenv-safe').config()
 
 const outputFilename = 'src/lib/types/datocms.d.ts'
+const { environment } = require('./datocms-environment.json')
 
-console.log(`Saving generated types for DatoCMS (environment: '${process.env.DATOCMS_ENVIRONMENT}') to '${outputFilename}'.`)
+console.log(`Saving generated types for DatoCMS (environment: '${environment}') to '${outputFilename}'.`)
 
 /**
  * @link https://graphql-config.com/introduction
@@ -12,7 +13,7 @@ module.exports = {
     'https://graphql.datocms.com': {
       headers: {
         Authorization: process.env.DATOCMS_READONLY_API_TOKEN,
-        "X-Environment": process.env.DATOCMS_ENVIRONMENT,
+        "X-Environment": environment,
         "X-Exclude-Invalid": "true",
       },
     },

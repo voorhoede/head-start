@@ -1,6 +1,7 @@
-import 'vite/client';
+import 'astro/import-meta';
 import { print } from 'graphql/language/printer';
 import type { DocumentNode } from 'graphql';
+import { environment } from '../../datocms-environment.json';
 
 type DatocmsRequestType = {
   query: DocumentNode;
@@ -13,7 +14,7 @@ export const datocmsRequest = <T>({ query, variables = {} }: DatocmsRequestType)
     headers: {
       Authorization: import.meta.env.DATOCMS_READONLY_API_TOKEN,
       'Content-Type': 'application/json',
-      'X-Environment': import.meta.env.DATOCMS_DEFAULT_ENVIRONMENT,
+      'X-Environment': environment,
       'X-Exclude-Invalid': 'true', // https://www.datocms.com/docs/content-delivery-api/api-endpoints#strict-mode-for-non-nullable-graphql-types
       // "X-Include-Drafts": preview ? "true" : "false",
     },
