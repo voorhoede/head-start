@@ -1,0 +1,29 @@
+---
+import { t } from '../../lib/i18n';
+
+interface Props {
+  targetId: string;
+}
+const { targetId } = Astro.props;
+---
+<a href={`#${targetId}`}>
+  <slot>{ t('skip_to_content') }</slot>
+</a>
+
+<style>
+/* functional styling */
+a {
+  position: absolute;
+  top: 1rem;
+  left: -9999rem;
+}
+a:focus {
+  left: 1rem;
+}
+
+/* basic styling, can be removed */
+a {
+  background: white;
+  padding: .5em;
+}
+</style>
