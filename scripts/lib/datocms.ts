@@ -13,7 +13,6 @@ async function getGitBranch() {
     const { stdout } = await execAsync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf-8' });
 
     console.log('git rev-parse --abbrev-ref HEAD', stdout);
-    console.log('git symbolic-ref --short HEAD', await execAsync('git symbolic-ref --short HEAD', { encoding: 'utf-8' }));
     console.log('git name-rev --name-only HEAD', await execAsync('git name-rev --name-only HEAD', { encoding: 'utf-8' }));
     
     return stdout.trim();
