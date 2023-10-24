@@ -14,6 +14,9 @@ async function getGitBranch() {
 
     console.log('git rev-parse --abbrev-ref HEAD', stdout);
     console.log('git branch --show-current', await execAsync('git branch --show-current', { encoding: 'utf-8' }));
+    const gitSha = await execAsync('git rev-parse HEAD', { encoding: 'utf-8' });
+    console.log('git name-rev', await execAsync(`git name-rev ${gitSha}`, { encoding: 'utf-8' }));
+    
     
     return stdout.trim();
   } catch (error) {
