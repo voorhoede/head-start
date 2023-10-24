@@ -14,4 +14,3 @@ node_modules/
 # generated files
 src/lib/types/datocms.d.ts
 src/lib/i18n.messages.json
-/datocms-environment.json

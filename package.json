@@ -10,7 +10,6 @@
     "predev": "run-s prep",
     "dev": "astro dev",
     "prep": "run-s prep:* --print-label",
-    "preprep:datocms-types": "jiti scripts/output-datocms-environment.ts",
     "prep:datocms-types": "graphql-codegen --config .graphqlrc.ts",
     "prep:download-translations": "jiti scripts/download-translations.ts",
     "preview": "astro preview",
