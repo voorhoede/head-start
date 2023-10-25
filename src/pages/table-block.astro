@@ -1,0 +1,97 @@
+---
+import TableBlock from '../blocks/TableBlock/TableBlock.astro';
+
+const title = 'More accurate carbon emissions with our improved CO2 model';
+const table = {
+  "columns": [
+    "Source",
+    "2022-11",
+    "2022-12",
+    "Change"
+  ],
+  "data": [
+    {
+      "Source": "Battery discharge",
+      "2022-11": "189",
+      "2022-12": "189",
+      "Change": "0%"
+    },
+    {
+      "Source": "Biomass",
+      "2022-11": "230",
+      "2022-12": "439",
+      "Change": "91%"
+    },
+    {
+      "Source": "Coal",
+      "2022-11": "820",
+      "2022-12": "1169",
+      "Change": "43%"
+    },
+    {
+      "Source": "Gas",
+      "2022-11": "490",
+      "2022-12": "555",
+      "Change": "13%"
+    },
+    {
+      "Source": "Geothermal",
+      "2022-11": "38",
+      "2022-12": "38",
+      "Change": "0%"
+    },
+    {
+      "Source": "Hydro",
+      "2022-11": "24",
+      "2022-12": "11",
+      "Change": "-55%"
+    },
+    {
+      "Source": "Hydro discharge",
+      "2022-11": "189",
+      "2022-12": "189",
+      "Change": "0%"
+    },
+    {
+      "Source": "Nuclear",
+      "2022-11": "12",
+      "2022-12": "5",
+      "Change": "-57%"
+    },
+    {
+      "Source": "Oil",
+      "2022-11": "650",
+      "2022-12": "1125",
+      "Change": "73%"
+    },
+    {
+      "Source": "Solar",
+      "2022-11": "45",
+      "2022-12": "31",
+      "Change": "-31%"
+    },
+    {
+      "Source": "Unknown",
+      "2022-11": "700",
+      "2022-12": "700",
+      "Change": "0%"
+    },
+    {
+      "Source": "Wind",
+      "2022-11": "11",
+      "2022-12": "13",
+      "Change": "15%"
+    }
+  ]
+};
+---
+<h1>Table Block</h1>
+
+<h2>With header row and header column</h2>
+<TableBlock title={ title } table={ table } hasHeaderRow={ true } hasHeaderColumn={ true } />
+
+<h2>With header row only</h2>
+<TableBlock title={ title } table={ table } hasHeaderRow={ true } hasHeaderColumn={ false } />
+
+<h2>With header column only</h2>
+<TableBlock title={ title } table={ table } hasHeaderRow={ false } hasHeaderColumn={ true } />

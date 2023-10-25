@@ -1,0 +1,84 @@
+---
+import DynamicTag from '../../components/DynamicTag.astro';
+
+const { title, table, hasHeaderRow, hasHeaderColumn } = Astro.props;
+
+const isNumeric = (value: string) => !isNaN(Number(value.replace('%','')));
+---
+<table>
+  { title && (
+    <caption>{title}</caption> 
+  )}
+  { hasHeaderRow && (
+    <thead>
+      <tr>
+        {table.columns.map((value: string) => (
+          <th>{value}</th>
+        ))}
+      </tr>
+    </thead>
+  )}
+  <tbody>
+    {table.data.map(row => (
+      <tr>
+        {Object.values(row).map((value, index) => (
+          <DynamicTag
+            as={ hasHeaderColumn && index === 0 ? 'th' : 'td'}
+            class={ isNumeric(value) ? 'value--numeric' : 'value--text' }
+          >
+            {value}
+          </DynamicTag> 
+        ))}
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+<style>
+  table {
+    width: 100%;
+    table-layout: fixed;
+    border-spacing: 0;
+    border-collapse: separate;
+  }
+
+  caption {
+    caption-side: bottom;
+    margin: 1em;
+  }
+
+  th, td {
+    background: white;
+    padding: .5em;
+  }
+  thead th {
+    position: sticky;
+    width: 25vw;
+    top: 0;
+    z-index: 1;
+    border-bottom: 3px solid black;
+  }
+  tbody tr:not(:last-child) th,
+  tbody tr:not(:last-child) td {
+    border-bottom: 1px solid black;
+  }
+  thead th:first-child,
+  tbody th {
+    position: sticky;
+    left: 0;
+    border-right: 3px solid black;
+  }
+  thead th:first-child {
+    z-index: 2;
+  }
+  tbody th {
+    z-index: 1;
+  }
+
+  .value--text {
+    text-align: left;
+  }
+  .value--numeric {
+    text-align: right;
+  }
+</style>
