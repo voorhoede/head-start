@@ -1,11 +1,14 @@
 ---
+import type { TableBlockFragment } from '../../lib/types/datocms';
 import DynamicTag from '../../components/DynamicTag.astro';
 
-const { title, table, hasHeaderRow, hasHeaderColumn } = Astro.props;
+type Props = TableBlockFragment;
+const { id, title, table, hasHeaderRow, hasHeaderColumn } = Astro.props;
 
+const htmlId = (id: string) => `b-${id}`; // ensure HTML ID is valid by starting with a letter
 const isNumeric = (value: string) => !isNaN(Number(value.replace('%','')));
 ---
-<table>
+<table id={htmlId(id)}>
   { title && (
     <caption>{title}</caption> 
   )}

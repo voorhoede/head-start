@@ -1,0 +1,6 @@
+fragment TableBlock on TableBlockRecord {
+  _modelApiKey
+  id
+  title
+  table
+}

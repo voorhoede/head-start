@@ -1,0 +1,16 @@
+---
+import TableBlock from "./TableBlock/TableBlock.astro";
+
+const blocksByModelApiKey = {
+  table_block: TableBlock,
+}
+const { blocks } = Astro.props;
+---
+{ blocks.map(block => {
+  const Block = blocksByModelApiKey[block._modelApiKey];
+  return Block
+    ? <Block { ...block } />
+    : <script define:vars={{ modelApiKey: block._modelApiKey }} is:inline>
+        console.log(`No Block found for "${modelApiKey}"`);
+      </script>
+})}
