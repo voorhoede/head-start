@@ -1,0 +1,3 @@
+fragment TableBlock on TableBlockRecord {
+  id
+}

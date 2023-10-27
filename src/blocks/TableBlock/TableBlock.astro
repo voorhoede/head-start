@@ -1,0 +1,9 @@
+---
+import type { TableBlockFragment } from '../../lib/types/datocms'
+
+interface Props {
+  block: TableBlockFragment
+}
+const { block } = Astro.props;
+---
+<pre><code>table block: {JSON.stringify(block, null, 2)}</code></pre>

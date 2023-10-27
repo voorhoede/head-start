@@ -1,0 +1,28 @@
+---
+import TableBlock from './TableBlock/TableBlock.astro';
+import TextBlock from './TextBlock/TextBlock.astro';
+
+const blocksByTypename = {
+  TableBlockRecord: TableBlock,
+  TextBlockRecord: TextBlock,
+}
+
+interface Props {
+  blocks: [
+    {
+      __typename: string;
+    }
+  ]
+}
+const { blocks } = Astro.props;
+---
+
+{ blocks.map(block => {
+  const typename = block.__typename;
+  const Block = blocksByTypename[typename];
+  return Block
+    ? <Block block={ block } />
+    : <script define:vars={{ typename }} is:inline>
+        console.log(`No Block found for "${typename}"`);
+      </script>
+})}
