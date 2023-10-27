@@ -15,11 +15,40 @@
 
 The site is created as lightweight progressively enhanced website connected to a headless CMS:
 
-- [Astro](https://astro.build/) - web framework to structure this project.
-- [Svelte](https://svelte.dev/) - JS framework used to add interactivity to pages. Svelte is selected for its small footprint (no framework bundle). A [community version of Headless UI in Svelte](https://svelte-headlessui.goss.io/) is used for fully accessible, unstyled and well-tested common components (dialogs, popovers, tabs, etc).
+- [Astro](https://astro.build/) - web framework to structure this project. Astro is selected because it embraces web standards, is designed for performance, and supports all our favourite UI frameworks (React, Vue and Svelte). 
 - [DatoCMS](https://www.datocms.com/) - a headless CMS is connected to manage web content. DatoCMS is selected for its modular and structured content options, advanced image service, multi-language support and GraphQL API.
 - [Rosetta](https://github.com/lukeed/rosetta) - is an internationalization (i18n) library. Rosetta is selected for its small footprint (<300 bytes) and for being framework agnostic.
 - [Cloudflare Pages](https://pages.cloudflare.com/) - is a JAMstack hosting platform. Cloudflare Pages is selected for its reliable CDN, zero cold-start workers, green hosting and affordable pricing.
+
+```mermaid
+%%{
+    init: {
+        'theme': 'base',
+        'themeVariables': {
+            'edgeLabelBackground': '#FFFFFF',
+            'lineColor': '#0000FF',
+            'mainBkg': '#FFFFFF',
+            'primaryBorderColor': '#0000FF',
+            'primaryTextColor': '#000000',
+            'tertiaryColor': '#FFFED9'
+        }
+    }
+}%%
+
+flowchart LR
+    Repository(Code repository)
+
+
+        CMS[(DatoCMS)]
+        Hosting(Cloudflare Pages)
+        CMS -- publish --> Hosting
+
+    Repository -- git commit --> Hosting
+
+    Repository -. migrate .-> CMS
+
+%% you can edit this diagram via https://mermaid.live/edit
+```
 
 ## 🚀 Project Structure
 
@@ -27,24 +56,33 @@ Inside of this project, you'll see the following folders and files:
 
 ```
 /
+├── config/
 ├── public/
 │   └── favicon.svg
 ├── src/
+│   ├── blocks/
+│   │   ├── Blocks.astro
+│   │   └── SomeContentBlock/
+│   │       ├── SomeContentBlock.astro
+│   │       └── SomeContentBlock.fragment.graphql
 │   ├── components/
-│   │   └── Card.astro
+│   │   └── SomeUiComponent.astro
 │   ├── layouts/
 │   │   └── Default.astro
 │   └── pages/[locale]/
 │       ├── index.astro
-│       └── [slug].astro
+│       └── index.query.graphql
 └── package.json
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
+- `src/` contains all website source files that will be handled by Astro.
+  - `pages/` - [Pages](https://docs.astro.build/en/core-concepts/astro-pages/) are organised by file system routing and are paired with GraphQL query files for data loading.
+  - `components/` - [Components](https://docs.astro.build/en/core-concepts/astro-components/) are the elements the website is composed of. This can be Astro and framework specific components.
+  - `blocks/` - Blocks are a specific set of components which have a complementary content [Block](https://www.datocms.com/docs/content-modelling/blocks) in DatoCMS and therefore have a paired GraphQL fragment file.
+  - `layouts/` - [Layouts](https://docs.astro.build/en/core-concepts/layouts/) are Astro components used to provide a reusable UI structure, such as a page template.
+- `public/` is for any static assets, like fonts and favicons, that should be available on the website as-is.
+- `config/` bundles all our configuration files (like DatoCMS migrations), so the project root doesn't become too cluttered.
+- `scripts/` contains all our custom CLI scripts, typically available via `package.json` > `scripts`. Also see [Commands](#-commands).
 
 ## Getting started
 
