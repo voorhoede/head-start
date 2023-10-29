@@ -112,9 +112,12 @@ class VideoEmbed extends HTMLElement {
     const image = this.querySelector('img');
     const iframe = this.querySelector('iframe');
     const { autoplay, videoUrl } = this.dataset;
+    let isPlaying = false;
     function play () {
+      if (isPlaying) return;
       iframe.src = videoUrl;
       iframe.removeAttribute('hidden');
+      isPlaying = true;
     }
     anchor.addEventListener('click', (event) => {
       event.preventDefault();
@@ -129,6 +132,7 @@ customElements.define('video-embed', VideoEmbed);
 </script>
 
 <style>
+/* functional styling */
 .canvas {
   position: relative;
   width: 100%;
@@ -142,8 +146,50 @@ img {
 }
 iframe {
   position: absolute;
-  z-index: 1;
+  z-index: 3;
   width: 100%;
   height: 100%;
+}
+
+/* basic styling, can be removed */
+/* play icon using pseudo elements */
+.canvas::before {
+  --circle-radius: 30px;
+  content: '';
+  display: block;
+  position: absolute;
+  z-index: 1;
+  left: calc(50% - var(--circle-radius));
+  top: calc(50% - var(--circle-radius));
+  width: calc(var(--circle-radius) * 2);
+  height: calc(var(--circle-radius) * 2);
+  border-radius: var(--circle-radius);
+  background-color: black;
+  opacity: 0.8;
+}
+.canvas::after {
+  --triangle-width: 20px;
+  content: '';
+  display: block;
+  position: absolute;
+  z-index: 2;
+  left: calc(50% - var(--triangle-width) * 0.4);
+  top: calc(50% - var(--triangle-width) * 0.5);
+  width: 0;
+  height: 0;
+  border-top: calc(var(--triangle-width) * 0.5) solid transparent;
+  border-bottom: calc(var(--triangle-width) * 0.5) solid transparent;
+  border-left: var(--triangle-width) solid white;
+}
+.canvas::before,
+.canvas::after {
+  transform: scale(1.0);
+  transition: transform 0.2s ease-in-out;
+}
+a:hover .canvas::before,
+a:focus .canvas::before,
+a:hover .canvas::after,
+a:focus .canvas::after {
+  transform: scale(1.5);
 }
 </style>
