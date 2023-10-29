@@ -37,7 +37,10 @@ function getImageUrl({ video }) {
   }
 }
 
-function getVideoUrl ({ autoplay, loop, mute, video }) {
+function getVideoUrl ({ loop, mute, video }) {
+  // the video only loads if block.autoplay is true or user clicks the thumbnail
+  // so in any case the autoplay option in the video url should always be true:
+  const autoplay = true;
   const binaryBoolean = (value: boolean) => (value ? 1 : 0);
   switch (video.provider) {
     case 'youtube':
@@ -63,7 +66,10 @@ function getVideoUrl ({ autoplay, loop, mute, video }) {
   }
 }
 ---
-<video-embed data-video-url={ getVideoUrl({ autoplay: true, loop, mute, video }) }>
+<video-embed 
+  data-autoplay={ autoplay ? 'true' : undefined }
+  data-video-url={ getVideoUrl({ loop, mute, video }) }
+>
   <a 
     href={ video.url }
     target="_blank"
@@ -98,18 +104,25 @@ function getVideoUrl ({ autoplay, loop, mute, video }) {
 <script>
 // Each video embed has its own video url (configured as data attribute), 
 // so we use a custom element to porgressively enhance each instance:
+// @ see https://docs.astro.build/en/guides/client-side-scripts/#web-components-with-custom-elements
 class VideoEmbed extends HTMLElement {
   constructor() {
     super();
     const anchor = this.querySelector('a');
     const image = this.querySelector('img');
     const iframe = this.querySelector('iframe');
-    anchor.addEventListener('click', (event) => {
-      event.preventDefault();
-      const videoUrl = this.dataset.videoUrl;
+    const { autoplay, videoUrl } = this.dataset;
+    function play () {
       iframe.src = videoUrl;
       iframe.removeAttribute('hidden');
+    }
+    anchor.addEventListener('click', (event) => {
+      event.preventDefault();
+      play();
     });
+    if (autoplay) {
+      play();
+    }
   }
 }
 customElements.define('video-embed', VideoEmbed);
