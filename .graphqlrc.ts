@@ -1,7 +1,7 @@
+import { datocmsEnvironment} from './datocms-environment';
 require('dotenv-safe').config()
 
-const outputFilename = 'src/lib/types/datocms.d.ts'
-import { datocmsEnvironment} from './datocms-environment';
+const outputFilename = 'src/lib/types/datocms.d.ts';
 
 console.log(`Saving generated types for DatoCMS (environment: '${datocmsEnvironment}') to '${outputFilename}'.`)
 
