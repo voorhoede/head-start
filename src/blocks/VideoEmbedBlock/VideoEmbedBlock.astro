@@ -1,0 +1,136 @@
+---
+const { block } = Astro.props;
+const { autoplay, loop, mute, title, video } = block;
+const aspectRatio = `${video.width} / ${video.height}`;
+
+function getImageSrcSet({ video }) {
+  switch (video.provider) {
+    case 'youtube':
+      // YouTube has a fixed set of predefined thumbnail sizes available:
+      return [
+        `https://img.youtube.com/vi/${video.providerUid}/maxresdefault.jpg 1280w`,
+        `https://img.youtube.com/vi/${video.providerUid}/sddefault.jpg 640w`,
+        `https://img.youtube.com/vi/${video.providerUid}/hqdefault.jpg 480w`,
+        `https://img.youtube.com/vi/${video.providerUid}/mqdefault.jpg 320w`,
+      ].join(', ');
+    case 'vimeo':
+      // Vimeo can generate thumbnails at any size. We'll match the YouTube sizes:
+      return [
+        `https://i.vimeocdn.com/video/${video.providerUid}_1280.jpg 1280w`,
+        `https://i.vimeocdn.com/video/${video.providerUid}_640.jpg 640w`,
+        `https://i.vimeocdn.com/video/${video.providerUid}_480.jpg 480w`,
+        `https://i.vimeocdn.com/video/${video.providerUid}_320.jpg 320w`
+      ].join(', ');
+    default:
+      return video.thumbnailUrl;
+  }
+}
+
+function getImageUrl({ video }) {
+  switch (video.provider) {
+    case 'youtube':
+      return `https://img.youtube.com/vi/${video.providerUid}/maxresdefault.jpg`;
+    case 'vimeo':
+      return `https://i.vimeocdn.com/video/${video.providerUid}_1280.jpg`;
+    default:
+      return video.thumbnailUrl;
+  }
+}
+
+function getVideoUrl ({ autoplay, loop, mute, video }) {
+  const binaryBoolean = (value: boolean) => (value ? 1 : 0);
+  switch (video.provider) {
+    case 'youtube':
+      return new URL(`https://www.youtube.com/embed/${video.providerUid}?${
+        new URLSearchParams({
+          autoplay: binaryBoolean(autoplay),
+          mute: binaryBoolean(mute),
+          loop: binaryBoolean(loop),
+          playlist: video.providerUid,
+        })
+      }`);
+      return url;
+    case 'vimeo':
+      const url = new URL(`https://player.vimeo.com/video/${video.providerUid}?${
+        new URLSearchParams({
+          autoplay: binaryBoolean(autoplay),
+          muted: binaryBoolean(mute),
+          loop: binaryBoolean(loop),
+        })
+      }`);
+    default:
+      return video.url;
+  }
+}
+---
+<video-embed data-video-url={ getVideoUrl({ autoplay: true, loop, mute, video }) }>
+  <a 
+    href={ video.url }
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <figure>
+      <div class="canvas" style={{ aspectRatio }}>
+        <img
+          alt=""
+          loading="lazy"
+          src={ getImageUrl({ video }) }
+          srcset={ getImageSrcSet({ video }) }
+          style={{ aspectRatio }}
+        />
+        <iframe
+          hidden
+          frameborder="0"
+          webkitallowfullscreen
+          mozallowfullscreen
+          allowfullscreen
+          allow="autoplay"
+          style={{ aspectRatio }}
+        />
+      </div>
+      <figcaption>
+        { title || video.title }
+      </figcaption>
+    </figure>
+  </a>
+</video-embed>
+
+<script>
+// Each video embed has its own video url (configured as data attribute), 
+// so we use a custom element to porgressively enhance each instance:
+class VideoEmbed extends HTMLElement {
+  constructor() {
+    super();
+    const anchor = this.querySelector('a');
+    const image = this.querySelector('img');
+    const iframe = this.querySelector('iframe');
+    anchor.addEventListener('click', (event) => {
+      event.preventDefault();
+      const videoUrl = this.dataset.videoUrl;
+      iframe.src = videoUrl;
+      iframe.removeAttribute('hidden');
+    });
+  }
+}
+customElements.define('video-embed', VideoEmbed);
+</script>
+
+<style>
+.canvas {
+  position: relative;
+  width: 100%;
+}
+img {
+  position: absolute;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+iframe {
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+</style>
