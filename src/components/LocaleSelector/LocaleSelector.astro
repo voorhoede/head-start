@@ -4,15 +4,77 @@ const activeLocale = getLocale();
 ---
 <nav aria-labelledby="locale-selector-title">
   <span id="locale-selector-title">{ t('select_language') }</span>
-  <ul role="list" style="list-style: none;">
-    { locales.map(locale => (
-      <li>
-        <a hreflang={ locale }
-          href={ `/${ locale }/`}
-          aria-current={ locale === activeLocale ? 'page' : 'false' }>
-          { locale }
-        </a>
-      </li>
-    )) }
-  </ul>
+  <locale-selector>
+    <button type="button">{ activeLocale }</button>
+    <div>
+      <dialog>
+        <ul role="list" style="list-style: none;">
+          { locales.map(locale => (
+            <li>
+              <a hreflang={ locale }
+                href={ `/${ locale }/`}
+                aria-current={ locale === activeLocale ? 'page' : 'false' }>
+                { locale }
+              </a>
+            </li>
+          )) }
+        </ul>
+      </dialog>
+    </div>
+  </locale-selector>
 </nav>
+
+<script>
+class LocaleSelector extends HTMLElement {
+  constructor() {
+    super();
+    const button = this.querySelector('button');
+    const dialog = this.querySelector('dialog');
+    if (!button || !dialog) {
+      return;
+    }
+    button.addEventListener('click', () => {
+      const parent = dialog?.parentElement;
+      dialog.style.left = parent?.offsetLeft + 'px';
+      dialog.style.top = parent?.offsetTop + 'px';
+      dialog.showModal();
+      dialog.querySelector('a')?.focus();
+    });
+    dialog?.addEventListener('click', (event) => {
+      const rect = dialog.getBoundingClientRect();
+      const isInDialog = (
+        rect.top <= event.clientY &&
+        event.clientY <= rect.top + rect.height &&
+        rect.left <= event.clientX &&
+        event.clientX <= rect.left + rect.width
+      );
+      if (!isInDialog) {
+        dialog.close();
+        button.focus();
+      }
+      // alternative method? https://twitter.com/argyleink/status/1511761383024521218
+      // if (event.target.nodeName === 'DIALOG') {
+    });
+  }
+}
+customElements.define('locale-selector', LocaleSelector);
+</script>
+
+<style>
+  /* locale-selector {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  } */
+  dialog[open] {
+    /* display: flex;
+    position: absolute;
+    top: 0;
+    left: 0; */
+    margin: 0;
+    padding: 0;
+    border: 0;
+    /* width: 100px; */
+  }
+</style>
