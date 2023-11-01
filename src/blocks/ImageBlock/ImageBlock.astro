@@ -1,0 +1,32 @@
+---
+const { block } = Astro.props;
+const image = block.image.responsiveImage;
+---
+<figure>
+  <img
+    alt={ image.alt ? image.alt : "" }
+    loading="lazy"
+    sizes={ image.sizes }
+    srcSet={ image.srcSet }
+    src={ image.src }
+    style={{
+      aspectRatio: image.aspectRatio,
+      backgroundColor: image.bgColor,
+      backgroundImage: `url(${image.base64})`
+    }}
+  />
+  { image.title && (
+    <figcaption>
+      { image.title }
+    </figcaption>
+  )}
+</figure>
+
+<style>
+img {
+  display: block;
+  width: 100%;
+  background-size: cover;
+}
+</style>
+
