@@ -3,6 +3,7 @@ import type { DefaultLayoutQuery, Tag } from '../lib/types/datocms.d.ts';
 import { datocmsRequest } from '../lib/datocms';
 import { setLocale, t } from '../lib/i18n';
 import query from './default.query.graphql';
+import { Sprite } from 'astro-icon'
 import LocaleSelector from '../components/LocaleSelector/LocaleSelector.astro';
 import SeoHead from '../components/SeoHead.astro';
 import SkipLink from '../components/SkipLink/SkipLink.astro'
@@ -25,12 +26,14 @@ const mainContentId = 'content';
     <SeoHead tags={[...data.site.faviconMetaTags, ...seoMetaTags]} />
   </head>
   <body>
-    <SkipLink targetId={ mainContentId } />
-    <LocaleSelector />
-    <!-- main element requires tabindex to be focusable, see SkipLink/README.md -->
-    <main id={ mainContentId } tabindex="-1">
-      <slot />
-    </main>
+    <Sprite.Provider>
+      <SkipLink targetId={ mainContentId } />
+      <LocaleSelector />
+      <!-- main element requires tabindex to be focusable, see SkipLink/README.md -->
+      <main id={ mainContentId } tabindex="-1">
+        <slot />
+      </main>
+    </Sprite.Provider>
   </body>
 </html>
 

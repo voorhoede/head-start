@@ -22,6 +22,7 @@
     "@rollup/plugin-graphql": "^2.0.3",
     "@types/dotenv-safe": "^8.1.4",
     "astro": "^2.10.1",
+    "astro-icon": "^0.8.1",
     "globby": "^13.2.2",
     "jiti": "^1.20.0",
     "rosetta": "^1.1.0"
