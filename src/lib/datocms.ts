@@ -1,5 +1,7 @@
+import 'astro/import-meta';
 import { print } from 'graphql/language/printer';
 import type { DocumentNode } from 'graphql';
+import { datocmsEnvironment } from '../../datocms-environment';
 
 type DatocmsRequestType = {
   query: DocumentNode;
@@ -12,7 +14,7 @@ export const datocmsRequest = <T>({ query, variables = {} }: DatocmsRequestType)
     headers: {
       Authorization: import.meta.env.DATOCMS_READONLY_API_TOKEN,
       'Content-Type': 'application/json',
-      'X-Environment': import.meta.env.DATOCMS_ENVIRONMENT,
+      'X-Environment': datocmsEnvironment,
       'X-Exclude-Invalid': 'true', // https://www.datocms.com/docs/content-delivery-api/api-endpoints#strict-mode-for-non-nullable-graphql-types
       // "X-Include-Drafts": preview ? "true" : "false",
     },
