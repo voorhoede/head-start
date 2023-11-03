@@ -1,3 +1,7 @@
 fragment TextBlock on TextBlockRecord {
-  id
+  text {
+    blocks
+    links
+    value
+  }
 }

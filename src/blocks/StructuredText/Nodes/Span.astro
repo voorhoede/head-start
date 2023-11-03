@@ -1,0 +1,21 @@
+---
+import type { DefaultMark, Span } from 'datocms-structured-text-utils';
+
+interface Props {
+  node: Span;
+}
+
+const { node } = Astro.props;
+
+const elementByMark: Record<DefaultMark, string> = {
+  strong: 'strong',
+  code: 'code',
+  emphasis: 'em',
+  underline: 'u',
+  strikethrough: 'del',
+  highlight: 'mark',
+};
+
+const Tags = node.marks?.map(mark => elementByMark[mark]) || [];
+---
+{Tags.reduce((children, Tag) => <Tag>{children}</Tag>, node.value)}

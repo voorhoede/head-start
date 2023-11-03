@@ -1,0 +1,17 @@
+---
+import type { List } from 'datocms-structured-text-utils';
+
+interface Props {
+  node: List;
+}
+
+const { node } = Astro.props;
+const { style } = node;
+---
+
+{style === 'numbered' ? (
+  <ol><slot /></ol>
+) : (
+  <ul><slot /></ul>
+)}
+

@@ -1,9 +1,11 @@
 ---
 import type { TextBlockFragment } from '../../lib/types/datocms';
+import StructuredText from '../StructuredText/StructuredText.astro';
 
 interface Props {
   block: TextBlockFragment
 }
 const { block } = Astro.props;
 ---
-<pre><code>text block: {JSON.stringify(block, null, 2)}</code></pre>
+
+<StructuredText content={block.text} />
