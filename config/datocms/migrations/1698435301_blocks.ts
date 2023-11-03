@@ -107,7 +107,7 @@ export default async function (client: Client) {
             'list',
             'thematicBreak',
           ],
-          heading_levels: [1, 2, 3, 4, 5, 6],
+          heading_levels: [2, 3, 4, 5, 6],
           blocks_start_collapsed: false,
           show_links_meta_editor: false,
           show_links_target_blank: true,
