@@ -83,8 +83,10 @@ const { node, blocks, links } = Astro.props;
   ) : isCode(node) ? (
     <Code node={node} />
   ): isInlineItem(node) ? (
+    // @TODO: implement inline item
     <pre><code>{JSON.stringify(node, null, 2)}</code></pre>
   ) : isBlock(node) ? (
+    // @TODO: implement block item
     <pre><code>{JSON.stringify(node, null, 2)}</code></pre>
   ): null}
 </>

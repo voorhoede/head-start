@@ -9,4 +9,4 @@ const { node } = Astro.props;
 const { level = 2 } = node;
 const Tag = `h${level}`;
 ---
-<Tag />
+<Tag><slot /></Tag>
