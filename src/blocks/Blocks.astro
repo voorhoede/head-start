@@ -20,7 +20,7 @@ interface Props {
 }
 const { blocks } = Astro.props;
 ---
-{ blocks.map((block:AnyBlock) => {
+{ blocks.map((block) => {
   const typename = String(block.__typename);
   const Block = blocksByTypename[typename];
   return Block
