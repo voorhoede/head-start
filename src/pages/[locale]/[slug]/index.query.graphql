@@ -1,3 +1,6 @@
+#import '../../../blocks/TableBlock/TableBlock.fragment.graphql'
+#import '../../../blocks/TextBlock/TextBlock.fragment.graphql'
+
 query Page($locale: SiteLocale!, $slug: String!) {
   page(locale: $locale, filter: { slug: { eq: $slug } }) {
     title
@@ -6,6 +9,15 @@ query Page($locale: SiteLocale!, $slug: String!) {
       attributes
       content
       tag
+    }
+    bodyBlocks {
+      __typename
+      ... on TableBlockRecord {
+        ...TableBlock
+      }
+      ... on TextBlockRecord {
+        ...TextBlock
+      }
     }
   }
 }
