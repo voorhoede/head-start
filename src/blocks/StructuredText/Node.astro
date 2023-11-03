@@ -26,7 +26,7 @@ import Span from './Nodes/Span.astro';
 import Code from './Nodes/Code.astro';
 interface Props {
   node: Node
-  blocks: { __typename: string; id: string }[]
+  blocks: string[]
   links: TextBlockModelTextField[]
 }
 
@@ -82,7 +82,7 @@ const { node, blocks, links } = Astro.props;
     <Span node={node} />
   ) : isCode(node) ? (
     <Code node={node} />
-  ) : isInlineItem(node) ? (
+  ): isInlineItem(node) ? (
     <pre><code>{JSON.stringify(node, null, 2)}</code></pre>
   ) : isBlock(node) ? (
     <pre><code>{JSON.stringify(node, null, 2)}</code></pre>
