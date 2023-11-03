@@ -10,7 +10,6 @@ import { setLocale } from '../../lib/i18n';
 
 export async function getStaticPaths() {
   const data = await datocmsRequest<HomePathsQuery>({ query: homePathsQuery });
-    console.log(JSON.stringify(data, null, 2));
   return data.home.titles.map(title => ({
     params: { locale: title.locale }
   }));
