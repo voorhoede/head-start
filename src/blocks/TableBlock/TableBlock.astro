@@ -2,8 +2,10 @@
 import type { TableBlockFragment } from '../../lib/types/datocms';
 import DynamicTag from '../../components/DynamicTag.astro';
 
-type Props = TableBlockFragment;
-const { id, title, table, hasHeaderRow, hasHeaderColumn } = Astro.props;
+type Props = {
+  block: TableBlockFragment
+};
+const { id, title, table, hasHeaderRow, hasHeaderColumn } = Astro.props.block;
 
 const htmlId = (id: string) => `b-${id}`; // ensure HTML ID is valid by starting with a letter
 const isNumeric = (value: string) => !isNaN(Number(value.replace('%','')));

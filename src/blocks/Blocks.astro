@@ -1,16 +1,31 @@
 ---
-import TableBlock from "./TableBlock/TableBlock.astro";
+import type { 
+  TableBlockFragment,
+  TextBlockFragment,
+} from '../lib/types/datocms';
+import TableBlock from './TableBlock/TableBlock.astro';
+import TextBlock from './TextBlock/TextBlock.astro';
 
-const blocksByModelApiKey = {
-  table_block: TableBlock,
+const blocksByTypename = {
+  TableBlockRecord: TableBlock,
+  TextBlockRecord: TextBlock,
+};
+
+type AnyBlock = 
+  | TableBlockFragment
+  | TextBlockFragment;
+
+interface Props {
+  blocks: AnyBlock[];
 }
 const { blocks } = Astro.props;
 ---
-{ blocks.map(block => {
-  const Block = blocksByModelApiKey[block._modelApiKey];
+{ blocks.map((block) => {
+  const typename = String(block.__typename);
+  const Block = blocksByTypename[typename];
   return Block
-    ? <Block { ...block } />
-    : <script define:vars={{ modelApiKey: block._modelApiKey }} is:inline>
-        console.log(`No Block found for "${modelApiKey}"`);
-      </script>
+    ? <Block block={ block } />
+    : <script define:vars={{ typename }} is:inline>
+        console.log(`No Block found for "${typename}"`);
+    </script>;
 })}
