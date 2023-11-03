@@ -1,28 +1,31 @@
 ---
+import type { 
+  TableBlockFragment,
+  TextBlockFragment,
+} from '../lib/types/datocms';
 import TableBlock from './TableBlock/TableBlock.astro';
 import TextBlock from './TextBlock/TextBlock.astro';
 
 const blocksByTypename = {
   TableBlockRecord: TableBlock,
   TextBlockRecord: TextBlock,
-}
+};
+
+type AnyBlock = 
+  | TableBlockFragment
+  | TextBlockFragment;
 
 interface Props {
-  blocks: [
-    {
-      __typename: string;
-    }
-  ]
+  blocks: AnyBlock[];
 }
 const { blocks } = Astro.props;
 ---
-
-{ blocks.map(block => {
-  const typename = block.__typename;
+{ blocks.map((block:AnyBlock) => {
+  const typename = String(block.__typename);
   const Block = blocksByTypename[typename];
   return Block
     ? <Block block={ block } />
     : <script define:vars={{ typename }} is:inline>
         console.log(`No Block found for "${typename}"`);
-      </script>
+    </script>;
 })}
