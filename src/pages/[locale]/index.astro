@@ -4,6 +4,7 @@ import type { HomeQuery, HomePathsQuery } from '../../lib/types/datocms.d.ts';
 import homeQuery from './index.query.graphql';
 import homePathsQuery from './paths.query.graphql';
 import Layout from '../../layouts/Default.astro';
+import Blocks from '../../blocks/Blocks.astro';
 import ShareButton from '../../components/ShareButton/ShareButton.astro';
 import { setLocale } from '../../lib/i18n';
 
@@ -16,9 +17,10 @@ export async function getStaticPaths() {
 }
 
 const locale = setLocale(Astro.params.locale);
-const { home } = await datocmsRequest<HomeQuery>({ query: homeQuery, variables: { locale } });
+const { page } = await datocmsRequest<HomeQuery>({ query: homeQuery, variables: { locale } });
 ---
-<Layout seoMetaTags={home._seoMetaTags}>
-  <h1>{home.title}</h1>
+<Layout seoMetaTags={page._seoMetaTags}>
+  <h1>{page.title}</h1>
+  <Blocks blocks={page.bodyBlocks} />
   <ShareButton />
 </Layout>

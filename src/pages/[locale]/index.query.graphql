@@ -1,10 +1,22 @@
+#import '../../blocks/TableBlock/TableBlock.fragment.graphql'
+#import '../../blocks/TextBlock/TextBlock.fragment.graphql'
+
 query Home($locale: SiteLocale!) {
-  home(locale: $locale) {
+  page: home(locale: $locale) {
     title
     _seoMetaTags {
       attributes
       content
       tag
+    }
+    bodyBlocks {
+      __typename
+      ... on TableBlockRecord {
+        ...TableBlock
+      }
+      ... on TextBlockRecord {
+        ...TextBlock
+      }
     }
   }
 }

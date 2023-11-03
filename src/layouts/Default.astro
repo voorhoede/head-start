@@ -1,12 +1,12 @@
 ---
 import type { DefaultLayoutQuery, Tag } from '../lib/types/datocms.d.ts';
 import { datocmsRequest } from '../lib/datocms';
-import { setLocale, t } from '../lib/i18n';
+import { setLocale } from '../lib/i18n';
 import query from './default.query.graphql';
 import { Sprite } from 'astro-icon'
 import LocaleSelector from '../components/LocaleSelector/LocaleSelector.astro';
 import SeoHead from '../components/SeoHead.astro';
-import SkipLink from '../components/SkipLink/SkipLink.astro'
+import SkipLink from '../components/SkipLink/SkipLink.astro';
 
 interface Props {
   seoMetaTags: Tag[];

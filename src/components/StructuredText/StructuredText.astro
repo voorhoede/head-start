@@ -1,0 +1,15 @@
+---
+import { StructuredText } from 'datocms-structured-text-utils';
+import Node from './Node.astro';
+
+interface Props {
+  content: StructuredText;
+}
+
+const { content } = Astro.props;
+const node = content.value?.document;
+const blocks = content.blocks;
+const links = content.links;
+---
+
+<Node {node} {blocks} {links} />

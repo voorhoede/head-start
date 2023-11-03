@@ -1,0 +1,7 @@
+fragment TextBlock on TextBlockRecord {
+  text {
+    blocks
+    links
+    value
+  }
+}
