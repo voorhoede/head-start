@@ -4,7 +4,7 @@ import type { SlugPathsQuery, PageQuery } from '../../../lib/types/datocms.d.ts'
 import slugPathsQuery from './paths.query.graphql';
 import pageQuery from './index.query.graphql';
 import Layout from '../../../layouts/Default.astro';
-
+import Blocks from '../../../blocks/Blocks.astro';
 import { setLocale, t } from '../../../lib/i18n';
 
 export async function getStaticPaths() {
@@ -21,5 +21,6 @@ const { page } = await datocmsRequest<PageQuery>({ query: pageQuery, variables: 
 
 <Layout seoMetaTags={page._seoMetaTags}>
   <h1>{page.title}</h1>
+  <Blocks blocks={page.bodyBlocks} />
   { t('share_on_social') }
 </Layout>

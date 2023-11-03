@@ -1,0 +1,3 @@
+fragment TextBlock on TextBlockRecord {
+  id
+}
