@@ -1,0 +1,90 @@
+---
+import {
+  isBlock,
+  isBlockquote,
+  isCode,
+  isHeading,
+  isInlineItem,
+  isItemLink,
+  isLink,
+  isList,
+  isListItem,
+  isParagraph,
+  isRoot,
+  isSpan,
+} from 'datocms-structured-text-utils';
+import type { Node } from 'datocms-structured-text-utils';
+import type { TextBlockModelTextField } from '../../lib/types/datocms';
+import Root from './Nodes/Root.astro';
+import Paragraph from './Nodes/Paragraph.astro';
+import Link from './Nodes/Link.astro';
+import List from './Nodes/List.astro';
+import ListItem from './Nodes/ListItem.astro';
+import Blockquote from './Nodes/Blockquote.astro';
+import Heading from './Nodes/Heading.astro';
+import Span from './Nodes/Span.astro';
+import Code from './Nodes/Code.astro';
+interface Props {
+  node: Node
+  blocks: { __typename: string; id: string }[]
+  links: TextBlockModelTextField[]
+}
+
+const { node, blocks, links } = Astro.props;
+---
+
+<>
+  {isRoot(node) ? (
+    <Root>
+      {node.children.map((child) => (
+        <Astro.self node={child} blocks={blocks} links={links} />
+      ))}
+    </Root>
+  ) : isParagraph(node) ? (
+    <Paragraph>
+      {node.children.map((child) => (
+        <Astro.self node={child} blocks={blocks} links={links} />
+      ))}
+    </Paragraph>
+  ) : isLink(node) ? (
+    <Link node={node}>
+      {node.children.map((child) => (
+        <Astro.self node={child} blocks={blocks} links={links} />
+      ))}
+    </Link>
+  ) : isItemLink(node) ? (
+    <pre><code>{JSON.stringify(node, null, 2)}</code></pre>
+  ) : isList(node) ? (
+    <List node={node}>
+      {node.children.map((child) => (
+        <Astro.self node={child} blocks={blocks} links={links} />
+      ))}
+    </List>
+  ) : isListItem(node) ? (
+    <ListItem>
+      {node.children.map((child) => (
+        <Astro.self node={child} blocks={blocks} links={links} />
+      ))}
+    </ListItem>
+  ) : isHeading(node) ? (
+    <Heading node={node}>
+      {node.children.map((child) => (
+        <Astro.self node={child} blocks={blocks} links={links} />
+      ))}
+    </Heading>
+  ) : isBlockquote(node) ? (
+    <Blockquote>
+      {node.children.map((child) => (
+        <Astro.self node={child} blocks={blocks} links={links} />
+      ))}
+    </Blockquote>
+  ) : isSpan(node) ? (
+    <Span node={node} />
+  ) : isCode(node) ? (
+    <Code node={node} />
+  ) : isInlineItem(node) ? (
+    <pre><code>{JSON.stringify(node, null, 2)}</code></pre>
+  ) : isBlock(node) ? (
+    <pre><code>{JSON.stringify(node, null, 2)}</code></pre>
+  ): null}
+</>

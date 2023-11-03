@@ -10,14 +10,5 @@ query Page($locale: SiteLocale!, $slug: String!) {
       content
       tag
     }
-    bodyBlocks {
-      __typename
-      ... on TableBlockRecord {
-        ...TableBlock
-      }
-      ... on TextBlockRecord {
-        ...TextBlock
-      }
-    }
   }
 }

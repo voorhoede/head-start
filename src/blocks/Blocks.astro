@@ -1,18 +1,15 @@
 ---
 import TableBlock from './TableBlock/TableBlock.astro';
 import TextBlock from './TextBlock/TextBlock.astro';
+import { HomeModelBodyBlocksField } from '../lib/types/datocms';
 
 const blocksByTypename = {
   TableBlockRecord: TableBlock,
   TextBlockRecord: TextBlock,
-}
+};
 
 interface Props {
-  blocks: [
-    {
-      __typename: string;
-    }
-  ]
+  blocks: HomeModelBodyBlocksField[]
 }
 const { blocks } = Astro.props;
 ---
@@ -24,5 +21,5 @@ const { blocks } = Astro.props;
     ? <Block block={ block } />
     : <script define:vars={{ typename }} is:inline>
         console.log(`No Block found for "${typename}"`);
-      </script>
+    </script>;
 })}

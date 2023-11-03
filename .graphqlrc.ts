@@ -1,5 +1,5 @@
+import 'dotenv/config'
 import { datocmsEnvironment} from './datocms-environment';
-require('dotenv-safe').config()
 
 const outputFilename = 'src/lib/types/datocms.d.ts';
 

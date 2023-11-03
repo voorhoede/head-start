@@ -21,6 +21,7 @@
   "dependencies": {
     "@rollup/plugin-graphql": "^2.0.3",
     "astro": "^2.10.1",
+    "datocms-structured-text-utils": "^2.0.4",
     "globby": "^13.2.2",
     "jiti": "^1.20.0",
     "rosetta": "^1.1.0"
@@ -34,9 +35,9 @@
     "@graphql-codegen/typescript": "^4.0.1",
     "@graphql-codegen/typescript-operations": "^4.0.1",
     "@graphql-typed-document-node/core": "^3.2.0",
+    "@types/dotenv-safe": "^8.1.4",
     "@typescript-eslint/eslint-plugin": "^6.7.2",
     "@typescript-eslint/parser": "^6.7.2",
-    "@types/dotenv-safe": "^8.1.4",
     "dotenv-safe": "^8.2.0",
     "eslint": "^8.49.0",
     "eslint-plugin-astro": "^0.29.0",
