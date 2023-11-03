@@ -1,7 +1,14 @@
 ---
+import type { ImageBlockFragment } from '../../lib/types/datocms';
+
+interface Props {
+  block: ImageBlockFragment
+}
+
 const { block } = Astro.props;
 const image = block.image.responsiveImage;
 ---
+
 <figure>
   <img
     alt={ image.alt ? image.alt : "" }
@@ -29,4 +36,3 @@ img {
   background-size: cover;
 }
 </style>
-

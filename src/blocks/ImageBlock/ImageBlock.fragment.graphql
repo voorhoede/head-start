@@ -1,0 +1,14 @@
+fragment ImageBlock on ImageBlockRecord {
+  image {
+    responsiveImage {
+      alt
+      title
+      aspectRatio
+      bgColor
+      base64
+      src
+      srcSet
+      sizes
+    }
+  }
+}
