@@ -5,7 +5,8 @@ import DynamicTag from '../../components/DynamicTag.astro';
 type Props = {
   block: TableBlockFragment
 };
-const { id, title, table, hasHeaderRow, hasHeaderColumn } = Astro.props.block;
+const { block } = Astro.props;
+const { id, title, table, hasHeaderRow, hasHeaderColumn } = block;
 
 const htmlId = (id: string) => `b-${id}`; // ensure HTML ID is valid by starting with a letter
 const isNumeric = (value: string) => !isNaN(Number(value.replace('%','')));

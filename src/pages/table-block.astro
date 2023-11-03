@@ -88,10 +88,10 @@ const table = {
 <h1>Table Block</h1>
 
 <h2>With header row and header column</h2>
-<TableBlock title={ title } table={ table } hasHeaderRow={ true } hasHeaderColumn={ true } />
+<TableBlock block={{ title, table, hasHeaderRow: true, hasHeaderColumn: true }} />
 
 <h2>With header row only</h2>
-<TableBlock title={ title } table={ table } hasHeaderRow={ true } hasHeaderColumn={ false } />
+<TableBlock block={{ title, table, hasHeaderRow: true, hasHeaderColumn: false }} />
 
 <h2>With header column only</h2>
-<TableBlock title={ title } table={ table } hasHeaderRow={ false } hasHeaderColumn={ true } />
+<TableBlock block={{ title, table, hasHeaderRow: false, hasHeaderColumn: true }} />
