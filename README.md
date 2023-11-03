@@ -57,6 +57,8 @@ Inside of this project, you'll see the following folders and files:
 ```
 /
 ├── config/
+├── docs/
+│   └── decision-log/
 ├── public/
 │   └── favicon.svg
 ├── src/
@@ -75,6 +77,8 @@ Inside of this project, you'll see the following folders and files:
 └── package.json
 ```
 
+- `docs/` contains project documentation.
+  - `decision-log/` lists all key decisions made during the project. Please read the log so you understand why decisions are made and document key decisions when you make them.
 - `src/` contains all website source files that will be handled by Astro.
   - `pages/` - [Pages](https://docs.astro.build/en/core-concepts/astro-pages/) are organised by file system routing and are paired with GraphQL query files for data loading.
   - `components/` - [Components](https://docs.astro.build/en/core-concepts/astro-components/) are the elements the website is composed of. This can be Astro and framework specific components.
