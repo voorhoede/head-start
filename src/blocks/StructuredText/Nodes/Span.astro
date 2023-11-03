@@ -19,6 +19,3 @@ const elementByMark: Record<DefaultMark, string> = {
 const Tags = node.marks?.map(mark => elementByMark[mark]) || [];
 ---
 {Tags.reduce((children, Tag) => <Tag>{children}</Tag>, node.value)}
-
-
-
