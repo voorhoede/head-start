@@ -7,4 +7,4 @@ export default defineConfig({
   vite: {
     plugins: [graphql()]
   }
-})
+});
