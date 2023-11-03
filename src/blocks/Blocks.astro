@@ -1,21 +1,27 @@
 ---
+import type { 
+  TableBlockFragment,
+  TextBlockFragment,
+} from '../lib/types/datocms';
 import TableBlock from './TableBlock/TableBlock.astro';
 import TextBlock from './TextBlock/TextBlock.astro';
-import { HomeModelBodyBlocksField } from '../lib/types/datocms';
 
 const blocksByTypename = {
   TableBlockRecord: TableBlock,
   TextBlockRecord: TextBlock,
 };
 
+type AnyBlock = 
+  | TableBlockFragment
+  | TextBlockFragment;
+
 interface Props {
-  blocks: HomeModelBodyBlocksField[]
+  blocks: AnyBlock[];
 }
 const { blocks } = Astro.props;
 ---
-
-{ blocks.map(block => {
-  const typename = block.__typename;
+{ blocks.map((block:AnyBlock) => {
+  const typename = String(block.__typename);
   const Block = blocksByTypename[typename];
   return Block
     ? <Block block={ block } />

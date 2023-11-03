@@ -1,3 +1,4 @@
 dist
 node_modules
-/src/lib/types/datocms.d.ts
+
+src/lib/types/datocms.d.ts
