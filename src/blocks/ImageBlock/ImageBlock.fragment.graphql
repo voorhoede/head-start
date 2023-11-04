@@ -1,8 +1,10 @@
 fragment ImageBlock on ImageBlockRecord {
   image {
+    alt
+    title
+    format
+    url
     responsiveImage {
-      alt
-      title
       aspectRatio
       bgColor
       base64

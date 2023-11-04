@@ -6,22 +6,32 @@ interface Props {
 }
 
 const { block } = Astro.props;
-const image = block.image.responsiveImage;
+const { image } = block;
+const altText = image.alt ? image.alt : ""; // default to empty string for accessibility
+const isVectorImage = image.format === 'svg';
 ---
 
 <figure>
-  <img
-    alt={ image.alt ? image.alt : "" }
-    loading="lazy"
-    sizes={ image.sizes }
-    srcSet={ image.srcSet }
-    src={ image.src }
-    style={{
-      aspectRatio: image.aspectRatio,
-      backgroundColor: image.bgColor,
-      backgroundImage: `url(${image.base64})`
-    }}
-  />
+  {
+    isVectorImage
+    ? <img 
+        alt={ altText }
+        loading="lazy"
+        src={ image.url } 
+      />
+    : <img
+        alt={ altText }
+        loading="lazy"
+        sizes={ image.responsiveImage.sizes }
+        srcSet={ image.responsiveImage.srcSet }
+        src={ image.responsiveImage.src }
+        style={{
+          aspectRatio: image.responsiveImage.aspectRatio,
+          backgroundColor: image.responsiveImage.bgColor,
+          backgroundImage: `url(${image.responsiveImage.base64})`
+        }}
+      />
+  }
   { image.title && (
     <figcaption>
       { image.title }
