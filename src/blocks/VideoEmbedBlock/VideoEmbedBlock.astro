@@ -24,12 +24,11 @@ function getImageSrcSet({ video }: { video: VideoField }) {
       ].join(", ");
     case "vimeo":
       // Vimeo can generate thumbnails at any size. We'll match the YouTube sizes:
-      return [
-        `https://i.vimeocdn.com/video/${video.providerUid}_1280.jpg 1280w`,
-        `https://i.vimeocdn.com/video/${video.providerUid}_640.jpg 640w`,
-        `https://i.vimeocdn.com/video/${video.providerUid}_480.jpg 480w`,
-        `https://i.vimeocdn.com/video/${video.providerUid}_320.jpg 320w`,
-      ].join(", ");
+      const sizeRegex = /_\d+(x\d+)?(\.\w+)?$/ // match _123(.ext) and _123x123(.ext)
+      return [1280, 640, 480, 320].map(size => {
+        const url =  video.thumbnailUrl.replace(sizeRegex, `_${size}.jpg`);
+        return `${url} ${size}w`;
+      }).join(', ');
     default:
       return video.thumbnailUrl;
   }
@@ -40,7 +39,8 @@ function getImageUrl({ video }: { video: VideoField }) {
     case "youtube":
       return `https://img.youtube.com/vi/${video.providerUid}/maxresdefault.jpg`;
     case "vimeo":
-      return `https://i.vimeocdn.com/video/${video.providerUid}_1280.jpg`;
+      const sizeRegex = /_\d+(x\d+)?(\.\w+)?$/ // match _123(.ext) and _123x123(.ext)
+      return video.thumbnailUrl.replace(sizeRegex, `_1280.jpg`);
     default:
       return video.thumbnailUrl;
   }
@@ -136,7 +136,7 @@ function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; vide
   }
 
   /* play icon using pseudo elements */
-  video-embed::before {
+  video-embed a::before {
     --circle-radius: 30px;
     content: "";
     display: block;
@@ -150,7 +150,7 @@ function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; vide
     background-color: black;
     opacity: 0.8;
   }
-  video-embed::after {
+  video-embed a::after {
     --triangle-width: 20px;
     content: "";
     display: block;
@@ -164,15 +164,15 @@ function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; vide
     border-bottom: calc(var(--triangle-width) * 0.5) solid transparent;
     border-left: var(--triangle-width) solid white;
   }
-  video-embed::before,
-  video-embed::after {
+  video-embed a::before,
+  video-embed a::after {
     transform: scale(1);
     transition: transform 0.2s ease-in-out;
   }
-  video-embed:hover::before,
-  video-embed:hover::after,
-  video-embed:focus-within::before,
-  video-embed:focus-within::after {
+  video-embed a:hover::before,
+  video-embed a:hover::after,
+  video-embed a:focus::before,
+  video-embed a:focus::after {
     transform: scale(1.5);
   }
 </style>
