@@ -1,5 +1,6 @@
 ---
 import type { ImageBlockFragment } from '../../lib/types/datocms';
+import { t } from '../../lib/i18n';
 
 interface Props {
   block: ImageBlockFragment
@@ -7,18 +8,19 @@ interface Props {
 
 const { block } = Astro.props;
 const { image } = block;
-const altText = image.alt ? image.alt : ''; // default to empty string for accessibility
-const isResponsiveImage = Boolean(image.responsiveImage);
-const loadingStrategy = 'lazy';
+const sharedImageAttributes = {
+  alt: image.alt ? image.alt : '', // default to empty string for accessibility
+  loading: 'lazy',
+  'data-unavailable': t('image_unavailable'),
+}
 ---
 
 <figure>
   {
-    isResponsiveImage
+    Boolean(image.responsiveImage)
       ? // bitmap images have Imgix generated props (responsiveImage.*):
       <img
-        alt={ altText }
-        loading={ loadingStrategy }
+        { ...sharedImageAttributes }
         sizes={ image.responsiveImage.sizes }
         srcSet={ image.responsiveImage.srcSet }
         src={ image.responsiveImage.src }
@@ -30,8 +32,7 @@ const loadingStrategy = 'lazy';
       />
       : // vector images do not have Imgix generated props, so using as is:
       <img 
-        alt={ altText }
-        loading={ loadingStrategy }
+        { ...sharedImageAttributes }
         src={ image.url } 
         style={{
           aspectRatio: `${image.width}/${image.height}`,
@@ -51,4 +52,24 @@ img {
   width: 100%;
   background-size: cover;
 }
+
+/**
+ * broken image styling, only applies when image fails to load
+ * @see https://bitsofco.de/styling-broken-images/
+ */
+ img {
+  position: relative;
+  text-align: center;
+ }
+ img:after {
+  content: attr(alt) " (" attr(data-unavailable) ")";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding-top: calc(50% - 1em);
+  background-color: #f1f1f1;
+ }
 </style>
