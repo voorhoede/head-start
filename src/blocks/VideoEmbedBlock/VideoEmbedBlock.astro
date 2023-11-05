@@ -1,6 +1,7 @@
 ---
 import type { VideoEmbedBlockFragment, VideoField } from '../../lib/types/datocms';
 import { t } from '../../lib/i18n';
+import Icon from '../../components/Icon';
 
 interface Props {
   block: TableBlockFragment
@@ -99,7 +100,7 @@ function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; vide
     </div>
     <figcaption>
       <a href={video.url} target="_blank" rel="noopener noreferrer">
-        {title} ({t('watch_video_on_provider', { provider: providerName }) })
+        {title} ({t('watch_video_on_provider', { provider: providerName }) }) <Icon name="external" />
       </a>
     </figcaption>
   </figure>
@@ -128,6 +129,13 @@ function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; vide
   }
 
   /* basic styling, can be removed */
+  [astro-icon] {
+    width: 1em;
+    height: 1em;
+    margin-left: 0.5em;
+    vertical-align: middle;
+  }
+
   /* play icon using pseudo elements */
   .canvas::before {
     --circle-radius: 30px;
