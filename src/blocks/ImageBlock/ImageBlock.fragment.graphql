@@ -5,7 +5,7 @@ fragment ImageBlock on ImageBlockRecord {
     width
     height
     url
-    responsiveImage {
+    responsiveImage(imgixParams: { auto: format, w: 1280 }) {
       aspectRatio
       bgColor
       base64
