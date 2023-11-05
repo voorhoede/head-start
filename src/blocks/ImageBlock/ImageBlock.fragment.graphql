@@ -2,7 +2,8 @@ fragment ImageBlock on ImageBlockRecord {
   image {
     alt
     title
-    format
+    width
+    height
     url
     responsiveImage {
       aspectRatio

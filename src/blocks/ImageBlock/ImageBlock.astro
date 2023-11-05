@@ -7,21 +7,18 @@ interface Props {
 
 const { block } = Astro.props;
 const { image } = block;
-const altText = image.alt ? image.alt : ""; // default to empty string for accessibility
-const isVectorImage = image.format === 'svg';
+const altText = image.alt ? image.alt : ''; // default to empty string for accessibility
+const isResponsiveImage = Boolean(image.responsiveImage);
+const loadingStrategy = 'lazy';
 ---
 
 <figure>
   {
-    isVectorImage
-    ? <img 
+    isResponsiveImage
+      ? // bitmap images have Imgix generated props (responsiveImage.*):
+      <img
         alt={ altText }
-        loading="lazy"
-        src={ image.url } 
-      />
-    : <img
-        alt={ altText }
-        loading="lazy"
+        loading={ loadingStrategy }
         sizes={ image.responsiveImage.sizes }
         srcSet={ image.responsiveImage.srcSet }
         src={ image.responsiveImage.src }
@@ -29,6 +26,15 @@ const isVectorImage = image.format === 'svg';
           aspectRatio: image.responsiveImage.aspectRatio,
           backgroundColor: image.responsiveImage.bgColor,
           backgroundImage: `url(${image.responsiveImage.base64})`
+        }}
+      />
+      : // vector images do not have Imgix generated props, so using as is:
+      <img 
+        alt={ altText }
+        loading={ loadingStrategy }
+        src={ image.url } 
+        style={{
+          aspectRatio: `${image.width}/${image.height}`,
         }}
       />
   }
