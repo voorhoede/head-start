@@ -80,37 +80,36 @@ function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; vide
 }
 ---
 
-<video-embed
-  data-autoplay={autoplay ? "true" : undefined}
-  data-video-url={getVideoUrl({ loop, mute, video })}
->
-  <figure>
-    <div class="canvas" style={{ aspectRatio }}>
-      <a href={video.url} target="_blank" rel="noopener noreferrer">
-        <img
-          alt={t('play_video_title', { title }) }
-          loading="lazy"
-          src={getImageUrl({ video })}
-          srcset={getImageSrcSet({ video })}
-          style={{ aspectRatio }}
-        />
-      </a>
-      <iframe hidden allowfullscreen allow="autoplay" style={{ aspectRatio }}
-      ></iframe>
-    </div>
-    <figcaption>
-      <a href={video.url} target="_blank" rel="noopener noreferrer">
-        {title} ({t('watch_video_on_provider', { provider: providerName }) }) <Icon name="external" />
-      </a>
-    </figcaption>
-  </figure>
-</video-embed>
+<figure>
+  <video-embed
+      data-autoplay={autoplay ? "true" : undefined}
+      data-video-url={getVideoUrl({ loop, mute, video })}
+      style={{ aspectRatio }}
+    >
+    <a href={video.url} target="_blank" rel="noopener noreferrer">
+      <img
+        alt={t('play_video_title', { title }) }
+        loading="lazy"
+        src={getImageUrl({ video })}
+        srcset={getImageSrcSet({ video })}
+        style={{ aspectRatio }}
+      />
+    </a>
+    <iframe hidden allowfullscreen allow="autoplay" style={{ aspectRatio }}></iframe>
+  </video-embed>
+  <figcaption>
+    <a href={video.url} target="_blank" rel="noopener noreferrer">
+      {title} ({t('watch_video_on_provider', { provider: providerName }) }) <Icon name="external" />
+    </a>
+  </figcaption>
+</figure>
 
 <script src="./VideoEmbedBlock.client.ts"></script>
 
 <style>
   /* functional styling */
-  .canvas {
+  video-embed {
+    display: block;
     position: relative;
     width: 100%;
   }
@@ -137,7 +136,7 @@ function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; vide
   }
 
   /* play icon using pseudo elements */
-  .canvas::before {
+  video-embed::before {
     --circle-radius: 30px;
     content: "";
     display: block;
@@ -151,7 +150,7 @@ function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; vide
     background-color: black;
     opacity: 0.8;
   }
-  .canvas::after {
+  video-embed::after {
     --triangle-width: 20px;
     content: "";
     display: block;
@@ -165,15 +164,15 @@ function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; vide
     border-bottom: calc(var(--triangle-width) * 0.5) solid transparent;
     border-left: var(--triangle-width) solid white;
   }
-  .canvas::before,
-  .canvas::after {
+  video-embed::before,
+  video-embed::after {
     transform: scale(1);
     transition: transform 0.2s ease-in-out;
   }
-  a:hover .canvas::before,
-  a:focus .canvas::before,
-  a:hover .canvas::after,
-  a:focus .canvas::after {
+  video-embed:hover::before,
+  video-embed:hover::after,
+  video-embed:focus-within::before,
+  video-embed:focus-within::after {
     transform: scale(1.5);
   }
 </style>

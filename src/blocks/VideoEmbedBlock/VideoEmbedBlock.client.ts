@@ -14,20 +14,22 @@ class VideoEmbed extends HTMLElement {
     }
 
     let isPlaying = false;
-    function play() {
+    function play({ focus }: { focus: boolean }) {
       if (isPlaying) return;
       iframe.src = videoUrl;
       iframe.removeAttribute('hidden');
-      iframe.focus();
       anchor.setAttribute('hidden', '');
       isPlaying = true;
+      if (focus) {
+        iframe.focus();
+      }
     }
     anchor.addEventListener('click', (event) => {
       event.preventDefault();
-      play();
+      play({ focus: true });
     });
     if (autoplay) {
-      play();
+      play({ focus: false });
     }
   }
 }
