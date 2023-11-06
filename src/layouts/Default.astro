@@ -31,8 +31,8 @@ const mainContentId = 'content';
     <SeoHead tags={[...data.site.faviconMetaTags, ...seoMetaTags]} />
     { pageUrls.map((pageUrl: PageUrl) => (
       pageUrl.locale === locale
-        ? <link rel="canocial" href={ new URL(pageUrl.pathname, Astro.url) } />
-        : <link rel="alternate" href={ new URL(pageUrl.pathname, Astro.url) } hreflang={ pageUrl.locale } />
+        ? <link rel="canocial" href={ new URL(pageUrl.pathname, Astro.site) } />
+        : <link rel="alternate" href={ new URL(pageUrl.pathname, Astro.site) } hreflang={ pageUrl.locale } />
     )) }
   </head>
   <body>
