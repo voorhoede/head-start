@@ -7,6 +7,10 @@ export default defineConfig({
   adapter: cloudflare({
     mode: "directory",
     functionPerRoute: true,
+    runtime: {
+      mode: "local",
+      // persistTo: ".wrangler/state/v3",
+    },
   }),
   output: "hybrid",
   server: {

@@ -1,0 +1,8 @@
+---
+export const prerender = false;
+
+const locals = Astro.locals;
+// console.log(locals);
+---
+
+<pre>{JSON.stringify(locals, null, 2)}</pre>

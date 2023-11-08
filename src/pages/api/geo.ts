@@ -2,9 +2,8 @@ import type { APIRoute } from 'astro';
 
 export const prerender = false;
 
-export const GET: APIRoute = ({ request }) => {
+export const GET: APIRoute = ({ locals, request }) => {
   return new Response(JSON.stringify({
-    country: request.cf?.country,
-    cf: request.cf,
-  }));
+    cf: locals.runtime.cf,
+  }, null, 2));
 };
