@@ -4,6 +4,11 @@ import graphql from "@rollup/plugin-graphql";
 
 // https://astro.build/config
 export default defineConfig({
+  adapter: cloudflare({
+    mode: "directory",
+    functionPerRoute: true,
+  }),
+  output: "hybrid",
   server: {
     port: 4323,
   },
@@ -11,9 +16,4 @@ export default defineConfig({
   vite: {
     plugins: [graphql()],
   },
-  output: "hybrid",
-  adapter: cloudflare({
-    mode: "directory",
-    functionPerRoute: true,
-  }),
 });

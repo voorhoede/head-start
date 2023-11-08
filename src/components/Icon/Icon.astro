@@ -1,6 +1,22 @@
 ---
-// import { Sprite as Icon } from "astro-icon";
-const { props } = Astro;
+import type { IconName } from '../../assets/icon-sprite';
+
+interface Props {
+  name: IconName;
+  [x:string]: any;
+}
+const { name, ...props } = Astro.props;
 ---
 
-<div {...props} />
+<svg {...props} data-icon={name}>
+  <use xlink:href={`#${name}`} />
+</svg>
+
+<style>
+  svg {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    color: currentColor;
+  }
+</style>

@@ -14,13 +14,9 @@ import Icon from 'path/to/components/Icon/';
 <Icon name="share">
 
 <style>
-  [astro-icon="share"] {
+  /* style on data attribute, or add a class */
+  [data-icon="share"] {
     color: red;
   }
 </style>
 ```
-
-## Notes
-
-- Uses [`astro-icon`](https://github.com/natemoo-re/astro-icon) which provides `[astro-icon]` as styling hook.
-- Uses [`astro-icon`](https://github.com/natemoo-re/astro-icon) which offers both an inline `Icon` and a `Sprite` icon component. For performance we always want to use the `Sprite` component. But since that can be confusing, this component simply exposes that `Sprite` component as `Icon`.
