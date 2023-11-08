@@ -9,7 +9,6 @@ export default defineConfig({
     functionPerRoute: true,
     runtime: {
       mode: "local",
-      // persistTo: ".wrangler/state/v3",
     },
   }),
   output: "hybrid",
