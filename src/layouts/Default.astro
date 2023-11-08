@@ -19,7 +19,7 @@ interface Props {
 
 const locale = setLocale(Astro.params.locale);
 const data = await datocmsRequest<DefaultLayoutQuery>({ query, variables: { locale } });
-const { pageUrls = [], seoMetaTags } = Astro.props;
+const { pageUrls, seoMetaTags } = Astro.props;
 const mainContentId = 'content';
 ---
 
@@ -31,7 +31,7 @@ const mainContentId = 'content';
     <SeoHead tags={[...data.site.faviconMetaTags, ...seoMetaTags]} />
     { pageUrls.map((pageUrl: PageUrl) => (
       pageUrl.locale === locale
-        ? <link rel="canocial" href={ new URL(pageUrl.pathname, Astro.site) } />
+        ? <link rel="canonical" href={ new URL(pageUrl.pathname, Astro.site) } />
         : <link rel="alternate" href={ new URL(pageUrl.pathname, Astro.site) } hreflang={ pageUrl.locale } />
     )) }
   </head>
