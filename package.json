@@ -14,7 +14,7 @@
     "prep": "run-s prep:* --print-label",
     "prep:datocms-types": "graphql-codegen --config .graphqlrc.ts",
     "prep:download-translations": "jiti scripts/download-translations.ts",
-    "prep:icons": "svg-sprite --symbol --symbol-dest='src/assets' --symbol-sprite=icon-sprite.svg src/assets/icons/*.svg",
+    "prep:icons": "svg-sprite --symbol --symbol-dest='src/assets' --symbol-sprite=icon-sprite.svg src/assets/icons/*.svg && jiti scripts/icon-types.ts",
     "preview": "astro preview",
     "start": "astro dev",
     "lint": "eslint . --ext .js,.ts,.astro",

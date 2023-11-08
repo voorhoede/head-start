@@ -13,5 +13,6 @@ node_modules/
 
 # generated files
 src/assets/icon-sprite.svg
+src/assets/icon-sprite.d.ts
 src/lib/types/datocms.d.ts
 src/lib/i18n.messages.json

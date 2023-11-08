@@ -1,6 +1,8 @@
 ---
+import type { IconName } from '../../assets/icon-sprite';
+
 interface Props {
-  name: string;
+  name: IconName;
   [x:string]: any;
 }
 const { name, ...props } = Astro.props;
