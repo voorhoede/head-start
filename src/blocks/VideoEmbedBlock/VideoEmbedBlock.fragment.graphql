@@ -1,0 +1,16 @@
+fragment VideoEmbedBlock on VideoEmbedBlockRecord {
+  id
+  video {
+    provider
+    providerUid
+    thumbnailUrl
+    title
+    url
+    height
+    width
+  }
+  title
+  autoplay
+  mute
+  loop
+}
