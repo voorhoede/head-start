@@ -3,7 +3,7 @@ import type { DefaultLayoutQuery, SiteLocale, Tag } from '../lib/types/datocms';
 import { datocmsRequest } from '../lib/datocms';
 import { setLocale } from '../lib/i18n';
 import query from './default.query.graphql';
-import { Sprite } from 'astro-icon'
+import IconSprite from '../components/Icon/IconSprite.astro';
 import LocaleSelector from '../components/LocaleSelector/LocaleSelector.astro';
 import SeoHead from '../components/SeoHead.astro';
 import SkipLink from '../components/SkipLink/SkipLink.astro';
@@ -36,14 +36,13 @@ const mainContentId = 'content';
     )) }
   </head>
   <body>
-    <Sprite.Provider>
-      <SkipLink targetId={ mainContentId } />
-      <LocaleSelector pageUrls={ pageUrls } />
-      <!-- main element requires tabindex to be focusable, see SkipLink/README.md -->
-      <main id={ mainContentId } tabindex="-1">
-        <slot />
-      </main>
-    </Sprite.Provider>
+    <SkipLink targetId={ mainContentId } />
+    <LocaleSelector pageUrls={ pageUrls } />
+    <!-- main element requires tabindex to be focusable, see SkipLink/README.md -->
+    <main id={ mainContentId } tabindex="-1">
+      <slot />
+    </main>
+    <IconSprite />
   </body>
 </html>
 
