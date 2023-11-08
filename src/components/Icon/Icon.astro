@@ -1,4 +1,8 @@
 ---
+interface Props {
+  name: string;
+  [x:string]: any;
+}
 const { name, ...props } = Astro.props;
 ---
 
@@ -11,5 +15,6 @@ const { name, ...props } = Astro.props;
     display: inline-block;
     width: 1rem;
     height: 1rem;
+    color: currentColor;
   }
 </style>
