@@ -112,6 +112,7 @@ function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; vide
     display: block;
     position: relative;
     width: 100%;
+    background-color: #f1f1f1;
   }
   img {
     position: absolute;
@@ -125,10 +126,15 @@ function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; vide
     z-index: 3;
     width: 100%;
     height: 100%;
+    border: none;
   }
 
   /* basic styling, can be removed */
-  [astro-icon] {
+  figcaption {
+    text-align: center;
+  }
+
+  [data-icon="external"] {
     width: 1em;
     height: 1em;
     margin-left: 0.5em;
