@@ -16,7 +16,7 @@ export const datocmsRequest = <T>({ query, variables = {} }: DatocmsRequestType)
       'Content-Type': 'application/json',
       'X-Environment': datocmsEnvironment,
       'X-Exclude-Invalid': 'true', // https://www.datocms.com/docs/content-delivery-api/api-endpoints#strict-mode-for-non-nullable-graphql-types
-      // "X-Include-Drafts": preview ? "true" : "false",
+      'X-Include-Drafts': 'true', // preview ? 'true' : 'false',
     },
     body: JSON.stringify({ query: print(query), variables }),
   })
