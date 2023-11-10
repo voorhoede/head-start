@@ -74,9 +74,12 @@ Inside of this project, you'll see the following folders and files:
 │   │   └── SomeUiComponent.astro
 │   ├── layouts/
 │   │   └── Default.astro
-│   └── pages/[locale]/
-│       ├── index.astro
-│       └── index.query.graphql
+│   └── pages/
+│       ├── api/
+|       |   └── some-dynamic-endpoint.ts
+│       └── [locale]/
+│           ├── index.astro
+│           └── index.query.graphql
 └── package.json
 ```
 
@@ -84,6 +87,7 @@ Inside of this project, you'll see the following folders and files:
   - `decision-log/` lists all key decisions made during the project. Please read the log so you understand why decisions are made and document key decisions when you make them.
 - `src/` contains all website source files that will be handled by Astro.
   - `pages/` - [Pages](https://docs.astro.build/en/core-concepts/astro-pages/) are organised by file system routing and are paired with GraphQL query files for data loading.
+  - `pages/api/` - [API routes](https://docs.astro.build/en/core-concepts/endpoints/#server-endpoints-api-routes) are dynamic server endpoints with support for path & query params etc.
   - `components/` - [Components](https://docs.astro.build/en/core-concepts/astro-components/) are the elements the website is composed of. This can be Astro and framework specific components.
   - `blocks/` - Blocks are a specific set of components which have a complementary content [Block](https://www.datocms.com/docs/content-modelling/blocks) in DatoCMS and therefore have a paired GraphQL fragment file.
   - `layouts/` - [Layouts](https://docs.astro.build/en/core-concepts/layouts/) are Astro components used to provide a reusable UI structure, such as a page template.
