@@ -1,1 +1,1 @@
-export const datocmsEnvironment = 'media-blocks';
+export const datocmsEnvironment = 'required-pages';

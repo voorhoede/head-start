@@ -6,6 +6,10 @@ query Page($locale: SiteLocale!, $slug: String!) {
   page(locale: $locale, filter: { slug: { eq: $slug } }) {
     title
     slug
+    _allSlugLocales {
+      locale
+      value
+    }
     _seoMetaTags {
       attributes
       content
