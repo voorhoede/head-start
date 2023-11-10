@@ -1,8 +1,22 @@
 #import '../../components/InternalLink/InternalLink.fragment.graphql'
+#import '../../blocks/TableBlock/TableBlock.fragment.graphql'
+#import '../../blocks/VideoEmbedBLock/VideoEmbedBLock.fragment.graphql'
+#import '../../blocks/ImageBlock/ImageBlock.fragment.graphql'
 
 fragment TextBlock on TextBlockRecord {
   text {
-    blocks
+    blocks {
+      __typename
+      ... on VideoEmbedBlockRecord {
+        ...VideoEmbedBlock
+      }
+      ... on TableBlockRecord {
+        ...TableBlock
+      }
+      ... on ImageBlockRecord {
+        ...ImageBlock
+      }
+    }
     links {
       id
       ...InternalLink

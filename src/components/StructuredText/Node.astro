@@ -14,6 +14,7 @@ import {
 } from 'datocms-structured-text-utils';
 import type { Node } from 'datocms-structured-text-utils';
 import type { InternalLinkRecord } from '../../lib/types/datocms';
+import type { AnyBlock } from '../../blocks/';
 import Root from './Nodes/Root.astro';
 import Paragraph from './Nodes/Paragraph.astro';
 import Link from './Nodes/Link.astro';
@@ -24,14 +25,16 @@ import Heading from './Nodes/Heading.astro';
 import Span from './Nodes/Span.astro';
 import Code from './Nodes/Code.astro';
 import InternalLink from '../InternalLink/InternalLink.astro';
+import Blocks from '../../blocks/Blocks.astro';
 interface Props {
   node: Node
-  blocks: string[]
+  blocks: AnyBlock[]
   links: InternalLinkRecord[]
 }
 
 const { node, blocks, links } = Astro.props;
 const link = (isItemLink(node) && (links || []).find(({ id }) => isItemLink(node) && id === node.item)) || null;
+const block = (isBlock(node) && (blocks || []).find(({ id }) => isBlock(node) && id === node.item)) || null;
 ---
 
 <>
@@ -88,7 +91,6 @@ const link = (isItemLink(node) && (links || []).find(({ id }) => isItemLink(node
       ))}
     </InternalLink>
   ) : isBlock(node) ? (
-    // @TODO: implement block item
-    <pre><code>{JSON.stringify(node, null, 2)}</code></pre>
+    <Blocks blocks={[block]} />
   ) : null}
 </>
