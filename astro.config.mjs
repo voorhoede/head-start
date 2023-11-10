@@ -11,7 +11,7 @@ export default defineConfig({
       mode: "local",
     },
   }),
-  output: "hybrid",
+  output: "server",
   server: {
     port: 4323,
   },
