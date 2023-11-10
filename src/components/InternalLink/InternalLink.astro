@@ -1,0 +1,25 @@
+---
+import { InternalLinkFragment } from '../../lib/types/datocms';
+interface Props {
+  link: InternalLinkFragment;
+  openInNewTab?: boolean;
+}
+
+const { link, openInNewTab } = Astro.props;
+
+const linkByTypename: { [key: string]: string } = {
+  HomeRecord: null,
+  PageRecord: null,
+};
+
+const { title, page } = link;
+
+const locale = Astro.params.locale;
+const linkPath = linkByTypename[link.__typename];
+const slug = (page as any).slug || null;
+
+const href = `/${[locale, linkPath, slug].filter(Boolean).join('/')}/`;
+const target = openInNewTab ? '_blank' : null;
+---
+
+<a href={href} {target}><slot>{title || page.title}</slot></a>

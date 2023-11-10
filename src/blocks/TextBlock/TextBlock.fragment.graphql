@@ -1,7 +1,12 @@
+#import '../../components/InternalLink/InternalLink.fragment.graphql'
+
 fragment TextBlock on TextBlockRecord {
   text {
     blocks
-    links
+    links {
+      id
+      ...InternalLink
+    }
     value
   }
 }

@@ -4,7 +4,6 @@ import {
   isBlockquote,
   isCode,
   isHeading,
-  isInlineItem,
   isItemLink,
   isLink,
   isList,
@@ -14,7 +13,7 @@ import {
   isSpan,
 } from 'datocms-structured-text-utils';
 import type { Node } from 'datocms-structured-text-utils';
-import type { TextBlockModelTextField } from '../../lib/types/datocms';
+import type { InternalLinkRecord } from '../../lib/types/datocms';
 import Root from './Nodes/Root.astro';
 import Paragraph from './Nodes/Paragraph.astro';
 import Link from './Nodes/Link.astro';
@@ -24,13 +23,15 @@ import Blockquote from './Nodes/Blockquote.astro';
 import Heading from './Nodes/Heading.astro';
 import Span from './Nodes/Span.astro';
 import Code from './Nodes/Code.astro';
+import InternalLink from '../InternalLink/InternalLink.astro';
 interface Props {
   node: Node
   blocks: string[]
-  links: TextBlockModelTextField[]
+  links: InternalLinkRecord[]
 }
 
 const { node, blocks, links } = Astro.props;
+const link = (isItemLink(node) && (links || []).find(({ id }) => isItemLink(node) && id === node.item)) || null;
 ---
 
 <>
@@ -52,8 +53,6 @@ const { node, blocks, links } = Astro.props;
         <Astro.self node={child} blocks={blocks} links={links} />
       ))}
     </Link>
-  ) : isItemLink(node) ? (
-    <pre><code>{JSON.stringify(node, null, 2)}</code></pre>
   ) : isList(node) ? (
     <List node={node}>
       {node.children.map((child) => (
@@ -82,11 +81,14 @@ const { node, blocks, links } = Astro.props;
     <Span node={node} />
   ) : isCode(node) ? (
     <Code node={node} />
-  ): isInlineItem(node) ? (
-    // @TODO: implement inline item
-    <pre><code>{JSON.stringify(node, null, 2)}</code></pre>
+  ) : isItemLink(node) ? (
+    <InternalLink link={link} openInNewTab={node.meta?.find(entry => entry.id === 'target' && entry.value === '_blank')}>
+      {node.children.map((child) => (
+        <Astro.self node={child} blocks={blocks} links={links} />
+      ))}
+    </InternalLink>
   ) : isBlock(node) ? (
     // @TODO: implement block item
     <pre><code>{JSON.stringify(node, null, 2)}</code></pre>
-  ): null}
+  ) : null}
 </>
