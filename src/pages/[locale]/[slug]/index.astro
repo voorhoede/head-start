@@ -7,8 +7,6 @@ import Layout from '../../../layouts/Default.astro';
 import Blocks from '../../../blocks/Blocks.astro';import ShareButton from '../../../components/ShareButton/ShareButton.astro';
 import { setLocale } from '../../../lib/i18n';
 
-export const prerender = false;
-
 export async function getStaticPaths() {
   const data = await datocmsRequest<SlugPathsQuery>({ query: slugPathsQuery });
 
