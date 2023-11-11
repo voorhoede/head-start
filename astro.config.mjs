@@ -13,7 +13,7 @@ export default defineConfig({
       mode: "local",
     },
   }),
-  output: "hybrid",
+  output: "server",
   server: { port: localhostPort },
   site: process.env.CF_PAGES
     ? process.env.CF_PAGES_URL
