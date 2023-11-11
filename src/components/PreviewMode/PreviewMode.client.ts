@@ -100,8 +100,22 @@ class PreviewMode extends HTMLElement {
 }
 
 class PreviewModeBar extends HTMLElement {
+  #statusElement: HTMLElement;
+  #statusMessages: { [key in ConnectionStatus]: string } = {
+    closed: 'CMS disconnected (refresh for updates)',
+    connecting: 'CMS connecting ...',
+    connected: 'CMS connected, receiving live updates'
+  };
+
+  constructor() {
+    super();
+    this.#statusElement = this.querySelector('[data-status]') as HTMLElement;
+    this.setStatus('closed');
+  }
+
   setStatus(status: ConnectionStatus) {
-    this.innerHTML = status;
+    this.#statusElement.dataset.status = status;
+    this.#statusElement.innerHTML = this.#statusMessages[status];
   }
 }
 
