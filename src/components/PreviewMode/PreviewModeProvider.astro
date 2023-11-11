@@ -1,0 +1,10 @@
+---
+import PreviewMode from './PreviewMode.astro';
+const { datocmsEnvironment, datocmsToken, isPreview } = Astro.locals;
+---
+{
+  // Ensure preview mode elements and client-side JS are only rendered in preview mode:
+  isPreview
+    ? <PreviewMode><slot /></PreviewMode>
+    : <slot />
+}

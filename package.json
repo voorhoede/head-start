@@ -26,9 +26,11 @@
     "@rollup/plugin-graphql": "^2.0.3",
     "accept-language-parser": "^1.5.0",
     "astro": "^3.4.3",
+    "datocms-listen": "^0.1.15",
     "datocms-structured-text-utils": "^2.0.4",
     "globby": "^13.2.2",
     "jiti": "^1.20.0",
+    "nanostores": "^0.9.5",
     "rosetta": "^1.1.0"
   },
   "devDependencies": {

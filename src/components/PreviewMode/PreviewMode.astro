@@ -1,0 +1,25 @@
+---
+const { datocmsEnvironment, datocmsToken, isPreview } = Astro.locals;
+---
+<preview-mode
+  data-datocms-environment={ datocmsEnvironment }
+  data-datocms-token={ isPreview && datocmsToken }
+>
+  <preview-mode-bar>  
+    Preview mode
+  </preview-mode-bar>
+  <slot />
+</preview-mode>
+
+<script src="./PreviewMode.client.ts"></script>
+
+<style>
+  preview-mode-bar {
+    align-items: center;
+    background: black;
+    color: white;
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+  }
+</style>
