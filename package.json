@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "astro": "astro",
-    "xprebuild": "run-s prep",
+    "prebuild": "run-s prep",
     "build": "jiti scripts/build.ts --command 'run-p build:* --print-label'",
     "build:astro": "astro build",
     "postbuild": "npm run post",
