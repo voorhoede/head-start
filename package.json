@@ -4,8 +4,9 @@
   "version": "0.0.1",
   "scripts": {
     "astro": "astro",
-    "prebuild": "run-s prep",
-    "build": "astro build",
+    "xprebuild": "run-s prep",
+    "build": "jiti scripts/build.ts --command 'run-p build:* --print-label'",
+    "build:astro": "astro build",
     "postbuild": "npm run post",
     "predev": "run-s prep",
     "dev": "run-p dev:* --print-label",
@@ -19,7 +20,7 @@
     "start": "astro dev",
     "lint": "eslint . --ext .js,.ts,.astro",
     "post": "run-s post:* --print-label",
-    "post:move-404-pages": "echo 'jiti scripts/move-404-pages.ts'"
+    "post:move-404-pages": "jiti scripts/move-404-pages.ts"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^7.6.4",
@@ -30,6 +31,7 @@
     "datocms-structured-text-utils": "^2.0.4",
     "globby": "^13.2.2",
     "jiti": "^1.20.0",
+    "minimist": "^1.2.8",
     "nanostores": "^0.9.5",
     "rosetta": "^1.1.0"
   },
@@ -43,6 +45,7 @@
     "@graphql-codegen/typescript-operations": "^4.0.1",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@types/dotenv-safe": "^8.1.4",
+    "@types/minimist": "^1.2.5",
     "@typescript-eslint/eslint-plugin": "^6.7.2",
     "@typescript-eslint/parser": "^6.7.2",
     "chokidar-cli": "^3.0.0",

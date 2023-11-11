@@ -3,6 +3,7 @@ import cloudflare from "@astrojs/cloudflare";
 import graphql from "@rollup/plugin-graphql";
 
 const localhostPort = 4323; // 4323 is "head" in T9
+const isPreview = process.env.HEAD_START_PREVIEW === "true";
 
 // https://astro.build/config
 export default defineConfig({
@@ -13,7 +14,7 @@ export default defineConfig({
       mode: "local",
     },
   }),
-  output: "server",
+  output: isPreview ? "server" : "hybrid",
   server: { port: localhostPort },
   site: process.env.CF_PAGES
     ? process.env.CF_PAGES_URL
