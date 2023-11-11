@@ -5,8 +5,7 @@
   "scripts": {
     "astro": "astro",
     "prebuild": "run-s prep",
-    "build": "jiti scripts/build.ts --command 'run-p build:* --print-label'",
-    "build:astro": "astro build",
+    "build": "astro build",
     "postbuild": "npm run post",
     "predev": "run-s prep",
     "dev": "run-p dev:* --print-label",

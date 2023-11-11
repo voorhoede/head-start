@@ -1,9 +1,11 @@
 import { defineConfig } from 'astro/config';
 import cloudflare from "@astrojs/cloudflare";
 import graphql from "@rollup/plugin-graphql";
+import { isPreview } from "./config/preview";
+
+process.env.HEAD_START_PREVIEW = isPreview ? "true" : "false";
 
 const localhostPort = 4323; // 4323 is "head" in T9
-const isPreview = process.env.HEAD_START_PREVIEW === "true";
 
 // https://astro.build/config
 export default defineConfig({
