@@ -13,6 +13,22 @@ const sharedImageAttributes = {
   loading: 'lazy',
   'data-unavailable': t('image_unavailable'),
 }
+
+const defaultSizes = [1280, 960, 640, 320];
+const getImageSrc = (url, params = {}) => {
+  const defaults = {
+    auto: 'format,compress',
+    q: 80,
+    w: Math.max(...defaultSizes),
+  };
+  return new URL(`${url}?${new URLSearchParams({ ...defaults, ...params })}`);
+}
+const getImageSrcSet = (url, sizes = defaultSizes, params = {}) => {
+  return sizes.map((size) => {
+    const src = getImageSrc(url, { ...params, w: size });
+    return `${src} ${size}w`;
+  }).join(', ');
+}
 ---
 
 <figure>
@@ -21,12 +37,10 @@ const sharedImageAttributes = {
       ? // bitmap images have Imgix generated props (responsiveImage.*):
       <img
         { ...sharedImageAttributes }
-        sizes={ image.responsiveImage.sizes }
-        srcSet={ image.responsiveImage.srcSet }
-        src={ image.responsiveImage.src }
+        srcSet={ getImageSrcSet(image.url) }
+        src={ getImageSrc(image.url) }
         style={{
           aspectRatio: image.responsiveImage.aspectRatio,
-          backgroundColor: image.responsiveImage.bgColor,
           backgroundImage: `url(${image.responsiveImage.base64})`
         }}
       />
