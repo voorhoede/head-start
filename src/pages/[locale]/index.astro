@@ -1,9 +1,10 @@
 ---
 import { datocmsRequest } from '../../lib/datocms';
-import type { HomeQuery } from '../../lib/types/datocms';
+import type { HomeQuery, HomeRecord } from '../../lib/types/datocms';
 import homeQuery from './index.query.graphql';
 import Layout from '../../layouts/Default.astro';
 import Blocks from '../../blocks/Blocks.astro';
+import type { AnyBlock } from '../../blocks/Blocks';
 import ShareButton from '../../components/ShareButton/ShareButton.astro';
 import { locales, setLocale } from '../../lib/i18n';
 
@@ -12,7 +13,7 @@ export async function getStaticPaths() {
 }
 
 const locale = setLocale(Astro.params.locale);
-const { page } = await datocmsRequest<HomeQuery>({ query: homeQuery, variables: { locale } });
+const { page } = await datocmsRequest<HomeQuery>({ query: homeQuery, variables: { locale } }) as { page: HomeRecord };
 const pageUrls = locales.map(locale => ({ locale, pathname: `/${locale}/` }));
 ---
 <Layout 
@@ -20,6 +21,6 @@ const pageUrls = locales.map(locale => ({ locale, pathname: `/${locale}/` }));
   seoMetaTags={page._seoMetaTags}
 >
   <h1>{page.title}</h1>
-  <Blocks blocks={page.bodyBlocks} />
+  <Blocks blocks={page.bodyBlocks as AnyBlock[]} />
   <ShareButton />
 </Layout>

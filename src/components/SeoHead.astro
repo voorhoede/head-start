@@ -1,6 +1,6 @@
 ---
 import DynamicTag from './DynamicTag.astro';
-import { Tag } from '../lib/types/datocms.d.ts';
+import type { Tag } from '../lib/types/datocms';
 
 interface Props {
   tags: Tag[];
@@ -11,7 +11,9 @@ const { tags } = Astro.props;
 const metaTags = tags.filter(tag => tag.tag !== 'title');
 const titleTag = tags.find(tag => tag.tag === 'title');
 ---
-<title>{titleTag.content}</title>
+{ titleTag && (
+  <title>{titleTag.content}</title> 
+)}
 {
   metaTags.map(tag => (
     <DynamicTag as={tag.tag} { ...tag.attributes } />
