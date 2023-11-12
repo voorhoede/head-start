@@ -17,7 +17,7 @@ const getPageHref = (locale:SiteLocale) => {
   return pageUrl
     ? new URL(pageUrl.pathname, Astro.site)
     : new URL(`/${ locale }/`, Astro.site);
-}
+};
 ---
 <nav aria-labelledby="locale-selector-title">
   <span id="locale-selector-title">{ t('select_language') }</span>
