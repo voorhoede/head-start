@@ -1,19 +1,17 @@
 import type { APIRoute } from 'astro';
 import { previewCookieName } from '../../../middleware';
 
-const previewSecret = import.meta.env.HEAD_START_PREVIEW_SECRET;
-
 export const cookiePath = '/';
 
-export const GET: APIRoute = ({ cookies, request }) => {
+export const GET: APIRoute = ({ cookies, locals, request }) => {
 
-  if (!previewSecret) {
+  if (!locals.previewSecret) {
     return new Response('Configure HEAD_START_PREVIEW_SECRET to enable preview mode', { status: 500 });
   }
 
   const userSecret = new URL(request.url).searchParams.get('secret');
-  if (userSecret && userSecret === previewSecret) {
-    cookies.set(previewCookieName, previewSecret, {
+  if (userSecret && userSecret === locals.previewSecret) {
+    cookies.set(previewCookieName, locals.previewSecret, {
       httpOnly: true,
       secure: import.meta.env.PROD,
       path: cookiePath,
