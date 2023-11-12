@@ -1,12 +1,26 @@
 import type { APIRoute } from 'astro';
+import { previewCookieName } from '../../../middleware';
 
-export const GET: APIRoute = ({ request }) => {
-  const secret = new URL(request.url).searchParams.get('secret');
-  if (!secret) {
-    return new Response('Missing query parameter \'secret\'', { status: 401 });
+const previewSecret = import.meta.env.HEAD_START_PREVIEW_SECRET;
+
+export const cookiePath = '/';
+
+export const GET: APIRoute = ({ cookies, request }) => {
+
+  if (!previewSecret) {
+    return new Response('Configure HEAD_START_PREVIEW_SECRET to enable preview mode', { status: 500 });
   }
 
-  // @todo: check secret, set cookie
+  const userSecret = new URL(request.url).searchParams.get('secret');
+  if (userSecret && userSecret === previewSecret) {
+    cookies.set(previewCookieName, previewSecret, {
+      httpOnly: true,
+      secure: import.meta.env.PROD,
+      path: cookiePath,
+      sameSite: 'strict',
+      maxAge: 60 * 60 * 24 * 7, // 1 week
+    });
+  }
 
   // We don't redirect to location as that might lead to open redirect vulnerabilities
   const location = new URL(request.url).searchParams.get('location') || '/';
