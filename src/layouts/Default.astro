@@ -3,6 +3,7 @@ import type { DefaultLayoutQuery, SiteLocale, Tag } from '@lib/types/datocms';
 import { datocmsRequest } from '@lib/datocms';
 import { defaultLocale } from '@lib/i18n';
 import query from './default.query.graphql';
+import ConsentManagerProvider from '@components/ConsentManager/ConsentManagerProvider.astro';
 import IconSprite from '@components/Icon/IconSprite.astro';
 import LocaleSelector from '@components/LocaleSelector/LocaleSelector.astro';
 import SeoHead from '@components/SeoHead.astro';
@@ -39,13 +40,15 @@ const mainContentId = 'content';
     )) }
   </head>
   <body>
-    <SkipLink targetId={ mainContentId } />
-    <LocaleSelector pageUrls={ pageUrls } />
-    <!-- main element requires tabindex to be focusable, see SkipLink/README.md -->
-    <main id={ mainContentId } tabindex="-1">
-      <slot />
-    </main>
-    <IconSprite />
+    <ConsentManagerProvider>
+      <SkipLink targetId={ mainContentId } />
+      <LocaleSelector pageUrls={ pageUrls } />
+      <!-- main element requires tabindex to be focusable, see SkipLink/README.md -->
+      <main id={ mainContentId } tabindex="-1">
+        <slot />
+      </main>
+      <IconSprite />
+    </ConsentManagerProvider>
   </body>
 </html>
 

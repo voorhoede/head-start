@@ -1,3 +1,5 @@
+import { $consent, askConsent } from '@components/ConsentManager/ConsentManager.client';
+
 // Each video embed has its own video url (configured as data attribute),
 // so we use a custom element to porgressively enhance each instance:
 // @ see https://docs.astro.build/en/guides/client-side-scripts/#web-components-with-custom-elements
@@ -26,7 +28,19 @@ class VideoEmbed extends HTMLElement {
     }
     anchor.addEventListener('click', (event) => {
       event.preventDefault();
-      play({ focus: true });
+      const hasConsent = $consent.get()['third_party:video']; // ? play({ focus: true }) : askConsent('third_party:video');
+      console.log({ hasConsent });
+      if (hasConsent) {
+        play({ focus: true });
+      } else {
+        $consent.listen((consent, key) => {
+          if (key === 'third_party:video' && consent[key]) {
+            console.log('VideoEmbedBlock: consent granted');
+            play({ focus: true });
+          }
+        });
+        askConsent('third_party:video');
+      }
     });
     if (autoplay) {
       play({ focus: false });
