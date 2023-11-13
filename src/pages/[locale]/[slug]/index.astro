@@ -4,8 +4,8 @@ import type { SlugPathsQuery, PageQuery } from '../../../lib/types/datocms.d.ts'
 import slugPathsQuery from './paths.query.graphql';
 import pageQuery from './index.query.graphql';
 import Layout from '../../../layouts/Default.astro';
-import Blocks from '../../../blocks/Blocks.astro';import ShareButton from '../../../components/ShareButton/ShareButton.astro';
-import { setLocale } from '../../../lib/i18n';
+import Blocks from '../../../blocks/Blocks.astro';
+import ShareButton from '../../../components/ShareButton/ShareButton.astro';
 
 export async function getStaticPaths() {
   const data = await datocmsRequest<SlugPathsQuery>({ query: slugPathsQuery });
@@ -15,7 +15,7 @@ export async function getStaticPaths() {
   })));
 }
 
-const locale = setLocale(Astro.params.locale);
+const { locale } = Astro.params;
 const { page } = await datocmsRequest<PageQuery>({ query: pageQuery, variables: { locale, slug: Astro.params.slug } });
 const pageUrls = page._allSlugLocales.map(slug => ({ locale: slug.locale, pathname: `/${slug.locale}/${slug.value}/` }));
 ---
