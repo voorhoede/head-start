@@ -17,7 +17,9 @@
     "prep:icons": "svg-sprite --symbol --symbol-dest='src/assets' --symbol-sprite=icon-sprite.svg src/assets/icons/*.svg && jiti scripts/icon-types.ts",
     "preview": "wrangler pages dev ./dist",
     "start": "astro dev",
-    "lint": "eslint . --ext .js,.ts,.astro",
+    "lint": "run-s lint:* --print-label",
+    "lint:astro": "astro check",
+    "lint:eslint": "eslint . --ext .js,.ts,.astro",
     "post": "run-s post:* --print-label",
     "post:move-404-pages": "jiti scripts/move-404-pages.ts",
     "postinstall": "npx husky install"
@@ -57,6 +59,6 @@
     "wrangler": "^3.15.0"
   },
   "nano-staged": {
-    "*.{astro,js,ts}": "npm run lint -- --fix --max-warnings 0"
+    "*.{astro,js,ts}": "npm run lint:eslint -- --fix --max-warnings 0"
   }
 }
