@@ -45,6 +45,9 @@ a {
   content: "🟢";
   animation: pulseAnimation 2s infinite;
 }
+[data-status="error"]:before {
+  content: "🔴";
+}
 
 @keyframes pulseAnimation {
   0%   { opacity: 1; }

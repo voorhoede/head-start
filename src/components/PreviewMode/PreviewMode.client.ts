@@ -19,6 +19,7 @@ class PreviewMode extends HTMLElement {
   #datocmsToken: string = '';
   #datocmsEnvironment: string = '';
   $connections = map<Connection>({});
+  $connectionError = atom<boolean>(false);
   $connectionStatus = atom<ConnectionStatus>('closed');
   $updateCounts = map<{ [key: string]: number }>({});
 
@@ -52,10 +53,14 @@ class PreviewMode extends HTMLElement {
       }
     });
 
-    this.$connectionStatus.listen((status) => {
-      this.barElement.setStatus(status);
-    });
+    const updateBarStatus = () => {
+      const status = this.$connectionStatus.get();
+      const error = this.$connectionError.get();
+      this.barElement.setStatus(error ? 'error' : status);
+    };
 
+    this.$connectionStatus.listen(() => updateBarStatus());
+    this.$connectionError.listen(() => updateBarStatus());
     this.$updateCounts.listen((updateCounts) => {
       // each subscription directly triggers an update when connected,
       // so we wait for the second update to reload the page:
@@ -93,7 +98,8 @@ class PreviewMode extends HTMLElement {
         this.$connections.setKey(key, status);
       },
       onChannelError: (error) => {
-        console.log(key, error);
+        this.$connectionError.set(true);
+        console.error('PreviewMode subscription error:', { error, query, variables });
       },
     });
   }
@@ -104,7 +110,8 @@ class PreviewModeBar extends HTMLElement {
   #statusMessages: { [key in ConnectionStatus]: string } = {
     closed: 'CMS disconnected (refresh for updates)',
     connecting: 'CMS connecting ...',
-    connected: 'CMS connected, receiving live updates'
+    connected: 'CMS connected, receiving live updates',
+    error: 'CMS connection error (refresh for updates)',
   };
 
   constructor() {
