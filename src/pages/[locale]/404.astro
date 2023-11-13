@@ -3,7 +3,7 @@ import { datocmsRequest } from '../../lib/datocms';
 import type { NotFoundQuery } from '../../lib/types/datocms.d.ts';
 import query from './404.query.graphql';
 import Layout from '../../layouts/Default.astro';
-import { locales, setLocale } from '../../lib/i18n';
+import { locales } from '../../lib/i18n';
 import { noIndexTag, titleTag } from '../../lib/seo';
 
 export async function getStaticPaths() {
@@ -12,7 +12,7 @@ export async function getStaticPaths() {
   }));
 }
 
-const locale = setLocale(Astro.params.locale);
+const { locale } = Astro.params;
 const { page } = await datocmsRequest<NotFoundQuery>({ query, variables: { locale } });
 ---
 <Layout
