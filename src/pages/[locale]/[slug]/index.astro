@@ -1,13 +1,12 @@
 ---
-import { datocmsRequest } from '../../../lib/datocms';
-import type { SlugPathsQuery, PageQuery } from '../../../lib/types/datocms.d.ts';
+import { datocmsRequest } from '@lib/datocms';
+import type { SlugPathsQuery, SiteLocale, PageQuery } from '@lib/types/datocms';
 import slugPathsQuery from './paths.query.graphql';
 import query from './index.query.graphql';
-import Layout from '../../../layouts/Default.astro';
-import Blocks from '../../../blocks/Blocks.astro';
-import PreviewModeSubscription from '../../../components/PreviewMode/PreviewModeSubscription.astro';
-import ShareButton from '../../../components/ShareButton/ShareButton.astro';
-import { setLocale } from '../../../lib/i18n';
+import Layout from '@layouts/Default.astro';
+import Blocks from '@blocks/Blocks.astro';
+import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
+import ShareButton from '@components/ShareButton/ShareButton.astro';
 
 export async function getStaticPaths() {
   const data = await datocmsRequest<SlugPathsQuery>({ query: slugPathsQuery });
@@ -17,8 +16,13 @@ export async function getStaticPaths() {
   })));
 }
 
-const locale = setLocale(Astro.params.locale);
-const variables = { locale, slug: Astro.params.slug };
+type Params = {
+  locale: SiteLocale;
+  slug: string;
+}
+
+const { locale, slug } = Astro.params as Params;
+const variables = { locale, slug };
 const { page } = await datocmsRequest<PageQuery>({ query, variables });
 const pageUrls = page._allSlugLocales.map(slug => ({ locale: slug.locale, pathname: `/${slug.locale}/${slug.value}/` }));
 ---
