@@ -7,7 +7,7 @@ const location = new URL(Astro.request.url).pathname;
   <div>
     <input type="hidden" name="location" value={ location } />
     <label for="secret">Enter secret</label>
-    <input id="secret" type="text" name="secret" />
+    <input id="secret" type="text" name="secret" autocomplete="off" />
     <button type="submit">Enter preview mode</button>
   </div>
 </form>
