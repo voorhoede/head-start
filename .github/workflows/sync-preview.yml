@@ -1,0 +1,22 @@
+name: Sync branch
+
+on:
+  push:
+    branches:
+      # replace by `main` when working
+      - feat/preview-mode
+
+jobs:
+  sync-branch:
+    name: Sync preview branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Update preview branch
+        # replace by `preview` when working
+        run: |
+          git checkout preview-test
+          git merge feat/preview-mode
+          git push origin preview-test
