@@ -6,6 +6,10 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+
+    env:
+      DATOCMS_READONLY_API_TOKEN: ${{ secrets.DATOCMS_READONLY_API_TOKEN }}
+
     steps:
       - uses: actions/checkout@v3
 
@@ -23,6 +27,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Prepare setup
+        run: npm run prep
 
       - name: Lint Astro files
         run: npm run lint:astro

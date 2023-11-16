@@ -1,6 +1,7 @@
 ---
 import { datocmsRequest } from '@lib/datocms';
 import type { SlugPathsQuery, PageQuery, PageRecord, SiteLocale } from '@lib/types/datocms';
+import type { PageUrl } from '@lib/types/page-url';
 import slugPathsQuery from './paths.query.graphql';
 import pageQuery from './index.query.graphql';
 import Layout from '@layouts/Default.astro';
@@ -22,7 +23,7 @@ type Params = {
 
 const { locale } = Astro.params as Params;
 const { page } = await datocmsRequest<PageQuery>({ query: pageQuery, variables: { locale, slug: Astro.params.slug } }) as { page: PageRecord };
-const pageUrls = (page._allSlugLocales || []).map(slug => ({ locale: slug.locale, pathname: `/${slug.locale}/${slug.value}/` }));
+const pageUrls = (page._allSlugLocales || []).map(slug => ({ locale: slug.locale, pathname: `/${slug.locale}/${slug.value}/` })) as PageUrl[];
 ---
 
 <Layout 

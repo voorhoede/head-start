@@ -8,8 +8,7 @@ interface Props {
 
 const { content } = Astro.props;
 const node = content.value?.document;
-const blocks = content.blocks;
-const links = content.links;
+const { blocks = [], links = [] } = content;
 ---
 
 <Node {node} {blocks} {links} />

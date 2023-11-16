@@ -14,7 +14,6 @@ import {
   isSpan,
 } from 'datocms-structured-text-utils';
 import type { Node } from 'datocms-structured-text-utils';
-import type { TextBlockModelTextField } from '@lib/types/datocms';
 import Root from './Nodes/Root.astro';
 import Paragraph from './Nodes/Paragraph.astro';
 import Link from './Nodes/Link.astro';
@@ -26,8 +25,8 @@ import Span from './Nodes/Span.astro';
 import Code from './Nodes/Code.astro';
 interface Props {
   node: Node
-  blocks: string[]
-  links: TextBlockModelTextField[]
+  blocks: any[]
+  links: any[]
 }
 
 const { node, blocks, links } = Astro.props;
