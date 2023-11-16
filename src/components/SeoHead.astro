@@ -16,6 +16,7 @@ const titleTag = tags.find(tag => tag.tag === 'title');
 )}
 {
   metaTags.map(tag => (
+    // @ts-expect-error
     <DynamicTag as={tag.tag} { ...tag.attributes } />
   ))
 }

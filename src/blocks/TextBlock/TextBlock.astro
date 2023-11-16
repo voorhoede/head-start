@@ -8,4 +8,4 @@ interface Props {
 const { block } = Astro.props;
 ---
 
-<StructuredText content={block.text} />
+<StructuredText content={block.text as any} />
