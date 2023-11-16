@@ -13,9 +13,12 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
-
-      - uses: connor-baer/action-sync-branch@main
         with:
-          branch: test
-          token: ${{ secrets.GITHUB_TOKEN }}
-          force: false
+          fetch-depth: 0
+
+      - name: Update preview branch
+        # replace by `preview` when working
+        run: |
+          git checkout -B preview-test
+          git merge feat/preview-mode
+          git push origin preview-test
