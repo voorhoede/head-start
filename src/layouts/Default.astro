@@ -1,12 +1,12 @@
 ---
-import type { DefaultLayoutQuery, SiteLocale, Tag } from '../lib/types/datocms';
-import { datocmsRequest } from '../lib/datocms';
-import { setLocale } from '../lib/i18n';
+import type { DefaultLayoutQuery, SiteLocale, Tag } from '@lib/types/datocms';
+import { datocmsRequest } from '@lib/datocms';
+import { defaultLocale } from '@lib/i18n';
 import query from './default.query.graphql';
-import IconSprite from '../components/Icon/IconSprite.astro';
-import LocaleSelector from '../components/LocaleSelector/LocaleSelector.astro';
-import SeoHead from '../components/SeoHead.astro';
-import SkipLink from '../components/SkipLink/SkipLink.astro';
+import IconSprite from '@components/Icon/IconSprite.astro';
+import LocaleSelector from '@components/LocaleSelector/LocaleSelector.astro';
+import SeoHead from '@components/SeoHead.astro';
+import SkipLink from '@components/SkipLink/SkipLink.astro';
 
 type PageUrl = { 
   locale: SiteLocale, 
@@ -16,8 +16,11 @@ interface Props {
   pageUrls: PageUrl[];
   seoMetaTags: Tag[];
 }
+type Params = { 
+  locale?: SiteLocale
+};
 
-const locale = setLocale(Astro.params.locale);
+const { locale = defaultLocale } = Astro.params as Params;
 const data = await datocmsRequest<DefaultLayoutQuery>({ query, variables: { locale } });
 const { pageUrls, seoMetaTags } = Astro.props;
 const mainContentId = 'content';
