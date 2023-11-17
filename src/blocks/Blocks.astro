@@ -1,14 +1,9 @@
 ---
-import type { 
-  TableBlockFragment,
-  TextBlockFragment,
-  VideoEmbedBlockFragment,
-} from '@lib/types/datocms';
 import type { AnyBlock } from './Blocks';
+import ImageBlock from './ImageBlock/ImageBlock.astro';
 import TableBlock from './TableBlock/TableBlock.astro';
 import TextBlock from './TextBlock/TextBlock.astro';
 import VideoEmbedBlock from './VideoEmbedBlock/VideoEmbedBlock.astro';
-import ImageBlock from './ImageBlock/ImageBlock.astro';
 
 const blocksByTypename = {
   TableBlockRecord: TableBlock,
