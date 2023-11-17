@@ -22,6 +22,7 @@ const getPageHref = (locale) => {
 <locale-selector>
   <nav aria-labelledby="locale-selector-title">
     <span id="locale-selector-title">{ t('select_language') }</span>
+    <!-- [html-validate-disable-next no-redundant-role -- see ./README.md] -->
     <ul role="list" style="list-style: none;">
       { locales.map(locale => (
         <li>

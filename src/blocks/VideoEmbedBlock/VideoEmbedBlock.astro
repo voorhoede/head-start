@@ -95,7 +95,7 @@ function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; vide
         style={{ aspectRatio }}
       />
     </a>
-    <iframe hidden allowfullscreen allow="autoplay" style={{ aspectRatio }}></iframe>
+    <iframe hidden allowfullscreen allow="autoplay" title={ title } style={{ aspectRatio }}></iframe>
   </video-embed>
   <figcaption>
     <a href={video.url} target="_blank" rel="noopener noreferrer">
