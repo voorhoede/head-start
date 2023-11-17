@@ -1,20 +1,28 @@
 ---
-import type { DefaultLayoutQuery, Tag } from '../lib/types/datocms.d.ts';
-import { datocmsRequest } from '../lib/datocms';
-import { setLocale } from '../lib/i18n';
+import type { DefaultLayoutQuery, SiteLocale, Tag } from '@lib/types/datocms';
+import { datocmsRequest } from '@lib/datocms';
+import { defaultLocale } from '@lib/i18n';
 import query from './default.query.graphql';
-import { Sprite } from 'astro-icon'
-import LocaleSelector from '../components/LocaleSelector/LocaleSelector.astro';
-import SeoHead from '../components/SeoHead.astro';
-import SkipLink from '../components/SkipLink/SkipLink.astro';
+import IconSprite from '@components/Icon/IconSprite.astro';
+import LocaleSelector from '@components/LocaleSelector/LocaleSelector.astro';
+import SeoHead from '@components/SeoHead.astro';
+import SkipLink from '@components/SkipLink/SkipLink.astro';
 
+type PageUrl = { 
+  locale: SiteLocale, 
+  pathname: string,
+};
 interface Props {
+  pageUrls: PageUrl[];
   seoMetaTags: Tag[];
 }
+type Params = { 
+  locale?: SiteLocale
+};
 
-const locale = setLocale(Astro.params.locale);
+const { locale = defaultLocale } = Astro.params as Params;
 const data = await datocmsRequest<DefaultLayoutQuery>({ query, variables: { locale } });
-const { seoMetaTags } = Astro.props;
+const { pageUrls, seoMetaTags } = Astro.props;
 const mainContentId = 'content';
 ---
 
@@ -24,16 +32,20 @@ const mainContentId = 'content';
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <SeoHead tags={[...data.site.faviconMetaTags, ...seoMetaTags]} />
+    { pageUrls.map((pageUrl: PageUrl) => (
+      pageUrl.locale === locale
+        ? <link rel="canonical" href={ new URL(pageUrl.pathname, Astro.site) } />
+        : <link rel="alternate" href={ new URL(pageUrl.pathname, Astro.site) } hreflang={ pageUrl.locale } />
+    )) }
   </head>
   <body>
-    <Sprite.Provider>
-      <SkipLink targetId={ mainContentId } />
-      <LocaleSelector />
-      <!-- main element requires tabindex to be focusable, see SkipLink/README.md -->
-      <main id={ mainContentId } tabindex="-1">
-        <slot />
-      </main>
-    </Sprite.Provider>
+    <SkipLink targetId={ mainContentId } />
+    <LocaleSelector pageUrls={ pageUrls } />
+    <!-- main element requires tabindex to be focusable, see SkipLink/README.md -->
+    <main id={ mainContentId } tabindex="-1">
+      <slot />
+    </main>
+    <IconSprite />
   </body>
 </html>
 

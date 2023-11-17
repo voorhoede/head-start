@@ -3,6 +3,7 @@ import messages from './i18n.messages.json';
 
 export const locales = ['en', 'nl'];
 export const defaultLocale = locales[0];
+export const cookieName = 'HEAD_START_LOCALE';
 
 const i18n = rosetta(messages);
 i18n.locale(defaultLocale);
@@ -13,7 +14,9 @@ export function getLocale() {
   return i18n.locale();
 }
 
-export function setLocale(locale?: string) {
-  const newLocale = locale || defaultLocale;
-  return i18n.locale(newLocale);
+export function setLocale(locale: string = '') {
+  if (locales.includes(locale)) {
+    return i18n.locale(locale);
+  }
+  return i18n.locale();
 }
