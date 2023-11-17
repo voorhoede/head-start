@@ -1,10 +1,5 @@
 ---
-import type { 
-  ImageBlockFragment,
-  TableBlockFragment,
-  TextBlockFragment,
-  VideoEmbedBlockFragment,
-} from '../lib/types/datocms';
+import type { AnyBlock } from './Blocks';
 import ImageBlock from './ImageBlock/ImageBlock.astro';
 import TableBlock from './TableBlock/TableBlock.astro';
 import TextBlock from './TextBlock/TextBlock.astro';
@@ -16,12 +11,6 @@ const blocksByTypename = {
   TextBlockRecord: TextBlock,
   VideoEmbedBlockRecord: VideoEmbedBlock,
 };
-
-type AnyBlock = 
-  | ImageBlockFragment
-  | TableBlockFragment
-  | TextBlockFragment
-  | VideoEmbedBlockFragment;
 
 interface Props {
   blocks: AnyBlock[];
