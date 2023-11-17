@@ -1,0 +1,29 @@
+---
+import { InternalLinkFragment } from '../../lib/types/datocms';
+interface Props {
+  link: InternalLinkFragment;
+  openInNewTab?: boolean;
+}
+
+const { link, openInNewTab } = Astro.props;
+const locale = Astro.params.locale;
+const { title, page } = link;
+
+// Determine pathname based on record type
+const getHref = ({ locale, page }) => {
+  const pathname = {
+    HomeRecord: null,
+    PageRecord: null,
+  }[page.__typename];
+  
+  return `/${[
+    locale,
+    pathname,
+    page.slug,
+  ].filter(Boolean).join('/')}/`; };
+
+const href = getHref({ locale, page });
+const target = openInNewTab ? '_blank' : null;
+---
+
+<a href={href} {target}><slot>{title}</slot></a>
