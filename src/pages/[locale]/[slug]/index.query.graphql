@@ -1,4 +1,5 @@
-#import '@blocks/TableBlock/TableBlock.fragment.graphql'
+#import '@blocks/ImageBlock/ImageBlock.fragment.graphql
+#import '@blocks/TableBlock/TableBlock.fragment.graphql
 #import '@blocks/TextBlock/TextBlock.fragment.graphql'
 #import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
 
@@ -17,6 +18,9 @@ query Page($locale: SiteLocale!, $slug: String!) {
     }
     bodyBlocks {
       __typename
+      ... on ImageBlockRecord {
+        ...ImageBlock
+      }
       ... on TableBlockRecord {
         ...TableBlock
       }
