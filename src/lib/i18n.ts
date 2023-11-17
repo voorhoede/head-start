@@ -8,7 +8,7 @@ export const defaultLocale = locales[0];
 const i18n = rosetta(messages);
 i18n.locale(defaultLocale);
 
-export type T = typeof i18n.t & ((key: TranslationKey) => string);
+export type T = ((key: TranslationKey) => string);
 export const t: T = i18n.t.bind(i18n);
 
 export function getLocale() {
