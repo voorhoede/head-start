@@ -30,7 +30,7 @@ jobs:
         run: npm ci --ignore-scripts --no-audit --no-fund
 
       - name: Create production build
-        run: npm run prep
+        run: npm run build
 
       - name: Validate HTML of production build
         run: npm run lint:html
