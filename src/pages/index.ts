@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import parser from 'accept-language-parser';
-import { cookieName, defaultLocale, locales } from '../lib/i18n';
+import { cookieName, defaultLocale, locales } from '@lib/i18n';
 
 export const prerender = false;
 

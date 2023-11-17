@@ -1,17 +1,17 @@
 ---
-import { datocmsRequest } from '../../lib/datocms';
-import type { HomeQuery } from '../../lib/types/datocms';
+import { datocmsRequest } from '@lib/datocms';
+import type { HomeQuery } from '@lib/types/datocms';
 import homeQuery from './index.query.graphql';
-import Layout from '../../layouts/Default.astro';
-import Blocks from '../../blocks/Blocks.astro';
-import ShareButton from '../../components/ShareButton/ShareButton.astro';
-import { locales, setLocale } from '../../lib/i18n';
+import Layout from '@layouts/Default.astro';
+import Blocks from '@blocks/Blocks.astro';
+import ShareButton from '@components/ShareButton/ShareButton.astro';
+import { locales } from '@lib/i18n';
 
 export async function getStaticPaths() {
   return locales.map(locale => ({ params: { locale } }));
 }
 
-const locale = setLocale(Astro.params.locale);
+const { locale } = Astro.params;
 const { page } = await datocmsRequest<HomeQuery>({ query: homeQuery, variables: { locale } });
 const pageUrls = locales.map(locale => ({ locale, pathname: `/${locale}/` }));
 ---

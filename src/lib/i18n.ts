@@ -14,7 +14,9 @@ export function getLocale() {
   return i18n.locale();
 }
 
-export function setLocale(locale?: string) {
-  const newLocale = locale || defaultLocale;
-  return i18n.locale(newLocale);
+export function setLocale(locale: string = '') {
+  if (locales.includes(locale)) {
+    return i18n.locale(locale);
+  }
+  return i18n.locale();
 }
