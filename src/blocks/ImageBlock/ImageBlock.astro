@@ -12,12 +12,12 @@ const sharedImageAttributes = {
   alt: image.alt ? image.alt : '', // default to empty string for accessibility
   loading: 'lazy',
   'data-unavailable': t('image_unavailable'),
-}
+};
 ---
 
 <figure>
   {
-    Boolean(image.responsiveImage)
+    image.responsiveImage
       ? // bitmap images have Imgix generated props (responsiveImage.*):
       <img
         { ...sharedImageAttributes }

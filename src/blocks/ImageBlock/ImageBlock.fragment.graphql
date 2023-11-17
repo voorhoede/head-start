@@ -1,4 +1,5 @@
 fragment ImageBlock on ImageBlockRecord {
+  id
   image {
     alt
     title
