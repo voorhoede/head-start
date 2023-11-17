@@ -1,1 +1,1 @@
-export const datocmsEnvironment = 'required-pages';
+export const datocmsEnvironment = 'internal-links';

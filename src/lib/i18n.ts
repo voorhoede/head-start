@@ -4,6 +4,7 @@ import messages from './i18n.messages.json';
 
 export const locales: SiteLocale[] = ['en', 'nl'];
 export const defaultLocale = locales[0];
+export const cookieName = 'HEAD_START_LOCALE';
 
 const i18n = rosetta(messages);
 i18n.locale(defaultLocale);
