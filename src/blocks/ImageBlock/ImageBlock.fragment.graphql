@@ -1,17 +1,14 @@
 fragment ImageBlock on ImageBlockRecord {
+  id
   image {
     alt
     title
     width
     height
     url
-    responsiveImage(imgixParams: { auto: format, w: 1280 }) {
+    responsiveImage {
       aspectRatio
-      bgColor
       base64
-      src
-      srcSet
-      sizes
     }
   }
 }
