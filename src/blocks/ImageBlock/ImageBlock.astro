@@ -12,7 +12,7 @@ const sharedImageAttributes = {
   alt: image.alt ? image.alt : '', // default to empty string for accessibility
   loading: 'lazy',
   'data-unavailable': t('image_unavailable'),
-}
+};
 
 const defaultSizes = [1280, 960, 640, 320];
 const getImageSrc = (url, params = {}) => {
@@ -22,18 +22,18 @@ const getImageSrc = (url, params = {}) => {
     w: Math.max(...defaultSizes),
   };
   return new URL(`${url}?${new URLSearchParams({ ...defaults, ...params })}`);
-}
+};
 const getImageSrcSet = (url, sizes = defaultSizes, params = {}) => {
   return sizes.map((size) => {
     const src = getImageSrc(url, { ...params, w: size });
     return `${src} ${size}w`;
   }).join(', ');
-}
+};
 ---
 
 <figure>
   {
-    Boolean(image.responsiveImage)
+    image.responsiveImage
       ? // bitmap images have Imgix generated props (responsiveImage.*):
       <img
         { ...sharedImageAttributes }
