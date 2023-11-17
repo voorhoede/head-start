@@ -1,6 +1,6 @@
 ---
-import type { ImageBlockFragment } from '../../lib/types/datocms';
-import { t } from '../../lib/i18n';
+import type { ImageBlockFragment } from '@lib/types/datocms';
+import { t } from '@lib/i18n';
 
 interface Props {
   block: ImageBlockFragment
@@ -15,15 +15,18 @@ const sharedImageAttributes = {
 };
 
 const defaultSizes = [1280, 960, 640, 320];
-const getImageSrc = (url, params = {}) => {
-  const defaults = {
+const getImageSrc = (url: string, params: Record<string, number|string> = {}) => {
+  const defaults: Record<string, number|string> = {
     auto: 'format,compress',
     q: 80,
     w: Math.max(...defaultSizes),
   };
-  return new URL(`${url}?${new URLSearchParams({ ...defaults, ...params })}`);
+  const valuesToString = (obj: Record<string, number|string>) => {
+    return Object.entries(obj).reduce((acc, [key, value]) => ({ ...acc, [key]: value.toString() }), {});
+  };
+  return new URL(`${url}?${new URLSearchParams(valuesToString({ ...defaults, ...params })).toString()}`).toString();
 };
-const getImageSrcSet = (url, sizes = defaultSizes, params = {}) => {
+const getImageSrcSet = (url: string, sizes = defaultSizes, params = {}) => {
   return sizes.map((size) => {
     const src = getImageSrc(url, { ...params, w: size });
     return `${src} ${size}w`;
@@ -37,7 +40,7 @@ const getImageSrcSet = (url, sizes = defaultSizes, params = {}) => {
       ? // bitmap images have Imgix generated props (responsiveImage.*):
       <img
         { ...sharedImageAttributes }
-        srcSet={ getImageSrcSet(image.url) }
+        srcset={ getImageSrcSet(image.url) }
         src={ getImageSrc(image.url) }
         style={{
           aspectRatio: image.responsiveImage.aspectRatio,
