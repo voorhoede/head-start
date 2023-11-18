@@ -1,92 +1,12 @@
 ---
 import type { ImageBlockFragment } from '@lib/types/datocms';
-import { t } from '@lib/i18n';
+import Image from './Image.astro';
 
 interface Props {
   block: ImageBlockFragment
 }
 
 const { block } = Astro.props;
-const { image } = block;
-const sharedImageAttributes = {
-  alt: image.alt ? image.alt : '', // default to empty string for accessibility
-  loading: 'lazy',
-  'data-unavailable': t('image_unavailable'),
-};
-
-const defaultSizes = [1280, 960, 640, 320];
-const getImageSrc = (url: string, params: Record<string, number|string> = {}) => {
-  const defaults: Record<string, number|string> = {
-    auto: 'format,compress',
-    q: 80,
-    w: Math.max(...defaultSizes),
-  };
-  const valuesToString = (obj: Record<string, number|string>) => {
-    return Object.entries(obj).reduce((acc, [key, value]) => ({ ...acc, [key]: value.toString() }), {});
-  };
-  return new URL(`${url}?${new URLSearchParams(valuesToString({ ...defaults, ...params })).toString()}`).toString();
-};
-const getImageSrcSet = (url: string, sizes = defaultSizes, params = {}) => {
-  return sizes.map((size) => {
-    const src = getImageSrc(url, { ...params, w: size });
-    return `${src} ${size}w`;
-  }).join(', ');
-};
 ---
 
-<figure>
-  {
-    image.responsiveImage
-      ? // bitmap images have Imgix generated props (responsiveImage.*):
-      <img
-        { ...sharedImageAttributes }
-        srcset={ getImageSrcSet(image.url) }
-        src={ getImageSrc(image.url) }
-        style={{
-          aspectRatio: image.responsiveImage.aspectRatio,
-          backgroundImage: `url(${image.responsiveImage.base64})`
-        }}
-      />
-      : // vector images do not have Imgix generated props, so using as is:
-      <img 
-        { ...sharedImageAttributes }
-        src={ image.url } 
-        style={{
-          aspectRatio: `${image.width}/${image.height}`,
-        }}
-      />
-  }
-  { image.title && (
-    <figcaption>
-      { image.title }
-    </figcaption>
-  )}
-</figure>
-
-<style>
-img {
-  display: block;
-  width: 100%;
-  background-size: cover;
-}
-
-/**
- * broken image styling, only applies when image fails to load
- * @see https://bitsofco.de/styling-broken-images/
- */
- img {
-  position: relative;
-  text-align: center;
- }
- img:after {
-  content: attr(alt) " (" attr(data-unavailable) ")";
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  padding-top: calc(50% - 1em);
-  background-color: #f1f1f1;
- }
-</style>
+<Image image={ block.image } />
