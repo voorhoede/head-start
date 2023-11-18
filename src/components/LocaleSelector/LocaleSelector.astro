@@ -12,24 +12,28 @@ interface Props {
 }
 const { pageUrls } = Astro.props;
 
-const getPageHref = (locale:SiteLocale) => {
-  const pageUrl = pageUrls.find((pageUrl:PageUrl) => pageUrl.locale === locale);
+const getPageHref = (locale) => {
+  const pageUrl = pageUrls.find((pageUrl) => pageUrl.locale === locale);
   return pageUrl
     ? new URL(pageUrl.pathname, Astro.site)
     : new URL(`/${ locale }/`, Astro.site);
-}
+};
 ---
-<nav aria-labelledby="locale-selector-title">
-  <span id="locale-selector-title">{ t('select_language') }</span>
-  <ul role="list" style="list-style: none;">
-    { locales.map(locale => (
-      <li>
-        <a hreflang={ locale }
-          href={ getPageHref(locale as SiteLocale) }
-          aria-current={ locale === activeLocale ? 'page' : 'false' }>
-          { locale }
-        </a>
-      </li>
-    )) }
-  </ul>
-</nav>
+<locale-selector>
+  <nav aria-labelledby="locale-selector-title">
+    <span id="locale-selector-title">{ t('select_language') }</span>
+    <ul role="list" style="list-style: none;">
+      { locales.map(locale => (
+        <li>
+          <a hreflang={ locale }
+            href={ getPageHref(locale) }
+            aria-current={ locale === activeLocale ? 'page' : 'false' }>
+            { locale }
+          </a>
+        </li>
+      )) }
+    </ul>
+  </nav>
+</locale-selector>
+
+<script src="./LocaleSelector.client.ts"></script>
