@@ -3,8 +3,7 @@ name: Sync branch
 on:
   push:
     branches:
-      # replace by `main` when working
-      - feat/preview-mode
+      - main
 
 jobs:
   sync-branch:
@@ -17,8 +16,7 @@ jobs:
           fetch-depth: 0
 
       - name: Update preview branch
-        # replace by `preview` when working
         run: |
-          git checkout -B preview-test
-          git merge feat/preview-mode
-          git push origin preview-test
+          git checkout -B preview
+          git merge main
+          git push origin preview
