@@ -1,8 +1,6 @@
 # Use custom icon setup
 
-Use a custom icon setup using `svg-sprite` (and a `chokidar` watcher).
-
-Use the [`astro-icon`](https://github.com/natemoo-re/astro-icon) package for our icon setup.
+**Use a custom icon setup using `svg-sprite` (and a `chokidar` watcher).**
 
 - Date: 2023-11-07
 - Alternatives Considered: [`astro-icon`](https://github.com/natemoo-re/astro-icon) (incompabitle with Cloudflare Pages hybrid rendering)
