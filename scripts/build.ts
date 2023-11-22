@@ -30,7 +30,7 @@ async function notifyDatocms({ status }: { status: 'success' | 'error' }) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status }),
     });
-    console.log(`Notified DatoCMS of deploy status: ${ status }`);
+    console.log(`🔔 Notified DatoCMS of deploy status: ${ status }`);
   } catch (error) {
     console.error('Error trying to notify DatoCMS of deploy status', { status, error });
   }
