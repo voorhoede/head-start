@@ -14,11 +14,19 @@ const jsonResponse = (data: object, status: number = 200) => {
   });
 };
 
+/**
+ * Get search results using DatoCMS Site Search: https://www.datocms.com/docs/site-search
+ * URL query parameters:
+ * - locale: Site locale (required)
+ * - query: Search query (required)
+ * - fuzzy: Use fuzzy search? Use 'true'|'1'|'false'|'0' (optional, default: 'true')
+ */
 export const GET: APIRoute = async ({ request }) => {
   // Search parameters are handled as query parameters rather than path parameters,
   // so we can provide meaning error messages (400) rather than returning 404 responses.
   const params = Object.fromEntries(new URL(request.url).searchParams.entries()) as { fuzzy: string, locale: SiteLocale, query: string };
   const { locale, query } = params;
+  const fuzzy = !params.fuzzy || params.fuzzy === 'true' || params.fuzzy === '1';
   if (!locale) {
     return jsonResponse({ error: 'Missing \'locale\' parameter' }, 400);
   }
@@ -30,7 +38,7 @@ export const GET: APIRoute = async ({ request }) => {
   }
 
   try {
-    const results = await datocmsSearch({ locale, query, fuzzy: Boolean(params.fuzzy) });
+    const results = await datocmsSearch({ locale, query, fuzzy });
     return jsonResponse(results);
   } catch (error) {
     console.error('Error searching DatoCMS', error);
