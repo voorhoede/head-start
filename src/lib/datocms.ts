@@ -28,7 +28,7 @@ export const datocmsRequest = <T>({ query, variables = {} }: DatocmsRequestType)
     });
 };
 
-export const datocmsSearch = async({ locale, query, fuzzy }: { locale: SiteLocale, query: string, fuzzy: boolean }) => {
+export const datocmsSearch = async({ locale, query, fuzzy = true }: { locale: SiteLocale, query: string, fuzzy?: boolean }) => {
   const url = new URL('https://site-api.datocms.com/search-results');
   url.searchParams.set('locale', locale);
   url.searchParams.set('q', query); // DatoCMS docs say this should be 'query', but that results in a 422 error
