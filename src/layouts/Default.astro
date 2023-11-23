@@ -24,6 +24,7 @@ const { locale = defaultLocale } = Astro.params as Params;
 const data = await datocmsRequest<DefaultLayoutQuery>({ query, variables: { locale } });
 const { pageUrls, seoMetaTags } = Astro.props;
 const mainContentId = 'content';
+const datocmsNoIndex = { 'data-datocms-noindex': '' }; // https://www.datocms.com/docs/site-search/excluding-text
 ---
 
 <!DOCTYPE html>
@@ -39,12 +40,17 @@ const mainContentId = 'content';
     )) }
   </head>
   <body>
-    <SkipLink targetId={ mainContentId } />
-    <LocaleSelector pageUrls={ pageUrls } />
+    <header { ...datocmsNoIndex }>
+      <SkipLink targetId={ mainContentId } />
+      <LocaleSelector pageUrls={ pageUrls } />
+    </header>
     <!-- main element requires tabindex to be focusable, see SkipLink/README.md -->
     <main id={ mainContentId } tabindex="-1">
       <slot />
     </main>
+    <footer { ...datocmsNoIndex }>
+      <p>Footer</p>
+    </footer>
     <IconSprite />
   </body>
 </html>
