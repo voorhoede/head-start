@@ -19,8 +19,7 @@
     "start": "astro dev",
     "lint": "eslint . --ext .js,.ts,.astro",
     "post": "run-s post:* --print-label",
-    "post:move-404-pages": "jiti scripts/move-404-pages.ts",
-    "post:update-robots": "jiti scripts/update-robots.ts"
+    "post:move-404-pages": "jiti scripts/move-404-pages.ts"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^7.6.4",
