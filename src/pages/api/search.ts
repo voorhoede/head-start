@@ -43,8 +43,8 @@ export const GET: APIRoute = async ({ request }) => {
   }
 
   try {
-    const results = await datocmsSearch({ locale, query, fuzzy });
-    return jsonResponse(results);
+    const data = await datocmsSearch({ locale, query, fuzzy });
+    return jsonResponse({ data });
   } catch (error) {
     console.error('Error searching DatoCMS', error);
     return jsonResponse({ error: 'Error searching DatoCMS' }, 500);
