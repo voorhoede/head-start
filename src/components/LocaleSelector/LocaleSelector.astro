@@ -1,18 +1,16 @@
 ---
-import type { SiteLocale } from '@lib/types/datocms';
 import { getLocale, locales, t } from '@lib/i18n';
+import type { SiteLocale } from '@lib/types/datocms';
+import type { PageUrl } from '@lib/seo';
+
 const activeLocale = getLocale();
 
-type PageUrl = { 
-  locale: SiteLocale, 
-  pathname: string,
-};
 interface Props {
   pageUrls: PageUrl[],
 }
 const { pageUrls } = Astro.props;
 
-const getPageHref = (locale) => {
+const getPageHref = (locale: SiteLocale) => {
   const pageUrl = pageUrls.find((pageUrl) => pageUrl.locale === locale);
   return pageUrl
     ? new URL(pageUrl.pathname, Astro.site)
@@ -26,7 +24,7 @@ const getPageHref = (locale) => {
       { locales.map(locale => (
         <li>
           <a hreflang={ locale }
-            href={ getPageHref(locale) }
+            href={ getPageHref(locale as SiteLocale) }
             aria-current={ locale === activeLocale ? 'page' : 'false' }>
             { locale }
           </a>
