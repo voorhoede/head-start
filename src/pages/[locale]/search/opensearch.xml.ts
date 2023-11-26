@@ -13,7 +13,7 @@ export async function getStaticPaths() {
 
 const openSearchXml = (
   { shortName, description, favicons, language, resultsHtmlUrl, searchFormUrl }: 
-  { shortName: string, description: string, favicons: [] | [{ width: number, height: number, type: string, url: string }], language: string, resultsHtmlUrl: string, searchFormUrl: string }
+  { shortName: string, description: string, favicons: { width: number, height: number, type: string, url: string }[], language: string, resultsHtmlUrl: string, searchFormUrl: string }
 ) => /* xml */`
 
 <?xml version="1.0" encoding="UTF-8"?>

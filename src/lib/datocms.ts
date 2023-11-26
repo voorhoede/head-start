@@ -2,11 +2,34 @@ import 'astro/import-meta';
 import { print } from 'graphql/language/printer';
 import type { DocumentNode } from 'graphql';
 import type { SiteLocale } from '@lib/i18n.types';
+import { titleSuffix } from './seo';
 import { datocmsEnvironment } from '../../datocms-environment';
 
 type DatocmsRequestType = {
   query: DocumentNode;
   variables?: { [key: string]: string };
+};
+
+// src: https://github.com/datocms/react-datocms/blob/master/src/useSiteSearch/index.tsx#L29C1-L42C3
+type RawSearchResult = {
+  type: 'search_result';
+  id: string;
+  attributes: {
+    title: string;
+    body_excerpt: string;
+    url: string;
+    score: number;
+    highlight: {
+      title?: string[] | null;
+      body?: string[] | null;
+    };
+  };
+};
+type SearchResponse = {
+  data: RawSearchResult[];
+  meta: {
+    total_count: number;
+  };
 };
 
 export const datocmsRequest = <T>({ query, variables = {} }: DatocmsRequestType): Promise<T> => {
@@ -49,5 +72,28 @@ export const datocmsSearch = async({ locale, query, fuzzy = true }: { locale: Si
     throw new Error(`DatoCMS search API returned ${response.status} ${response.statusText}`);
   }
 
-  return response.json();
+  const { data, meta } = await response.json() as SearchResponse;
+
+  const results = data.map((result) => {
+    const { title, highlight, score, url } = result.attributes;
+    const markedTextPattern = /\[h\](.+?)\[\/h\]/g;
+    const matches = (highlight.body || []).map(bodyText => ({
+      matchingTerm: markedTextPattern.exec(bodyText)?.[1] || '',
+      markedText: bodyText.replace(markedTextPattern, (_: string, text: string) => `<mark>${text}</mark>`),
+    }));
+    const { pathname } = new URL(url);
+    // use Text Fragment for deeplinking: https://developer.mozilla.org/en-US/docs/Web/Text_fragments
+    const textFragmentUrl = `${url}#:~:${ matches.map(({ matchingTerm }) => `text=${encodeURIComponent(matchingTerm)}`).join('&')}`;
+
+    return {
+      title: title.replace(new RegExp(`${titleSuffix}$`), '').trim(),
+      matches,
+      score,
+      pathname,
+      textFragmentUrl,
+      url
+    };
+  });
+
+  return { meta, results };
 };

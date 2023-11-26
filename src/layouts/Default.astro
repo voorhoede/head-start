@@ -1,7 +1,8 @@
 ---
-import type { DefaultLayoutQuery, SiteLocale, Tag } from '@lib/types/datocms';
+import type { DefaultLayoutQuery, Site, SiteLocale, Tag } from '@lib/types/datocms';
 import { datocmsRequest } from '@lib/datocms';
 import { defaultLocale } from '@lib/i18n';
+import { getOpenSearchPathname } from '@lib/search';
 import query from './default.query.graphql';
 import IconSprite from '@components/Icon/IconSprite.astro';
 import LocaleSelector from '@components/LocaleSelector/LocaleSelector.astro';
@@ -21,7 +22,7 @@ type Params = {
 };
 
 const { locale = defaultLocale } = Astro.params as Params;
-const data = await datocmsRequest<DefaultLayoutQuery>({ query, variables: { locale } });
+const data = await datocmsRequest<DefaultLayoutQuery>({ query, variables: { locale } }) as { site: Site };
 const { pageUrls, seoMetaTags } = Astro.props;
 const mainContentId = 'content';
 const datocmsNoIndex = { 'data-datocms-noindex': '' }; // https://www.datocms.com/docs/site-search/excluding-text
@@ -39,8 +40,8 @@ const datocmsNoIndex = { 'data-datocms-noindex': '' }; // https://www.datocms.co
         : <link rel="alternate" href={ new URL(pageUrl.pathname, Astro.site) } hreflang={ pageUrl.locale } />
     )) }
     <link rel="search" type="application/opensearchdescription+xml"
-      title={ `${ data.site.globalSeo.siteName } (${ locale })` }
-      href={ `/${locale}/search/opensearch.xml` } />
+      title={ `${ data.site.globalSeo?.siteName } (${ locale })` }
+      href={ getOpenSearchPathname(locale) } />
   </head>
   <body>
     <header { ...datocmsNoIndex }>

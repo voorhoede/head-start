@@ -1,0 +1,34 @@
+---
+import DynamicTag from './DynamicTag.astro'
+
+type SearchResult = {
+  title: string
+  url: string
+  textFragmentUrl: string
+  matches: {
+    matchingTerm: string
+    markedText: string
+  }[]
+}
+interface Props {
+  item: SearchResult;
+  tag?: string;
+}
+const { item, tag = 'li' } = Astro.props;
+---
+
+<DynamicTag as={ tag }>
+  <h3>
+    <a href={ item.url }>
+      { item.title }
+    </a>
+  </h3>
+  <p>
+    ...
+    <Fragment set:html={item.matches.map(match => match.markedText).join(' ... ') } />
+    ...
+  </p>
+  <a href={ item.textFragmentUrl } rel="noopener">
+    { item.url }
+  </a>
+</DynamicTag>

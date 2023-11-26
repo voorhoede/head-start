@@ -13,6 +13,7 @@
     "dev:icons": "chokidar 'src/assets/icons/*.svg' -c 'npm run prep:icons'",
     "prep": "run-s prep:* --print-label",
     "prep:datocms-types": "graphql-codegen --config .graphqlrc.ts",
+    "prep:download-site-data": "jiti scripts/download-site-data.ts",
     "prep:download-translations": "jiti scripts/download-translations.ts",
     "prep:icons": "svg-sprite --symbol --symbol-dest='src/assets' --symbol-sprite=icon-sprite.svg src/assets/icons/*.svg && jiti scripts/icon-types.ts",
     "preview": "wrangler pages dev ./dist",

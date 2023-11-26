@@ -4,94 +4,33 @@ import { locales } from '@lib/i18n';
 import type { SiteLocale } from '@lib/i18n.types';
 import { noIndexTag, titleTag } from '@lib/seo';
 import { datocmsSearch } from '@lib/datocms';
+import { hasValidQuery, getSearchPathname } from '@lib/search';
+import SearchForm from '@components/SearchForm.astro';
+import SearchResult from '@components/SearchResult.astro';
 
 export const prerender = false;
 
-type Params = {
-  locale: SiteLocale;
-}
-const { locale } = Astro.params as Params;
+const { locale } = Astro.params as { locale: SiteLocale };
 const query = new URL(Astro.request.url).searchParams.get('q') || '';
-const minQueryLength = 3;
-const hasValidQuery = (query.length >= minQueryLength);
-const getSearchResults = async () => {
-  const { data: results } = await datocmsSearch({ locale, query });
-  return results
-    .map(({ attributes }) => ({
-      title: attributes.title,
-      texts: attributes.highlight.body.map((match: string) => {
-        return match.replace(/\[h\](.+?)\[\/h\]/g, (_: string, text: string) => text)
-      }),
-      markedTexts: attributes.highlight.body.map((match: string) => {
-        return match.replace(/\[h\](.+?)\[\/h\]/g, (_: string, text: string) => `<mark>${text}</mark>`)
-      }),
-      url: attributes.url,
-      score: attributes.score,
-    }))
-    .sort((a, b) => b.score - a.score);
-}
-const searchResults = hasValidQuery ? await getSearchResults() : [];
-
-// https://developer.mozilla.org/en-US/docs/Web/Text_fragments
-const getTextFragmentUrl = ({ url, query, texts }) => {
-  // const textStart = query;
-  // const [prefix, suffix] = texts[0].split(query);
-  // return `${url}#:~:text=${
-  //   [prefix, textStart, suffix]
-  //     .map(text => encodeURIComponent(text))
-  //     .join('-,')
-  // }`;
-  return `${url}#:~:text=${encodeURIComponent(query)}`;
-}
-
-const page = {
-  title: '[Search]',
-};
-const pageUrls = locales.map(locale => ({ locale, pathname: `/${locale}/search/` }));
+const { results } = hasValidQuery(query) ? await datocmsSearch({ locale, query }) : { results: [] };
+const page = { title: '[Search]' }; // TODO: localise or get from a CMS model
+const pageUrls = locales.map(locale => ({ locale, pathname: getSearchPathname(locale) }));
 ---
 <Layout 
   pageUrls={pageUrls}
   seoMetaTags={[ noIndexTag, titleTag(page.title) ]}
 >
   <h1>{ page.title }</h1>
-  <form method="GET" action={ Astro.request.url } role="search">
-    <label for="query">[Text]</label>
-    <input 
-      type="search" 
-      id="query" 
-      name="q" 
-      value={ query }
-      placeholder="[Query?]"
-      minlength={ minQueryLength }
-      required
-    />
-    <button type="submit">[Search]</button>
-  </form>
-  { hasValidQuery && (
+  <SearchForm query={ query } />
+  { hasValidQuery(query) && (
   <section>
     <h2>[Results]</h2>
-    { searchResults.length === 0
+    { results.length === 0
       ? <p>[No results]</p>
       : (
         <ol>
-          { searchResults.map((item) => (
-            <li>
-              <h3>
-                <a href={ item.url }>
-                  { item.title }
-                </a>
-              </h3>
-              <p>
-                ...
-                <Fragment set:html={item.markedTexts.join(' ... ') } />
-                ...
-              </p>
-              <a 
-                href={ getTextFragmentUrl({ url: item.url, query, texts: item.texts }) }
-                rel="noopener">
-                { item.url }
-              </a>
-            </li>
+          { results.map((item) => (
+            <SearchResult item={ item } />
           )) }
         </ol>
       )

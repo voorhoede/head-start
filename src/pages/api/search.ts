@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { locales } from '@lib/i18n';
 import type { SiteLocale } from '@lib/i18n.types';
 import { datocmsSearch } from '@lib/datocms';
+import { minQueryLength } from '@lib/search';
 
 export const prerender = false;
 
@@ -35,6 +36,9 @@ export const GET: APIRoute = async ({ request }) => {
   }
   if (!query) {
     return jsonResponse({ error: 'Missing \'query\' parameter' }, 400);
+  }
+  if (query.length < minQueryLength) {
+    return jsonResponse({ error: `Invalid 'query' parameter. Minimum length: ${minQueryLength}` }, 400);
   }
 
   try {

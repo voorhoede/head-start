@@ -1,0 +1,22 @@
+---
+import { minQueryLength, getSearchPathname } from '@lib/search';
+
+interface Props {
+  query: string;
+}
+const { query } = Astro.props;
+---
+
+<form method="GET" action={ getSearchPathname() } role="search">
+  <label for="query">[Text]</label>
+  <input 
+    type="search" 
+    id="query" 
+    name="q" 
+    value={ query }
+    placeholder="[Query?]"
+    minlength={ minQueryLength }
+    required
+  />
+  <button type="submit">[Search]</button>
+</form>
