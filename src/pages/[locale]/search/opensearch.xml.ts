@@ -2,8 +2,8 @@ import type { APIRoute } from 'astro';
 import { locales } from '@lib/i18n';
 import { datocmsRequest } from '@lib/datocms';
 import type { OpenSearchXmlQuery, Site } from '@lib/types/datocms';
+import { getSearchPathname, getOpenSearchName, queryParamName } from '@lib/search';
 import query from './opensearch.query.graphql';
-import packageJson from '@root/package.json';
 
 export const prerender = true;
 
@@ -19,7 +19,7 @@ const openSearchXml = (
 <?xml version="1.0" encoding="UTF-8"?>
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
                        xmlns:moz="http://www.mozilla.org/2006/browser/search/">
-  <ShortName>${ shortName } (${ language })</ShortName>
+  <ShortName>${ shortName }</ShortName>
   <Description>${ description }</Description>
   <InputEncoding>UTF-8</InputEncoding>
   ${ favicons.map(({ width, height, type, url }) => (
@@ -36,17 +36,17 @@ export const GET: APIRoute = async ({ params, site }) => {
   const locale = params.locale!;
   const data = await datocmsRequest<OpenSearchXmlQuery>({ query, variables: { locale } }) as { site: Site };
   const { favicon, globalSeo } = data.site;
-  const searchPageUrl = `${ site!.origin }/${ locale }/search/`;
+  const searchPageUrl = `${ site!.origin }${ getSearchPathname(locale) }`;
 
   return new Response(openSearchXml({
-    shortName: globalSeo?.siteName || packageJson.name,
+    shortName: getOpenSearchName(locale),
     description: globalSeo?.fallbackSeo?.description || '',
     favicons: favicon ? [
       { width: 64, height: 64, type: 'image/png', url: `${favicon.url}?fm=png&amp;w=64&amp;h=64` },
     ] : [],
     language: locale,
     searchFormUrl: searchPageUrl,
-    resultsHtmlUrl: `${ searchPageUrl }?query={searchTerms}`,
+    resultsHtmlUrl: `${ searchPageUrl }?${ queryParamName }={searchTerms}`,
   }), {
     headers: {
       'content-type': 'application/opensearchdescription+xml',

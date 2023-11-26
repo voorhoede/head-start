@@ -1,5 +1,5 @@
 ---
-import { minQueryLength, getSearchPathname } from '@lib/search';
+import { minQueryLength, getSearchPathname, queryParamName } from '@lib/search';
 
 interface Props {
   query: string;
@@ -12,7 +12,7 @@ const { query } = Astro.props;
   <input 
     type="search" 
     id="query" 
-    name="q" 
+    name={ queryParamName } 
     value={ query }
     placeholder="[Query?]"
     minlength={ minQueryLength }

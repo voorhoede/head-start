@@ -1,7 +1,6 @@
 query OpenSearchXml($locale: SiteLocale!) {
   site: _site(locale: $locale) {
     globalSeo {
-      siteName
       fallbackSeo {
         description
       }

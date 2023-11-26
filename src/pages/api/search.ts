@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { locales } from '@lib/i18n';
 import type { SiteLocale } from '@lib/i18n.types';
 import { datocmsSearch } from '@lib/datocms';
-import { minQueryLength } from '@lib/search';
+import { minQueryLength, queryParamName } from '@lib/search';
 
 export const prerender = false;
 
@@ -26,7 +26,8 @@ export const GET: APIRoute = async ({ request }) => {
   // Search parameters are handled as query parameters rather than path parameters,
   // so we can provide meaning error messages (400) rather than returning 404 responses.
   const params = Object.fromEntries(new URL(request.url).searchParams.entries()) as { fuzzy: string, locale: SiteLocale, query: string };
-  const { locale, query } = params;
+  const { locale } = params;
+  const query = params[queryParamName];
   const fuzzy = !params.fuzzy || params.fuzzy === 'true' || params.fuzzy === '1';
   if (!locale) {
     return jsonResponse({ error: 'Missing \'locale\' parameter' }, 400);
@@ -35,10 +36,10 @@ export const GET: APIRoute = async ({ request }) => {
     return jsonResponse({ error: `Invalid 'locale' parameter. Supported locales: '${locales.join('\', \'')}'` }, 400);
   }
   if (!query) {
-    return jsonResponse({ error: 'Missing \'query\' parameter' }, 400);
+    return jsonResponse({ error: `Missing '${queryParamName}' parameter` }, 400);
   }
   if (query.length < minQueryLength) {
-    return jsonResponse({ error: `Invalid 'query' parameter. Minimum length: ${minQueryLength}` }, 400);
+    return jsonResponse({ error: `Invalid '${queryParamName}' parameter. Minimum length: ${minQueryLength}` }, 400);
   }
 
   try {

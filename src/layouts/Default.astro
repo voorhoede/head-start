@@ -2,7 +2,7 @@
 import type { DefaultLayoutQuery, Site, SiteLocale, Tag } from '@lib/types/datocms';
 import { datocmsRequest } from '@lib/datocms';
 import { defaultLocale } from '@lib/i18n';
-import { getOpenSearchPathname } from '@lib/search';
+import { getOpenSearchName, getOpenSearchPathname } from '@lib/search';
 import query from './default.query.graphql';
 import IconSprite from '@components/Icon/IconSprite.astro';
 import LocaleSelector from '@components/LocaleSelector/LocaleSelector.astro';
@@ -40,7 +40,7 @@ const datocmsNoIndex = { 'data-datocms-noindex': '' }; // https://www.datocms.co
         : <link rel="alternate" href={ new URL(pageUrl.pathname, Astro.site) } hreflang={ pageUrl.locale } />
     )) }
     <link rel="search" type="application/opensearchdescription+xml"
-      title={ `${ data.site.globalSeo?.siteName } (${ locale })` }
+      title={ getOpenSearchName(locale) }
       href={ getOpenSearchPathname(locale) } />
   </head>
   <body>
