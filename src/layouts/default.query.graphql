@@ -1,5 +1,8 @@
 query DefaultLayout($locale: SiteLocale!) {
   site: _site(locale: $locale) {
+    globalSeo {
+      siteName
+    }
     faviconMetaTags(variants: [icon, appleTouchIcon, msApplication]) {
       tag
       attributes

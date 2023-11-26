@@ -38,6 +38,9 @@ const datocmsNoIndex = { 'data-datocms-noindex': '' }; // https://www.datocms.co
         ? <link rel="canonical" href={ new URL(pageUrl.pathname, Astro.site) } />
         : <link rel="alternate" href={ new URL(pageUrl.pathname, Astro.site) } hreflang={ pageUrl.locale } />
     )) }
+    <link rel="search" type="application/opensearchdescription+xml"
+      title={ `${ data.site.globalSeo.siteName } (${ locale })` }
+      href={ `/${locale}/search/opensearch.xml` } />
   </head>
   <body>
     <header { ...datocmsNoIndex }>
