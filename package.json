@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@astrojs/cloudflare": "^7.6.4",
+    "@astrojs/sitemap": "^3.0.3",
     "@rollup/plugin-graphql": "^2.0.3",
     "accept-language-parser": "^1.5.0",
     "astro": "^3.4.3",

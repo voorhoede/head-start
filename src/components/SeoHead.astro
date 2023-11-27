@@ -31,6 +31,8 @@ const titleTag = tags.find(tag => tag.tag === 'title');
     : <link rel="alternate" href={ new URL(pageUrl.pathname, Astro.site) } hreflang={ pageUrl.locale } />
 )) }
 
+<link rel="sitemap" href="/sitemap-index.xml" />
+
 <link rel="search" type="application/opensearchdescription+xml"
   title={ getOpenSearchName(locale) }
   href={ getOpenSearchPathname(locale) } />
