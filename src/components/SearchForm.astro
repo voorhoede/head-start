@@ -1,4 +1,5 @@
 ---
+import { t } from '@lib/i18n';
 import { minQueryLength, getSearchPathname, queryParamName } from '@lib/search';
 
 interface Props {
@@ -8,15 +9,15 @@ const { query } = Astro.props;
 ---
 
 <form method="GET" action={ getSearchPathname() } role="search">
-  <label for="query">[Text]</label>
+  <label for="query">{ t('search_label') }</label>
   <input 
     type="search" 
     id="query" 
     name={ queryParamName } 
     value={ query }
-    placeholder="[Query?]"
+    placeholder={ t('search_label') }
     minlength={ minQueryLength }
     required
   />
-  <button type="submit">[Search]</button>
+  <button type="submit">{ t('search') }</button>
 </form>

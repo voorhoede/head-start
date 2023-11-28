@@ -1,8 +1,8 @@
 ---
 import Layout from '@layouts/Default.astro';
-import { locales } from '@lib/i18n';
+import { locales, t } from '@lib/i18n';
 import type { SiteLocale } from '@lib/i18n.types';
-import { noIndexTag, titleTag } from '@lib/seo';
+import { noIndexTag, siteName, titleTag } from '@lib/seo';
 import { datocmsSearch } from '@lib/datocms';
 import { hasValidQuery, getSearchPathname, queryParamName } from '@lib/search';
 import SearchForm from '@components/SearchForm.astro';
@@ -13,28 +13,30 @@ export const prerender = false;
 const { locale } = Astro.params as { locale: SiteLocale };
 const query = new URL(Astro.request.url).searchParams.get(queryParamName) || '';
 const { results } = hasValidQuery(query) ? await datocmsSearch({ locale, query }) : { results: [] };
-const page = { title: '[Search]' }; // TODO: localise or get from a CMS model
+const hasResults = results.length > 0;
+const pageTitle = t('search_on_site', { siteName }); 
 const pageUrls = locales.map(locale => ({ locale, pathname: getSearchPathname(locale) + (query ? `?${queryParamName}=${query}` : '') }));
 ---
 <Layout 
   pageUrls={pageUrls}
-  seoMetaTags={[ noIndexTag, titleTag(page.title) ]}
+  seoMetaTags={[ noIndexTag, titleTag(pageTitle) ]}
 >
-  <h1>{ page.title }</h1>
+  <h1>{ pageTitle }</h1>
   <SearchForm query={ query } />
   { hasValidQuery(query) && (
   <section>
-    <h2>[Results]</h2>
-    { results.length === 0
-      ? <p>[No results]</p>
-      : (
-        <ol>
-          { results.map((item) => (
-            <SearchResult item={ item } />
-          )) }
-        </ol>
-      )
-    }
+    <h2>{ 
+      hasResults
+        ? t('search_results_for_query', { query }) 
+        : t('search_no_results_for_query', { query })
+    }</h2>
+    { hasResults && (
+      <ol>
+        { results.map((item) => (
+          <SearchResult item={ item } />
+        )) }
+      </ol>
+    ) }
   </section>
   )}
 </Layout>
