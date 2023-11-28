@@ -14,7 +14,7 @@ const { locale } = Astro.params as { locale: SiteLocale };
 const query = new URL(Astro.request.url).searchParams.get(queryParamName) || '';
 const { results } = hasValidQuery(query) ? await datocmsSearch({ locale, query }) : { results: [] };
 const page = { title: '[Search]' }; // TODO: localise or get from a CMS model
-const pageUrls = locales.map(locale => ({ locale, pathname: getSearchPathname(locale) }));
+const pageUrls = locales.map(locale => ({ locale, pathname: getSearchPathname(locale) + (query ? `?${queryParamName}=${query}` : '') }));
 ---
 <Layout 
   pageUrls={pageUrls}
