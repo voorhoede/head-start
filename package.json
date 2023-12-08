@@ -24,11 +24,11 @@
     "post:move-404-pages": "jiti scripts/move-404-pages.ts"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^7.6.4",
+    "@astrojs/cloudflare": "^8.0.0",
     "@astrojs/sitemap": "^3.0.3",
     "@rollup/plugin-graphql": "^2.0.3",
     "accept-language-parser": "^1.5.0",
-    "astro": "^3.4.3",
+    "astro": "^4.0.3",
     "datocms-structured-text-utils": "^2.0.4",
     "globby": "^13.2.2",
     "jiti": "^1.20.0",
