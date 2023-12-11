@@ -1,0 +1,13 @@
+---
+import type { PagePartialBlockFragment } from '@lib/types/datocms';
+import Blocks from '@blocks/Blocks.astro';
+
+interface Props {
+block: PagePartialBlockFragment
+}
+const { block } = Astro.props;
+---
+
+{ block.items.map(item => (
+  <Blocks blocks={ item.blocks } />
+))}
