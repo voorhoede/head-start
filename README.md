@@ -62,6 +62,7 @@ flowchart LR
 
 All documentation is located in [`docs/`](docs/):
 
+- [CMS Content Modelling](docs/cms-content-modelling.md)
 - [Internationalization (i18n)](docs/i18n.md)
 - [Project Structure](docs/project-structure.md)
 
