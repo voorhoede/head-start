@@ -1,0 +1,13 @@
+fragment InternalLink on InternalLinkRecord {
+  title
+  page {
+    __typename
+    ... on PageRecord {
+      title
+      slug
+    }
+    ... on HomeRecord {
+      title
+    }
+  }
+}

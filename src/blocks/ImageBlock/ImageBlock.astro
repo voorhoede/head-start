@@ -1,0 +1,12 @@
+---
+import type { ImageBlockFragment } from '@lib/types/datocms';
+import Image from './Image.astro';
+
+interface Props {
+  block: ImageBlockFragment
+}
+
+const { block } = Astro.props;
+---
+
+<Image image={ block.image } />

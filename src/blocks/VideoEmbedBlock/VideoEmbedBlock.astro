@@ -1,0 +1,184 @@
+---
+import type { VideoEmbedBlockFragment, VideoField } from '@lib/types/datocms';
+import { t } from '@lib/i18n';
+import Icon from '@components/Icon';
+
+interface Props {
+  block: VideoEmbedBlockFragment
+}
+const { block } = Astro.props;
+const { autoplay, loop, mute, video } = block;
+const aspectRatio = `${video.width} / ${video.height}`;
+const title = block.title || video.title;
+const providerName = { youtube: "YouTube", vimeo: "Vimeo" }[video.provider] || video.provider;
+
+function getImageSrcSet({ video }: { video: VideoField }) {
+  switch (video.provider) {
+    case "youtube":
+      // YouTube has a fixed set of predefined thumbnail sizes available:
+      return [
+        `https://img.youtube.com/vi/${video.providerUid}/maxresdefault.jpg 1280w`,
+        `https://img.youtube.com/vi/${video.providerUid}/sddefault.jpg 640w`,
+        `https://img.youtube.com/vi/${video.providerUid}/hqdefault.jpg 480w`,
+        `https://img.youtube.com/vi/${video.providerUid}/mqdefault.jpg 320w`,
+      ].join(", ");
+    case "vimeo":
+      // Vimeo can generate thumbnails at any size. We'll match the YouTube sizes:
+      const sizeRegex = /_\d+(x\d+)?(\.\w+)?$/ // match _123(.ext) and _123x123(.ext)
+      return [1280, 640, 480, 320].map(size => {
+        const url =  video.thumbnailUrl.replace(sizeRegex, `_${size}.jpg`);
+        return `${url} ${size}w`;
+      }).join(', ');
+    default:
+      return video.thumbnailUrl;
+  }
+}
+
+function getImageUrl({ video }: { video: VideoField }) {
+  switch (video.provider) {
+    case "youtube":
+      return `https://img.youtube.com/vi/${video.providerUid}/maxresdefault.jpg`;
+    case "vimeo":
+      const sizeRegex = /_\d+(x\d+)?(\.\w+)?$/ // match _123(.ext) and _123x123(.ext)
+      return video.thumbnailUrl.replace(sizeRegex, `_1280.jpg`);
+    default:
+      return video.thumbnailUrl;
+  }
+}
+
+function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; video: VideoField }) {
+  // the video only loads if block.autoplay is true or user clicks the thumbnail
+  // so in any case the autoplay option in the video url should always be true:
+  const autoplay = true;
+  const binaryBoolean = (value: boolean) => (value ? 1 : 0);
+  switch (video.provider) {
+    case "youtube":
+      return new URL(
+        `https://www.youtube.com/embed/${
+          video.providerUid
+        }?${new URLSearchParams({
+          autoplay: binaryBoolean(autoplay),
+          mute: binaryBoolean(mute),
+          loop: binaryBoolean(loop),
+          playlist: video.providerUid,
+        })}`
+      ).toString();
+      return url;
+    case "vimeo":
+      return new URL(
+        `https://player.vimeo.com/video/${
+          video.providerUid
+        }?${new URLSearchParams({
+          autoplay: binaryBoolean(autoplay),
+          muted: binaryBoolean(mute),
+          loop: binaryBoolean(loop),
+        })}`
+      ).toString();
+    default:
+      return video.url;
+  }
+}
+---
+
+<figure>
+  <video-embed
+      data-autoplay={autoplay ? "true" : undefined}
+      data-video-url={getVideoUrl({ loop, mute, video })}
+      style={{ aspectRatio }}
+    >
+    <a href={video.url} target="_blank" rel="noopener noreferrer">
+      <img
+        alt={t('play_video_title', { title }) }
+        loading="lazy"
+        src={getImageUrl({ video })}
+        srcset={getImageSrcSet({ video })}
+        style={{ aspectRatio }}
+      />
+    </a>
+    <iframe hidden allowfullscreen allow="autoplay" style={{ aspectRatio }}></iframe>
+  </video-embed>
+  <figcaption>
+    <a href={video.url} target="_blank" rel="noopener noreferrer">
+      {title} ({t('watch_video_on_provider', { provider: providerName }) }) <Icon name="external" />
+    </a>
+  </figcaption>
+</figure>
+
+<script src="./VideoEmbedBlock.client.ts"></script>
+
+<style>
+  /* functional styling */
+  video-embed {
+    display: block;
+    position: relative;
+    width: 100%;
+    background-color: #f1f1f1;
+  }
+  img {
+    position: absolute;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  iframe {
+    position: absolute;
+    z-index: 3;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  /* basic styling, can be removed */
+  figcaption {
+    text-align: center;
+  }
+
+  [data-icon="external"] {
+    width: 1em;
+    height: 1em;
+    margin-left: 0.5em;
+    vertical-align: middle;
+  }
+
+  /* play icon using pseudo elements */
+  video-embed a::before {
+    --circle-radius: 30px;
+    content: "";
+    display: block;
+    position: absolute;
+    z-index: 1;
+    left: calc(50% - var(--circle-radius));
+    top: calc(50% - var(--circle-radius));
+    width: calc(var(--circle-radius) * 2);
+    height: calc(var(--circle-radius) * 2);
+    border-radius: var(--circle-radius);
+    background-color: black;
+    opacity: 0.8;
+  }
+  video-embed a::after {
+    --triangle-width: 20px;
+    content: "";
+    display: block;
+    position: absolute;
+    z-index: 2;
+    left: calc(50% - var(--triangle-width) * 0.4);
+    top: calc(50% - var(--triangle-width) * 0.5);
+    width: 0;
+    height: 0;
+    border-top: calc(var(--triangle-width) * 0.5) solid transparent;
+    border-bottom: calc(var(--triangle-width) * 0.5) solid transparent;
+    border-left: var(--triangle-width) solid white;
+  }
+  video-embed a::before,
+  video-embed a::after {
+    transform: scale(1);
+    transition: transform 0.2s ease-in-out;
+  }
+  video-embed a:hover::before,
+  video-embed a:hover::after,
+  video-embed a:focus::before,
+  video-embed a:focus::after {
+    transform: scale(1.5);
+  }
+</style>

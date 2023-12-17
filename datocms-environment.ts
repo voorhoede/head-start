@@ -1,1 +1,1 @@
-export const datocmsEnvironment = 'blocks';
+export const datocmsEnvironment = 'internal-links';
