@@ -3,4 +3,6 @@ fragment TableBlock on TableBlockRecord {
   id
   title
   table
+  hasHeaderRow
+  hasHeaderColumn
 }

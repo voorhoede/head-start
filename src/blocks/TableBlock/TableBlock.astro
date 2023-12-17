@@ -1,59 +1,88 @@
 ---
 import type { TableBlockFragment } from '@lib/types/datocms';
+import DynamicTag from '@components/DynamicTag.astro';
 
+type TableRow = {
+  [key: string]: string
+}
+type Table = {
+  columns: string[],
+  data: TableRow[]
+}
+type Block = Omit<TableBlockFragment, 'table'> & {
+  table: Table
+}
 type Props = {
-  block: TableBlockFragment
+  block: Block 
 };
 const { block } = Astro.props;
 const { id, title, table, hasHeaderRow, hasHeaderColumn } = block;
 
-const htmlId = (id: string) => `b-${id}`; // ensure HTML ID is valid by starting with a letter
 const isNumeric = (value: string) => !isNaN(Number(value.replace('%','')));
 ---
-<table id={htmlId(id)}>
+<div class="component">
   { title && (
-    <caption>{title}</caption> 
+    <figcaption>{title}</figcaption> 
   )}
-  { hasHeaderRow && (
-    <thead>
-      <tr>
-        {table.columns.map((value: string) => (
-          <th>{value}</th>
+  <div class="canvas">
+    <table>
+      { hasHeaderRow && (
+        <thead>
+          <tr>
+            {table.columns.map((value: string) => (
+              <th>{value}</th>
+            ))}
+          </tr>
+        </thead>
+      )}
+      <tbody>
+        {table.data.map(row => (
+          <tr>
+            {Object.values(row).map((value, index) => (
+              <DynamicTag
+                as={ hasHeaderColumn && index === 0 ? 'th' : 'td'}
+                class={ isNumeric(value) ? 'value--numeric' : 'value--text' }
+              >
+                {value}
+              </DynamicTag> 
+            ))}
+          </tr>
         ))}
-      </tr>
-    </thead>
-  )}
-  <tbody>
-    {table.data.map(row => (
-      <tr>
-        {Object.values(row).map((value, index) => (
-          <DynamicTag
-            as={ hasHeaderColumn && index === 0 ? 'th' : 'td'}
-            class={ isNumeric(value) ? 'value--numeric' : 'value--text' }
-          >
-            {value}
-          </DynamicTag> 
-        ))}
-      </tr>
-    ))}
-  </tbody>
-</table>
+      </tbody>
+    </table>
+  </div>
+</figure>
 
 <style>
+  .component {
+    display: flex;
+    flex-direction: column-reverse;
+    --background-color: white;
+    --border-color: black;
+  }
+
+  .canvas {
+    /**
+     * To do: solve combination of sticky headers and horizontal scrolling, like done on:
+     * - https://uxdesign.cc/position-stuck-96c9f55d9526
+     * - https://codepen.io/dannievinther/pen/pGdjPV
+     */
+    /* overflow-x: auto; */
+  }
   table {
     width: 100%;
+    max-width: 100%;
     table-layout: fixed;
     border-spacing: 0;
     border-collapse: separate;
   }
 
-  caption {
-    caption-side: bottom;
+  figcaption {
     margin: 1em;
   }
 
   th, td {
-    background: white;
+    background: var(--background-color);
     padding: .5em;
   }
   thead th {
@@ -61,17 +90,17 @@ const isNumeric = (value: string) => !isNaN(Number(value.replace('%','')));
     width: 25vw;
     top: 0;
     z-index: 1;
-    border-bottom: 3px solid black;
+    border-bottom: 3px solid var(--border-color);
   }
   tbody tr:not(:last-child) th,
   tbody tr:not(:last-child) td {
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid var(--border-color);
   }
   thead th:first-child,
   tbody th {
     position: sticky;
     left: 0;
-    border-right: 3px solid black;
+    border-right: 3px solid var(--border-color);
   }
   thead th:first-child {
     z-index: 2;

@@ -1,1 +1,1 @@
-export const datocmsEnvironment = 'internal-links';
+export const datocmsEnvironment = 'nested-pages';
