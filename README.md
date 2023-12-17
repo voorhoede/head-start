@@ -8,8 +8,11 @@
 - Provide a pre-defined setup for composable pages with common components.
 - Provide pre-configured services like a CMS and deployment platform.
 - Support common needs like internationalisation (i18n), SEO, redirects and analytics.
-- Provide functional interactivity without specific styling ("unstyled").
+- Provide functional interactivity without a JS framework (React, Vue, Svelte, etc)*.
+- Provide functional interactivity without specific styling ("unstyled")*. 
 - Provide a fully accessible and highly performant baseline for every project.
+
+\* We'll leave the choice for a JS framework and strategy for styling to developers using Head Start for their project.
 
 ## Architecture
 
@@ -77,3 +80,7 @@ All commands are run from the root of the project, from a terminal:
 | `astro ...`             | Run CLI commands like `astro add`, `astro check`
 | `astro -- --help`       | Get help using the Astro CLI
 | `lint`                  | Check code style (add `-- --fix` to fix issues)
+
+## Contributing
+
+Head Start welcomes contributions of any size and skill level. See [our contribution guidelines](./.github/CONTRIBUTING.md).
