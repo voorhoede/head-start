@@ -50,6 +50,13 @@ npx datocms migrations:run --destination=start --fast-fork
 npx datocms environments:promote start
 ```
 
+- Update `datocms-environment` to the new environment:
+
+```ts
+// datocms-environment.ts:
+export const datocmsEnvironment = 'start';
+```
+
 You can now run your project locally:
 
 ```bash
