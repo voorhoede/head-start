@@ -7,6 +7,11 @@
     "prebuild": "run-s prep",
     "build": "astro build",
     "postbuild": "npm run post",
+    "create": "plop --plopfile config/plop/plopfile.mjs",
+    "create:api": "plop --plopfile config/plop/plopfile.mjs api",
+    "create:block": "plop --plopfile config/plop/plopfile.mjs block",
+    "create:component": "plop --plopfile config/plop/plopfile.mjs component",
+    "create:page": "plop --plopfile config/plop/plopfile.mjs page",
     "predev": "run-s prep",
     "dev": "run-p dev:* --print-label",
     "dev:astro": "astro dev",
@@ -24,11 +29,11 @@
     "post:move-404-pages": "jiti scripts/move-404-pages.ts"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^7.6.4",
+    "@astrojs/cloudflare": "^8.0.0",
     "@astrojs/sitemap": "^3.0.3",
     "@rollup/plugin-graphql": "^2.0.3",
     "accept-language-parser": "^1.5.0",
-    "astro": "^3.4.3",
+    "astro": "^4.0.3",
     "datocms-structured-text-utils": "^2.0.4",
     "globby": "^13.2.2",
     "jiti": "^1.20.0",
@@ -55,6 +60,7 @@
     "eslint-plugin-astro": "^0.29.0",
     "eventsource": "^2.0.2",
     "npm-run-all": "^4.1.5",
+    "plop": "^4.0.0",
     "svg-sprite": "^2.0.2",
     "wrangler": "^3.15.0"
   }

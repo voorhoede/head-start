@@ -70,9 +70,9 @@ import { isBlock, isInlineItem, isItemLink } from 'datocms-structured-text-utils
 
 import StructuredText from '@components/StructuredText/StructuredText.astro';
 
-import Block from './Block.svelte';
-import InlineItem from './InlineItem.svelte';
-import ItemLink from './ItemLink.svelte';
+import Block from './Block.astro';
+import InlineItem from './InlineItem.astro';
+import ItemLink from './ItemLink.astro';
 
 const query = `
   query {
