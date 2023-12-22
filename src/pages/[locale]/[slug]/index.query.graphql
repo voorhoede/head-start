@@ -1,7 +1,8 @@
-#import '@blocks/ImageBlock/ImageBlock.fragment.graphql
-#import '@blocks/TableBlock/TableBlock.fragment.graphql
-#import '@blocks/TextBlock/TextBlock.fragment.graphql'
-#import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
+#import @blocks/ImageBlock/ImageBlock.fragment.graphql
+#import @blocks/TableBlock/TableBlock.fragment.graphql
+#import @blocks/TextBlock/TextBlock.fragment.graphql
+#import @blocks/TextImageBlock/TextImageBlock.fragment.graphql
+#import @blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql
 
 query Page($locale: SiteLocale!, $slug: String!) {
   page(locale: $locale, filter: { slug: { eq: $slug } }) {
@@ -26,6 +27,9 @@ query Page($locale: SiteLocale!, $slug: String!) {
       }
       ... on TextBlockRecord {
         ...TextBlock
+      }
+      ... on TextImageBlockRecord {
+        ...TextImageBlock
       }
       ... on VideoEmbedBlockRecord {
         ...VideoEmbedBlock
