@@ -78,4 +78,5 @@ All commands are run from the root of the project, from a terminal:
 | `preview`               | Preview your build locally, before deploying
 | `astro ...`             | Run CLI commands like `astro add`, `astro check`
 | `astro -- --help`       | Get help using the Astro CLI
+| `create`                | Scaffold new Block, Component, API or Page route
 | `lint`                  | Check code style (add `-- --fix` to fix issues)
