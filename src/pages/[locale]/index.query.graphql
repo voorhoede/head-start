@@ -2,6 +2,7 @@
 #import '@blocks/PagePartialBlock/PagePartialBlock.fragment.graphql'
 #import '@blocks/TableBlock/TableBlock.fragment.graphql'
 #import '@blocks/TextBlock/TextBlock.fragment.graphql'
+#import '@blocks/TextImageBlock/TextImageBlock.fragment.graphql'
 #import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
 
 query Home($locale: SiteLocale!) {
@@ -25,6 +26,9 @@ query Home($locale: SiteLocale!) {
       }
       ... on TextBlockRecord {
         ...TextBlock
+      }
+      ... on TextImageBlockRecord {
+        ...TextImageBlock
       }
       ... on VideoEmbedBlockRecord {
         ...VideoEmbedBlock

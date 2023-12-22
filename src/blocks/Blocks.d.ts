@@ -3,6 +3,7 @@ import {
   PagePartialBlockFragment,
   TableBlockFragment,
   TextBlockFragment,
+  TextImageBlockFragment,
   VideoEmbedBlockFragment,
 } from '@lib/types/datocms';
 
@@ -11,4 +12,5 @@ export type AnyBlock =
   | PagePartialBlockFragment
   | TableBlockFragment
   | TextBlockFragment
+  | TextImageBlockFragment
   | VideoEmbedBlockFragment;
