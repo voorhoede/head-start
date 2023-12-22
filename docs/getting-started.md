@@ -41,6 +41,9 @@ DATOCMS_READONLY_API_TOKEN=copy-read-only-token
 DATOCMS_API_TOKEN=copy-full-access-token
 ```
 
+> [!WARNING]
+> Migrations in Head Start have an [outstanding issue](https://github.com/voorhoede/head-start/issues/62). For now, use 'Duplicate project' in the DatoCMS projects dashboard instead.
+
 - Add all models and settings in to your new CMS by running our [migrations](../config/datocms/migrations/) in a new [environment](https://www.datocms.com/docs/scripting-migrations/introduction) called `start` using the DatoCMS CLI: `npx datocms migrations:run --destination=start --fast-fork`.
 - Promote the new `start` environment to primary environment: `npx datocms environments:promote start` Alternatively you can go to Project Settings > Environments (`/project_settings/environments`) and 'Promote' the `start` environment to primary.
 - In your CMS, you can now safely remove the original environment via Project Settings > Environments (`/project_settings/environments`).
