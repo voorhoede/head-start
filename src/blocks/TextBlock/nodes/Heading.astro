@@ -1,0 +1,17 @@
+---
+import type { Heading } from 'datocms-structured-text-utils';
+
+interface Props {
+  node: Heading;
+}
+
+const { node } = Astro.props;
+
+// H1 is reserved for the page title, so we start at H2
+const minimumLevel = 2;
+const defaultLevel = 2;
+const level = Math.max(minimumLevel, (node.level || defaultLevel));
+
+const Tag = `h${level}`;
+---
+<Tag><slot /></Tag>

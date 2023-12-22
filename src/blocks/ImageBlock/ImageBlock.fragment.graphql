@@ -1,3 +1,14 @@
 fragment ImageBlock on ImageBlockRecord {
   id
+  image {
+    alt
+    title
+    width
+    height
+    url
+    responsiveImage {
+      aspectRatio
+      base64
+    }
+  }
 }

@@ -1,14 +1,18 @@
 ---
 import type { AnyBlock } from './Blocks';
 import ImageBlock from './ImageBlock/ImageBlock.astro';
+import PagePartialBlock from './PagePartialBlock/PagePartialBlock.astro';
 import TableBlock from './TableBlock/TableBlock.astro';
 import TextBlock from './TextBlock/TextBlock.astro';
+import TextImageBlock from './TextImageBlock/TextImageBlock.astro';
 import VideoEmbedBlock from './VideoEmbedBlock/VideoEmbedBlock.astro';
 
 const blocksByTypename = {
   ImageBlockRecord: ImageBlock,
+  PagePartialBlockRecord: PagePartialBlock,
   TableBlockRecord: TableBlock,
   TextBlockRecord: TextBlock,
+  TextImageBlockRecord: TextImageBlock,
   VideoEmbedBlockRecord: VideoEmbedBlock,
 };
 
@@ -21,7 +25,6 @@ const { blocks } = Astro.props;
   const typename = block.__typename as keyof typeof blocksByTypename;
   const Block = blocksByTypename[typename];
   return Block
-  // @ts-expect-error
     ? <Block block={ block } />
     : <script define:vars={{ typename }} is:inline>
         console.log(`No Block found for "${typename}"`);

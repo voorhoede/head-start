@@ -34,6 +34,7 @@ const mainContentId = 'content';
         ? <link rel="canonical" href={ new URL(pageUrl.pathname, Astro.site) } />
         : <link rel="alternate" href={ new URL(pageUrl.pathname, Astro.site) } hreflang={ pageUrl.locale } />
     )) }
+    <link rel="sitemap" href="/sitemap-index.xml" />
   </head>
   <body>
     <SkipLink targetId={ mainContentId } />
@@ -47,6 +48,11 @@ const mainContentId = 'content';
 </html>
 
 <style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
   main {
     margin: auto;
     padding: 1rem;

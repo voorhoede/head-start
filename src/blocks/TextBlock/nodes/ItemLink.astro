@@ -1,0 +1,10 @@
+---
+import InternalLink from '@blocks/InternalLink/InternalLink.astro';
+
+const { node, link } = Astro.props;
+const openInNewTab = node.meta?.find(entry => entry.id === 'target' && entry.value === '_blank');
+---
+
+<InternalLink link={link} {openInNewTab}>
+  <slot />
+</InternalLink>
