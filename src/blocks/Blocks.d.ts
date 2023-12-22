@@ -1,5 +1,6 @@
 import { 
   ImageBlockFragment,
+  PagePartialBlockFragment,
   TableBlockFragment,
   TextBlockFragment,
   TextImageBlockFragment,
@@ -8,6 +9,7 @@ import {
 
 export type AnyBlock =
   | ImageBlockFragment
+  | PagePartialBlockFragment
   | TableBlockFragment
   | TextBlockFragment
   | TextImageBlockFragment
