@@ -9,10 +9,9 @@ When you contribute to Head Start, please make sure you keep [Head Start's philo
 ## Getting started
 
 > [!Note]
-> Before spending a lot of your time developing something in code, it's probably a good idea to discuss the details in an issue first. This way you make sure your contribution fits the project and together we come up with the best solutions.
-
-> [!Note]
 > If you're new to contributing, take a look at [first-contributions](https://github.com/firstcontributions/first-contributions) for helpful information on contributing.
+
+Before spending a lot of your time developing something in code, it's probably a good idea to discuss the details in an issue first. This way you make sure your contribution fits the project and together we come up with the best solutions.
 
 You can follow the [getting started instructions](../docs/getting-started.md). Instead of using this repository as a template, you should fork it as explained in [first-contributions](https://github.com/firstcontributions/first-contributions).
 
