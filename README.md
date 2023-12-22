@@ -54,19 +54,19 @@ flowchart LR
 
 ## Getting started
 
-1. Select "Use this template" > "Create a new repository".
-2. Clone the new repository.
-3. [Create a DatoCMS instance](https://dashboard.datocms.com/personal-account/projects/browse/new).
-4. Copy `.env.example` to `.env` and fill it out.
-5. Install the dependenies (`npm install`)
-6. You're good to go. Follow any of the [commands](#commands) below.
+Follow the step-by-step [getting started instructions](docs/getting-started.md).
 
 ## Documentation
 
 All documentation is located in [`docs/`](docs/):
 
+- [Getting Started](docs/getting-started.md)
+- [Blocks and Components](docs/blocks-and-components.md)
+- [CMS Content Modelling](docs/cms-content-modelling.md)
+- [CMS Data Loading](docs/cms-data-loading.md)
 - [Internationalization (i18n)](docs/i18n.md)
 - [Project Structure](docs/project-structure.md)
+- [Search Engine Optimisation (SEO)](docs/seo.md)
 
 ## Commands
 
@@ -79,6 +79,7 @@ All commands are run from the root of the project, from a terminal:
 | `preview`               | Preview your build locally, before deploying
 | `astro ...`             | Run CLI commands like `astro add`, `astro check`
 | `astro -- --help`       | Get help using the Astro CLI
+| `create`                | Scaffold new Block, Component, API or Page route
 | `lint`                  | Check code style (add `-- --fix` to fix issues)
 
 ## Contributing
