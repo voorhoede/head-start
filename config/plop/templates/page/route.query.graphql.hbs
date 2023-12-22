@@ -1,0 +1,26 @@
+query {{ pascalCase name }}(
+{{#if (hasRouteLocale route) }}
+  $locale: SiteLocale!,
+{{/if}}
+{{#each (routeParams route) }}
+  ${{this}}: String!,
+{{/each}}
+) {
+  page: {{ camelCase name }} (
+    {{#if (hasRouteLocale route) }}
+    locale: $locale,
+    {{/if}}
+    filter: {
+      {{#each (routeParams route) }}
+      {{this}}: { eq: ${{this}} },
+      {{/each}}
+    }
+  ) {
+    title
+    _seoMetaTags {
+      attributes
+      content
+      tag
+    }
+  }
+}
