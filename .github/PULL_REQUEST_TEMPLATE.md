@@ -25,8 +25,7 @@ Resolves #(ticket number)
 
 - [ ] I have performed a self-review of my own code
 - [ ] I have made sure that my PR is easy to review (not too big, includes comments)
-- [ ] I have added/updated tests to prove that my feature works (if not possible please explain why)
-- [ ] I have made changes to the README and if the change affects the project setup (npm commands changed, new service added, environmental variable added)
+- [ ] I have made updated relevant documentation files (in project README, docs/, etc)
 - [ ] I have added a decision log entry if the change affects the architecture or changes a significant technology
 - [ ] I have notified a reviewer
 
