@@ -22,6 +22,9 @@ src/
 - [Components](https://docs.astro.build/en/core-concepts/astro-components/) are the UI elements the website is composed of. This can be Astro and framework specific components.
 - Blocks are a specific set of components which have a complementary content [Block](https://www.datocms.com/docs/content-modelling/blocks) in DatoCMS and therefore have a paired GraphQL Fragment file.
 
+> [!NOTE]
+> You can use `npm run create:block` and `npm run:component` to quickly scaffold a new block or component with their associated files.
+
 See [CMS Data Loading](./cms-data-loading.md) for documentation on the use of GraphQL Fragment files.
 
 ## Block templates
