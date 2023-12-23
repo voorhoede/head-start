@@ -1,5 +1,6 @@
 ---
-import DynamicTag from './DynamicTag.astro'
+import DynamicTag from './DynamicTag.astro';
+import type { Tag } from '@lib/types/datocms';
 
 type SearchResult = {
   title: string
@@ -12,12 +13,12 @@ type SearchResult = {
 }
 interface Props {
   item: SearchResult;
-  tag?: string;
+  tag?: Tag;
 }
 const { item, tag = 'li' } = Astro.props;
 ---
 
-<DynamicTag as={ tag }>
+<DynamicTag as={ tag as any }>
   <h3>
     <a href={ item.url }>
       { item.title }
