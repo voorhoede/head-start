@@ -25,6 +25,7 @@ const { blocks } = Astro.props;
   const typename = block.__typename as keyof typeof blocksByTypename;
   const Block = blocksByTypename[typename];
   return Block
+    // @ts-ignore next line
     ? <Block block={ block } />
     : <script define:vars={{ typename }} is:inline>
         console.log(`No Block found for "${typename}"`);
