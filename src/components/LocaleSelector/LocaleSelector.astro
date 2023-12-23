@@ -19,7 +19,9 @@ const getPageHref = (locale: SiteLocale) => {
 ---
 <locale-selector>
   <nav aria-labelledby="locale-selector-title">
-    <span id="locale-selector-title">{ t('select_language') }</span>
+    <span id="locale-selector-title" class="sr-only">
+      { t('select_language') }
+    </span>
     <ul role="list" style="list-style: none;">
       { locales.map(locale => (
         <li>
@@ -35,3 +37,30 @@ const getPageHref = (locale: SiteLocale) => {
 </locale-selector>
 
 <script src="./LocaleSelector.client.ts"></script>
+
+<style>
+  /* functional styling */
+  .sr-only {
+    /* @see https://tailwindcss.com/docs/screen-readers */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  /* basic styling, can be removed */
+  ul {
+    margin: 0;
+    margin-inline-end: 20px;
+    padding: 0;
+  }
+  li {
+    display: inline-block;
+    margin-right: 10px;
+  }
+</style>

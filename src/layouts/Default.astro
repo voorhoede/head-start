@@ -39,8 +39,10 @@ const mainContentId = 'content';
       <header { ...datocmsNoIndex }>
         { /* accessible home link, inspired by https://www.gov.uk/; with Microformats rel */ }
         <a rel="home" href="/" aria-label={ t('go_to_home_page', { siteName }) }>[Logo]</a>
-        <LocaleSelector pageUrls={ pageUrls } />
-        <a rel="search" href={ getSearchPathname(locale) }>{ t('search') }</a>
+        <div>
+          <LocaleSelector pageUrls={ pageUrls } />
+          <a rel="search" href={ getSearchPathname(locale) }>{ t('search') }</a>
+        </div>
       </header>
       { /* main element requires tabindex to be focusable, see SkipLink/README.md */ }
       <main id={ mainContentId } tabindex="-1">
@@ -55,10 +57,34 @@ const mainContentId = 'content';
 </html>
 
 <style>
-  *,
-  *::before,
-  *::after {
+  /* very basic reset */
+  *, *::before, *::after {
     box-sizing: border-box;
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+  }
+
+  /* Sticky footer. @see https://css-tricks.com/a-clever-sticky-footer-technique/ */
+  html, body {
+    height: 100%;
+  }
+  footer {
+    position: sticky;
+    top: 100vh;
+  }
+
+  /* Basic layout: header, main, footer */
+  header {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 2px solid black;
+  }
+  header div {
+    display: flex;
   }
   main {
     margin: auto;
@@ -68,11 +94,8 @@ const mainContentId = 'content';
     font-size: 20px;
     line-height: 1.6;
   }
-  h1 {
-    font-size: 4rem;
-    font-weight: 700;
-    line-height: 1;
-    text-align: center;
-    margin-bottom: 1em;
+  footer {
+    padding: 1rem;
+    border-top: 2px solid black;
   }
 </style>
