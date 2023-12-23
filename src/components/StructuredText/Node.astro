@@ -46,21 +46,21 @@ const DEFAULT_COMPONENTS: PredicateComponentTuple[] = [
 const throwRenderErrorForMissingComponent = (node: STU.Node) => {
   if (isInlineItem(node)) {
     throw new RenderError(
-      `The Structured Text document contains an 'inlineItem' node, but no component for rendering is specified!`,
+      'The Structured Text document contains an \'inlineItem\' node, but no component for rendering is specified!',
       node
     );
   }
 
   if (isItemLink(node)) {
     throw new RenderError(
-      `The Structured Text document contains an 'itemLink' node, but no component for rendering is specified!`,
+      'The Structured Text document contains an \'itemLink\' node, but no component for rendering is specified!',
       node
     );
   }
 
   if (isBlock(node)) {
     throw new RenderError(
-      `The Structured Text document contains a 'block' node, but no component for rendering is specified!`,
+      'The Structured Text document contains a \'block\' node, but no component for rendering is specified!',
       node
     );
   }
@@ -81,9 +81,9 @@ const throwRenderErrorForMissingLink = (node: STU.ItemLink | STU.InlineItem) => 
 };
 
 const findBlock = (node: STU.Block, blocks: STU.StructuredText['blocks']) =>
-		(blocks || []).find(({ id }) => id === node.item);
-	const findLink = (node: STU.ItemLink | STU.InlineItem, links: STU.StructuredText['links']) =>
-		(links || []).find(({ id }) => id === node.item);
+  (blocks || []).find(({ id }) => id === node.item);
+const findLink = (node: STU.ItemLink | STU.InlineItem, links: STU.StructuredText['links']) =>
+  (links || []).find(({ id }) => id === node.item);
 
 interface Props {
   node: STU.Node;
@@ -108,25 +108,25 @@ const link =
   isBlock(node) ? (
     <Component {node} {block} />
   ) : 
-  isInlineItem(node) ? (
-    <Component {node} {link} />
-  ) : 
-  isItemLink(node) ? (
-    <Component node={node} {link}>
-      { hasChildren(node) && (
-        node.children.map((child) => (
-          <Astro.self node={child} blocks={blocks} links={links} {components} />
-        ))
-      ) }
-    </Component>
-  ) : 
-  /* default component handler */ (
-    <Component node={node}>
-      { hasChildren(node) && (
-        node.children.map((child) => (
-          <Astro.self node={child} blocks={blocks} links={links} {components} />
-        ))
-      ) }
-    </Component>
-  ) 
+    isInlineItem(node) ? (
+      <Component {node} {link} />
+    ) : 
+      isItemLink(node) ? (
+        <Component node={node} {link}>
+          { hasChildren(node) && (
+            node.children.map((child) => (
+              <Astro.self node={child} blocks={blocks} links={links} {components} />
+            ))
+          ) }
+        </Component>
+      ) : 
+      /* default component handler */ (
+          <Component node={node}>
+            { hasChildren(node) && (
+              node.children.map((child) => (
+                <Astro.self node={child} blocks={blocks} links={links} {components} />
+              ))
+            ) }
+          </Component>
+        ) 
 )}
