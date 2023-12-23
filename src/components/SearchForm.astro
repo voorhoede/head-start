@@ -24,7 +24,7 @@ const hintId = `${ queryParamName }-hint`;
     value={ query }
     placeholder={ t('search_label') }
     minlength={ minQueryLength }
-    aria-describedby={ `#${ hintId }` }
+    aria-describedby={ hintId }
     required
   />
   <button type="submit">{ t('search') }</button>

@@ -3,7 +3,9 @@ import { buildClient } from '@datocms/cma-client-node';
 import dotenv from 'dotenv-safe';
 import { datocmsEnvironment } from '../datocms-environment';
 
-dotenv.config();
+dotenv.config({
+  allowEmptyValues: Boolean(process.env.CI),
+});
 
 type RenameKeys<T> = T extends object
   ? { [K in keyof T as Uncapitalize<string & K>]: RenameKeys<T[K]>; }
