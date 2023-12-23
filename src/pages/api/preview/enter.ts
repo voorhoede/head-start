@@ -1,6 +1,8 @@
 import type { APIRoute } from 'astro';
 import { hashSecret, previewCookieName } from '../../../middleware';
 
+export const prerender = false;
+
 export const cookiePath = '/';
 
 export const GET: APIRoute = async ({ cookies, locals, request }) => {

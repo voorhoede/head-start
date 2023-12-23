@@ -2,6 +2,8 @@ import type { APIRoute } from 'astro';
 import { previewCookieName } from '../../../middleware';
 import { cookiePath } from './enter';
 
+export const prerender = false;
+
 export const GET: APIRoute = ({ cookies, request }) => {
 
   cookies.delete(previewCookieName, {
