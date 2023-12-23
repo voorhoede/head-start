@@ -1,4 +1,4 @@
-import { defineConfig } from 'astro/config';
+import { defineConfig, passthroughImageService } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import graphql from '@rollup/plugin-graphql';
 import sitemap from '@astrojs/sitemap';
@@ -22,6 +22,11 @@ export default defineConfig({
       type: 'pages',
     },
   }),
+  image: {
+    // cloudflare is not supported by the Astro image service
+    // @see https://docs.astro.build/en/guides/images/#configure-no-op-passthrough-service
+    service: passthroughImageService()
+  },
   integrations: [sitemap()],
   output: isPreview ? 'server' : 'hybrid',
   server: { port: localhostPort },
