@@ -3,12 +3,19 @@ import { print } from 'graphql/language/printer';
 import type { DocumentNode } from 'graphql';
 import { datocmsEnvironment } from '../../datocms-environment';
 
+const wait = (milliSeconds: number) => new Promise((resolve) => setTimeout(resolve, milliSeconds));
+
 type DatocmsRequestType = {
   query: DocumentNode;
   variables?: { [key: string]: string };
+  retryCount?: number;
 };
-
-export const datocmsRequest = <T>({ query, variables = {} }: DatocmsRequestType): Promise<T> => {
+/**
+ * Makes a request to the DatoCMS GraphQL API using the provided query and variables.
+ * It has authorization, environment and drafts (preview) pre-configured.
+ * It has a retry mechanism in case of rate-limiting, based on DatoCMS API utils. @see https://github.com/datocms/js-rest-api-clients/blob/f4e820d/packages/rest-client-utils/src/request.ts#L239C13-L255
+ */
+export const datocmsRequest = async <T>({ query, variables = {}, retryCount = 1 }: DatocmsRequestType): Promise<T> => {
   const headers = new Headers({
     Authorization: import.meta.env.DATOCMS_READONLY_API_TOKEN,
     'Content-Type': 'application/json',
@@ -19,16 +26,25 @@ export const datocmsRequest = <T>({ query, variables = {} }: DatocmsRequestType)
     headers.append('X-Include-Drafts', 'true');
   }
 
-  return fetch('https://graphql.datocms.com/', {
+  const response = await fetch('https://graphql.datocms.com/', {
     method: 'post',
     headers,
     body: JSON.stringify({ query: print(query), variables }),
-  })
-    .then((response) => response.json())
-    .then((response) => {
-      if (response.errors) throw Error(JSON.stringify(response, null, 4));
-      return response.data;
-    });
+  });
+
+  const retryLimit = 5;
+  if (response.status === 429) {
+    const waitTimeInSeconds = response.headers.has('X-RateLimit-Reset')
+      ? parseInt(response.headers.get('X-RateLimit-Reset')!, 10)
+      : retryCount;
+    await wait(waitTimeInSeconds * 1000);
+    if (retryCount >= retryLimit) throw Error('DatoCMS request failed. Too many retries.');
+    return datocmsRequest({ query, variables, retryCount: retryCount + 1 });
+  }
+
+  const { data, errors } = await response.json();
+  if (errors) throw Error(JSON.stringify(response, null, 4));
+  return data;
 };
 
 interface CollectionData<CollectionType> {
