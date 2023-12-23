@@ -13,4 +13,5 @@
     },
     "verbatimModuleSyntax": true
   },
+  "include": ["env.d.ts"],
 }
