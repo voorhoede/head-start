@@ -1,6 +1,6 @@
 ---
 import { datocmsRequest } from '@lib/datocms';
-import type { NotFoundQuery } from '@lib/types/datocms.d.ts';
+import type { NotFoundQuery, NotFoundRecord } from '@lib/types/datocms.d.ts';
 import query from './404.query.graphql';
 import Layout from '@layouts/Default.astro';
 import { locales } from '@lib/i18n';
@@ -13,7 +13,7 @@ export async function getStaticPaths() {
 }
 
 const { locale } = Astro.params;
-const { page } = await datocmsRequest<NotFoundQuery>({ query, variables: { locale } });
+const { page } = await datocmsRequest<NotFoundQuery>({ query, variables: { locale } }) as { page: NotFoundRecord };
 ---
 <Layout
   pageUrls={[]}

@@ -1,0 +1,22 @@
+---
+import type { DocumentNode } from 'graphql';
+import { print } from 'graphql/language/printer';
+
+interface Props {
+  query: DocumentNode;
+  variables?: { [key: string]: string };
+}
+const { query, variables } = Astro.props;
+const { isPreview } = Astro.locals;
+---
+{ isPreview && (
+  <preview-mode-subscription>
+    <script 
+      type="application/graphql+json" 
+      set:html={ JSON.stringify({
+        query: print(query), 
+        variables 
+      }, null, 2) } 
+    />
+  </preview-mode-subscription>
+)}

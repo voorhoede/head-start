@@ -23,7 +23,7 @@ export function GET ({ locals }: { locals: Runtime }) {
   const geoProps: Array<keyof GeoData> = ['asn', 'city', 'continent', 'country', 'ip', 'latitude', 'longitude', 'postalCode', 'region', 'regionCode', 'timezone'];
   const geoData: GeoData = geoProps.reduce((acc, prop) => {
     if (locals.runtime.cf && locals.runtime.cf[prop]) {
-      acc[prop] = locals.runtime.cf[prop];
+      acc[prop] = locals.runtime.cf[prop] as GeoData[keyof GeoData];
     }
     return acc;
   }, {} as GeoData);

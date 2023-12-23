@@ -10,7 +10,7 @@ export const cookieName = 'HEAD_START_LOCALE';
 const i18n = rosetta(messages);
 i18n.locale(defaultLocale);
 
-export type T = ((key: TranslationKey) => string);
+export type T = typeof i18n.t & ((key: TranslationKey) => string);
 export const t: T = i18n.t.bind(i18n);
 
 export function getLocale() {

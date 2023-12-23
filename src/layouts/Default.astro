@@ -8,6 +8,7 @@ import type { PageUrl } from '@lib/seo';
 import query from './default.query.graphql';
 import IconSprite from '@components/Icon/IconSprite.astro';
 import LocaleSelector from '@components/LocaleSelector/LocaleSelector.astro';
+import PreviewModeProvider from '@components/PreviewMode/PreviewModeProvider.astro';
 import SeoHead from '@components/SeoHead.astro';
 import SkipLink from '@components/SkipLink/SkipLink.astro';
 
@@ -33,25 +34,32 @@ const mainContentId = 'content';
     />
   </head>
   <body>
-    <header { ...datocmsNoIndex }>
+    <PreviewModeProvider>
       <SkipLink targetId={ mainContentId } />
-      { /* accessible home link, inspired by https://www.gov.uk/; with Microformats rel */ }
-      <a rel="home" href="/" aria-label={ t('go_to_home_page', { siteName }) }>[Logo]</a>
-      <LocaleSelector pageUrls={ pageUrls } />
-      <a rel="search" href={ getSearchPathname(locale) }>{ t('search') }</a>
-    </header>
-    { /* main element requires tabindex to be focusable, see SkipLink/README.md */ }
-    <main id={ mainContentId } tabindex="-1">
-      <slot />
-    </main>
-    <footer { ...datocmsNoIndex }>
-      <p>Footer</p>
-    </footer>
+      <header { ...datocmsNoIndex }>
+        { /* accessible home link, inspired by https://www.gov.uk/; with Microformats rel */ }
+        <a rel="home" href="/" aria-label={ t('go_to_home_page', { siteName }) }>[Logo]</a>
+        <LocaleSelector pageUrls={ pageUrls } />
+        <a rel="search" href={ getSearchPathname(locale) }>{ t('search') }</a>
+      </header>
+      { /* main element requires tabindex to be focusable, see SkipLink/README.md */ }
+      <main id={ mainContentId } tabindex="-1">
+        <slot />
+      </main>
+      <footer { ...datocmsNoIndex }>
+        <p>Footer</p>
+      </footer>
+    </PreviewModeProvider>
     <IconSprite />
   </body>
 </html>
 
 <style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
   main {
     margin: auto;
     padding: 1rem;
