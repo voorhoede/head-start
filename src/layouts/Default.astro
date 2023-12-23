@@ -1,8 +1,10 @@
 ---
-import type { DefaultLayoutQuery, SiteLocale, Tag } from '@lib/types/datocms';
-import type { PageUrl } from '@lib/types/page-url';
+import type { DefaultLayoutQuery, Site, SiteLocale, Tag } from '@lib/types/datocms';
 import { datocmsRequest } from '@lib/datocms';
-import { defaultLocale } from '@lib/i18n';
+import { defaultLocale, t } from '@lib/i18n';
+import { datocmsNoIndex, getSearchPathname } from '@lib/search';
+import { siteName } from '@lib/seo';
+import type { PageUrl } from '@lib/seo';
 import query from './default.query.graphql';
 import IconSprite from '@components/Icon/IconSprite.astro';
 import LocaleSelector from '@components/LocaleSelector/LocaleSelector.astro';
@@ -14,12 +16,9 @@ interface Props {
   pageUrls: PageUrl[];
   seoMetaTags: Tag[];
 }
-type Params = { 
-  locale?: SiteLocale
-};
 
-const { locale = defaultLocale } = Astro.params as Params;
-const data = await datocmsRequest<DefaultLayoutQuery>({ query, variables: { locale } });
+const { locale = defaultLocale } = Astro.params as { locale?: SiteLocale };
+const data = await datocmsRequest<DefaultLayoutQuery>({ query, variables: { locale } }) as { site: Site };
 const { pageUrls, seoMetaTags } = Astro.props;
 const mainContentId = 'content';
 ---
@@ -29,24 +28,29 @@ const mainContentId = 'content';
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <SeoHead tags={[...data.site.faviconMetaTags, ...seoMetaTags]} />
-    { pageUrls.map((pageUrl: PageUrl) => (
-      pageUrl.locale === locale
-        ? <link rel="canonical" href={ new URL(pageUrl.pathname, Astro.site) } />
-        : <link rel="alternate" href={ new URL(pageUrl.pathname, Astro.site) } hreflang={ pageUrl.locale } />
-    )) }
-    <link rel="sitemap" href="/sitemap-index.xml" />
+    <SeoHead
+      pageUrls={ pageUrls }
+      tags={[...data.site.faviconMetaTags, ...seoMetaTags]}
+    />
   </head>
   <body>
     <PreviewModeProvider>
       <SkipLink targetId={ mainContentId } />
-      <LocaleSelector pageUrls={ pageUrls } />
-      <!-- main element requires tabindex to be focusable, see SkipLink/README.md -->
+      <header { ...datocmsNoIndex }>
+        { /* accessible home link, inspired by https://www.gov.uk/; with Microformats rel */ }
+        <a rel="home" href="/" aria-label={ t('go_to_home_page', { siteName }) }>[Logo]</a>
+        <LocaleSelector pageUrls={ pageUrls } />
+        <a rel="search" href={ getSearchPathname(locale) }>{ t('search') }</a>
+      </header>
+      { /* main element requires tabindex to be focusable, see SkipLink/README.md */ }
       <main id={ mainContentId } tabindex="-1">
         <slot />
       </main>
-      <IconSprite />
+      <footer { ...datocmsNoIndex }>
+        <p>Footer</p>
+      </footer>
     </PreviewModeProvider>
+    <IconSprite />
   </body>
 </html>
 

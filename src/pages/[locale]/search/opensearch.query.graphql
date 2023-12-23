@@ -1,0 +1,12 @@
+query OpenSearchXml($locale: SiteLocale!) {
+  site: _site(locale: $locale) {
+    globalSeo {
+      fallbackSeo {
+        description
+      }
+    }
+    favicon {
+      url
+    }
+  }
+}

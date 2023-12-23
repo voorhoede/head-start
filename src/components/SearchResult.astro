@@ -1,0 +1,35 @@
+---
+import DynamicTag from './DynamicTag.astro';
+import type { Tag } from '@lib/types/datocms';
+
+type SearchResult = {
+  title: string
+  url: string
+  textFragmentUrl: string
+  matches: {
+    matchingTerm: string
+    markedText: string
+  }[]
+}
+interface Props {
+  item: SearchResult;
+  tag?: Tag;
+}
+const { item, tag = 'li' } = Astro.props;
+---
+
+<DynamicTag as={ tag as any }>
+  <h3>
+    <a href={ item.url }>
+      { item.title }
+    </a>
+  </h3>
+  <p>
+    ...
+    <Fragment set:html={item.matches.map(match => match.markedText).join(' ... ') } />
+    ...
+  </p>
+  <a href={ item.textFragmentUrl } rel="noopener">
+    { item.url }
+  </a>
+</DynamicTag>

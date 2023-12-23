@@ -8,6 +8,8 @@
       "@layouts/*": ["src/layouts/*"],
       "@lib/*": ["src/lib/*"],
       "@pages/*": ["src/pages/*"],
+      "@root/*": ["./*"],
+      "@src/*": ["src/*"],
     },
     "verbatimModuleSyntax": true
   },

@@ -1,13 +1,18 @@
 ---
 import DynamicTag from './DynamicTag.astro';
-import type { Tag } from '@lib/types/datocms.d.ts';
+import { getLocale } from '@lib/i18n';
+import { getOpenSearchName, getOpenSearchPathname } from '@lib/search';
+import type { PageUrl } from '@lib/seo';
+import type { Tag } from '@lib/types/datocms';
 
 interface Props {
+  pageUrls: PageUrl[];
   tags: Tag[];
 }
 
-const { tags } = Astro.props;
+const { pageUrls, tags } = Astro.props;
 
+const locale = getLocale();
 const metaTags = tags.filter(tag => tag.tag !== 'title');
 const titleTag = tags.find(tag => tag.tag === 'title');
 ---
@@ -20,3 +25,15 @@ const titleTag = tags.find(tag => tag.tag === 'title');
     <DynamicTag as={tag.tag} { ...tag.attributes } />
   ))
 }
+
+{ pageUrls.map((pageUrl: PageUrl) => (
+  pageUrl.locale === locale
+    ? <link rel="canonical" href={ new URL(pageUrl.pathname, Astro.site) } />
+    : <link rel="alternate" href={ new URL(pageUrl.pathname, Astro.site) } hreflang={ pageUrl.locale } />
+)) }
+
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+<link rel="search" type="application/opensearchdescription+xml"
+  title={ getOpenSearchName(locale) }
+  href={ getOpenSearchPathname(locale) } />
