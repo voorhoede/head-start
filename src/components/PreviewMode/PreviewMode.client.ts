@@ -1,7 +1,8 @@
-import type { ConnectionStatus } from 'datocms-listen';
+import type { ConnectionStatus as DatocmsConnectionStatus } from 'datocms-listen';
 import { subscribeToQuery } from 'datocms-listen';
 import { atom, map } from 'nanostores';
 
+type ConnectionStatus = DatocmsConnectionStatus | 'error';
 type Connection = { [key: string]: ConnectionStatus };
 type Query = string;
 type Variables = { [key: string]: string };
