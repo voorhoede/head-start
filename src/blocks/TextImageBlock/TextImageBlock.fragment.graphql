@@ -1,0 +1,38 @@
+#import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
+#import '@blocks/InternalLink/InternalLink.fragment.graphql'
+#import '@blocks/TableBlock/TableBlock.fragment.graphql'
+#import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
+
+fragment TextImageBlock on TextImageBlockRecord {
+  text {
+    blocks {
+      __typename
+      ... on ImageBlockRecord {
+        ...ImageBlock
+      }
+      ... on TableBlockRecord {
+        ...TableBlock
+      }
+      ... on VideoEmbedBlockRecord {
+        ...VideoEmbedBlock
+      }
+    }
+    links {
+      id
+      ...InternalLink
+    }
+    value
+  }
+  image {
+    alt
+    title
+    width
+    height
+    url
+    responsiveImage {
+      aspectRatio
+      base64
+    }
+  }
+  layout
+}

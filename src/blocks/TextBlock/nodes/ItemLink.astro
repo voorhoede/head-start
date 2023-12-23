@@ -1,0 +1,22 @@
+---
+import InternalLink from '@blocks/InternalLink/InternalLink.astro';
+import type { InternalLinkFragment } from '@lib/types/datocms';
+
+type Node = {
+  meta?: {
+    id: string;
+    value: string;
+  }[];
+};
+type Props = {
+  node: Node;
+  link: InternalLinkFragment;
+};
+
+const { node, link } = Astro.props;
+const openInNewTab = Boolean(node.meta?.find(entry => entry.id === 'target' && entry.value === '_blank'));
+---
+
+<InternalLink link={link} {openInNewTab}>
+  <slot />
+</InternalLink>

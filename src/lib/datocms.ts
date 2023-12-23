@@ -1,4 +1,3 @@
-import 'astro/import-meta';
 import { print } from 'graphql/language/printer';
 import type { DocumentNode } from 'graphql';
 import { datocmsEnvironment } from '../../datocms-environment';

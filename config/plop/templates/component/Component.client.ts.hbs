@@ -1,0 +1,10 @@
+{{#if customElement}}
+class {{ pascalCase name }} extends HTMLElement {
+  constructor() {
+    super();
+    console.log('{{ pascalCase name }} constructed');
+  }
+}
+
+customElements.define('{{ dashCase name }}', {{ pascalCase name }});
+{{/if}}
