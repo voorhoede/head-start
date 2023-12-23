@@ -78,7 +78,24 @@ The next step is creating a Cloudflare Pages application so your project can be 
 - Under 'Environment variables' add the variables from your `.env` file.
 - Hit 'Save and deploy'.
 
-That's it. Your project is deployed and you're ready to turn it into something amazing!
+You're project is now deployed and will automatically be deployed on every git commit. To ensure changes in the CMS also redeploy the project, we need to connect DatoCMS to Cloudflare.
+
+## Connect DatoCMS to Cloudflare Pages
+
+- Go to your Cloudflare Pages application > Settings > Builds & deployments and hit '[Add deploy hook](https://developers.cloudflare.com/pages/configuration/deploy-hooks/)'.
+- Name the deploy hook "DatoCMS - Production" and set the branch to `main`.
+- Copy the deploy hook URL.
+- Go to your DatoCMS project > Project settings > Build triggers (`/project_settings/build_triggers/`) and hit 'Add new build triggers'.
+- Select 'Custom webook'.
+- Set 'build trigger name' to "Production".
+- Set 'Website frontend URL' to your production domain (like `https://<project-name>.pages.dev/` or a custom domain).
+- Enable site search.
+- Paste the deploy hook under 'Trigger URL'.
+- Hit 'Save settings'.
+- Copy the build trigger ID from the page URL `/project_settings/build_triggers/<id>/edit` (like `30535`).
+- Open `/datocms-environment.ts` and set the `buildTriggerId` there, to connect the search functionality to the indexed deployment.
+
+That's it. Now deployments are automatically triggered from both git and when editors hit 'Build now' in the CMS.
 
 ## What's next?
 

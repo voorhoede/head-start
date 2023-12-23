@@ -3,7 +3,7 @@ import { print } from 'graphql/language/printer';
 import type { DocumentNode } from 'graphql';
 import type { SiteLocale } from '@lib/i18n.types';
 import { titleSuffix } from './seo';
-import { datocmsEnvironment } from '../../datocms-environment';
+import { datocmsBuildTriggerId, datocmsEnvironment } from '../../datocms-environment';
 
 const wait = (milliSeconds: number) => new Promise((resolve) => setTimeout(resolve, milliSeconds));
 
@@ -159,7 +159,7 @@ export const datocmsSearch = async({ locale, query, fuzzy = true }: { locale: Si
   if (fuzzy){
     url.searchParams.set('fuzzy', 'true');
   }
-  // url.searchParams.set('build_trigger_id', '30535');
+  url.searchParams.set('build_trigger_id', datocmsBuildTriggerId);
 
   const response = await fetch(url.toString(), {
     headers: {

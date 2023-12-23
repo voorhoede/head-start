@@ -11,7 +11,7 @@ const hintId = `${ queryParamName }-hint`;
 ---
 
 <form method="GET" action={ getSearchPathname() } role="search">
-  { !hasValidQuery(query) && (
+  { query && !hasValidQuery(query) && (
     <a id={ hintId } href={ `#${inputId}` } style="display:block;">
       { t('search_query_invalid', { query, minQueryLength }) }
     </a>
