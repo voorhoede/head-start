@@ -2,25 +2,28 @@
 import { datocmsRequest } from '@lib/datocms';
 import type { HomeQuery, HomeRecord } from '@lib/types/datocms';
 import type { PageUrl } from '@lib/types/page-url';
-import homeQuery from './index.query.graphql';
+import { locales } from '@lib/i18n';
 import Layout from '@layouts/Default.astro';
 import Blocks from '@blocks/Blocks.astro';
 import type { AnyBlock } from '@blocks/Blocks';
+import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
 import ShareButton from '@components/ShareButton/ShareButton.astro';
-import { locales } from '@lib/i18n';
+import query from './index.query.graphql';
 
 export async function getStaticPaths() {
   return locales.map(locale => ({ params: { locale } }));
 }
 
 const { locale } = Astro.params;
-const { page } = await datocmsRequest<HomeQuery>({ query: homeQuery, variables: { locale } }) as { page: HomeRecord };
+const variables = { locale };
+const { page } = await datocmsRequest<HomeQuery>({ query, variables }) as { page: HomeRecord };
 const pageUrls = locales.map(locale => ({ locale, pathname: `/${locale}/` })) as PageUrl[];
 ---
 <Layout 
   pageUrls={pageUrls}
   seoMetaTags={page._seoMetaTags}
 >
+  <PreviewModeSubscription query={ query } variables={ variables }  />
   <h1>{page.title}</h1>
   <Blocks blocks={page.bodyBlocks as AnyBlock[]} />
   <ShareButton />
