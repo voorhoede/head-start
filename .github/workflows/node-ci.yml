@@ -32,8 +32,10 @@ jobs:
       - name: Prepare setup
         run: npm run prep
 
-      - name: Lint Astro files
-        run: npm run lint:astro -- --minimumSeverity warning
-
+      # eslint is fast, run it first to fail fast
       - name: Lint other code files
         run: npm run lint:eslint -- --max-warnings 0
+
+      # astro check finds more errors, but is slower, so run it last
+      - name: Lint Astro files
+        run: npm run lint:astro -- --minimumSeverity warning

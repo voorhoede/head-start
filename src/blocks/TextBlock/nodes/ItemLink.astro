@@ -1,8 +1,23 @@
 ---
 import InternalLink from '@blocks/InternalLink/InternalLink.astro';
 
+type Node = {
+  meta?: {
+    id: string;
+    value: string;
+  }[];
+};
+type Link = {
+  href: string;
+  title: string;
+};
+type Props = {
+  node: Node;
+  link: Link;
+};
+
 const { node, link } = Astro.props;
-const openInNewTab = node.meta?.find(entry => entry.id === 'target' && entry.value === '_blank');
+const openInNewTab = Boolean(node.meta?.find(entry => entry.id === 'target' && entry.value === '_blank'));
 ---
 
 <InternalLink link={link} {openInNewTab}>

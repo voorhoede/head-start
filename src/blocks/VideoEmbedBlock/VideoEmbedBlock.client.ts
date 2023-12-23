@@ -4,8 +4,8 @@
 class VideoEmbed extends HTMLElement {
   constructor() {
     super();
-    const anchor = this.querySelector('a');
-    const iframe = this.querySelector('iframe');
+    const anchor = this.querySelector('a') as HTMLAnchorElement;
+    const iframe = this.querySelector('iframe') as HTMLIFrameElement;
     const { autoplay, videoUrl } = this.dataset;
 
     if (!anchor || !iframe || !videoUrl) {
@@ -16,7 +16,7 @@ class VideoEmbed extends HTMLElement {
     let isPlaying = false;
     function play({ focus }: { focus: boolean }) {
       if (isPlaying) return;
-      iframe.src = videoUrl;
+      iframe.src = videoUrl as string;
       iframe.removeAttribute('hidden');
       anchor.setAttribute('hidden', '');
       isPlaying = true;
