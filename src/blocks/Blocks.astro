@@ -22,9 +22,10 @@ interface Props {
 const { blocks } = Astro.props;
 ---
 { blocks.map((block) => {
-  const typename = String(block.__typename);
+  const typename = block.__typename as keyof typeof blocksByTypename;
   const Block = blocksByTypename[typename];
   return Block
+    // @ts-ignore next line
     ? <Block block={ block } />
     : <script define:vars={{ typename }} is:inline>
         console.log(`No Block found for "${typename}"`);

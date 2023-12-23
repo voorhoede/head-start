@@ -1,5 +1,6 @@
 ---
 import type { DefaultLayoutQuery, SiteLocale, Tag } from '@lib/types/datocms';
+import type { PageUrl } from '@lib/types/page-url';
 import { datocmsRequest } from '@lib/datocms';
 import { defaultLocale } from '@lib/i18n';
 import query from './default.query.graphql';
@@ -8,10 +9,6 @@ import LocaleSelector from '@components/LocaleSelector/LocaleSelector.astro';
 import SeoHead from '@components/SeoHead.astro';
 import SkipLink from '@components/SkipLink/SkipLink.astro';
 
-type PageUrl = { 
-  locale: SiteLocale, 
-  pathname: string,
-};
 interface Props {
   pageUrls: PageUrl[];
   seoMetaTags: Tag[];
