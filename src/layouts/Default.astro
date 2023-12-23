@@ -1,17 +1,15 @@
 ---
 import type { DefaultLayoutQuery, SiteLocale, Tag } from '@lib/types/datocms';
+import type { PageUrl } from '@lib/types/page-url';
 import { datocmsRequest } from '@lib/datocms';
 import { defaultLocale } from '@lib/i18n';
 import query from './default.query.graphql';
 import IconSprite from '@components/Icon/IconSprite.astro';
 import LocaleSelector from '@components/LocaleSelector/LocaleSelector.astro';
+import PreviewModeProvider from '@components/PreviewMode/PreviewModeProvider.astro';
 import SeoHead from '@components/SeoHead.astro';
 import SkipLink from '@components/SkipLink/SkipLink.astro';
 
-type PageUrl = { 
-  locale: SiteLocale, 
-  pathname: string,
-};
 interface Props {
   pageUrls: PageUrl[];
   seoMetaTags: Tag[];
@@ -40,17 +38,24 @@ const mainContentId = 'content';
     <link rel="sitemap" href="/sitemap-index.xml" />
   </head>
   <body>
-    <SkipLink targetId={ mainContentId } />
-    <LocaleSelector pageUrls={ pageUrls } />
-    <!-- main element requires tabindex to be focusable, see SkipLink/README.md -->
-    <main id={ mainContentId } tabindex="-1">
-      <slot />
-    </main>
-    <IconSprite />
+    <PreviewModeProvider>
+      <SkipLink targetId={ mainContentId } />
+      <LocaleSelector pageUrls={ pageUrls } />
+      <!-- main element requires tabindex to be focusable, see SkipLink/README.md -->
+      <main id={ mainContentId } tabindex="-1">
+        <slot />
+      </main>
+      <IconSprite />
+    </PreviewModeProvider>
   </body>
 </html>
 
 <style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
   main {
     margin: auto;
     padding: 1rem;
