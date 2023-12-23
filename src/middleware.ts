@@ -15,14 +15,16 @@ export const hashSecret = async (secret: string) => {
 export const datocms = defineMiddleware(async ({ locals }, next) => {
   locals.datocmsEnvironment = datocmsEnvironment;
   locals.datocmsToken = import.meta.env.DATOCMS_READONLY_API_TOKEN;
-  return next();
+  const repsonse = await next();
+  return repsonse;
 });
 
 const i18n = defineMiddleware(async ({ params }, next) => {
   if (params.locale) {
     setLocale(params.locale as SiteLocale);
   }
-  return next();
+  const repsonse = await next();
+  return repsonse;
 });
 
 const preview = defineMiddleware(async ({ cookies, locals }, next) => {
