@@ -1,5 +1,6 @@
 ---
 import InternalLink from '@blocks/InternalLink/InternalLink.astro';
+import type { InternalLinkFragment } from '@lib/types/datocms';
 
 type Node = {
   meta?: {
@@ -7,13 +8,9 @@ type Node = {
     value: string;
   }[];
 };
-type Link = {
-  href: string;
-  title: string;
-};
 type Props = {
   node: Node;
-  link: Link;
+  link: InternalLinkFragment;
 };
 
 const { node, link } = Astro.props;
