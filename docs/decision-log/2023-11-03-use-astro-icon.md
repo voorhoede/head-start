@@ -1,6 +1,6 @@
 # Use `astro-icon` package
 
-Use the [`astro-icon`](https://github.com/natemoo-re/astro-icon) package for our icon setup.
+**Use the [`astro-icon`](https://github.com/natemoo-re/astro-icon) package for our icon setup.**
 
 - Date: 2023-11-03
 - Alternatives Considered: use `svg-sprite` package to roll your own icon setup.

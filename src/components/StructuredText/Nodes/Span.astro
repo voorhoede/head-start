@@ -16,6 +16,6 @@ const elementByMark: Record<DefaultMark, string> = {
   highlight: 'mark',
 };
 
-const Tags = node.marks?.map(mark => elementByMark[mark]) || [];
+const Tags = (node.marks as DefaultMark[])?.map(mark => elementByMark[mark] || 'span') || [];
 ---
 {Tags.reduce((children, Tag) => <Tag>{children}</Tag>, node.value)}

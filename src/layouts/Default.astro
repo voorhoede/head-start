@@ -1,27 +1,24 @@
 ---
-import type { DefaultLayoutQuery, SiteLocale, Tag } from '@lib/types/datocms';
+import type { DefaultLayoutQuery, Site, SiteLocale, Tag } from '@lib/types/datocms';
 import { datocmsRequest } from '@lib/datocms';
-import { defaultLocale } from '@lib/i18n';
+import { defaultLocale, t } from '@lib/i18n';
+import { datocmsNoIndex, getSearchPathname } from '@lib/search';
+import { siteName } from '@lib/seo';
+import type { PageUrl } from '@lib/seo';
 import query from './default.query.graphql';
 import IconSprite from '@components/Icon/IconSprite.astro';
 import LocaleSelector from '@components/LocaleSelector/LocaleSelector.astro';
+import PreviewModeProvider from '@components/PreviewMode/PreviewModeProvider.astro';
 import SeoHead from '@components/SeoHead.astro';
 import SkipLink from '@components/SkipLink/SkipLink.astro';
 
-type PageUrl = { 
-  locale: SiteLocale, 
-  pathname: string,
-};
 interface Props {
   pageUrls: PageUrl[];
   seoMetaTags: Tag[];
 }
-type Params = { 
-  locale?: SiteLocale
-};
 
-const { locale = defaultLocale } = Astro.params as Params;
-const data = await datocmsRequest<DefaultLayoutQuery>({ query, variables: { locale } });
+const { locale = defaultLocale } = Astro.params as { locale?: SiteLocale };
+const data = await datocmsRequest<DefaultLayoutQuery>({ query, variables: { locale } }) as { site: Site };
 const { pageUrls, seoMetaTags } = Astro.props;
 const mainContentId = 'content';
 ---
@@ -31,25 +28,64 @@ const mainContentId = 'content';
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <SeoHead tags={[...data.site.faviconMetaTags, ...seoMetaTags]} />
-    { pageUrls.map((pageUrl: PageUrl) => (
-      pageUrl.locale === locale
-        ? <link rel="canonical" href={ new URL(pageUrl.pathname, Astro.site) } />
-        : <link rel="alternate" href={ new URL(pageUrl.pathname, Astro.site) } hreflang={ pageUrl.locale } />
-    )) }
+    <SeoHead
+      pageUrls={ pageUrls }
+      tags={[...data.site.faviconMetaTags, ...seoMetaTags]}
+    />
   </head>
   <body>
-    <SkipLink targetId={ mainContentId } />
-    <LocaleSelector pageUrls={ pageUrls } />
-    <!-- main element requires tabindex to be focusable, see SkipLink/README.md -->
-    <main id={ mainContentId } tabindex="-1">
-      <slot />
-    </main>
+    <PreviewModeProvider>
+      <SkipLink targetId={ mainContentId } />
+      <header { ...datocmsNoIndex }>
+        { /* accessible home link, inspired by https://www.gov.uk/; with Microformats rel */ }
+        <a rel="home" href="/" aria-label={ t('go_to_home_page', { siteName }) }>[Logo]</a>
+        <div>
+          <LocaleSelector pageUrls={ pageUrls } />
+          <a rel="search" href={ getSearchPathname(locale) }>{ t('search') }</a>
+        </div>
+      </header>
+      { /* main element requires tabindex to be focusable, see SkipLink/README.md */ }
+      <main id={ mainContentId } tabindex="-1">
+        <slot />
+      </main>
+      <footer { ...datocmsNoIndex }>
+        <p>Footer</p>
+      </footer>
+    </PreviewModeProvider>
     <IconSprite />
   </body>
 </html>
 
 <style>
+  /* very basic reset */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+  }
+
+  /* Sticky footer. @see https://css-tricks.com/a-clever-sticky-footer-technique/ */
+  html, body {
+    height: 100%;
+  }
+  footer {
+    position: sticky;
+    top: 100vh;
+  }
+
+  /* Basic layout: header, main, footer */
+  header {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 2px solid black;
+  }
+  header div {
+    display: flex;
+  }
   main {
     margin: auto;
     padding: 1rem;
@@ -58,11 +94,8 @@ const mainContentId = 'content';
     font-size: 20px;
     line-height: 1.6;
   }
-  h1 {
-    font-size: 4rem;
-    font-weight: 700;
-    line-height: 1;
-    text-align: center;
-    margin-bottom: 1em;
+  footer {
+    padding: 1rem;
+    border-top: 2px solid black;
   }
 </style>
