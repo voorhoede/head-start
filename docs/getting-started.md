@@ -73,7 +73,7 @@ The next step is creating a Cloudflare Pages application so your project can be 
 - [Signup](https://dash.cloudflare.com/sign-up) or [login](https://dash.cloudflare.com/login) to your Cloudflare Dashboard.
 - Go to Workers & Pages and hit 'Create application' and select 'Pages' (`/<your-cloudflare>/workers-and-pages/create/pages`).
 - Connect to Git(Hub), select your repository and hit 'Begin setup'.
-- Set 'Build command' to `npm run build`.
+- Set 'Build command' to `npm run cloudflare:build`.
 - Set 'Build output directory' to `dist/`.
 - Under 'Environment variables' add the variables from your `.env` file.
 - Hit 'Save and deploy'.
@@ -91,11 +91,12 @@ You're project is now deployed and will automatically be deployed on every git c
 - Set 'Website frontend URL' to your production domain (like `https://<project-name>.pages.dev/` or a custom domain).
 - Enable site search.
 - Paste the deploy hook under 'Trigger URL'.
+- Set 'JSON payload' to `{ "branch": "main" }`.
 - Hit 'Save settings'.
 - Copy the build trigger ID from the page URL `/project_settings/build_triggers/<id>/edit` (like `30535`).
 - Open `/datocms-environment.ts` and set the `buildTriggerId` there, to connect the search functionality to the indexed deployment.
 
-That's it. Now deployments are automatically triggered from both git and when editors hit 'Build now' in the CMS.
+That's it. Now deployments are automatically triggered from both git and when editors hit 'Build now' in the CMS. If you add additional build triggers in the future, you can repeat those steps. Note that `buildTriggerId` in `/datocms-environment.ts` should always be set to the production build trigger.
 
 ## What's next?
 
