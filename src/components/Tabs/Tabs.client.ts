@@ -26,11 +26,18 @@ template.innerHTML = `
       display: flex;
       flex-wrap: wrap;
     }
+    [role="tablist"] {
+      display: flex;
+      flex-wrap: wrap;
+      position: relative;
+    }
     ::slotted(tabs-panel) {
       flex-basis: 100%;
     }
   </style>
-  <slot name="tab"></slot>
+  <div role="tablist">
+    <slot name="tab"></slot>
+  </div>
   <slot name="panel"></slot>
 `;
 
@@ -73,9 +80,6 @@ class TabsComponent extends HTMLElement {
     // switching with arrow keys and Home/End.
     this.addEventListener('keydown', this.#onKeyDown);
     this.addEventListener('click', this.#onClick);
-
-    if (!this.hasAttribute('role'))
-      this.setAttribute('role', 'tablist');
 
     // Up until recently, `slotchange` events did not fire when an element was
     // upgraded by the parser. For this reason, the element invokes the
