@@ -7,6 +7,7 @@ export default async function (client: Client) {
     'Create Single-line string field "Layout" (`layout`) in block model "Page Partial Block" (`page_partial_block`)'
   );
   await client.fields.create('V80liDVtRC-UYgd3Sm-dXg', {
+    // @ts-expect-error next-line DatoCMS auto-generated
     id: 'SO4JBlc8QCiQjRNJVlZPcw',
     label: 'Layout',
     field_type: 'string',
