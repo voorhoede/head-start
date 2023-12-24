@@ -19,8 +19,10 @@ const isLayout = (layout: PagePartialBlockFragment['layout']) => block.layout ==
 
 { isLayout('stack-titled') && (
   items.map(item => (
-    <h2>{ item.title }</h2>
-    <Blocks blocks={ item.blocks } />
+    <section>
+      <h2>{ item.title }</h2>
+      <Blocks blocks={ item.blocks } />
+    </section>
   ))
 )}
 

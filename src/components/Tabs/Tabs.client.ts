@@ -137,7 +137,7 @@ class TabsComponent extends HTMLElement {
 
     // Next, switch to the selected tab. `selectTab()` takes care of
     // marking all other tabs as deselected and hiding all other panels.
-    this.#selectTab(selectedTab);
+    this.#selectTab(selectedTab, false);
   }
 
   /**
@@ -226,7 +226,7 @@ class TabsComponent extends HTMLElement {
    * `#selectTab()` marks the given tab as selected.
    * Additionally, it unhides the panel corresponding to the given tab.
    */
-  #selectTab(newTab: TabsTab) {
+  #selectTab(newTab: TabsTab, autofocus = true) {
     // Deselect all tabs and hide all panels.
     this.reset();
 
@@ -237,7 +237,9 @@ class TabsComponent extends HTMLElement {
       throw new Error(`No panel with id ${newTab.getAttribute('aria-controls')}`);
     newTab.selected = true;
     newPanel.hidden = false;
-    newTab.focus();
+    if (autofocus) {
+      newTab.focus();
+    }
   }
 
   /**
