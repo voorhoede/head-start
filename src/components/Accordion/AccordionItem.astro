@@ -6,9 +6,10 @@ interface Props {
   open?: boolean;
 }
 const { name, open } = Astro.props;
+const attributes = { name, open };
 ---
-
-<details name={name} open={open}>
+{ /* HTMLDetailsElement name attribute is new, using spread to bypass valiation error */ }
+<details {...attributes}>
   <summary>
     <slot name="heading" />
     <Icon name="plus" />
