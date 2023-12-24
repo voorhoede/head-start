@@ -6,6 +6,7 @@
 fragment PagePartialBlock on PagePartialBlockRecord {
   id
   items {
+    title
     blocks {
       __typename
       ... on ImageBlockRecord {
@@ -22,4 +23,5 @@ fragment PagePartialBlock on PagePartialBlockRecord {
       }
     }
   }
+  layout
 }
