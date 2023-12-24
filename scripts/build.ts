@@ -5,7 +5,7 @@ import dotenv from 'dotenv-safe';
 dotenv.config();
 
 const { DATOCMS_API_TOKEN, CF_PAGES, CF_PAGES_BRANCH } = process.env;
-const command = 'npm run build-temp';
+const command = 'npm run build';
 
 async function notifyDatocms({ status }: { status: 'success' | 'error' }) {
   if (!CF_PAGES) {
