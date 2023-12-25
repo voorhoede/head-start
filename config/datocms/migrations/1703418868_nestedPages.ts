@@ -7,6 +7,7 @@ export default async function (client: Client) {
     'Create Single link field "Parent page" (`parent_page`) in model "Page" (`page`)'
   );
   await client.fields.create('2596445', {
+    // @ts-expect-error next-line DatoCMS auto-generated
     id: 'FybgJf3dQ3G061OgVj1FHw',
     label: 'Parent page',
     field_type: 'link',
