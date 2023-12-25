@@ -23,6 +23,7 @@ const getPageHref = (locale: SiteLocale) => {
     <span id="locale-selector-title" class="a11y-sr-only">
       { t('select_language') }
     </span>
+    <!-- [html-validate-disable-next no-redundant-role -- see ./README.md] -->
     <ul role="list" style="list-style: none;">
       { locales.map(locale => (
         <li>
