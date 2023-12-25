@@ -2,6 +2,7 @@
 import { getLocale, locales, t } from '@lib/i18n';
 import type { SiteLocale } from '@lib/types/datocms';
 import type { PageUrl } from '@lib/seo';
+import '@assets/a11y.css';
 
 const activeLocale = getLocale();
 
@@ -19,9 +20,10 @@ const getPageHref = (locale: SiteLocale) => {
 ---
 <locale-selector>
   <nav aria-labelledby="locale-selector-title">
-    <span id="locale-selector-title" class="sr-only">
+    <span id="locale-selector-title" class="a11y-sr-only">
       { t('select_language') }
     </span>
+    <!-- [html-validate-disable-next no-redundant-role -- see ./README.md] -->
     <ul role="list" style="list-style: none;">
       { locales.map(locale => (
         <li>
@@ -39,20 +41,6 @@ const getPageHref = (locale: SiteLocale) => {
 <script src="./LocaleSelector.client.ts"></script>
 
 <style>
-  /* functional styling */
-  .sr-only {
-    /* @see https://tailwindcss.com/docs/screen-readers */
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-  }
-
   /* basic styling, can be removed */
   ul {
     margin: 0;
