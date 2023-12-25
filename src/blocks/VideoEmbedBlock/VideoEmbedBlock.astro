@@ -68,6 +68,7 @@ function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; vide
         video.providerUid
       }?${new URLSearchParams({
         autoplay: binaryBoolean(autoplay),
+        autopause: binaryBoolean(!autoplay),
         muted: binaryBoolean(mute),
         loop: binaryBoolean(loop),
       })}`
