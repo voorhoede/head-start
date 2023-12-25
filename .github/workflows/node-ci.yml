@@ -21,6 +21,7 @@ jobs:
           node-version-file: ".nvmrc"
 
       - name: Use dependencies cache
+        id: cache
         uses: actions/cache@v3
         with:
           path: ~/.npm
@@ -28,6 +29,7 @@ jobs:
           restore-keys: npm-
 
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci --ignore-scripts --no-audit --no-fund
 
       - name: Prepare setup
@@ -59,6 +61,7 @@ jobs:
           node-version-file: ".nvmrc"
 
       - name: Use dependencies cache
+        id: cache
         uses: actions/cache@v3
         with:
           path: ~/.npm
@@ -66,6 +69,7 @@ jobs:
           restore-keys: npm-
 
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci --ignore-scripts --no-audit --no-fund
 
       - name: Create production build
