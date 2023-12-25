@@ -80,10 +80,9 @@ All commands are run from the root of the project, from a terminal:
 | `dev`                   | Starts local dev server at `localhost:4323` (head in T9)
 | `build`                 | Build your production site to `./dist/`
 | `preview`               | Preview your build locally, before deploying
-| `astro ...`             | Run CLI commands like `astro add`, `astro check`
-| `astro -- --help`       | Get help using the Astro CLI
+| `astro ...`             | Run commands like `astro add` (see `astro -- --help`)
 | `create`                | Scaffold new Block, Component, API or Page route
-| `lint`                  | Check code style (add `-- --fix` to fix issues)
+| `lint`                  | Check code style and valide HTML output
 
 ## Contributing
 
