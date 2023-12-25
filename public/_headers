@@ -1,0 +1,11 @@
+# Headers configuration file for Cloudflare Pages
+# @see docs: https://developers.cloudflare.com/pages/platform/headers/
+
+# Headers for basic security
+# Project can be further secured with a Permissions Policy and Content Security Policy (CSP)
+/*
+  Referrer-Policy: no-referrer-when-downgrade
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  X-XSS-Protection: 1; mode=block

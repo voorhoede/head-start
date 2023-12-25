@@ -1,0 +1,19 @@
+---
+import { hasValidQuery, queryParamName } from '@lib/search';
+import { datocmsSearch } from '@lib/datocms';
+import type { SiteLocale } from '@lib/i18n.types';
+import SearchResult from '@components/SearchResult.astro';
+
+export const partial = true;
+export const prerender = false;
+
+const { locale } = Astro.params as { locale: SiteLocale };
+const query = new URL(Astro.request.url).searchParams.get(queryParamName) || '';
+const { results } = hasValidQuery(query) ? await datocmsSearch({ locale, query }) : { results: [] };
+---
+
+{ 
+  results.map((item) => (
+    <SearchResult item={ item } />
+  )) 
+}

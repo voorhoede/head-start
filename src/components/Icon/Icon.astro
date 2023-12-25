@@ -1,5 +1,5 @@
 ---
-import type { IconName } from '../../assets/icon-sprite';
+import type { IconName } from '@assets/icon-sprite';
 
 interface Props {
   name: IconName;
@@ -8,7 +8,7 @@ interface Props {
 const { name, ...props } = Astro.props;
 ---
 
-<svg {...props} data-icon={name}>
+<svg {...props} aria-hidden data-icon={name}>
   <use xlink:href={`#${name}`} />
 </svg>
 

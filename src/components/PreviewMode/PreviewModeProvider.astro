@@ -1,0 +1,12 @@
+---
+import PreviewMode from './PreviewMode.astro';
+import PreviewModeLogin from './PreviewModeLogin.astro';
+const { isPreview, isPreviewAuthOk } = Astro.locals;
+---
+{
+  isPreview
+    ? isPreviewAuthOk
+      ? <PreviewMode><slot /></PreviewMode>
+      : <PreviewModeLogin />
+    : <slot />
+}

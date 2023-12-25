@@ -1,0 +1,31 @@
+---
+import { t } from '@lib/i18n';
+import { hasValidQuery, minQueryLength, getSearchPathname, queryParamName } from '@lib/search';
+
+interface Props {
+  query: string;
+}
+const { query } = Astro.props;
+const inputId = queryParamName;
+const hintId = `${ queryParamName }-hint`;
+---
+
+<form method="GET" action={ getSearchPathname() } role="search">
+  { query && !hasValidQuery(query) && (
+    <a id={ hintId } href={ `#${inputId}` } style="display:block;">
+      { t('search_query_invalid', { query, minQueryLength }) }
+    </a>
+  ) }
+  <label for={ queryParamName }>{ t('search_label') }</label>
+  <input 
+    type="search" 
+    id={ inputId } 
+    name={ queryParamName } 
+    value={ query }
+    placeholder={ t('search_label') }
+    minlength={ minQueryLength }
+    aria-describedby={ hintId }
+    required
+  />
+  <button type="submit">{ t('search') }</button>
+</form>

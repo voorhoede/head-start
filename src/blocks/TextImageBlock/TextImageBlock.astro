@@ -1,0 +1,48 @@
+---
+import type { StructuredText } from 'datocms-structured-text-utils';
+import type { TextImageBlockFragment } from '@lib/types/datocms';
+import Text from '@blocks/TextBlock/Text.astro';
+import Image from '@blocks/ImageBlock/Image.astro';
+
+interface Props {
+  block: TextImageBlockFragment
+}
+const { block } = Astro.props;
+---
+
+<div class="component">
+  <div class:list={['layout', `layout--${block.layout}`]}>
+    <div class="layout__item">
+      <Text data={ block.text as StructuredText } />
+    </div>
+    <div class="layout__item">
+      <Image image={ block.image } />
+    </div>
+  </div>
+</div>
+
+<style>
+/* turn component into a container, so styles can be applied relative to its dimensions: */
+.component {
+  container-type: inline-size;
+  container-name: component;
+}
+
+/* side-by-side layout, if component is wide enough: */
+@container component (min-width: 760px) {
+  .layout {
+    display: flex;
+    align-items: center;
+  }
+  .layout--image-text {
+    flex-direction: row;
+  }
+  .layout--image-text {
+    flex-direction: row-reverse;
+  }
+  .layout__item {
+    flex: 1;
+    width: 50%;
+  }
+}
+</style>

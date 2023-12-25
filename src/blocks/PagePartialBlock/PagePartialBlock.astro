@@ -1,0 +1,15 @@
+---
+import type { PagePartialBlockFragment } from '@lib/types/datocms';
+import type { AnyBlock } from '@blocks/Blocks';
+import Blocks from '@blocks/Blocks.astro';
+
+interface Props {
+block: PagePartialBlockFragment
+}
+const { block } = Astro.props;
+const items = block.items as { blocks: AnyBlock[] }[];
+---
+
+{ items.map(item => (
+  <Blocks blocks={item.blocks} />
+))}

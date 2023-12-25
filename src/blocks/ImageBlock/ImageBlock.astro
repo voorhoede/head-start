@@ -1,9 +1,12 @@
 ---
-import type { ImageBlockFragment } from '../../lib/types/datocms';
+import type { ImageBlockFragment } from '@lib/types/datocms';
+import Image from './Image.astro';
 
 interface Props {
   block: ImageBlockFragment
 }
+
 const { block } = Astro.props;
 ---
-<pre><code>image block: {JSON.stringify(block, null, 2)}</code></pre>
+
+<Image image={ block.image } />
