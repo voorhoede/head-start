@@ -61,6 +61,7 @@ Follow the step-by-step [getting started instructions](docs/getting-started.md).
 All documentation is located in [`docs/`](docs/):
 
 - [Getting Started](docs/getting-started.md)
+- [Accessibility (a11y)](docs/accessibility.md)
 - [Blocks and Components](docs/blocks-and-components.md)
 - [CMS Content Modelling](docs/cms-content-modelling.md)
 - [CMS Data Loading](docs/cms-data-loading.md)
