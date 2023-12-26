@@ -16,7 +16,7 @@ import ShareButton from '@components/ShareButton/ShareButton.astro';
 
 export async function getStaticPaths() {
   interface PagesCollectionItem {
-    slugs: Array<{ locale: string; value: string }>;
+    _allSlugLocales: Array<{ locale: SiteLocale; value: string }>;
   }
   const pages = await datocmsCollection<PagesCollectionItem>({
     collection: 'Pages',
@@ -34,7 +34,7 @@ export async function getStaticPaths() {
   return pages.flatMap((page) => {
     const locales = page._allSlugLocales.map((slug) => slug.locale);
     return locales.map((locale) => {
-      return { params: { locale, path: getPagePath({ page, locale }) } };
+      return { params: { locale, path: getPagePath({ page: page as PageRecord, locale }) } };
     });
   });
 }

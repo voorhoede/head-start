@@ -40,6 +40,6 @@ export const getPagePath = ({ page, locale }: { page: AnyPage, locale: SiteLocal
  */
 export const getPageSlugFromPath = (path: URL['pathname']) => {
   const url = new URL(path, 'https://www.example.com');
-  const slug = url.pathname.split('/').filter(Boolean).pop();
+  const slug = url.pathname.split('/').filter(Boolean).pop() as string;
   return slug;
 };
