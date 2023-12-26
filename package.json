@@ -29,6 +29,7 @@
     "lint": "run-s lint:* --print-label",
     "lint:astro": "astro check",
     "lint:eslint": "eslint . --ext .js,.ts,.astro",
+    "lint:html": "html-validate --config config/htmlvalidate/config.json dist/",
     "post": "run-s post:* --print-label",
     "post:move-404-pages": "jiti scripts/move-404-pages.ts",
     "postinstall": "npx husky install"
@@ -43,6 +44,7 @@
     "datocms-listen": "^0.1.15",
     "datocms-structured-text-utils": "^2.0.4",
     "globby": "^13.2.2",
+    "html-validate": "^8.7.4",
     "jiti": "^1.20.0",
     "nanostores": "^0.9.5",
     "rosetta": "^1.1.0",
