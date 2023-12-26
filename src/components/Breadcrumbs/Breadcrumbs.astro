@@ -1,0 +1,48 @@
+---
+import { t } from '@lib/i18n';
+import Icon from '@components/Icon';
+import type { Breadcrumb } from './index';
+
+interface Props {
+  items: Breadcrumb[];
+}
+
+const { items } = Astro.props;
+const isLast = (index: number) => index === items.length - 1;
+---
+
+<nav aria-label={t('breadcrumbs_title')}>
+  <ol>
+    <li><a href='/'>{t('breadcrumbs_home')}</a></li>
+    {
+      items.map((item, index) => (
+        <li>
+          <Icon name='chevron-right' />
+          <a href={item.href} aria-current={isLast(index) ? 'page' : null}>
+            {item.text}
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+
+<style>
+  nav {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  li:not(:last-child) {
+    margin-right: 0.5em;
+  }
+  [data-icon] {
+    vertical-align: middle;
+  }
+</style>

@@ -1,0 +1,14 @@
+fragment ParentPage on PageRecord {
+  _allSlugLocales {
+    locale
+    value
+  }
+  ... on PageRecord {
+    parentPage {
+      _allSlugLocales {
+        locale
+        value
+      }
+    }
+  }
+}

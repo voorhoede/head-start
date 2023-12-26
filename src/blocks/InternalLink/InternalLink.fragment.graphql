@@ -5,6 +5,30 @@ fragment InternalLink on InternalLinkRecord {
     ... on PageRecord {
       title
       slug
+      parentPage {
+        ... on PageRecord {
+          _allSlugLocales {
+            locale
+            value
+          }
+          parentPage {
+            ... on PageRecord {
+              _allSlugLocales {
+                locale
+                value
+              }
+              parentPage {
+                ... on PageRecord {
+                  _allSlugLocales {
+                    locale
+                    value
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
     ... on HomeRecord {
       title

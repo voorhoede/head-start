@@ -39,5 +39,25 @@ query Page($locale: SiteLocale!, $slug: String!) {
         ...VideoEmbedBlock
       }
     }
+    parentPage {
+      ... on PageRecord {
+        title
+        slug
+        _allSlugLocales {
+          locale
+          value
+        }
+      }
+      parentPage {
+        ... on PageRecord {
+          title
+          slug
+          _allSlugLocales {
+            locale
+            value
+          }
+        }
+      }
+    }
   }
 }

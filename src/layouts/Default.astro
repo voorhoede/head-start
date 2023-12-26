@@ -6,6 +6,8 @@ import { datocmsNoIndex, getSearchPathname } from '@lib/search';
 import { siteName } from '@lib/seo';
 import type { PageUrl } from '@lib/seo';
 import query from './default.query.graphql';
+import Breadcrumbs from '@components/Breadcrumbs/Breadcrumbs.astro';
+import type { Breadcrumb } from '@components/Breadcrumbs';
 import IconSprite from '@components/Icon/IconSprite.astro';
 import LocaleSelector from '@components/LocaleSelector/LocaleSelector.astro';
 import PreviewModeProvider from '@components/PreviewMode/PreviewModeProvider.astro';
@@ -13,13 +15,14 @@ import SeoHead from '@components/SeoHead.astro';
 import SkipLink from '@components/SkipLink/SkipLink.astro';
 
 interface Props {
+  breadcrumbs: Breadcrumb[];
   pageUrls: PageUrl[];
   seoMetaTags: Tag[];
 }
 
 const { locale = defaultLocale } = Astro.params as { locale?: SiteLocale };
 const data = await datocmsRequest<DefaultLayoutQuery>({ query, variables: { locale } }) as { site: Site };
-const { pageUrls, seoMetaTags } = Astro.props;
+const { breadcrumbs = [], pageUrls, seoMetaTags } = Astro.props;
 const mainContentId = 'content';
 ---
 
@@ -44,6 +47,9 @@ const mainContentId = 'content';
           <a rel="search" href={ getSearchPathname(locale) }>{ t('search') }</a>
         </div>
       </header>
+      { (breadcrumbs.length > 0) && (
+        <Breadcrumbs items={breadcrumbs} /> 
+      ) }
       { /* main element requires tabindex to be focusable, see SkipLink/README.md */ }
       <main id={ mainContentId } tabindex="-1">
         <slot />

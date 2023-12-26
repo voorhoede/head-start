@@ -1,0 +1,71 @@
+---
+import { datocmsCollection, datocmsRequest } from '@lib/datocms';
+import type { PageQuery, PageRecord, SiteLocale } from '@lib/types/datocms';
+import type { PageUrl } from '@lib/types/page-url';
+import query from './index.query.graphql';
+import Layout from '@layouts/Default.astro';
+import Blocks from '@blocks/Blocks.astro';
+import type { AnyBlock } from '@blocks/Blocks';
+import {
+  getParentPages,
+  getPagePath,
+  getPageSlugFromPath,
+} from '@blocks/InternalLink';
+import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
+import ShareButton from '@components/ShareButton/ShareButton.astro';
+
+export async function getStaticPaths() {
+  interface PagesCollectionItem {
+    slugs: Array<{ locale: string; value: string }>;
+  }
+  const pages = await datocmsCollection<PagesCollectionItem>({
+    collection: 'Pages',
+    fragment: `
+      _allSlugLocales { locale, value }
+      parentPage {
+        _allSlugLocales { locale, value }
+        parentPage {
+          _allSlugLocales { locale, value }
+        }
+      }
+    `,
+  });
+
+  return pages.flatMap((page) => {
+    const locales = page._allSlugLocales.map((slug) => slug.locale);
+    return locales.map((locale) => {
+      return { params: { locale, path: getPagePath({ page, locale }) } };
+    });
+  });
+}
+
+type Params = {
+  locale: SiteLocale;
+  path: string;
+};
+
+const { locale, path } = Astro.params as Params;
+const variables = { locale, slug: getPageSlugFromPath(path) };
+const { page } = (await datocmsRequest<PageQuery>({ query, variables })) as {
+  page: PageRecord;
+};
+const breadcrumbs = [...getParentPages(page), page].map((page) => ({
+  text: page.title,
+  href: `/${locale}/${getPagePath({ page, locale })}/`,
+}));
+const pageUrls = (page._allSlugLocales || []).map((slug) => ({
+  locale: slug.locale,
+  pathname: `/${slug.locale}/${slug.value}/`,
+})) as PageUrl[];
+---
+
+<Layout
+  breadcrumbs={breadcrumbs}
+  pageUrls={pageUrls}
+  seoMetaTags={page._seoMetaTags}
+>
+  <PreviewModeSubscription query={query} variables={variables} />
+  <h1>{page.title}</h1>
+  <Blocks blocks={page.bodyBlocks as AnyBlock[]} />
+  <ShareButton />
+</Layout>
