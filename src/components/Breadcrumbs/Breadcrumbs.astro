@@ -18,9 +18,15 @@ const isLast = (index: number) => index === items.length - 1;
       items.map((item, index) => (
         <li>
           <Icon name='chevron-right' />
-          <a href={item.href} aria-current={isLast(index) ? 'page' : null}>
-            {item.text}
-          </a>
+          { item.href
+            ? (
+              <a href={item.href} aria-current={isLast(index) ? 'page' : null}>
+                {item.text}
+              </a>
+            ) : (
+              <span>{item.text}</span>
+            )
+          }
         </li>
       ))
     }

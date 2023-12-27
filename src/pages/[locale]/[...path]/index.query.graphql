@@ -1,4 +1,5 @@
 #import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
+#import '@blocks/InternalLink/ParentPage.fragment.graphql'
 #import '@blocks/PagePartialBlock/PagePartialBlock.fragment.graphql'
 #import '@blocks/TableBlock/TableBlock.fragment.graphql'
 #import '@blocks/TextBlock/TextBlock.fragment.graphql'
@@ -18,6 +19,7 @@ query Page($locale: SiteLocale!, $slug: String!) {
       content
       tag
     }
+    ...ParentPage
     bodyBlocks {
       __typename
       ... on ImageBlockRecord {
@@ -37,26 +39,6 @@ query Page($locale: SiteLocale!, $slug: String!) {
       }
       ... on VideoEmbedBlockRecord {
         ...VideoEmbedBlock
-      }
-    }
-    parentPage {
-      ... on PageRecord {
-        title
-        slug
-        _allSlugLocales {
-          locale
-          value
-        }
-      }
-      parentPage {
-        ... on PageRecord {
-          title
-          slug
-          _allSlugLocales {
-            locale
-            value
-          }
-        }
       }
     }
   }
