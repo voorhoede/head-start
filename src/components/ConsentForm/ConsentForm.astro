@@ -1,0 +1,134 @@
+---
+import SwitchInput from '@components/SwitchInput/SwitchInput.astro';
+import '@assets/a11y.css';
+
+const groups = [
+  {
+    key: 'functional',
+    title: 'Functional',
+    items: [
+      {
+        key: 'hs-locale',
+        title: 'Preferred language',
+        text: 'Remembers your preferred language.',
+        default: true,
+      },
+    ],
+  },
+  {
+    key: 'external-content',
+    title: 'External content',
+    items: [
+      {
+        key: 'x-twitter',
+        title: 'X (Twitter)',
+        text: 'Embed tweets. Includes analytics.',
+        default: false,
+      },
+      {
+        key: 'youtube',
+        title: 'YouTube',
+        text: 'Embed videos. Includes analytics.',
+        default: false,
+      },
+    ],
+  },
+  {
+    key: 'analytics',
+    title: 'Analytics',
+    items: [
+      {
+        key: 'plausible',
+        title: 'Plausible',
+        text: 'Collects anonymous data about website usage.',
+        default: false,
+      },
+    ],
+  },
+];
+---
+
+<form>
+  <h2>[ Consent form ]</h2>
+  {
+    groups.map((group) => (
+      <consent-form-group>
+        <fieldset>
+          <details>
+            <summary>
+              <legend>{group.title}</legend>
+              <label for={`consent:${group.key}`} class="a11y-sr-only">
+                {group.title}
+              </label>
+              <SwitchInput 
+                id={`consent:${group.key}`}
+                checked={group.items.every((item) => item.default)}
+                hidden
+              />
+            </summary>
+            <ul>
+              {group.items.map((item) => (
+                <li>
+                  <div>
+                    <label for={`consent:${group.key}:${item.key}`}>
+                      {item.title}
+                    </label>
+                    <p id={`consent:${group.key}:${item.key}:hint`}>
+                      {item.text}
+                    </p>
+                  </div>
+                  <SwitchInput
+                    id={`consent:${group.key}:${item.key}`}
+                    aria-describedby={`consent:${group.key}:${item.key}:hint`}
+                    name={`${group.key}:${item.key}`}
+                    checked={item.default}
+                  />
+                </li>
+              ))}
+            </ul>
+          </details>
+        </fieldset>
+      </consent-form-group>
+    ))
+  }
+</form>
+
+<script src="./ConsentForm.client.ts"></script>
+
+<style>
+  form {
+    max-width: 480px;
+  }
+  fieldset {
+    padding: 0;
+  }
+  summary,
+  li {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  summary > *:first-child,
+  li > *:first-child {
+    display: block;
+    width: 100%;
+    background: yellow;
+  }
+  legend {
+    font-weight: bold;
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  li:not(:last-child) {
+    margin-bottom: 10px;
+  }
+  label {
+    display: block;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  li p {
+    margin-block: .2em;
+  }
+</style>
