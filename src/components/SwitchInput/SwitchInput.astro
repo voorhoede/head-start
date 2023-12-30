@@ -1,7 +1,8 @@
 ---
 interface Props {
-  name: string;
-  checked?: boolean;
+  name?: string;
+  checked?: boolean | string;
+  [key: string]: unknown;
 }
 const { name, checked, ...props } = Astro.props;
 ---
@@ -9,8 +10,8 @@ const { name, checked, ...props } = Astro.props;
 <input
   {...props}
   name={name}
-  checked={checked}
-  role='checkbox'
+  checked={ checked ? 'checked' : undefined }
+  role='switch'
   type='checkbox'
   is='switch-input'
 />

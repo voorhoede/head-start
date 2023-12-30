@@ -49,14 +49,15 @@ const groups = [
 ---
 
 <form>
-  <h2>[ Consent form ]</h2>
+  <h1>[ Consent form ]</h1>
   {
     groups.map((group) => (
       <consent-form-group>
         <fieldset>
+          <legend class="a11y-sr-only">{group.title}</legend>
           <details>
             <summary>
-              <legend>{group.title}</legend>
+              <span aria-hidden>{group.title}</span>
               <label for={`consent:${group.key}`} class="a11y-sr-only">
                 {group.title}
               </label>
@@ -91,6 +92,7 @@ const groups = [
       </consent-form-group>
     ))
   }
+  <button type="submit">[ Save preferences ]</button>
 </form>
 
 <script src="./ConsentForm.client.ts"></script>
@@ -114,7 +116,7 @@ const groups = [
     width: 100%;
     background: yellow;
   }
-  legend {
+  summary > span {
     font-weight: bold;
     padding: 10px;
     cursor: pointer;
