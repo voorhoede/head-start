@@ -1,0 +1,28 @@
+---
+import Icon from '@components/Icon';
+
+interface Props {
+  children: any;
+  href: string;
+  [key: string]: unknown;
+}
+
+const { href, ...props } = Astro.props;
+---
+
+<a href={href} target='_blank' rel='noopener noreferrer' {...props}>
+  <span><slot /></span>
+  <Icon name='external' />
+</a>
+
+<style>
+  a {
+    text-decoration: none;
+  }
+  span {
+    text-decoration: underline;
+  }
+  [data-icon] {
+    vertical-align: text-bottom;
+  }
+</style>

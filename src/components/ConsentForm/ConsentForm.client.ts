@@ -1,3 +1,29 @@
+class ConsentForm extends HTMLFormElement {
+  constructor() {
+    super();
+  }
+
+  connectedCallback() {
+    this.addEventListener('submit', this.#handleSubmit.bind(this));
+  }
+
+  disconnectedCallback() {
+    this.removeEventListener('submit', this.#handleSubmit.bind(this));
+  }
+
+  #handleSubmit(event: Event) {
+    event.preventDefault();
+    const data: { [key:string]: boolean } = {};
+    const checkboxes = Array.from(this.querySelectorAll('input[type="checkbox"][name]')) as HTMLInputElement[];
+    checkboxes.forEach((checkbox) => {
+      data[checkbox.name] = checkbox.checked;
+    });
+    console.log(JSON.stringify(data, null, 2));
+  }
+}
+
+customElements.define('consent-form', ConsentForm, { extends: 'form' });
+
 class ConsentFormGroup extends HTMLElement {
   #summaryCheckbox: HTMLInputElement;
   #itemCheckboxes: HTMLInputElement[];
