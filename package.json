@@ -1,6 +1,5 @@
 {
   "name": "head-start",
-  "type": "module",
   "version": "0.0.1",
   "scripts": {
     "astro": "astro",
