@@ -31,6 +31,9 @@ Before you can run your project locally, you need to set-up a DatoCMS project.
 
 ## Create a DatoCMS project
 
+> [!WARNING]
+> Migrations in Head Start have an [outstanding issue](https://github.com/voorhoede/head-start/issues/62). For now (instead of creating a blank project and running migrations) duplicate the 'Head Start' project in the Dato dashboard. You can ignore the steps below, but make sure to configure Dato API tokens in your `.env` file.
+
 - [Signup](https://dashboard.datocms.com/signup) or [signin](https://dashboard.datocms.com/) to your DatoCMS account.
 - [Create a new DatoCMS project](https://dashboard.datocms.com/personal-account/projects/browse/new) (select blank project).
 - In your CMS, go to Project Settings > API tokens (`/project_settings/access_tokens`) and copy the tokens full-access API token (`DATOCMS_API_TOKEN`) and read-only API token (`DATOCMS_READONLY_API_TOKEN`) to your `.env` file (see below).
@@ -40,9 +43,6 @@ Before you can run your project locally, you need to set-up a DatoCMS project.
 DATOCMS_READONLY_API_TOKEN=copy-read-only-token
 DATOCMS_API_TOKEN=copy-full-access-token
 ```
-
-> [!WARNING]
-> Migrations in Head Start have an [outstanding issue](https://github.com/voorhoede/head-start/issues/62). For now, use 'Duplicate project' in the DatoCMS projects dashboard instead.
 
 - Add all models and settings in to your new CMS by running our [migrations](../config/datocms/migrations/) in a new [environment](https://www.datocms.com/docs/scripting-migrations/introduction) called `start` using the DatoCMS CLI: `npx datocms migrations:run --destination=start --fast-fork`.
 - Promote the new `start` environment to primary environment: `npx datocms environments:promote start` Alternatively you can go to Project Settings > Environments (`/project_settings/environments`) and 'Promote' the `start` environment to primary.
