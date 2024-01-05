@@ -21,6 +21,7 @@ jobs:
         with:
           path: ./node_modules
           key: modules-${{ hashFiles('package-lock.json') }}
+          lookup-only: true
 
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
