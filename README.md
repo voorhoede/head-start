@@ -14,6 +14,16 @@
 
 \* We'll leave the choice for a JS framework and strategy for styling to developers using Head Start for their project.
 
+## Roadmap
+
+Current status: Head Start is suitable for internal use by De Voorhoede.
+
+- [v1](https://github.com/voorhoede/head-start/issues?q=is%3Aissue+is%3Aopen+label%3A%22v1%22+): all common website functionality for use by De Voorhoede.
+- [v1 public](https://github.com/voorhoede/head-start/issues?q=is%3Aissue+is%3Aopen+label%3A%22v1+public%22+): extend setup and documentation to be suitable for use outside De Voorhoede.
+- [v2](https://github.com/voorhoede/head-start/issues/77): ideas for Head Start as starterkit for websites & web apps (maybe, someday).
+
+Progress can also be tracked on the [Head Start project board](https://github.com/orgs/voorhoede/projects/5).
+
 ## Architecture
 
 The site is created as lightweight progressively enhanced website connected to a headless CMS:
