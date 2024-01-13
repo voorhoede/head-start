@@ -2,14 +2,59 @@
 import type { PagePartialBlockFragment } from '@lib/types/datocms';
 import type { AnyBlock } from '@blocks/Blocks';
 import Blocks from '@blocks/Blocks.astro';
+import { Accordion, AccordionItem } from '@components/Accordion';
+import { Tabs, TabsTab, TabsPanel } from '@components/Tabs';
 
+type Item = {
+  title: string;
+  blocks: AnyBlock[];
+};
 interface Props {
-block: PagePartialBlockFragment
+  block: PagePartialBlockFragment
 }
 const { block } = Astro.props;
-const items = block.items as { blocks: AnyBlock[] }[];
+const items = block.items as Item[];
+const isLayout = (layout: PagePartialBlockFragment['layout']) => block.layout === layout;
 ---
 
-{ items.map(item => (
-  <Blocks blocks={item.blocks} />
-))}
+{ isLayout('stack-titled') && (
+  items.map(item => (
+    <section>
+      <h2>{ item.title }</h2>
+      <Blocks blocks={ item.blocks } />
+    </section>
+  ))
+)}
+
+{ isLayout('stack-untitled') && (
+  items.map(item => (
+    <Blocks blocks={ item.blocks } />
+  ))
+)}
+
+{ (isLayout('accordion-open') || isLayout('accordion-closed')) && (
+  <Accordion>
+    { items.map(item => (
+      <AccordionItem 
+        name={ `block-${block.id}` }
+        open={ isLayout('accordion-open') }
+      >
+        <Fragment slot="heading">{ item.title }</Fragment>
+        <Fragment slot="body">
+          <Blocks blocks={ item.blocks }/>
+        </Fragment>
+      </AccordionItem>
+    ))}
+  </Accordion>
+)}
+
+{ isLayout('tabs') && (
+  <Tabs>
+    { items.map(item => (
+    <TabsTab>{ item.title }</TabsTab>
+    <TabsPanel>
+      <Blocks blocks={ item.blocks }/>
+    </TabsPanel>
+    ))}
+  </Tabs>
+)}

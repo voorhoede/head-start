@@ -1,0 +1,21 @@
+---
+
+---
+
+<!-- [html-validate-disable-next prefer-native-element -- incompatible with custom element] -->
+<tabs-panel role="region" slot="panel">
+  <slot />
+</tabs-panel>
+
+<style>
+  /* If JavaScript does not run, the element will not match :defined. */
+  tabs-panel:not(:defined) {
+    display: block;
+  }
+
+  /* basic styling, can be removed */
+  tabs-panel:defined {
+    border: 1px solid black;
+    padding-inline: 10px;
+  }
+</style>

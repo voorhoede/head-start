@@ -1,0 +1,16 @@
+---
+
+---
+
+<tabs-component>
+  <slot />
+</tabs-component>
+
+<script src="./Tabs.client.ts"></script>
+
+<style>
+  /* If JavaScript does not run, the element will not match :defined. */
+  tabs-component:not(:defined) {
+    display: block;
+  }
+</style>
