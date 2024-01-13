@@ -1,3 +1,5 @@
+import { setConsentMap } from '@components/ConsentManager/ConsentManger.client';
+
 class ConsentForm extends HTMLFormElement {
   constructor() {
     super();
@@ -13,12 +15,9 @@ class ConsentForm extends HTMLFormElement {
 
   #handleSubmit(event: Event) {
     event.preventDefault();
-    const data: { [key:string]: boolean } = {};
     const checkboxes = Array.from(this.querySelectorAll('input[type="checkbox"][name]')) as HTMLInputElement[];
-    checkboxes.forEach((checkbox) => {
-      data[checkbox.name] = checkbox.checked;
-    });
-    console.log(JSON.stringify(data, null, 2));
+    const consentMap = checkboxes.reduce((map, checkbox) => ({ ...map, [checkbox.name]: checkbox.checked }), {});
+    setConsentMap(consentMap);
   }
 }
 

@@ -82,10 +82,11 @@ function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; vide
 <figure>
   <video-embed
     data-autoplay={autoplay ? 'true' : undefined}
+    data-provider={video.provider}
     data-video-url={getVideoUrl({ loop: Boolean(loop), mute: Boolean(mute), video })}
     style={{ aspectRatio }}
   >
-    <a href={video.url} target="_blank" rel="noopener noreferrer">
+    <a href={video.url} target="_blank" rel="noopener noreferrer" class="play-link">
       <img
         alt={t('play_video_title', { title }) }
         loading="lazy"
@@ -94,11 +95,20 @@ function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; vide
         style={{ aspectRatio }}
       />
     </a>
+    <div class="consent-alert" role="alert" hidden>
+      <p class="consent-alert__text">Consent message about ...</p>
+      <div class="consent-alert__actions">
+        <button type="button">Allow { providerName }</button>
+        <a href={ video.url } target="_blank" rel="noopener noreferrer">
+          { t('watch_video_on_provider', { provider: providerName }) } <Icon name="external" />
+        </a>
+      </div>
+    </div>
     <iframe hidden allowfullscreen allow="autoplay" title={ title } style={{ aspectRatio }}></iframe>
   </video-embed>
   <figcaption>
-    <a href={video.url} target="_blank" rel="noopener noreferrer">
-      {title} ({t('watch_video_on_provider', { provider: providerName }) }) <Icon name="external" />
+    <a href={ video.url } target="_blank" rel="noopener noreferrer">
+      { title } ({ t('watch_video_on_provider', { provider: providerName }) }) <Icon name="external" />
     </a>
   </figcaption>
 </figure>
@@ -113,23 +123,44 @@ function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; vide
     width: 100%;
     background-color: #f1f1f1;
   }
-  img {
+
+  video-embed > * {
     position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+  img {
     z-index: 0;
     width: 100%;
-    height: 100%;
     object-fit: cover;
   }
+
+  [role="alert"] {
+    z-index: 2;
+  }
+
   iframe {
-    position: absolute;
     z-index: 3;
-    width: 100%;
-    height: 100%;
     border: none;
   }
 
   /* basic styling, can be removed */
   figcaption {
+    text-align: center;
+  }
+
+  [role="alert"]:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .consent-alert__text {
+    margin: 20px;
+    text-align: center;
+  }
+  .consent-alert__actions {
+    margin: 20px;
     text-align: center;
   }
 
@@ -141,7 +172,7 @@ function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; vide
   }
 
   /* play icon using pseudo elements */
-  video-embed a::before {
+.play-link::before {
     --circle-radius: 30px;
     content: "";
     display: block;
@@ -155,7 +186,7 @@ function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; vide
     background-color: black;
     opacity: 0.8;
   }
-  video-embed a::after {
+  .play-link::after {
     --triangle-width: 20px;
     content: "";
     display: block;
@@ -169,15 +200,15 @@ function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; vide
     border-bottom: calc(var(--triangle-width) * 0.5) solid transparent;
     border-left: var(--triangle-width) solid white;
   }
-  video-embed a::before,
-  video-embed a::after {
+  .play-link::before,
+  .play-link::after {
     transform: scale(1);
     transition: transform 0.2s ease-in-out;
   }
-  video-embed a:hover::before,
-  video-embed a:hover::after,
-  video-embed a:focus::before,
-  video-embed a:focus::after {
+  .play-link:hover::before,
+  .play-link:hover::after,
+  .play-link:focus::before,
+  .play-link:focus::after {
     transform: scale(1.5);
   }
 </style>
