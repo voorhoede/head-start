@@ -1,6 +1,7 @@
 ---
-import type { SiteLocale } from '@lib/i18n.types';
-import type { InternalLinkFragment, PageRecord } from '@lib/types/datocms';
+import type { InternalLinkFragment, PageRecord, SiteLocale } from '@lib/types/datocms';
+import { getPagePath } from './index';
+
 interface Props {
   link: InternalLinkFragment;
   openInNewTab?: boolean;
@@ -20,7 +21,7 @@ const getHref = (
   }) => {
   const pathParams = {
     HomeRecord: [],
-    PageRecord: [(page as PageRecord).slug],
+    PageRecord: [getPagePath({ page: page as PageRecord, locale })],
   }[page.__typename];
   
   return `/${[
