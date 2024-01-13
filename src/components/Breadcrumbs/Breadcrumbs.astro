@@ -9,6 +9,17 @@ interface Props {
 
 const { items } = Astro.props;
 const isLast = (index: number) => index === items.length - 1;
+// @see https://developers.google.com/search/docs/appearance/structured-data/breadcrumb#json-ld
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: items.map((item, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: item.text,
+    item: new URL(item.href || '', Astro.site),
+  })),
+};
 ---
 
 <nav aria-label={t('breadcrumbs_title')}>
@@ -32,6 +43,8 @@ const isLast = (index: number) => index === items.length - 1;
     }
   </ol>
 </nav>
+
+<script type="application/ld+json" set:html={ JSON.stringify(schema, null, 2) } />
 
 <style>
   nav {
