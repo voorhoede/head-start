@@ -1,0 +1,32 @@
+---
+// import Icon from '@components/Icon';
+const { data } = Astro.props;
+---
+
+{ /* no consent version
+<div class='twitter-embed'>
+  <Icon name='twitter' />
+  <div
+    set:html={data.html}
+    style={{
+      'aspect-ratio': data.width && data.height ? data.width / data.height : null,
+      'max-width': data.width ? `${data.width}px` : null,
+    }}
+  />
+</div>
+*/ }
+
+<div
+  set:html={data.html}
+  style={{
+    'aspect-ratio': data.width && data.height ? data.width / data.height : null,
+    'max-width': data.width ? `${data.width}px` : null,
+  }}
+/>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<style>
+  .twitter-embed {
+    border: 1px solid black;
+  }
+</style>

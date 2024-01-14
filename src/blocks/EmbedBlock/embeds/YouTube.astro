@@ -1,0 +1,28 @@
+---
+import getVideoId from 'get-video-id';
+import VideoEmbedBlock from '@blocks/VideoEmbedBlock/VideoEmbedBlock.astro';
+
+
+const { data, url } = Astro.props;
+const videoId = getVideoId(url)?.id;
+
+const block = {
+  type: 'VideoEmbedBlock',
+  id: data.video_id,
+  video: {
+    provider: 'youtube',
+    providerUid: videoId,
+    thumbnailUrl: data.thumbnail_url,
+    title: data.title,
+    url: url,
+    height: data.height,
+    width: data.width,
+  },
+  title: data.title,
+  autoplay: false,
+  mute: false,
+  loop: false,
+};
+---
+
+<VideoEmbedBlock block={block} />

@@ -1,2 +1,2 @@
-export const datocmsEnvironment = 'page-partial-layout';
+export const datocmsEnvironment = 'embed-block';
 export const datocmsBuildTriggerId = '30535';

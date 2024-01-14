@@ -1,0 +1,61 @@
+---
+import {
+  fetchOEmbedData,
+  fetchPageTitle,
+  getOEmbedProvider,
+} from '@lib/oembed';
+import type { EmbedBlockFragment } from '@lib/types/datocms';
+import DefaultEmbed from './embeds/Default.astro';
+import TwitterEmbed from './embeds/Twitter.astro';
+import VimeoEmbed from './embeds/Vimeo.astro';
+import YouTubeEmbed from './embeds/YouTube.astro';
+
+interface Props {
+  block: EmbedBlockFragment;
+}
+const { block } = Astro.props;
+const data = await fetchOEmbedData(block.url);
+const fallbackText = data ? null : await fetchPageTitle(block.url);
+const providerName = (data || getOEmbedProvider(block.url))?.provider_name;
+const isProvider = (name: string) =>
+  providerName?.toLowerCase() === name.toLowerCase();
+---
+
+<div class='embed-block'>
+  {
+    data && data.html ? (
+      isProvider('Twitter') ? (
+        <TwitterEmbed {data} />
+      ) : isProvider('Vimeo') ? (
+        <VimeoEmbed {data} />
+      ) : isProvider('YouTube') ? (
+        <YouTubeEmbed {data} url={block.url} />
+      ) : (
+        <DefaultEmbed {data} />
+      )
+    ) : (
+      <a
+        class='embed-fallback'
+        href={block.url}
+        target='_blank'
+        rel='noopener noreferrer'
+      >
+        [ unable to load from {providerName} ]<br />
+        {fallbackText ? fallbackText : `${providerName}: ${block.url}`}
+      </a>
+    )
+  }
+</div>
+
+<style>
+  .embed-block {
+    margin-block: 10px;
+  }
+  .embed-fallback {
+    display: block;
+    padding: 10px;
+    background: #eee;
+    border: 1px solid black;
+    word-break: break-word;
+  }
+</style>

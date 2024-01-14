@@ -1,0 +1,18 @@
+---
+const { data } = Astro.props;
+---
+
+<div
+  class='default-embed'
+  set:html={data.html}
+  style={{
+    'aspect-ratio': data.width && data.height ? data.width / data.height : null,
+    'max-width': data.width ? `${data.width}px` : null,
+  }}
+/>
+
+<style>
+  .default-embed {
+    border: 1px solid black;
+  }
+</style>

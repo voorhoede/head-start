@@ -1,0 +1,24 @@
+---
+import VideoEmbedBlock from '@blocks/VideoEmbedBlock/VideoEmbedBlock.astro';
+
+const { data } = Astro.props;
+const block = {
+  type: 'VideoEmbedBlock',
+  id: data.video_id,
+  video: {
+    provider: 'vimeo',
+    providerUid: data.video_id,
+    thumbnailUrl: data.thumbnail_url,
+    title: data.title,
+    url: data.url,
+    height: data.height,
+    width: data.width,
+  },
+  title: data.title,
+  autoplay: false,
+  mute: false,
+  loop: false,
+};
+---
+
+<VideoEmbedBlock block={block} />
