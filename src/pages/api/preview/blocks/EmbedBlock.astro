@@ -1,0 +1,21 @@
+---
+import EmbedBlock from '@blocks/EmbedBlock/EmbedBlock.astro';
+
+export const prerender = false;
+
+const block = {
+  url: new URL(Astro.request.url).searchParams.get('url'),
+};
+---
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset='utf-8' />
+    <meta name='viewport' content='width=device-width' />
+    <title>EmbedBlock preview</title>
+  </head>
+  <EmbedBlock {block} />
+
+
+</html>
