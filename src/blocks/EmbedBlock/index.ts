@@ -102,6 +102,6 @@ export const extractScripts = (html: string): { noscriptHtml: string, scripts: {
 
 export const sanatizeHtml = (html: string): string => {
   return html.replace(/<iframe[^>]*>/gi, (iframeTag) => {
-    return iframeTag.replace(/(allow|frameborder|scrolling)="[^"]+"/gi, '');
+    return iframeTag.replace(/(allow|allowtransparency|frameborder|scrolling)="[^"]+"/gi, '');
   });
 };

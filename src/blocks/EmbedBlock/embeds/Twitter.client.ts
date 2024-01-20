@@ -8,7 +8,12 @@ class TwitterEmbed extends HTMLElement {
 
   connectedCallback() {
     /* todo: only enable scripts after consent. See https://github.com/voorhoede/head-start/issues/49 */
-    this.setAttribute('data-enhanced', 'true');
+    const allScriptsLoaded = Promise.all(this.#scriptTags.map((script) => {
+      return new Promise((resolve) => script.addEventListener('load', resolve));
+    }));
+    allScriptsLoaded.then(() => {
+      this.setAttribute('data-enhanced', 'true');
+    });
     this.#scriptTags.forEach((script) => {
       script.src = script.dataset.src as string;
     });

@@ -1,12 +1,15 @@
 ---
+import { sanatizeHtml } from '../index';
+
 const { data } = Astro.props;
+const html = sanatizeHtml(data.html);
 const aspectRatio = data.width && data.height ? data.width / data.height : null;
 const maxWidth = data.width ? `${data.width}px` : '100%';
 ---
 
 <div
   class="default-embed"
-  set:html={data.html}
+  set:html={html}
 />
 
 <style define:vars={{ aspectRatio, maxWidth }}>

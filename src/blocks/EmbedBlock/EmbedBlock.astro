@@ -1,6 +1,6 @@
 ---
 import type { EmbedBlockFragment } from '@lib/types/datocms';
-import { fetchPageTitle, getOEmbedProvider, sanatizeHtml } from './index';
+import { fetchPageTitle, getOEmbedProvider } from './index';
 import type { OEmbedAny } from './index';
 import DefaultEmbed from './embeds/Default.astro';
 import TwitterEmbed from './embeds/Twitter.astro';
@@ -28,10 +28,7 @@ const isProvider = (name: string) =>
       ) : isProvider('YouTube') ? (
         <YouTubeEmbed {data} {url} />
       ) : (
-        <DefaultEmbed data={{
-          html: sanatizeHtml(data.html),
-          ...data
-        }} {url} />
+        <DefaultEmbed {data} {url} />
       )
     ) : (
       <a
