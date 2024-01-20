@@ -78,6 +78,7 @@ All documentation is located in [`docs/`](docs/):
 - [Internationalization (i18n)](docs/i18n.md)
 - [Project Structure](docs/project-structure.md)
 - [Preview Mode](docs/preview-mode.md)
+- [Routing](docs/routing.md)
 - [Search](docs/search.md)
 - [Search Engine Optimisation (SEO)](docs/seo.md)
 
