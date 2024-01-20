@@ -1,32 +1,45 @@
 ---
-// import Icon from '@components/Icon';
-const { data } = Astro.props;
+import { extractScripts } from '../index';
+import type { OEmbedRich } from '../index';
+import Icon from '@components/Icon';
+
+const data = Astro.props.data as OEmbedRich;
+const { noscriptHtml, scripts } = extractScripts(data.html);
 ---
 
-{ /* no consent version
-<div class='twitter-embed'>
-  <Icon name='twitter' />
+<twitter-embed data-enhanced="false">
+  <Icon name="twitter" aria-label="X" />
   <div
-    set:html={data.html}
+    set:html={noscriptHtml}
     style={{
       'aspect-ratio': data.width && data.height ? data.width / data.height : null,
       'max-width': data.width ? `${data.width}px` : null,
     }}
   />
-</div>
-*/ }
+  { scripts.map(({ src, ...attributes }) => (
+    <script data-src={ src } {...attributes} />
+  )) }
+</twitter-embed>
 
-<div
-  set:html={data.html}
-  style={{
-    'aspect-ratio': data.width && data.height ? data.width / data.height : null,
-    'max-width': data.width ? `${data.width}px` : null,
-  }}
-/>
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<script src="./Twitter.client.ts"></script>
 
 <style>
-  .twitter-embed {
+  twitter-embed {
+    display: block;
+    position: relative;
+  }
+  twitter-embed[data-enhanced="false"] {
     border: 1px solid black;
+    border-radius: 5px;
+  }
+
+  twitter-embed[data-enhanced="true"] [data-icon="twitter"] {
+    display: none;
+  }
+  twitter-embed[data-enhanced="false"] [data-icon="twitter"] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px;
   }
 </style>

@@ -1,13 +1,24 @@
 ---
 import getVideoId from 'get-video-id';
 import VideoEmbedBlock from '@blocks/VideoEmbedBlock/VideoEmbedBlock.astro';
+import type { VideoEmbedBlockFragment } from '@lib/types/datocms';
+import type { OEmbedRich } from '../index';
 
+type OEmbedYouTube = OEmbedRich & {
+  video_id: string;
+  thumbnail_url: string;
+  title: string;
+  height: number;
+  width: number;
+};
+type Props = {
+  data: OEmbedYouTube;
+  url: string;
+};
 
 const { data, url } = Astro.props;
-const videoId = getVideoId(url)?.id;
-
-const block = {
-  type: 'VideoEmbedBlock',
+const videoId = getVideoId(url).id || '';
+const block: VideoEmbedBlockFragment = {
   id: data.video_id,
   video: {
     provider: 'youtube',

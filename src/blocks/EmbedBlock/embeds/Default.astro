@@ -1,18 +1,23 @@
 ---
 const { data } = Astro.props;
+const aspectRatio = data.width && data.height ? data.width / data.height : null;
+const maxWidth = data.width ? `${data.width}px` : '100%';
 ---
 
 <div
-  class='default-embed'
+  class="default-embed"
   set:html={data.html}
-  style={{
-    'aspect-ratio': data.width && data.height ? data.width / data.height : null,
-    'max-width': data.width ? `${data.width}px` : null,
-  }}
 />
 
-<style>
+<style define:vars={{ aspectRatio, maxWidth }}>
   .default-embed {
-    border: 1px solid black;
+    aspect-ratio: var(--aspectRatio);
+    max-width: var(--maxWidth);
+    overflow: hidden;
+  }
+  .default-embed :global(iframe) {
+    aspect-ratio: var(--aspectRatio);
+    max-width: 100% !important;
+    height: auto !important;
   }
 </style>
