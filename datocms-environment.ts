@@ -1,2 +1,2 @@
-export const datocmsEnvironment = 'page-partial-layout';
+export const datocmsEnvironment = 'redirect-rules';
 export const datocmsBuildTriggerId = '30535';
