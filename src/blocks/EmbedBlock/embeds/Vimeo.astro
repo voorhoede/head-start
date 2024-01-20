@@ -1,7 +1,16 @@
 ---
 import VideoEmbedBlock from '@blocks/VideoEmbedBlock/VideoEmbedBlock.astro';
 import type { VideoEmbedBlockFragment } from '@lib/types/datocms';
+import type { OEmbedVideo } from '../index';
 
+type OEmbedVimeo = OEmbedVideo & {
+  video_id: string;
+  provider_url: string;
+  thumbnail_url: string;
+};
+type Props = {
+  data: OEmbedVimeo;
+}
 const { data } = Astro.props;
 const block: VideoEmbedBlockFragment = {
   id: data.video_id,
