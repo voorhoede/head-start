@@ -8,7 +8,7 @@ const { noscriptHtml, scripts } = extractScripts(data.html);
 ---
 
 <twitter-embed data-enhanced="false">
-  <Icon name="twitter" />
+  <Icon name="twitter" aria-label={ data.provider_name } />
   <div
     set:html={noscriptHtml}
     style={{

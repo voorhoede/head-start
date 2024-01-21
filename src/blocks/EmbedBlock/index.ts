@@ -90,17 +90,24 @@ export const extractScripts = (html: string): { noscriptHtml: string, scripts: {
   const scripts: { src: string }[] = [];
   const noscriptHtml = html.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, (scriptTag) => {
     const attributes = [...scriptTag.matchAll(/([a-z]+)(="([^"]+)")?/gi)]
-      .filter((match) => match[1] !== 'script')
-      .reduce((acc, match) => ({ ...acc, [match[1]]: match[3] || true }), {
-        src: '',
-      });
+      .map((match) => ({ name: match[1], value: match[3] || true }))
+      .filter(({ name }) => name !== 'script')
+      .reduce((acc, { name, value }) => ({ ...acc, [name]: value }), { src: '' });
     scripts.push(attributes);
     return '';
   });
   return { noscriptHtml, scripts };
 };
 
+export const isIframeHtml = (html: string): boolean => {
+  return /<iframe[^>]*>/gi.test(html);
+};
+
 export const sanatizeHtml = (html: string): string => {
+  /**
+   * Remove deprecated attributes to resolve HTML violations
+   * https://html-validate.org/rules/no-deprecated-attr.html
+   */
   return html.replace(/<iframe[^>]*>/gi, (iframeTag) => {
     return iframeTag.replace(/(allow|allowtransparency|frameborder|scrolling)="[^"]+"/gi, '');
   });

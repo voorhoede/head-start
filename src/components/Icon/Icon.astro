@@ -6,9 +6,13 @@ interface Props {
   [x:string]: any;
 }
 const { name, ...props } = Astro.props;
+const attributes = { 
+  ...props,
+  'aria-hidden': !props['aria-label'],
+};
 ---
 
-<svg {...props} aria-hidden data-icon={name}>
+<svg { ...attributes } data-icon={name}>
   <use xlink:href={`#${name}`} />
 </svg>
 

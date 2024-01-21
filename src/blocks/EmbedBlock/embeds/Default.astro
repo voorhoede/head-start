@@ -1,25 +1,60 @@
 ---
-import { sanatizeHtml } from '../index';
+import { extractScripts, isIframeHtml, sanatizeHtml } from '../index';
 
 const { data } = Astro.props;
-const html = sanatizeHtml(data.html);
+const { noscriptHtml, scripts } = extractScripts(data.html);
+const html = sanatizeHtml(noscriptHtml);
 const aspectRatio = data.width && data.height ? data.width / data.height : null;
 const maxWidth = data.width ? `${data.width}px` : '100%';
 ---
 
-<div
-  class="default-embed"
-  set:html={html}
-/>
+<default-embed data-enhanced="false" data-provider={data.provider_name}>
+  { isIframeHtml(html)
+    ? (<>
+      { data.thumbnail_url && (
+        <img 
+          alt={ `${data.title} (${data.provider_name})` }
+          loading="lazy"
+          src={ data.thumbnail_url }
+          class="embed-placeholder"
+        /> 
+      )}
+      <template set:html={html}></template>
+    </>)
+    : <div set:html={html} />
+  }
+  { scripts.map(({ src, ...attributes }) => (
+    <script data-src={ src } {...attributes} />
+  )) }
+</default-embed>
+
+<script src="./Default.client.ts"></script>
 
 <style define:vars={{ aspectRatio, maxWidth }}>
-  .default-embed {
+  default-embed {
+    display: block;
     aspect-ratio: var(--aspectRatio);
     max-width: var(--maxWidth);
     overflow: hidden;
+    background-color: #ebebeb;
   }
-  .default-embed :global(iframe) {
+  default-embed[data-enhanced="false"] .embed-placeholder {
+    display: block;
+    width: 100%;
+    height: 100% !important;
+    object-fit: cover;
+    object-position: center;
+  }
+  default-embed[data-enhanced="true"] .embed-placeholder {
+    display: none;
+  }
+
+  default-embed :global(iframe) {
     aspect-ratio: var(--aspectRatio);
+    max-width: 100% !important;
+    height: auto !important;
+  }
+  default-embed :global(img) {
     max-width: 100% !important;
     height: auto !important;
   }
