@@ -1,10 +1,10 @@
 ---
-import { extractScripts, isIframeHtml, sanatizeHtml } from '../index';
+import { extractScripts, getEmbedText, isIframeHtml, sanatizeHtml } from '../index';
 
 const { data, url, class: classList, ...props } = Astro.props;
 const { noscriptHtml, scripts } = extractScripts(data.html);
 const html = sanatizeHtml(noscriptHtml);
-const placeholderText = `${data.title} (${data.provider_name})`;
+const placeholderText = getEmbedText(data);
 const aspectRatio = data.width && data.height ? data.width / data.height : null;
 const maxWidth = data.width ? `${data.width}px` : '100%';
 ---
@@ -21,7 +21,7 @@ const maxWidth = data.width ? `${data.width}px` : '100%';
         <a href={ url } rel="noreferrer noopener" target="_blank" class="embed-placeholder">
           { data.thumbnail_url
             ? <img alt={ placeholderText } src={ data.thumbnail_url } loading="lazy" /> 
-            : <span>{ data.title } ({ data.pro})</span>
+            : <span>{ placeholderText }</span>
           }
         </a>
         <template set:html={html}></template>

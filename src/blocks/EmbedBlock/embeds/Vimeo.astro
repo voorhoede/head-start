@@ -8,10 +8,7 @@ type OEmbedVimeo = OEmbedVideo & {
   provider_url: string;
   thumbnail_url: string;
 };
-type Props = {
-  data: OEmbedVimeo;
-}
-const { data } = Astro.props;
+const data = Astro.props.data as OEmbedVimeo;
 const block: VideoEmbedBlockFragment = {
   id: data.video_id,
   video: {

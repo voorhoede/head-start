@@ -8,12 +8,9 @@ type OEmbedYouTube = OEmbedVideo & {
   video_id: string;
   thumbnail_url: string;
 };
-type Props = {
-  data: OEmbedYouTube;
-  url: string;
-};
 
-const { data, url } = Astro.props;
+const data = Astro.props.data as OEmbedYouTube;
+const url = Astro.props.url as string;
 const block: VideoEmbedBlockFragment = {
   id: data.video_id,
   video: {

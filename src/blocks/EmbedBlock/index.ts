@@ -14,6 +14,7 @@ export interface OEmbedData {
     thumbnail_url?: string;
     thumbnail_width?: number;
     thumbnail_height?: number;
+    [key: string]: boolean | number | string | undefined;
 }
 export interface OEmbedPhoto extends OEmbedData {
     type: 'photo';
@@ -70,22 +71,6 @@ export function getOEmbedProvider(url: string): OEmbedProvider | null {
   return null;
 }
 
-export function fetchPageTitle (url:string) {
-  return fetch(url)
-    .then(response => response.text())
-    .then(text => {
-      const match = text.match(/<title[^>]*>([^<]+)<\/title>/i);
-      if (match) {
-        return match[1];
-      }
-      return null;
-    })
-    .catch(err => {
-      console.log('fetchPageTitle error:', err);
-      return null;
-    });
-}
-
 export const extractScripts = (html: string): { noscriptHtml: string, scripts: { src: string }[] } => {
   const scripts: { src: string }[] = [];
   const noscriptHtml = html.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, (scriptTag) => {
@@ -97,6 +82,10 @@ export const extractScripts = (html: string): { noscriptHtml: string, scripts: {
     return '';
   });
   return { noscriptHtml, scripts };
+};
+
+export const getEmbedText = ({ provider_name, title }: { provider_name: string, title: string }): string => {
+  return `${provider_name}: ${title}`;
 };
 
 export const isIframeHtml = (html: string): boolean => {

@@ -1,7 +1,8 @@
 ---
 import type { EmbedBlockFragment } from '@lib/types/datocms';
-import { fetchPageTitle, getOEmbedProvider } from './index';
+import { getOEmbedProvider } from './index';
 import type { OEmbedAny } from './index';
+import BasicEmbed from './embeds/Basic.astro';
 import DefaultEmbed from './embeds/Default.astro';
 import TwitterEmbed from './embeds/Twitter.astro';
 import VimeoEmbed from './embeds/Vimeo.astro';
@@ -12,7 +13,6 @@ interface Props {
 }
 const { block } = Astro.props;
 const { data, url }: { data: OEmbedAny; url: string } = block;
-const fallbackText = data ? null : await fetchPageTitle(block.url);
 const providerName = (data || getOEmbedProvider(url))?.provider_name;
 const isProvider = (name: string) =>
   providerName?.toLowerCase() === name.toLowerCase();
@@ -31,15 +31,7 @@ const isProvider = (name: string) =>
         <DefaultEmbed {data} {url} />
       )
     ) : (
-      <a
-        class='embed-fallback'
-        href={block.url}
-        target='_blank'
-        rel='noopener noreferrer'
-      >
-        [ unable to load from {providerName} ]<br />
-        {fallbackText ? fallbackText : `${providerName}: ${block.url}`}
-      </a>
+      <BasicEmbed {data} {url} />
     )
   }
 </div>
@@ -47,12 +39,5 @@ const isProvider = (name: string) =>
 <style>
   .embed-block {
     margin-block: 20px;
-  }
-  .embed-fallback {
-    display: block;
-    padding: 10px;
-    background: #eee;
-    border: 1px solid black;
-    word-break: break-word;
   }
 </style>
