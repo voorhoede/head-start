@@ -6,9 +6,13 @@ interface Props {
   [x:string]: any;
 }
 const { name, ...props } = Astro.props;
+const ariaLabel = props['aria-label'];
 const attributes = { 
   ...props,
-  'aria-hidden': !props['aria-label'],
+  'aria-hidden': !ariaLabel,
+  role: props.role 
+    ? props.role
+    : ariaLabel ? 'img' : 'presentation',
 };
 ---
 
