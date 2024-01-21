@@ -1,3 +1,4 @@
+#import '@blocks/EmbedBlock/EmbedBlock.fragment.graphql'
 #import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
 #import '@blocks/PagePartialBlock/PagePartialBlock.fragment.graphql'
 #import '@blocks/TableBlock/TableBlock.fragment.graphql'
@@ -15,6 +16,9 @@ query Home($locale: SiteLocale!) {
     }
     bodyBlocks {
       __typename
+      ... on EmbedBlockRecord {
+        ...EmbedBlock
+      }
       ... on ImageBlockRecord {
         ...ImageBlock
       }
