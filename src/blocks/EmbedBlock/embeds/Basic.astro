@@ -1,0 +1,42 @@
+---
+import { getEmbedText } from '../index';
+
+const { data, url } = Astro.props;
+const placeholderText = getEmbedText(data);
+const aspectRatio = data.width && data.height ? data.width / data.height : null;
+const maxWidth = data.width ? `${data.width}px` : '100%';
+---
+
+<a href={url} rel='noreferrer noopener' target='_blank'>
+  {
+    data.thumbnail_url ? (
+      <img
+        alt={placeholderText}
+        src={data.thumbnail_url}
+        loading='lazy'
+        style={{
+          aspectRatio,
+          maxWidth,
+        }}
+      />
+    ) : (
+      <div>
+        {data.title ? placeholderText : `${data.provider_name}: ${url}`}
+      </div>
+    )
+  }
+</a>
+
+<style>
+  a {
+    display: block;
+    background-color: #ebebeb;
+  }
+  img {
+    display: block;
+  }
+  div {
+    padding: 10px;
+    word-break: break-word;
+  }
+</style>

@@ -1,0 +1,77 @@
+---
+import { extractScripts, getEmbedText, isIframeHtml, sanatizeHtml } from '../index';
+
+const { data, url, class: classList, ...props } = Astro.props;
+const { noscriptHtml, scripts } = extractScripts(data.html);
+const html = sanatizeHtml(noscriptHtml);
+const placeholderText = getEmbedText(data);
+const aspectRatio = data.width && data.height ? data.width / data.height : null;
+const maxWidth = data.width ? `${data.width}px` : '100%';
+---
+
+<default-embed 
+  data-enhanced="false" 
+  data-provider={data.provider_name}
+  class:list={[ classList, { 'with-iframe': isIframeHtml(html) } ]}
+  { ...props }
+>
+  <slot name="html">
+    { isIframeHtml(html)
+      ? (<>
+        <a href={ url } rel="noreferrer noopener" target="_blank" class="embed-placeholder">
+          { data.thumbnail_url
+            ? <img alt={ placeholderText } src={ data.thumbnail_url } loading="lazy" /> 
+            : <span>{ placeholderText }</span>
+          }
+        </a>
+        <template set:html={html}></template>
+      </>)
+      : <div set:html={html} />
+    }
+  </slot>
+  <slot name="noscript">
+    { scripts.map(({ src, ...attributes }) => (
+      <script data-src={ src } {...attributes} />
+    )) }
+  </slot>
+</default-embed>
+
+<script src="./Default.client.ts"></script>
+
+<style define:vars={{ aspectRatio, maxWidth }}>
+  default-embed {
+    display: block;
+    aspect-ratio: var(--aspectRatio);
+    max-width: var(--maxWidth);
+    overflow: hidden;
+    background-color: #ebebeb;
+  }
+
+  .embed-placeholder img {
+    display: block;
+    width: 100%;
+    height: 100% !important;
+    object-fit: cover;
+    object-position: center;
+  }
+  default-embed[data-enhanced="false"] .embed-placeholder {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  default-embed[data-enhanced="true"] .embed-placeholder {
+    display: none;
+  }
+
+  /* only force sizing on embeds with iframe in noscript html */
+  /* as scripts (like Twitter widget) may load more than just the iframe */
+  default-embed.with-iframe :global(iframe) {
+    aspect-ratio: var(--aspectRatio);
+    max-width: 100% !important;
+    height: auto !important;
+  }
+  default-embed :global(img) {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+</style>

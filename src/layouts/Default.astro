@@ -63,7 +63,7 @@ const mainContentId = 'content';
   </body>
 </html>
 
-<style>
+<style is:global>
   /* very basic reset */
   *, *::before, *::after {
     box-sizing: border-box;
@@ -73,7 +73,11 @@ const mainContentId = 'content';
     padding: 0;
     font-family: sans-serif;
   }
-
+  figure {
+    margin: 0;
+  }
+</style>
+<style>
   /* Sticky footer. @see https://css-tricks.com/a-clever-sticky-footer-technique/ */
   html, body {
     height: 100%;

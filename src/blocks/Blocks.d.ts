@@ -1,4 +1,5 @@
 import { 
+  EmbedBlockFragment,
   ImageBlockFragment,
   PagePartialBlockFragment,
   TableBlockFragment,
@@ -8,6 +9,7 @@ import {
 } from '@lib/types/datocms';
 
 export type AnyBlock =
+  | EmbedBlockFragment
   | ImageBlockFragment
   | PagePartialBlockFragment
   | TableBlockFragment

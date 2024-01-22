@@ -1,0 +1,48 @@
+---
+import Icon from '@components/Icon';
+import DefaultEmbed from './Default.astro';
+import { extractScripts } from '../index';
+import type { OEmbedRich } from '../index';
+
+const data = Astro.props.data as OEmbedRich;
+const url = Astro.props.url;
+const { noscriptHtml } = extractScripts(data.html);
+---
+
+<DefaultEmbed { data } { url } class="twitter-embed">
+  <div slot="html">
+    <Icon name="twitter" aria-label={ data.provider_name } />
+    <div
+      set:html={noscriptHtml}
+      style={{
+        'aspect-ratio': data.width && data.height ? data.width / data.height : null,
+        'max-width': data.width ? `${data.width}px` : null,
+      }}
+    />
+  </div>
+</DefaultEmbed>
+
+<style>
+  .twitter-embed {
+    display: block;
+    position: relative;
+    aspect-ratio: unset;
+    background-color: white;
+    overflow: auto;
+  }
+  .twitter-embed[data-enhanced="false"] {
+    border: 1px solid black;
+    border-radius: 5px;
+  }
+
+  .twitter-embed[data-enhanced="true"] [data-icon="twitter"] {
+    display: none;
+  }
+  .twitter-embed[data-enhanced="false"] [data-icon="twitter"] {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 15px;
+    height: 15px;
+  }
+</style>
