@@ -21,6 +21,7 @@
     "dev:icons": "chokidar 'src/assets/icons/*.svg' -c 'npm run prep:icons'",
     "dev:translations": "jiti scripts/watch-translations.ts",
     "prep": "run-s prep:* --print-label",
+    "prep:clean-astro-env": "rm -rf node_modules/.astro",
     "prep:datocms-types": "graphql-codegen --config .graphqlrc.ts",
     "prep:download-site-data": "jiti scripts/download-site-data.ts",
     "prep:download-translations": "jiti scripts/download-translations.ts",
@@ -36,12 +37,12 @@
     "postinstall": "npx husky install"
   },
   "dependencies": {
-    "@astrojs/check": "^0.3.4",
-    "@astrojs/cloudflare": "^8.0.0",
-    "@astrojs/sitemap": "^3.0.3",
+    "@astrojs/check": "^0.4.1",
+    "@astrojs/cloudflare": "^8.1.0",
+    "@astrojs/sitemap": "^3.0.5",
     "@rollup/plugin-graphql": "^2.0.3",
     "accept-language-parser": "^1.5.0",
-    "astro": "^4.0.7",
+    "astro": "^4.2.3",
     "datocms-listen": "^0.1.15",
     "datocms-structured-text-utils": "^2.0.4",
     "get-video-id": "^3.6.5",
@@ -79,7 +80,7 @@
     "npm-run-all": "^4.1.5",
     "plop": "^4.0.0",
     "svg-sprite": "^2.0.2",
-    "wrangler": "^3.15.0"
+    "wrangler": "^3.23.0"
   },
   "nano-staged": {
     "*.{astro,js,ts}": "npm run lint:eslint -- --fix --max-warnings 0"
