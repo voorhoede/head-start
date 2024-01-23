@@ -1,0 +1,22 @@
+fragment VideoBlock on VideoBlockRecord {
+  id
+  videoAsset {
+    video {
+      duration
+      framerate
+      mp4Url
+      muxAssetId
+      muxPlaybackId
+      streamingUrl
+      thumbnailUrl(format: jpg)
+    }
+    width
+    height
+    alt
+    title
+  }
+  title
+  autoplay
+  mute
+  loop
+}

@@ -1,0 +1,41 @@
+---
+import type { UploadVideoField, VideoBlockFragment } from '@lib/types/datocms';
+
+interface Props {
+  block: VideoBlockFragment;
+}
+const { block } = Astro.props;
+const { alt, width, height } = block.videoAsset;
+const video = block.videoAsset.video as UploadVideoField;
+const aspectRatio = width && height ? width / height : null;
+---
+
+<figure>
+  <video
+    poster={video.thumbnailUrl}
+    controls
+    autoplay={block.autoplay ? 'true' : 'false'}
+    loop={block.loop ? 'true' : 'false'}
+    muted={block.mute ? 'true' : 'false'}
+    width={width}
+    height={height}
+    preload='none'
+    style={{ aspectRatio }}
+  >
+    <source src={video.mp4Url} type='video/mp4' />
+    {alt}
+  </video>
+
+  {block.title && <figcaption>{block.title}</figcaption>}
+</figure>
+
+<pre><code>VideoBlock: {JSON.stringify(block, null, 2)}</code></pre>
+
+<style>
+  video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+</style>
