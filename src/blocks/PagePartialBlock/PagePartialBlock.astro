@@ -50,11 +50,11 @@ const isLayout = (layout: PagePartialBlockFragment['layout']) => block.layout ==
 
 { isLayout('tabs') && (
   <Tabs>
-    { items.map(item => (
-    <TabsTab>{ item.title }</TabsTab>
-    <TabsPanel>
-      <Blocks blocks={ item.blocks }/>
-    </TabsPanel>
-    ))}
+    { items.map(item => (<>
+      <TabsTab>{ item.title }</TabsTab>
+      <TabsPanel>
+        <Blocks blocks={ item.blocks }/>
+      </TabsPanel>
+    </>))}
   </Tabs>
 )}
