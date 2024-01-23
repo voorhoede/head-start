@@ -98,3 +98,8 @@ All commands are run from the root of the project, from a terminal:
 ## Contributing
 
 Head Start welcomes contributions of any size and skill level. See [our contribution guidelines](./.github/CONTRIBUTING.md).
+
+## License
+
+Head Start is made with ❤️ by [De Voorhoede](https://www.voorhoede.nl/en/).
+Released under [ISC License](./LICENSE.md).

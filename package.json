@@ -2,6 +2,7 @@
   "name": "head-start",
   "type": "module",
   "version": "0.0.1",
+  "license": "ISC",
   "scripts": {
     "astro": "astro",
     "prebuild": "run-s prep",
@@ -25,7 +26,6 @@
     "prep:download-translations": "jiti scripts/download-translations.ts",
     "prep:icons": "svg-sprite --symbol --symbol-dest='src/assets' --symbol-sprite=icon-sprite.svg src/assets/icons/*.svg && jiti scripts/icon-types.ts",
     "preview": "wrangler pages dev ./dist",
-    "start": "astro dev",
     "lint": "run-s lint:* --print-label",
     "lint:astro": "astro check",
     "lint:eslint": "eslint . --ext .js,.ts,.astro",
