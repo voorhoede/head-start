@@ -27,7 +27,6 @@ class VideoBlock extends HTMLElement {
 
     const useReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (this.#autoplay && !useDataSaveMode && !useReducedMotion) {
-      console.log('play?');
       this.play({ focus: false });
     }
   }
