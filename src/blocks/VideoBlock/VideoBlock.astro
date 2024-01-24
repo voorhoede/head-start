@@ -25,6 +25,8 @@ const activeLocale = getLocale();
       preload='none'
       style={{ aspectRatio }}
     >
+      <source src={video.streamingUrl} type='application/vnd.apple.mpegurl' />
+      <source src={video.streamingUrl} type='application/x-mpegURL' />
       <source src={video.mp4Url} type='video/mp4' />
       { block.tracks.map(track => (
         <track
