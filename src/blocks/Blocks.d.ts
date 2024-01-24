@@ -16,3 +16,8 @@ export type AnyBlock =
   | TextBlockFragment
   | TextImageBlockFragment
   | VideoEmbedBlockFragment;
+
+export type BlockContext = {
+  location?: 'header' | 'body' | 'footer';
+  index: number;
+}

@@ -1,10 +1,11 @@
 ---
 import { getEmbedText } from '../index';
 
-const { data, url } = Astro.props;
+const { context, data, url } = Astro.props;
 const placeholderText = getEmbedText(data);
 const aspectRatio = data.width && data.height ? data.width / data.height : null;
 const maxWidth = data.width ? `${data.width}px` : '100%';
+const loadingStrategy = (context?.location === 'header' || context?.location === 'body' && context?.index < 3) ? 'eager' : 'lazy';
 ---
 
 <a href={url} rel='noreferrer noopener' target='_blank'>
@@ -13,7 +14,7 @@ const maxWidth = data.width ? `${data.width}px` : '100%';
       <img
         alt={placeholderText}
         src={data.thumbnail_url}
-        loading='lazy'
+        loading={loadingStrategy}
         style={{
           aspectRatio,
           maxWidth,

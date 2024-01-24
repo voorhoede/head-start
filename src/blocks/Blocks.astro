@@ -1,5 +1,5 @@
 ---
-import type { AnyBlock } from './Blocks';
+import type { AnyBlock, BlockContext } from './Blocks';
 import EmbedBlock from './EmbedBlock/EmbedBlock.astro';
 import ImageBlock from './ImageBlock/ImageBlock.astro';
 import PagePartialBlock from './PagePartialBlock/PagePartialBlock.astro';
@@ -20,15 +20,17 @@ const blocksByTypename = {
 
 interface Props {
   blocks: AnyBlock[];
+  location: BlockContext['location'];
 }
-const { blocks } = Astro.props;
+const { blocks, location } = Astro.props;
 ---
-{ blocks.map((block) => {
+{ blocks.map((block, index) => {
+  const context: BlockContext = { location, index };
   const typename = block.__typename as keyof typeof blocksByTypename;
   const Block = blocksByTypename[typename];
   return Block
     // @ts-ignore next line
-    ? <Block block={ block } />
+    ? <Block { block } { context } />
     : <script define:vars={{ typename }} is:inline>
         console.log(`No Block found for "${typename}"`);
     </script>;
