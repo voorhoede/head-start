@@ -19,4 +19,12 @@ fragment VideoBlock on VideoBlockRecord {
   autoplay
   mute
   loop
+  tracks {
+    title
+    locale
+    kind
+    file {
+      url
+    }
+  }
 }

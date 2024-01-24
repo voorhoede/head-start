@@ -24,3 +24,24 @@ export function setLocale(locale?: SiteLocale) {
   }
   return i18n.locale();
 }
+
+/**
+ * Returns locale name for a given code in its own language.
+ * This method only supports a few languages, to keep the bundle size small when used client-side.
+ * To add more, see: https://github.com/adlawson/nodejs-langs/blob/master/data.js (not available in ESM)
+ */
+export function getLocaleName(code: string) {
+  const localeNamesByCode = {
+    'de': 'Deutsch',
+    'en': 'English',
+    'es': 'Español',
+    'fr': 'Français',
+    'it': 'Italiano',
+    'nl': 'Nederlands',
+  };
+  const localeName = localeNamesByCode[code as keyof typeof localeNamesByCode];
+  if (localeName) {
+    return localeName;
+  }
+  return code.toUpperCase();
+}

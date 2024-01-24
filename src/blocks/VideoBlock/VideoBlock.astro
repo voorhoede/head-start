@@ -1,5 +1,6 @@
 ---
 import type { UploadVideoField, VideoBlockFragment } from '@lib/types/datocms';
+import { getLocale, getLocaleName } from '@lib/i18n';
 
 interface Props {
   block: VideoBlockFragment;
@@ -8,28 +9,41 @@ const { block } = Astro.props;
 const { alt, width, height } = block.videoAsset;
 const video = block.videoAsset.video as UploadVideoField;
 const aspectRatio = width && height ? width / height : null;
+const activeLocale = getLocale();
 ---
 
-<figure>
-  <video
-    poster={video.thumbnailUrl}
-    controls
-    autoplay={block.autoplay ? 'true' : 'false'}
-    loop={block.loop ? 'true' : 'false'}
-    muted={block.mute ? 'true' : 'false'}
-    width={width}
-    height={height}
-    preload='none'
-    style={{ aspectRatio }}
-  >
-    <source src={video.mp4Url} type='video/mp4' />
-    {alt}
-  </video>
+<video-block data-autoplay={ block.autoplay ? 'true' : 'false' }>
+  <figure>
+    <video
+      poster={video.thumbnailUrl}
+      controls
+      crossorigin="anonymous"
+      autoplay={block.autoplay ? 'true' : null}
+      loop={block.loop ? 'true' : null}
+      muted={block.mute ? 'true' : null}
+      width={width}
+      height={height}
+      preload='none'
+      style={{ aspectRatio }}
+    >
+      <source src={video.mp4Url} type='video/mp4' />
+      { block.tracks.map(track => (
+        <track
+          kind={track.kind}
+          label={track.title || getLocaleName(track.locale) }
+          src={track.file.url}
+          srclang={track.locale}
+          default={track.locale === activeLocale}
+        />
+      )) }
+      {alt}
+    </video>
 
-  {block.title && <figcaption>{block.title}</figcaption>}
-</figure>
+    {block.title && <figcaption>{block.title}</figcaption>}
+  </figure>
+</video-block>
 
-<pre><code>VideoBlock: {JSON.stringify(block, null, 2)}</code></pre>
+<script src="./VideoBlock.client.ts"></script>
 
 <style>
   video {
