@@ -10,6 +10,28 @@ const { alt, width, height } = block.videoAsset;
 const video = block.videoAsset.video as UploadVideoField;
 const aspectRatio = width && height ? width / height : null;
 const activeLocale = getLocale();
+
+/**
+ * Mux generates one or more mp4 files depending on the quality of the source video.
+ * ...
+ * @https://docs.mux.com/guides/enable-static-mp4-renditions
+ */
+const mp4s = Array.from(new Set([
+  video.mp4HighQualityUrl,
+  video.mp4MediumQualityUrl,
+  video.mp4LowQualityUrl,
+])).map((url, index) => {
+  const mp4MaxDimensions = [720, 480, 270];
+  const maxDimension = mp4MaxDimensions[index];
+  const minDimension = maxDimension / (aspectRatio || 1);
+  const isLandscape = width && height ? width >= height : true;
+  const mp4 = {
+    url,
+    width: isLandscape ? maxDimension : minDimension,
+    height: isLandscape ? minDimension : maxDimension,
+  };
+  return mp4;
+});
 ---
 
 <video-block data-autoplay={ block.autoplay ? 'true' : 'false' }>
@@ -27,7 +49,16 @@ const activeLocale = getLocale();
     >
       <source src={video.streamingUrl} type='application/vnd.apple.mpegurl' />
       <source src={video.streamingUrl} type='application/x-mpegURL' />
-      <source src={video.mp4Url} type='video/mp4' />
+      <!-- <source src={video.mp4Url} type='video/mp4' /> -->
+      { mp4s.map((mp4, index) => (
+        <source 
+          src={mp4.url} 
+          type='video/mp4'
+          media={ (index < mp4s.length - 1) ? `(min-width: ${mp4.width}px)` : null }
+          width={mp4.width}
+          height={mp4.height}
+        />
+      )) }
       { block.tracks.map(track => (
         <track
           kind={track.kind}

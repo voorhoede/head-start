@@ -4,7 +4,9 @@ fragment VideoBlock on VideoBlockRecord {
     video {
       duration
       framerate
-      mp4Url
+      mp4LowQualityUrl: mp4Url(res: low)
+      mp4MediumQualityUrl: mp4Url(res: medium)
+      mp4HighQualityUrl: mp4Url(res: high)
       muxAssetId
       muxPlaybackId
       streamingUrl
