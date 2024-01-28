@@ -11,8 +11,12 @@ const videoBlockObserver = new IntersectionObserver(
   { rootMargin: '0px', threshold: [.5] }
 );
 
+const getHlsPlayer = () => import('hls.js');
+
 class VideoBlock extends HTMLElement {
   #autoplay = false;
+  #mp4Url?: string;
+  #streamingUrl?: string;
   #useReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   /**
    * Save Data mode is experimental untyped browser feature, so needs a bit of voodoo:
@@ -28,31 +32,64 @@ class VideoBlock extends HTMLElement {
 
   constructor() { 
     super();
-    this.#autoplay = this.dataset.autoplay === 'true';
+    this.#autoplay = (this.dataset.autoplay === 'true') && !this.#useDataSaveMode && !this.#useReducedMotion;
+    this.#mp4Url = this.dataset.mp4Url;
+    this.#streamingUrl = this.dataset.streamingUrl;
     this.#video = this.querySelector('video') as HTMLVideoElement;
   }
 
   connectedCallback() {
-    if (!this.#video) {
+    if (!this.#video || !this.#mp4Url || !this.#streamingUrl) {
       console.warn('VideoBlock: missing required elements/attributes', this);
       return;
+    }
+    if (!this.#autoplay) {
+      this.addEventListener('click', this.#onClick.bind(this), { once: true });
     }
     videoBlockObserver.observe(this);
   }
 
+  disconnectedCallback() {
+    if (!this.#autoplay) {
+      this.removeEventListener('click', this.#onClick.bind(this));
+    }
+  }
+
+  #onClick() {
+    this.play({ focus: true });
+  }
+
   enhance() {
     videoBlockObserver.unobserve(this);
-
-    if (this.#autoplay && !this.#useDataSaveMode && !this.#useReducedMotion) {
+    if (this.#autoplay) {
       this.play({ focus: false });
     }
   }
 
-  play({ focus }: { focus: boolean }) {
-    this.#video.play();
-    if (focus) {
-      this.#video.focus();
+  async play({ focus }: { focus: boolean }) {
+    const Hls = await getHlsPlayer().then(({ default: Hls }) => Hls);
+    const playAndFocus = () => {
+      this.#video.play();
+      if (focus) {
+        this.#video.focus();
+      }
+    };
+
+    // prefer streaming with adaptive bitrate (HLS), fallback to mp4:
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(this.#streamingUrl as string);
+      hls.attachMedia(this.#video);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => playAndFocus());
+      return;
     }
+    if (this.#video.canPlayType('application/vnd.apple.mpegurl')) {
+      this.#video.src = this.#streamingUrl as string;
+      this.#video.addEventListener('loadedmetadata',() => playAndFocus());
+      return;
+    }
+    this.#video.src = this.#mp4Url as string;
+    playAndFocus();
   }
 }
 

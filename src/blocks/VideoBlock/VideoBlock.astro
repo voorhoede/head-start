@@ -12,7 +12,11 @@ const aspectRatio = width && height ? width / height : null;
 const activeLocale = getLocale();
 ---
 
-<video-block data-autoplay={ block.autoplay ? 'true' : 'false' }>
+<video-block
+  data-autoplay={ block.autoplay ? 'true' : 'false' }
+  data-mp4-url={ video.mp4Url }
+  data-streaming-url={ video.streamingUrl }
+>
   <figure>
     <video
       poster={video.thumbnailUrl}
@@ -25,9 +29,11 @@ const activeLocale = getLocale();
       preload='none'
       style={{ aspectRatio }}
     >
-      <source src={video.streamingUrl} type='application/vnd.apple.mpegurl' />
-      <source src={video.streamingUrl} type='application/x-mpegURL' />
-      <source src={video.mp4Url} type='video/mp4' />
+      <noscript>
+        <source src={video.streamingUrl} type='application/vnd.apple.mpegurl' />
+        <source src={video.streamingUrl} type='application/x-mpegURL' />
+        <source src={video.mp4Url} type='video/mp4' />
+      </noscript>
       { block.tracks.map(track => (
         <track
           kind={track.kind}
