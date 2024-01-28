@@ -1,0 +1,26 @@
+---
+import type { UploadVideoField } from '@lib/types/datocms';
+
+interface Props {
+  alt?: null | string;
+  video: UploadVideoField;
+}
+const { alt = '', video } = Astro.props;
+---
+
+{/* Fallback content for browsers that don't support the video element */}
+<a href={video.mp4Url} download>
+  <img src={video.thumbnailUrl} alt={alt} />
+</a>
+
+<style>
+  a,
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  img {
+    object-fit: cover;
+  }
+</style>

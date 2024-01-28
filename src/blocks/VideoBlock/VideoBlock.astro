@@ -1,5 +1,6 @@
 ---
 import type { UploadVideoField, VideoBlockFragment, VideoTextTrackRecord } from '@lib/types/datocms';
+import VideoFallback from './VideoFallback.astro';
 import VideoTextTracks from './VideoTextTracks.astro';
 
 interface Props {
@@ -37,7 +38,7 @@ const videoAttributes = {
       <video { ...videoAttributes } data-video>
         <source src={video.streamingUrl} type='application/vnd.apple.mpegurl' />
         <VideoTextTracks tracks={ block.tracks as VideoTextTrackRecord[] } />
-        { alt }
+        <VideoFallback alt={ alt } video={ video } />
       </video>
       <noscript>
         <video { ...videoAttributes }>
@@ -45,7 +46,7 @@ const videoAttributes = {
           <source src={video.streamingUrl} type='application/x-mpegURL' />
           <source src={video.mp4Url} type='video/mp4' />
           <VideoTextTracks tracks={ block.tracks as VideoTextTrackRecord[] } />
-          { alt }
+          <VideoFallback alt={ alt } video={ video } />
         </video>
       </noscript>
     </div>
