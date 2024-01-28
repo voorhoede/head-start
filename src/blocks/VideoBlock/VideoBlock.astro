@@ -38,7 +38,7 @@ const videoAttributes = {
       <video { ...videoAttributes } data-video>
         <source src={video.streamingUrl} type='application/vnd.apple.mpegurl' />
         <VideoTextTracks tracks={ block.tracks as VideoTextTrackRecord[] } />
-        <VideoFallback alt={ alt } video={ video } />
+        <VideoFallback alt={ alt } title={ block.title } video={ video } />
       </video>
       <noscript>
         <video { ...videoAttributes }>
@@ -46,7 +46,7 @@ const videoAttributes = {
           <source src={video.streamingUrl} type='application/x-mpegURL' />
           <source src={video.mp4Url} type='video/mp4' />
           <VideoTextTracks tracks={ block.tracks as VideoTextTrackRecord[] } />
-          <VideoFallback alt={ alt } video={ video } />
+          <VideoFallback alt={ alt } title={ block.title } video={ video } />
         </video>
       </noscript>
     </div>
