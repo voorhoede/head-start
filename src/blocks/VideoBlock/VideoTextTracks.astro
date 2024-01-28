@@ -1,14 +1,13 @@
 ---
 import type { VideoTextTrackRecord } from '@lib/types/datocms';
-import { getLocale, getLocaleName } from '@lib/i18n';
-const activeLocale = getLocale();
+import { getLocaleName } from '@lib/i18n';
 
 interface Props {
   tracks: VideoTextTrackRecord[];
 }
 const { tracks } = Astro.props;
 ---
-
+{ /* track[default] attribute makes default track invisible, so it's enabled in the client-side script instead */ }
 {
   tracks.map((track) => (
     <track
@@ -16,7 +15,6 @@ const { tracks } = Astro.props;
       label={track.title || getLocaleName(track.locale)}
       src={track.file.url}
       srclang={track.locale}
-      default={track.locale === activeLocale}
     />
   ))
 }

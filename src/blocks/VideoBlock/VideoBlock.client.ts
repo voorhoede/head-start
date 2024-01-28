@@ -1,3 +1,5 @@
+import { getLocale } from '@lib/i18n';
+
 const enhanceIntersectedVideoBlocks = (entries: IntersectionObserverEntry[]) => {
   entries.forEach((entry) => {
     if (entry.isIntersecting && entry.target instanceof VideoBlock) {
@@ -59,6 +61,17 @@ class VideoBlock extends HTMLElement {
     this.play({ focus: true });
   }
 
+  /**
+   * HLS stream ignores <track default> attribute, so we enable it manually:
+   */
+  showTextTrack() {
+    const defaultTrack = [...this.#video.textTracks]
+      .find((track) => track.language === getLocale());
+    if (defaultTrack) {
+      defaultTrack.mode = 'showing';
+    }
+  }
+
   enhance() {
     videoBlockObserver.unobserve(this);
     if (this.#autoplay) {
@@ -70,6 +83,7 @@ class VideoBlock extends HTMLElement {
     const Hls = await getHlsPlayer().then(({ default: Hls }) => Hls);
     const playAndFocus = () => {
       this.#video.play();
+      this.showTextTrack();
       if (focus) {
         this.#video.focus();
       }

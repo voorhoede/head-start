@@ -35,6 +35,7 @@ const videoAttributes = {
       */ }
     <div style={{ aspectRatio }}>
       <video { ...videoAttributes } data-video>
+        <source src={video.streamingUrl} type='application/vnd.apple.mpegurl' />
         <VideoTextTracks tracks={ block.tracks as VideoTextTrackRecord[] } />
         { alt }
       </video>
