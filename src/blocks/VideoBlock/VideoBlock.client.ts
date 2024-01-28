@@ -35,7 +35,7 @@ class VideoBlock extends HTMLElement {
     this.#autoplay = (this.dataset.autoplay === 'true') && !this.#useDataSaveMode && !this.#useReducedMotion;
     this.#mp4Url = this.dataset.mp4Url;
     this.#streamingUrl = this.dataset.streamingUrl;
-    this.#video = this.querySelector('video') as HTMLVideoElement;
+    this.#video = this.querySelector('video[data-video]') as HTMLVideoElement;
   }
 
   connectedCallback() {

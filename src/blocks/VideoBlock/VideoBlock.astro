@@ -1,6 +1,6 @@
 ---
-import type { UploadVideoField, VideoBlockFragment } from '@lib/types/datocms';
-import { getLocale, getLocaleName } from '@lib/i18n';
+import type { UploadVideoField, VideoBlockFragment, VideoTextTrackRecord } from '@lib/types/datocms';
+import VideoTextTracks from './VideoTextTracks.astro';
 
 interface Props {
   block: VideoBlockFragment;
@@ -9,7 +9,17 @@ const { block } = Astro.props;
 const { alt, width, height } = block.videoAsset;
 const video = block.videoAsset.video as UploadVideoField;
 const aspectRatio = width && height ? width / height : null;
-const activeLocale = getLocale();
+const videoAttributes = {
+  poster: video.thumbnailUrl,
+  controls: true,
+  crossorigin: 'anonymous',
+  loop: block.loop ? 'true' : null,
+  muted: block.mute ? 'true' : null,
+  width,
+  height,
+  preload: 'none',
+  style: { aspectRatio },
+};
 ---
 
 <video-block
@@ -18,35 +28,26 @@ const activeLocale = getLocale();
   data-streaming-url={ video.streamingUrl }
 >
   <figure>
-    <video
-      poster={video.thumbnailUrl}
-      controls
-      crossorigin="anonymous"
-      loop={block.loop ? 'true' : null}
-      muted={block.mute ? 'true' : null}
-      width={width}
-      height={height}
-      preload='none'
-      style={{ aspectRatio }}
-    >
-      { block.tracks.map(track => (
-        <track
-          kind={track.kind}
-          label={track.title || getLocaleName(track.locale) }
-          src={track.file.url}
-          srclang={track.locale}
-          default={track.locale === activeLocale}
-        />
-      )) }
-      <!-- [html-validate-disable-next element-permitted-content -- noscript is allowed in any element that includes phrasing content, including video tag. See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/noscript and https://developer.mozilla.org/en-US/docs/Web/HTML/Content_categories#phrasing_content ] -->
+    { /* We use 2 video elements: 
+      - The first is enhanced in the client-side script to use streaming with adaptive bitrate.
+      - The second is fallback native video element that works without JS or custom elmenet support.
+      As a JS check is needed for the first video to appear, it's wrapped in a div to reserve space for it.
+      */ }
+    <div style={{ aspectRatio }}>
+      <video { ...videoAttributes } data-video>
+        <VideoTextTracks tracks={ block.tracks as VideoTextTrackRecord[] } />
+        { alt }
+      </video>
       <noscript>
-        <source src={video.streamingUrl} type='application/vnd.apple.mpegurl' />
-        <source src={video.streamingUrl} type='application/x-mpegURL' />
-        <source src={video.mp4Url} type='video/mp4' />
+        <video { ...videoAttributes }>
+          <VideoTextTracks tracks={ block.tracks as VideoTextTrackRecord[] } />
+          <source src={video.streamingUrl} type='application/vnd.apple.mpegurl' />
+          <source src={video.streamingUrl} type='application/x-mpegURL' />
+          <source src={video.mp4Url} type='video/mp4' />
+          { alt }
+        </video>
       </noscript>
-      { alt }
-    </video>
-
+    </div>
     {block.title && <figcaption>{block.title}</figcaption>}
   </figure>
 </video-block>
@@ -54,10 +55,26 @@ const activeLocale = getLocale();
 <script src="./VideoBlock.client.ts"></script>
 
 <style>
+  /* functional styling */
+  figure {
+    position: relative;
+  }
+  video-block [data-video] {
+    display: none;
+  }
+  video-block:defined [data-video] {
+    display: block;
+  }
+
   video {
     display: block;
     max-width: 100%;
     height: auto;
     object-fit: contain;
+  }
+
+  /* basic styling, can be removed */
+  figcaption {
+    text-align: center;
   }
 </style>
