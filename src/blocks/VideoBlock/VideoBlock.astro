@@ -38,7 +38,7 @@ const activeLocale = getLocale();
           default={track.locale === activeLocale}
         />
       )) }
-      <!-- [html-validate-disable-next element-permitted-content -- noscript is allowed in any element that includes phrasing content, including video tag. See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/noscript and https://developer.mozilla.org/en-US/docs/Web/HTML/Content_categories#phrasing_content -->
+      <!-- [html-validate-disable-next element-permitted-content -- noscript is allowed in any element that includes phrasing content, including video tag. See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/noscript and https://developer.mozilla.org/en-US/docs/Web/HTML/Content_categories#phrasing_content ] -->
       <noscript>
         <source src={video.streamingUrl} type='application/vnd.apple.mpegurl' />
         <source src={video.streamingUrl} type='application/x-mpegURL' />
