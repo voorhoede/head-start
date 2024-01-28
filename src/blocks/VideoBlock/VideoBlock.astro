@@ -40,10 +40,10 @@ const videoAttributes = {
       </video>
       <noscript>
         <video { ...videoAttributes }>
-          <VideoTextTracks tracks={ block.tracks as VideoTextTrackRecord[] } />
           <source src={video.streamingUrl} type='application/vnd.apple.mpegurl' />
           <source src={video.streamingUrl} type='application/x-mpegURL' />
           <source src={video.mp4Url} type='video/mp4' />
+          <VideoTextTracks tracks={ block.tracks as VideoTextTrackRecord[] } />
           { alt }
         </video>
       </noscript>
