@@ -1,4 +1,4 @@
-const enhanceIntersectedDefaultEmbeds = (entries: IntersectionObserverEntry[]) => {
+const enhanceIntersectedEmbeds = (entries: IntersectionObserverEntry[]) => {
   entries.forEach((entry) => {
     if (entry.isIntersecting && entry.target instanceof DefaultEmbed) {
       entry.target.enhance();
@@ -6,8 +6,8 @@ const enhanceIntersectedDefaultEmbeds = (entries: IntersectionObserverEntry[]) =
   });
 };
 
-const defaultEmbedObserver = new IntersectionObserver(
-  enhanceIntersectedDefaultEmbeds,
+const observer = new IntersectionObserver(
+  enhanceIntersectedEmbeds,
   { rootMargin: '100px' }
 );
 
@@ -25,11 +25,11 @@ class DefaultEmbed extends HTMLElement {
   }
 
   connectedCallback() {
-    defaultEmbedObserver.observe(this);
+    observer.observe(this);
   }
 
   enhance() {
-    defaultEmbedObserver.unobserve(this);
+    observer.unobserve(this);
 
     if (this.#isEnhanced) {
       return;
