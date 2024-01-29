@@ -1,0 +1,20 @@
+---
+import type { VideoTextTrackRecord } from '@lib/types/datocms';
+import { getLocaleName } from '@lib/i18n';
+
+interface Props {
+  tracks: VideoTextTrackRecord[];
+}
+const { tracks } = Astro.props;
+---
+{ /* track[default] attribute makes default track invisible, so it's enabled in the client-side script instead */ }
+{
+  tracks.map((track) => (
+    <track
+      kind={track.kind}
+      label={track.title || getLocaleName(track.locale)}
+      src={track.file.url}
+      srclang={track.locale}
+    />
+  ))
+}

@@ -1,0 +1,83 @@
+---
+import type { UploadVideoField, VideoBlockFragment, VideoTextTrackRecord } from '@lib/types/datocms';
+import VideoFallback from './VideoFallback.astro';
+import VideoTextTracks from './VideoTextTracks.astro';
+
+interface Props {
+  block: VideoBlockFragment;
+}
+const { block } = Astro.props;
+const { alt, width, height } = block.videoAsset;
+const title = block.videoAsset.title || block.title;
+const video = block.videoAsset.video as UploadVideoField;
+const aspectRatio = width && height ? width / height : null;
+const videoAttributes = {
+  poster: video.thumbnailUrl,
+  controls: true,
+  crossorigin: 'anonymous',
+  loop: block.loop ? 'true' : null,
+  muted: block.mute ? 'true' : null,
+  width,
+  height,
+  preload: 'none',
+  style: { aspectRatio },
+};
+---
+
+<video-block
+  data-autoplay={ block.autoplay ? 'true' : 'false' }
+  data-mp4-url={ video.mp4Url }
+  data-streaming-url={ video.streamingUrl }
+>
+  <figure>
+    { /* We use 2 video elements: 
+      - The first is enhanced in the client-side script to use streaming with adaptive bitrate.
+      - The second is fallback native video element that works without JS or custom elmenet support.
+      As a JS check is needed for the first video to appear, it's wrapped in a div to reserve space for it.
+      */ }
+    <div style={{ aspectRatio }}>
+      <video { ...videoAttributes } data-video>
+        <source src={video.streamingUrl} type='application/vnd.apple.mpegurl' />
+        <VideoTextTracks tracks={ block.tracks as VideoTextTrackRecord[] } />
+        <VideoFallback alt={ alt } title={ title } video={ video } />
+      </video>
+      <noscript>
+        <video { ...videoAttributes }>
+          <source src={video.streamingUrl} type='application/vnd.apple.mpegurl' />
+          <source src={video.streamingUrl} type='application/x-mpegURL' />
+          <source src={video.mp4Url} type='video/mp4' />
+          <VideoTextTracks tracks={ block.tracks as VideoTextTrackRecord[] } />
+          <VideoFallback alt={ alt } title={ title } video={ video } />
+        </video>
+      </noscript>
+    </div>
+    { title && <figcaption>{ title }</figcaption>}
+  </figure>
+</video-block>
+
+<script src="./VideoBlock.client.ts"></script>
+
+<style>
+  /* functional styling */
+  figure {
+    position: relative;
+  }
+  video-block [data-video] {
+    display: none;
+  }
+  video-block:defined [data-video] {
+    display: block;
+  }
+
+  video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  /* basic styling, can be removed */
+  figcaption {
+    text-align: center;
+  }
+</style>

@@ -4,6 +4,7 @@
 #import '@blocks/TableBlock/TableBlock.fragment.graphql'
 #import '@blocks/TextBlock/TextBlock.fragment.graphql'
 #import '@blocks/TextImageBlock/TextImageBlock.fragment.graphql'
+#import '@blocks/VideoBlock/VideoBlock.fragment.graphql'
 #import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
 
 query Home($locale: SiteLocale!) {
@@ -33,6 +34,9 @@ query Home($locale: SiteLocale!) {
       }
       ... on TextImageBlockRecord {
         ...TextImageBlock
+      }
+      ... on VideoBlockRecord {
+        ...VideoBlock
       }
       ... on VideoEmbedBlockRecord {
         ...VideoEmbedBlock
