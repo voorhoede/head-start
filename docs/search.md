@@ -34,7 +34,7 @@ const { meta, results } = await datocmsSearch({
 ### Search JSON API endpoint
 
 ```ts
-const { data } = await fetch('/api/search?locale=en&query=some text');
+const { data } = await fetch('/api/search/?locale=en&query=some text');
 const { meta, results } = data;
 ```
 
@@ -47,7 +47,7 @@ URL parameters:
 ### Search HTML Partial endpoint
 
 ```ts
-const response = await fetch('/{locale}/search/results.partial/?locale=en&query=some text');
+const response = await fetch('/{locale}/search/results.partial/?query=some text');
 const resultsHtml = await response.text();
 ```
 
