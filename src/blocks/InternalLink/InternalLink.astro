@@ -20,7 +20,7 @@ const getHref = (
     { locale: SiteLocale, page: InternalLinkFragment['page'] 
   }) => {
   const pathParams = {
-    HomeRecord: [],
+    HomePageRecord: [],
     PageRecord: [getPagePath({ page: page as PageRecord, locale })],
   }[page.__typename];
   

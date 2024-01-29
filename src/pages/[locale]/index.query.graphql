@@ -7,8 +7,8 @@
 #import '@blocks/VideoBlock/VideoBlock.fragment.graphql'
 #import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
 
-query Home($locale: SiteLocale!) {
-  page: home(locale: $locale) {
+query HomePage($locale: SiteLocale!) {
+  page: homePage(locale: $locale) {
     title
     _seoMetaTags {
       attributes
