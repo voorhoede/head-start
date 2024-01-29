@@ -32,7 +32,10 @@ async function moveFile(filepath: string, newFilepath: string ) {
 }
 
 if (isPreview) {
-  console.log('Preview mode, skipping 404 page creation');
+  console.log('Preview mode, skipping 404 page creation, removing 404 function');
+  // 404 function causes an error: workers.api.error.script_too_large (see #123)
+  // since we can do without it in preview mode, we just remove it for now:
+  unlink(path.join(__dirname, '../functions/[locale]/404.js'));
   process.exit(0);
 } else {
   move404Pages().then(() => console.log('Created 404 pages'));
