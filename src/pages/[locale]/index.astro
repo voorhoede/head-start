@@ -8,7 +8,7 @@ import Blocks from '@blocks/Blocks.astro';
 import type { AnyBlock } from '@blocks/Blocks';
 import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
 import ShareButton from '@components/ShareButton/ShareButton.astro';
-import query from './index.query.graphql';
+import query from './_index.query.graphql';
 
 export async function getStaticPaths() {
   return locales.map(locale => ({ params: { locale } }));

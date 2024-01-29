@@ -9,6 +9,7 @@ functions/
 node_modules/
 
 # environment variables
+.dev.vars
 .env
 .env.production
 
