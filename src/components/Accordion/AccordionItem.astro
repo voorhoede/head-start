@@ -1,0 +1,50 @@
+---
+import Icon from '@components/Icon';
+
+interface Props {
+  name: string;
+  open?: boolean;
+}
+const { name, open } = Astro.props;
+const attributes = { name, open };
+---
+{ /* HTMLDetailsElement name attribute is new, using spread to bypass valiation error */ }
+<details {...attributes}>
+  <summary>
+    <slot name="heading" />
+    <Icon name="plus" />
+    <Icon name="minus" />
+  </summary>
+  <slot name="body" />
+</details>
+
+<style>
+  /* basic styling, can be removed */
+  details {
+    border: 1px solid black;
+    margin-block: 5px;
+    padding-inline: 10px;
+  }
+  summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    list-style-type: none;
+    font-weight: bold;
+    font-size: 1.2em;
+    cursor: pointer;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  [data-icon] {
+    width: 1em;
+    height: 1em;
+  }
+  details:not([open]) [data-icon="minus"] {
+    display: none;
+  }
+  details[open] [data-icon="plus"] {
+    display: none;
+  }
+</style>

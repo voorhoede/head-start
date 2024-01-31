@@ -1,0 +1,41 @@
+---
+{{#if name }}
+import { datocmsRequest } from '@lib/datocms';
+import type { {{ name }}Query } from '@lib/types/datocms';
+import query from './_index.query.graphql';
+{{/if}}
+import Layout from '@layouts/Default.astro';
+
+export async function getStaticPaths() {
+// todo
+}
+
+type Params = { 
+  {{#if (hasRouteLocale route) }}
+  locale: SiteLocale;
+  {{/if}}
+  {{#each (routeParams route) }}
+  {{this}}: string;
+  {{/each}}
+};
+
+{{#if (hasRouteLocale route) }}
+const { locale } = Astro.params;
+{{/if}}
+{{#if name }}
+const { page } = await datocmsRequest<{{ name }}Query>({ query, variables: {
+  {{#if (hasRouteLocale route) }}
+  locale,
+  {{/if}}
+  {{#each (routeParams route) }}
+  {{this}}: Astro.params.{{this}},
+  {{/each}}
+} });
+{{/if}}
+
+const pageUrls = []; // todo
+---
+
+<Layout pageUrls={pageUrls} seoMetaTags={page._seoMetaTags}>
+  <h1>{page.title}</h1>
+</Layout>

@@ -1,0 +1,57 @@
+---
+const { datocmsEnvironment, datocmsToken, isPreview } = Astro.locals;
+---
+<preview-mode
+  data-datocms-environment={ datocmsEnvironment }
+  data-datocms-token={ isPreview && datocmsToken }
+>
+  <preview-mode-bar>  
+    Preview mode
+    <span role="presentation" data-status="closed" />
+    <a href={ `/api/preview/exit/?location=${Astro.url}` }>exit preview</a>
+  </preview-mode-bar>
+  <slot />
+</preview-mode>
+
+<script src="./PreviewMode.client.ts"></script>
+
+<style>
+preview-mode-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1em;
+  background: black;
+  color: white;
+}
+
+a {
+  color: white;
+}
+
+[data-status]:before {
+  display: inline-block;
+  margin-left: .5em;
+  margin-right: .5em;
+}
+[data-status="closed"]:before {
+  content: "⚪";
+}
+[data-status="connecting"]:before {
+  content: "🟠";
+  animation: pulseAnimation 1s infinite;
+}
+[data-status="connected"]:before {
+  content: "🟢";
+  animation: pulseAnimation 2s infinite;
+}
+[data-status="error"]:before {
+  content: "🔴";
+}
+
+@keyframes pulseAnimation {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.2; }
+  100% { opacity: 1; }
+}
+</style>

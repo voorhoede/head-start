@@ -1,0 +1,27 @@
+#import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
+#import '@blocks/TableBlock/TableBlock.fragment.graphql'
+#import '@blocks/TextBlock/TextBlock.fragment.graphql'
+#import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
+
+fragment PagePartialBlock on PagePartialBlockRecord {
+  id
+  items {
+    title
+    blocks {
+      __typename
+      ... on ImageBlockRecord {
+        ...ImageBlock
+      }
+      ... on TableBlockRecord {
+        ...TableBlock
+      }
+      ... on TextBlockRecord {
+        ...TextBlock
+      }
+      ... on VideoEmbedBlockRecord {
+        ...VideoEmbedBlock
+      }
+    }
+  }
+  layout
+}

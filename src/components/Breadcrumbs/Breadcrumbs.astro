@@ -1,0 +1,76 @@
+---
+import { t } from '@lib/i18n';
+import Icon from '@components/Icon';
+import type { Breadcrumb } from './index';
+
+interface Props {
+  items: Breadcrumb[];
+}
+
+const { items } = Astro.props;
+const isLast = (index: number) => index === items.length - 1;
+// @see https://developers.google.com/search/docs/appearance/structured-data/breadcrumb#json-ld
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      name: t('breadcrumbs_home'),
+      item: new URL('/', Astro.site),
+    },
+    ... items.map(item => ({
+      '@type': 'ListItem',
+      name: item.text,
+      item: new URL(item.href || '', Astro.site),
+    }))
+  ].map((item, index) => ({
+    ...item,
+    position: index + 1,
+  }))
+};
+---
+
+<nav aria-label={t('breadcrumbs_title')}>
+  <ol>
+    <li><a href='/'>{t('breadcrumbs_home')}</a></li>
+    {
+      items.map((item, index) => (
+        <li>
+          <Icon name='chevron-right' />
+          { item.href
+            ? (
+              <a href={item.href} aria-current={isLast(index) ? 'page' : null}>
+                {item.text}
+              </a>
+            ) : (
+              <span>{item.text}</span>
+            )
+          }
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+
+<script type="application/ld+json" set:html={ JSON.stringify(schema, null, 2) } />
+
+<style>
+  nav {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  li:not(:last-child) {
+    margin-right: 0.5em;
+  }
+  [data-icon] {
+    vertical-align: middle;
+  }
+</style>

@@ -3,7 +3,9 @@ import { buildClient } from '@datocms/cma-client-node';
 import dotenv from 'dotenv-safe';
 import { datocmsEnvironment } from '../datocms-environment';
 
-dotenv.config();
+dotenv.config({
+  allowEmptyValues: Boolean(process.env.CI),
+});
 
 async function fetchTranslations() {
   // use client instead of http api for pagination support

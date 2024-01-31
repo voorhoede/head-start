@@ -1,0 +1,32 @@
+---
+
+---
+
+<!-- [html-validate-disable-next prefer-native-element -- incompatible with custom element] -->
+<tabs-tab role="heading" slot="tab">
+  <slot />
+</tabs-tab>
+
+<style>
+  /* If JavaScript does not run, the element will not match :defined. */
+  tabs-tab:not(:defined) {
+    display: block;
+  }
+
+  /* basic styling, can be removed */
+  tabs-tab:defined {
+    border-width: 1px;
+    border-style: solid;
+    padding-inline: 10px;
+    cursor: pointer;
+  }
+  tabs-tab {
+    border-color: transparent;
+  }
+  tabs-tab[selected] {
+    border-color: black;
+    border-bottom-color: white;
+    margin-bottom: -1px;
+    z-index: 1;
+  }
+</style>

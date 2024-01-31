@@ -1,3 +1,5 @@
+#import '@blocks/InternalLink/ParentPage.fragment.graphql'
+
 fragment InternalLink on InternalLinkRecord {
   title
   page {
@@ -5,8 +7,13 @@ fragment InternalLink on InternalLinkRecord {
     ... on PageRecord {
       title
       slug
+      _allSlugLocales {
+        locale
+        value
+      }
+      ...ParentPage
     }
-    ... on HomeRecord {
+    ... on HomePageRecord {
       title
     }
   }

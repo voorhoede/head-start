@@ -5,8 +5,7 @@ const __dirname = path.dirname(__filename);
 import { writeFile, readFile, unlink } from 'node:fs/promises';
 import { globby } from 'globby';
 import { defaultLocale } from '../src/lib/i18n';
-
-
+import { isPreview } from '../config/preview';
 /**
  * Rewrite localised "/:locale/404/index.html" to "/:locale/404.html" so Cloudflare picks them up automatically.
  * Create a default 404 page, i.e. "/404.html" from the default locale.
@@ -32,5 +31,12 @@ async function moveFile(filepath: string, newFilepath: string ) {
   await unlink(filepath);
 }
 
-move404Pages()
-  .then(() => console.log('Created 404 pages'));
+if (isPreview) {
+  console.log('Preview mode, skipping 404 page creation, removing 404 function');
+  // 404 function causes an error: workers.api.error.script_too_large (see #123)
+  // since we can do without it in preview mode, we just remove it for now:
+  unlink(path.join(__dirname, '../functions/[locale]/404.js'));
+  process.exit(0);
+} else {
+  move404Pages().then(() => console.log('Created 404 pages'));
+}

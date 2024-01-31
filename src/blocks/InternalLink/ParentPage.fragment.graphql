@@ -1,0 +1,35 @@
+fragment ParentPage on PageRecord {
+  parentPage {
+    ... on PageRecord {
+      ...ParentPageFields
+      parentPage {
+        ... on PageRecord {
+          ...ParentPageFields
+          parentPage {
+            ... on PageRecord {
+              ...ParentPageFields
+              parentPage {
+                ... on PageRecord {
+                  ...ParentPageFields
+                  parentPage {
+                    ... on PageRecord {
+                      ...ParentPageFields
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment ParentPageFields on PageRecord {
+  title
+  _allSlugLocales {
+    locale
+    value
+  }
+}

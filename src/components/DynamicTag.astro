@@ -6,4 +6,8 @@ type Props<Tag extends HTMLTag> = Polymorphic<{ as: Tag }>
 
 const { as: Tag, ...props } = Astro.props;
 ---
-<Tag {...props}><slot/></Tag>
+
+{ Astro.slots.has('default') 
+  ? <Tag {...props}><slot /></Tag>
+  : <Tag {...props} />
+}

@@ -1,8 +1,7 @@
-import { Client, SimpleSchemaTypes } from '@datocms/cli/lib/cma-client-node';
+import type { Client, SimpleSchemaTypes } from '@datocms/cli/lib/cma-client-node';
 
 export default async function (client: Client) {
   const newFields: Record<string, SimpleSchemaTypes.Field> = {};
-  const newItemTypes: Record<string, SimpleSchemaTypes.ItemType> = {};
 
   console.log('Creating new fields/fieldsets');
 

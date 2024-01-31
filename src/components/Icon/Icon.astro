@@ -1,14 +1,22 @@
 ---
-import type { IconName } from '../../assets/icon-sprite';
+import type { IconName } from '@assets/icon-sprite';
 
 interface Props {
   name: IconName;
   [x:string]: any;
 }
 const { name, ...props } = Astro.props;
+const ariaLabel = props['aria-label'];
+const attributes = { 
+  ...props,
+  'aria-hidden': !ariaLabel,
+  role: props.role 
+    ? props.role
+    : ariaLabel ? 'img' : 'presentation',
+};
 ---
 
-<svg {...props} data-icon={name}>
+<svg { ...attributes } data-icon={name}>
   <use xlink:href={`#${name}`} />
 </svg>
 

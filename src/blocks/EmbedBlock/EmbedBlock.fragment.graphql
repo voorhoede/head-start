@@ -1,0 +1,5 @@
+fragment EmbedBlock on EmbedBlockRecord {
+  id
+  url
+  data
+}

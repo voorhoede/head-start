@@ -1,0 +1,43 @@
+---
+import type { EmbedBlockFragment } from '@lib/types/datocms';
+import { getOEmbedProvider } from './index';
+import type { OEmbedAny } from './index';
+import BasicEmbed from './embeds/Basic.astro';
+import DefaultEmbed from './embeds/Default.astro';
+import TwitterEmbed from './embeds/Twitter.astro';
+import VimeoEmbed from './embeds/Vimeo.astro';
+import YouTubeEmbed from './embeds/YouTube.astro';
+
+interface Props {
+  block: EmbedBlockFragment;
+}
+const { block } = Astro.props;
+const { data, url }: { data: OEmbedAny; url: string } = block;
+const providerName = (data || getOEmbedProvider(url))?.provider_name;
+const isProvider = (name: string) =>
+  providerName?.toLowerCase() === name.toLowerCase();
+---
+
+<div class='embed-block'>
+  {
+    data && data.html ? (
+      isProvider('Twitter') ? (
+        <TwitterEmbed {data} {url} />
+      ) : isProvider('Vimeo') ? (
+        <VimeoEmbed {data} {url} />
+      ) : isProvider('YouTube') ? (
+        <YouTubeEmbed {data} {url} />
+      ) : (
+        <DefaultEmbed {data} {url} />
+      )
+    ) : (
+      <BasicEmbed {data} {url} />
+    )
+  }
+</div>
+
+<style>
+  .embed-block {
+    margin-block: 20px;
+  }
+</style>

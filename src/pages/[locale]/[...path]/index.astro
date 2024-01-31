@@ -1,0 +1,56 @@
+---
+import { datocmsCollection } from '@lib/datocms';
+import type { PageRecord, ParentPageFragment, SiteLocale } from '@lib/types/datocms';
+import { getPagePath } from '@blocks/InternalLink';
+import HomePage from '@pages/[locale]/index.astro';
+import Page from './_Page.astro';
+
+export async function getStaticPaths() {
+  interface PagesCollectionItem {
+    _allSlugLocales: Array<{ locale: SiteLocale; value: string }>;
+    parentPage: ParentPageFragment;
+  }
+  const pages = await datocmsCollection<PagesCollectionItem>({
+    collection: 'Pages',
+    fragment: `
+      _allSlugLocales { locale, value }
+      parentPage {
+        _allSlugLocales { locale, value }
+        parentPage {
+          _allSlugLocales { locale, value }
+          parentPage {
+            _allSlugLocales { locale, value }
+            parentPage {
+              _allSlugLocales { locale, value }
+            }
+          }
+        }
+      }
+    `,
+  });
+
+  return pages.flatMap((page) => {
+    const locales = page._allSlugLocales.map((slug) => slug.locale);
+    return locales.map((locale) => {
+      return { params: { locale, path: getPagePath({ page: page as PageRecord, locale }) } };
+    });
+  });
+}
+
+/**
+ * [...path] should not match when path is undefined.
+ * Due to an open issue in Astro it does: https://github.com/withastro/astro/issues/9103
+ * This means during SSR, when getStaticPaths is ignored, this route is also matched for the home page.
+ * This is only an issue for us in preview mode, not during a regular static deployment.
+ * As a workaround we check the path and conditionally render either the home page or the regular page.
+ */
+const { path } = Astro.params as { path?: string };
+const isHomeRoute = path === undefined;
+---
+
+{
+  isHomeRoute 
+  /* @ts-expect-error next-line workaround, see above */
+    ? <HomePage />
+    : <Page />
+}

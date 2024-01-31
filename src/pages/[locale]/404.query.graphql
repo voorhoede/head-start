@@ -1,5 +1,0 @@
-query NotFound($locale: SiteLocale!) {
-  page: notFound(locale: $locale) {
-    title
-  }
-}

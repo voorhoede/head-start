@@ -8,8 +8,21 @@
 - Provide a pre-defined setup for composable pages with common components.
 - Provide pre-configured services like a CMS and deployment platform.
 - Support common needs like internationalisation (i18n), SEO, redirects and analytics.
-- Provide functional interactivity without specific styling ("unstyled").
+- Provide functional interactivity without a JS framework (React, Vue, Svelte, etc)*.
+- Provide functional interactivity without specific styling ("unstyled")*. 
 - Provide a fully accessible and highly performant baseline for every project.
+
+\* We'll leave the choice for a JS framework and strategy for styling to developers using Head Start for their project.
+
+## Roadmap
+
+Current status: Head Start is suitable for internal use by De Voorhoede.
+
+- [v1](https://github.com/voorhoede/head-start/issues?q=is%3Aissue+is%3Aopen+label%3A%22v1%22+): all common website functionality for use by De Voorhoede.
+- [v1 public](https://github.com/voorhoede/head-start/issues?q=is%3Aissue+is%3Aopen+label%3A%22v1+public%22+): extend setup and documentation to be suitable for use outside De Voorhoede.
+- [v2](https://github.com/voorhoede/head-start/issues/77): ideas for Head Start as starterkit for websites & web apps (maybe, someday).
+
+Progress can also be tracked on the [Head Start project board](https://github.com/orgs/voorhoede/projects/5).
 
 ## Architecture
 
@@ -51,19 +64,23 @@ flowchart LR
 
 ## Getting started
 
-1. Select "Use this template" > "Create a new repository".
-2. Clone the new repository.
-3. [Create a DatoCMS instance](https://dashboard.datocms.com/personal-account/projects/browse/new).
-4. Copy `.env.example` to `.env` and fill it out.
-5. Install the dependenies (`npm install`)
-6. You're good to go. Follow any of the [commands](#commands) below.
+Follow the step-by-step [getting started instructions](docs/getting-started.md).
 
 ## Documentation
 
 All documentation is located in [`docs/`](docs/):
 
+- [Getting Started](docs/getting-started.md)
+- [Accessibility (a11y)](docs/accessibility.md)
+- [Blocks and Components](docs/blocks-and-components.md)
+- [CMS Content Modelling](docs/cms-content-modelling.md)
+- [CMS Data Loading](docs/cms-data-loading.md)
 - [Internationalization (i18n)](docs/i18n.md)
 - [Project Structure](docs/project-structure.md)
+- [Preview Mode](docs/preview-mode.md)
+- [Routing](docs/routing.md)
+- [Search](docs/search.md)
+- [Search Engine Optimisation (SEO)](docs/seo.md)
 
 ## Commands
 
@@ -74,6 +91,15 @@ All commands are run from the root of the project, from a terminal:
 | `dev`                   | Starts local dev server at `localhost:4323` (head in T9)
 | `build`                 | Build your production site to `./dist/`
 | `preview`               | Preview your build locally, before deploying
-| `astro ...`             | Run CLI commands like `astro add`, `astro check`
-| `astro -- --help`       | Get help using the Astro CLI
-| `lint`                  | Check code style (add `-- --fix` to fix issues)
+| `astro ...`             | Run commands like `astro add` (see `astro -- --help`)
+| `create`                | Scaffold new Block, Component, API or Page route
+| `lint`                  | Check code style and valide HTML output
+
+## Contributing
+
+Head Start welcomes contributions of any size and skill level. See [our contribution guidelines](./.github/CONTRIBUTING.md).
+
+## License
+
+Head Start is made with ❤️ by [De Voorhoede](https://www.voorhoede.nl/en/).
+Released under [ISC License](./LICENSE.md).

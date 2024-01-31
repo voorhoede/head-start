@@ -16,11 +16,11 @@ type Props = {
   block: Block 
 };
 const { block } = Astro.props;
-const { id, title, table, hasHeaderRow, hasHeaderColumn } = block;
+const { title, table, hasHeaderRow, hasHeaderColumn } = block;
 
 const isNumeric = (value: string) => !isNaN(Number(value.replace('%','')));
 ---
-<div class="component">
+<figure class="component">
   { title && (
     <figcaption>{title}</figcaption> 
   )}

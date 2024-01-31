@@ -1,0 +1,30 @@
+---
+import type { UploadVideoField } from '@lib/types/datocms';
+import { t } from '@lib/i18n';
+
+interface Props {
+  alt?: null | string;
+  title?: null | string;
+  video: UploadVideoField;
+}
+const alt = Astro.props.alt || '';
+const title = Astro.props.title || '';
+const video = Astro.props.video;
+---
+
+{/* Fallback content for browsers that don't support the video element */}
+<a href={video.mp4Url} download aria-label={ t('download_video_title', { title }) }>
+  <img src={video.thumbnailUrl} alt={alt} />
+</a>
+
+<style>
+  a,
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  img {
+    object-fit: cover;
+  }
+</style>

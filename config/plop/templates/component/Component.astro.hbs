@@ -1,0 +1,16 @@
+---
+
+---
+{{#if customElement}}
+<{{ dashCase name }}>
+  <pre><code>{{ pascalCase name }}</code></pre>
+  <slot />
+</{{ dashCase name }}>
+{{else}}
+<pre><code>{{ pascalCase name }}</code></pre>
+<slot />
+{{/if}}
+
+{{#if script}}
+<script src="./{{ pascalCase name }}.client.ts"></script>
+{{/if}}

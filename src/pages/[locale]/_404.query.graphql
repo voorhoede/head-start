@@ -1,0 +1,41 @@
+#import '@blocks/EmbedBlock/EmbedBlock.fragment.graphql'
+#import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
+#import '@blocks/PagePartialBlock/PagePartialBlock.fragment.graphql'
+#import '@blocks/TableBlock/TableBlock.fragment.graphql'
+#import '@blocks/TextBlock/TextBlock.fragment.graphql'
+#import '@blocks/TextImageBlock/TextImageBlock.fragment.graphql'
+#import '@blocks/VideoBlock/VideoBlock.fragment.graphql'
+#import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
+
+query NotFoundPage($locale: SiteLocale!) {
+  page: notFoundPage(locale: $locale) {
+    title
+    bodyBlocks {
+      __typename
+      ... on EmbedBlockRecord {
+        ...EmbedBlock
+      }
+      ... on ImageBlockRecord {
+        ...ImageBlock
+      }
+      ... on PagePartialBlockRecord {
+        ...PagePartialBlock
+      }
+      ... on TableBlockRecord {
+        ...TableBlock
+      }
+      ... on TextBlockRecord {
+        ...TextBlock
+      }
+      ... on TextImageBlockRecord {
+        ...TextImageBlock
+      }
+      ... on VideoBlockRecord {
+        ...VideoBlock
+      }
+      ... on VideoEmbedBlockRecord {
+        ...VideoEmbedBlock
+      }
+    }
+  }
+}

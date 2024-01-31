@@ -1,0 +1,25 @@
+---
+const location = new URL(Astro.request.url).pathname;
+---
+<form method="get" action="/api/preview/enter/">
+  <h1>Preview mode</h1>
+  <p>You currently don't have access to preview mode. Enter the preview secret below or follow the preview links from the CMS.</p>
+  <div>
+    <input type="hidden" name="location" value={ location } />
+    <label for="secret">Enter secret</label>
+    <input id="secret" type="text" name="secret" autocomplete="off" />
+    <button type="submit">Enter preview mode</button>
+  </div>
+</form>
+
+<style>
+  form {
+    background: black;
+    color: white;
+    text-align: center;
+    padding: 30px;
+  }
+  p {
+    margin-bottom: 30px;
+  }
+</style>

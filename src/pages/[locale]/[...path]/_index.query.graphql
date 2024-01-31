@@ -1,0 +1,53 @@
+#import '@blocks/EmbedBlock/EmbedBlock.fragment.graphql'
+#import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
+#import '@blocks/InternalLink/ParentPage.fragment.graphql'
+#import '@blocks/PagePartialBlock/PagePartialBlock.fragment.graphql'
+#import '@blocks/TableBlock/TableBlock.fragment.graphql'
+#import '@blocks/TextBlock/TextBlock.fragment.graphql'
+#import '@blocks/TextImageBlock/TextImageBlock.fragment.graphql'
+#import '@blocks/VideoBlock/VideoBlock.fragment.graphql'
+#import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
+
+query Page($locale: SiteLocale!, $slug: String!) {
+  page(locale: $locale, filter: { slug: { eq: $slug } }) {
+    title
+    slug
+    _allSlugLocales {
+      locale
+      value
+    }
+    _seoMetaTags {
+      attributes
+      content
+      tag
+    }
+    ...ParentPage
+    bodyBlocks {
+      __typename
+      ... on EmbedBlockRecord {
+        ...EmbedBlock
+      }
+      ... on ImageBlockRecord {
+        ...ImageBlock
+      }
+      ... on PagePartialBlockRecord {
+        ...PagePartialBlock
+      }
+      ... on TableBlockRecord {
+        ...TableBlock
+      }
+      ... on TextBlockRecord {
+        ...TextBlock
+      }
+      ... on TextImageBlockRecord {
+        ...TextImageBlock
+      }
+      ... on VideoBlockRecord {
+        ...VideoBlock
+      }
+      ... on VideoEmbedBlockRecord {
+        ...VideoEmbedBlock
+      }
+    }
+  }
+}

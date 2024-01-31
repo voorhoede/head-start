@@ -1,0 +1,32 @@
+---
+import getVideoId from 'get-video-id';
+import VideoEmbedBlock from '@blocks/VideoEmbedBlock/VideoEmbedBlock.astro';
+import type { VideoEmbedBlockFragment } from '@lib/types/datocms';
+import type { OEmbedVideo } from '../index';
+
+type OEmbedYouTube = OEmbedVideo & {
+  video_id: string;
+  thumbnail_url: string;
+};
+
+const data = Astro.props.data as OEmbedYouTube;
+const url = Astro.props.url as string;
+const block: VideoEmbedBlockFragment = {
+  id: data.video_id,
+  video: {
+    provider: 'youtube',
+    providerUid: getVideoId(url).id as string,
+    thumbnailUrl: data.thumbnail_url,
+    title: data.title,
+    url: url,
+    height: data.height,
+    width: data.width,
+  },
+  title: data.title,
+  autoplay: false,
+  mute: false,
+  loop: false,
+};
+---
+
+<VideoEmbedBlock block={block} />
