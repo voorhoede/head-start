@@ -18,9 +18,11 @@ type Props = {
 const { block } = Astro.props;
 const { title, table, hasHeaderRow, hasHeaderColumn } = block;
 
+const isHeaderColumn = (index: number) => hasHeaderColumn && index === 0;
 const isNumeric = (value: string) => !isNaN(Number(value.replace('%','')));
 ---
 <figure class="component">
+  { /* using figcaption instead of table > caption as the latter would scroll horizontally on overflow */ }
   { title && (
     <figcaption>{title}</figcaption> 
   )}
@@ -30,7 +32,7 @@ const isNumeric = (value: string) => !isNaN(Number(value.replace('%','')));
         <thead>
           <tr>
             {table.columns.map((value: string) => (
-              <th>{value}</th>
+              <th scope="col">{value}</th>
             ))}
           </tr>
         </thead>
@@ -40,8 +42,9 @@ const isNumeric = (value: string) => !isNaN(Number(value.replace('%','')));
           <tr>
             {Object.values(row).map((value, index) => (
               <DynamicTag
-                as={ hasHeaderColumn && index === 0 ? 'th' : 'td'}
+                as={ isHeaderColumn(index) ? 'th' : 'td'}
                 class={ isNumeric(value) ? 'value--numeric' : 'value--text' }
+                scope={ isHeaderColumn(index) ? 'row' : undefined }
               >
                 {value}
               </DynamicTag> 
@@ -54,7 +57,7 @@ const isNumeric = (value: string) => !isNaN(Number(value.replace('%','')));
 </figure>
 
 <style>
-  .component {
+  figure {
     display: flex;
     flex-direction: column-reverse;
     --background-color: white;
@@ -62,31 +65,27 @@ const isNumeric = (value: string) => !isNaN(Number(value.replace('%','')));
   }
 
   .canvas {
-    /**
-     * To do: solve combination of sticky headers and horizontal scrolling, like done on:
-     * - https://uxdesign.cc/position-stuck-96c9f55d9526
-     * - https://codepen.io/dannievinther/pen/pGdjPV
-     */
-    /* overflow-x: auto; */
+    overflow-x: auto;
   }
   table {
     width: 100%;
     max-width: 100%;
-    table-layout: fixed;
     border-spacing: 0;
     border-collapse: separate;
   }
 
   figcaption {
-    margin: 1em;
+    margin: 10px;
+    text-align: center;
   }
 
   th, td {
     background: var(--background-color);
-    padding: .5em;
+    padding: 5px;
   }
   thead th {
-    position: sticky;
+    /* having both sticky thead and first tbody col requires JS, so disabled for now */
+    /* position: sticky; */
     width: 25vw;
     top: 0;
     z-index: 1;
@@ -96,7 +95,7 @@ const isNumeric = (value: string) => !isNaN(Number(value.replace('%','')));
   tbody tr:not(:last-child) td {
     border-bottom: 1px solid var(--border-color);
   }
-  thead th:first-child,
+  thead:has(+ tbody th) th:first-child,
   tbody th {
     position: sticky;
     left: 0;
@@ -114,5 +113,6 @@ const isNumeric = (value: string) => !isNaN(Number(value.replace('%','')));
   }
   .value--numeric {
     text-align: right;
+    font-variant-numeric: tabular-nums; /* so numbers align nicely */
   }
 </style>
