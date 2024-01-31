@@ -12,7 +12,7 @@ export const datocmsEnvironment = 'your-environment-name';
 
 ## GraphQL files
 
-Head Start uses the [DatoCMS Content Delivery API](https://www.datocms.com/docs/content-delivery-api), which uses [GraphQL](https://graphql.org/). Head Start has a pre-configured GraphQL loader, so you can use and directly import `.graphql` files. As a convention Head Start puts [GraphQL Query](https://graphql.org/learn/queries/) files (like `page-name.query.graphql`) directly next to their related Astro pages, and [GraphQL Fragment](https://graphql.org/learn/queries/) files (like `block-name.fragment.graphql`) directly next to their related block components:
+Head Start uses the [DatoCMS Content Delivery API](https://www.datocms.com/docs/content-delivery-api), which uses [GraphQL](https://graphql.org/). Head Start has a pre-configured GraphQL loader, so you can use and directly import `.graphql` files. As a convention Head Start puts [GraphQL Query](https://graphql.org/learn/queries/) files (like `_page-name.query.graphql`) directly next to their related Astro pages, and [GraphQL Fragment](https://graphql.org/learn/queries/) files (like `block-name.fragment.graphql`) directly next to their related block components:
 
 ```
 src/
@@ -25,7 +25,7 @@ src/
 └── pages/
     └── [locale]/
         ├── index.astro
-        └── index.query.graphql
+        └── _index.query.graphql
 ```
 
 You can import GraphQL Fragment files:
@@ -45,7 +45,7 @@ fragment ImageBlock on ImageBlockRecord {
 ```
 
 ```graphql
-# src/pages/[locale]/[slug]/index.query.graphql
+# src/pages/[locale]/[slug]/_index.query.graphql
 
 #import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
 #import '@blocks/TextBlock/TextBlock.fragment.graphql'
@@ -72,7 +72,7 @@ And you can import GraphQL Query files:
 ```ts
 // src/pages/[locale]/[slug]/index.astro
 
-import query from './index.query.graphql';
+import query from './_index.query.graphql';
 console.log(typeof query) // DocumentNode
 ```
 
@@ -92,7 +92,7 @@ Example usage:
 ---
 import { datocmsRequest } from '@lib/datocms';
 import type { PageQuery, PageRecord } from '@lib/types/datocms';
-import query from './index.query.graphql';
+import query from './_index.query.graphql';
 
 const { page } = await datocmsRequest<PageQuery>({ 
   query,

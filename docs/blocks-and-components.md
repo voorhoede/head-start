@@ -55,7 +55,7 @@ Pages and other templates can use the `<Blocks />` component to render a Modular
 ---
 import { datocmsRequest } from '@lib/datocms';
 import Blocks from '@blocks/Blocks.astro';
-import query from './index.query.graphql';
+import query from './_index.query.graphql';
 
 const { page } = await datocmsRequest({ query, variables: { locale: Astro.params.locale } });
 ---
