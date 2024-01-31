@@ -1,6 +1,6 @@
 import { execSync } from 'node:child_process';
 
-export const previewBranches = ['preview', 'feat/preview-mode', 'fix/function-size'];
+export const previewBranches = ['preview', 'feat/preview-mode', 'fix/function-size', 'fix/preview-mode-routing'];
 
 function getGitBranch() {
   const branch = execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf-8' }).trim();
