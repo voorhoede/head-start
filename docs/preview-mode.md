@@ -26,10 +26,10 @@ Preview mode is protected with a secret. If you attempt to view content protecte
 
 ```bash
 # by default 'enter preview' redirects to home page:
-/api/preview/enter?secret=my-little-secret
+/api/preview/enter/?secret=my-little-secret
 
 # you can use `location` to redirect to another page:
-/api/preview/enter?secret=my-little-secret&location=/en/some-page/
+/api/preview/enter/?secret=my-little-secret&location=/en/some-page/
 ```
 
 This endpoint can for example be used to link to previews from within the CMS.
@@ -38,10 +38,10 @@ When authorised an encrypted cookie is set, to persist preview mode throughout a
 
 ```bash
 # by default 'exit preview' redirects to home page:
-/api/preview/exit
+/api/preview/exit/
 
 # you can use `location` to redirect to another page:
-/api/preview/exit?location=/en/some-page/
+/api/preview/exit/?location=/en/some-page/
 ```
 
 Note: the secret is configured as environment variable `HEAD_START_PREVIEW_SECRET`.

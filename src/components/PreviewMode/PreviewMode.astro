@@ -8,7 +8,7 @@ const { datocmsEnvironment, datocmsToken, isPreview } = Astro.locals;
   <preview-mode-bar>  
     Preview mode
     <span role="presentation" data-status="closed" />
-    <a href={ `/api/preview/exit?location=${Astro.url}` }>exit preview</a>
+    <a href={ `/api/preview/exit/?location=${Astro.url}` }>exit preview</a>
   </preview-mode-bar>
   <slot />
 </preview-mode>
