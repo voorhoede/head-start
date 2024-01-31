@@ -22,6 +22,7 @@
     "dev:translations": "jiti scripts/watch-translations.ts",
     "prep": "run-s prep:* --print-label",
     "prep:clean-astro-env": "rm -rf node_modules/.astro",
+    "prep:cloudflare-env": "touch .dev.vars",
     "prep:datocms-types": "graphql-codegen --config .graphqlrc.ts",
     "prep:download-site-data": "jiti scripts/download-site-data.ts",
     "prep:download-translations": "jiti scripts/download-translations.ts",

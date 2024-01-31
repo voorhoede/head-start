@@ -141,7 +141,7 @@ export default function (plop) {
       },
       {
         type: 'add',
-        path: '../../src/pages/{{ trailingSlash route }}index.query.graphql',
+        path: '../../src/pages/{{ trailingSlash route }}_index.query.graphql',
         templateFile: 'templates/page/route.query.graphql.hbs',
         skip: (data) => !data.name && 'No DatoCMS model',
       },

@@ -29,7 +29,7 @@ Inside of this project, you'll see the following folders and files:
 |       |   └── some-dynamic-endpoint.ts
 │       └── [locale]/
 │           ├── index.astro
-│           └── index.query.graphql
+│           └── _index.query.graphql
 └── package.json
 ```
 

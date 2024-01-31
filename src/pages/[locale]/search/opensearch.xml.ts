@@ -3,7 +3,7 @@ import { locales } from '@lib/i18n';
 import { datocmsRequest } from '@lib/datocms';
 import type { OpenSearchXmlQuery, Site } from '@lib/types/datocms';
 import { getSearchPathname, getOpenSearchName, queryParamName } from '@lib/search';
-import query from './opensearch.query.graphql';
+import query from './_opensearch.query.graphql';
 
 export const prerender = true;
 
