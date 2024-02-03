@@ -1,9 +1,118 @@
 ---
 import type { TableBlockFragment } from '@lib/types/datocms';
+import DynamicTag from '@components/DynamicTag.astro';
 
-interface Props {
-  block: TableBlockFragment
+type TableRow = {
+  [key: string]: string
 }
+type Table = {
+  columns: string[],
+  data: TableRow[]
+}
+type Block = Omit<TableBlockFragment, 'table'> & {
+  table: Table
+}
+type Props = {
+  block: Block 
+};
 const { block } = Astro.props;
+const { title, table, hasHeaderRow, hasHeaderColumn } = block;
+
+const isHeaderColumn = (index: number) => hasHeaderColumn && index === 0;
+const isNumeric = (value: string) => !isNaN(Number(value.replace('%','')));
 ---
-<pre><code>table block: {JSON.stringify(block, null, 2)}</code></pre>
+<figure class="component">
+  { /* using figcaption instead of table > caption as the latter would scroll horizontally on overflow */ }
+  { title && (
+    <figcaption>{title}</figcaption> 
+  )}
+  <div class="canvas">
+    <table>
+      { hasHeaderRow && (
+        <thead>
+          <tr>
+            {table.columns.map((value: string) => (
+              <th scope="col">{value}</th>
+            ))}
+          </tr>
+        </thead>
+      )}
+      <tbody>
+        {table.data.map(row => (
+          <tr>
+            {Object.values(row).map((value, index) => (
+              <DynamicTag
+                as={ isHeaderColumn(index) ? 'th' : 'td'}
+                class={ isNumeric(value) ? 'value--numeric' : 'value--text' }
+                scope={ isHeaderColumn(index) ? 'row' : undefined }
+              >
+                {value}
+              </DynamicTag> 
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</figure>
+
+<style>
+  figure {
+    display: flex;
+    flex-direction: column-reverse;
+    --background-color: white;
+    --border-color: black;
+  }
+
+  .canvas {
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    max-width: 100%;
+    border-spacing: 0;
+    border-collapse: separate;
+  }
+
+  figcaption {
+    margin: 10px;
+    text-align: center;
+  }
+
+  th, td {
+    background: var(--background-color);
+    padding: 5px;
+  }
+  thead th {
+    /* having both sticky thead and first tbody col requires JS, so disabled for now */
+    /* position: sticky; */
+    width: 25vw;
+    top: 0;
+    z-index: 1;
+    border-bottom: 3px solid var(--border-color);
+  }
+  tbody tr:not(:last-child) th,
+  tbody tr:not(:last-child) td {
+    border-bottom: 1px solid var(--border-color);
+  }
+  thead:has(+ tbody th) th:first-child,
+  tbody th {
+    position: sticky;
+    left: 0;
+    border-right: 3px solid var(--border-color);
+  }
+  thead th:first-child {
+    z-index: 2;
+  }
+  tbody th {
+    z-index: 1;
+  }
+
+  .value--text {
+    text-align: left;
+  }
+  .value--numeric {
+    text-align: right;
+    font-variant-numeric: tabular-nums; /* so numbers align nicely */
+  }
+</style>
