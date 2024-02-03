@@ -32,7 +32,7 @@ Before you can run your project locally, you need to set-up a DatoCMS project.
 ## Create a DatoCMS project
 
 > [!WARNING]
-> Migrations in Head Start have an [outstanding issue](https://github.com/voorhoede/head-start/issues/62). For now (instead of creating a blank project and running migrations) duplicate the 'Head Start' project in the Dato dashboard. You can ignore the steps below, but make sure to configure Dato API tokens in your `.env` file.
+> Head Start has an open [issue on running migrations](https://github.com/voorhoede/head-start/issues/62). For now (instead of creating a blank project and running migrations) duplicate the 'Head Start' project in the Dato dashboard. You can ignore the steps below, but make sure to configure Dato API tokens in your `.env` file and set `datocmsEnvironment = 'main'` in `datocms-environment.ts`.
 
 - [Signup](https://dashboard.datocms.com/signup) or [signin](https://dashboard.datocms.com/) to your DatoCMS account.
 - [Create a new DatoCMS project](https://dashboard.datocms.com/personal-account/projects/browse/new) (select blank project).
@@ -60,11 +60,22 @@ npx datocms environments:promote start
 export const datocmsEnvironment = 'start';
 ```
 
+> [!WARNING]
+> Head Start has an open [issue on providing seed scripts](https://github.com/voorhoede/head-start/issues/27). You will manually add a bit of required (placeholder) content to your new CMS instance for the Home and 404 Page and add some translations.
+
 You can now run your project locally:
 
 ```bash
 npm run dev
 ```
+
+### Add DatoCMS secrets to repository
+
+Head Start provides GitHub Actions which include linting code and validating HTML on PR changes. These Actions require the DatoCMS tokens to be available.
+
+Go to your repository's Settings > Secrets and Variables > Actions > Repository Secrets (`/settings/secrets/actions#repository-secrets`) add `DATOCMS_API_TOKEN` and `DATOCMS_READONLY_API_TOKEN`.
+
+Your PR's will now be able to run the pre-configured GitHub Actions.
 
 The next step is creating a Cloudflare Pages application so your project can be deployed to the cloud.
 
