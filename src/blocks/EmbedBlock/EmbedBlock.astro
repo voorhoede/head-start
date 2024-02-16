@@ -1,5 +1,6 @@
 ---
 import type { EmbedBlockFragment } from '@lib/types/datocms';
+import type { BlockContext } from '@blocks/Blocks';
 import { getOEmbedProvider } from './index';
 import type { OEmbedAny } from './index';
 import BasicEmbed from './embeds/Basic.astro';
@@ -10,8 +11,9 @@ import YouTubeEmbed from './embeds/YouTube.astro';
 
 interface Props {
   block: EmbedBlockFragment;
+  context: BlockContext;
 }
-const { block } = Astro.props;
+const { block, context } = Astro.props;
 const { data, url }: { data: OEmbedAny; url: string } = block;
 const providerName = (data || getOEmbedProvider(url))?.provider_name;
 const isProvider = (name: string) =>
@@ -22,16 +24,16 @@ const isProvider = (name: string) =>
   {
     data && data.html ? (
       isProvider('Twitter') ? (
-        <TwitterEmbed {data} {url} />
+        <TwitterEmbed {data} {url} {context} />
       ) : isProvider('Vimeo') ? (
-        <VimeoEmbed {data} {url} />
+        <VimeoEmbed {data} {url} {context} />
       ) : isProvider('YouTube') ? (
-        <YouTubeEmbed {data} {url} />
+        <YouTubeEmbed {data} {url} {context} />
       ) : (
-        <DefaultEmbed {data} {url} />
+        <DefaultEmbed {data} {url} {context} />
       )
     ) : (
-      <BasicEmbed {data} {url} />
+      <BasicEmbed {data} {url} {context} />
     )
   }
 </div>

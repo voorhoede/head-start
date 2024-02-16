@@ -1,12 +1,15 @@
 ---
 import type { ImageBlockFragment } from '@lib/types/datocms';
+import type { BlockContext } from '@blocks/Blocks';
 import Image from './Image.astro';
 
 interface Props {
-  block: ImageBlockFragment
+  block: ImageBlockFragment;
+  context?: BlockContext;
 }
 
-const { block } = Astro.props;
+const { block, context } = Astro.props;
+const loadingStrategy = (context?.location === 'header' || context?.location === 'body' && context?.index < 3) ? 'eager' : 'lazy';
 ---
 
-<Image image={ block.image } />
+<Image image={ block.image } loading={ loadingStrategy } />
