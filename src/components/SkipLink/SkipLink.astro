@@ -7,15 +7,16 @@ interface Props {
 }
 const { targetId } = Astro.props;
 ---
-<a href={`#${targetId}`} class="a11y-kb-only">
-  <slot>{ t('skip_to_content') }</slot>
+
+<a href={`#${targetId}`} class="a11y-kb-only" datocms-no-index="">
+  <slot>{t('skip_to_content')}</slot>
 </a>
 
 <style>
-/* basic styling, can be removed */
-a:focus {
-  position: absolute;
-  background: white;
-  padding: .5em;
-}
+  /* basic styling, can be removed */
+  a:focus {
+    position: absolute;
+    background: white;
+    padding: 0.5em;
+  }
 </style>
