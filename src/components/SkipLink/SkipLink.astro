@@ -1,6 +1,5 @@
 ---
 import { t } from '@lib/i18n';
-import { datocmsNoIndex } from '@lib/search';
 import '@assets/a11y.css';
 
 interface Props {
@@ -9,7 +8,7 @@ interface Props {
 const { targetId } = Astro.props;
 ---
 
-<a href={`#${targetId}`} class="a11y-kb-only" {...datocmsNoIndex}>
+<a href={`#${targetId}`} class="a11y-kb-only" datocms-no-index="">
   <slot>{t('skip_to_content')}</slot>
 </a>
 
