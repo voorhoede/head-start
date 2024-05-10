@@ -1,4 +1,6 @@
 ---
+const { locale } = Astro.params;
+
 const script = `
   <script type="application/ld+json">
     {
@@ -10,7 +12,7 @@ const script = `
         "@type": "SearchAction",
         "target": {
           "@type": "EntryPoint",
-          "urlTemplate": "${Astro.site}api/search?query={search_term_string}"
+          "urlTemplate": "${Astro.site}api/search?locale=${locale}query={search_term_string}"
         },
         "query-input": "required name=search_term_string"
       }
