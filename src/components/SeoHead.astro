@@ -53,20 +53,3 @@ const titleTag = tags.find((tag) => tag.tag === 'title');
   title={getOpenSearchName(locale)}
   href={getOpenSearchPathname(locale)}
 />
-
-<script type="application/ld+json" is:inline>
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Head Start",
-    "url": "https://head-start.pages.dev/",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": {
-        "@type": "EntryPoint",
-        "urlTemplate": "https://head-start.pages.dev/api/search?query={search_term_string}"
-      },
-      "query-input": "required name=search_term_string"
-    }
-  }
-</script>

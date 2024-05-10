@@ -36,6 +36,7 @@ const mainContentId = 'content';
       pageUrls={ pageUrls }
       tags={[...data.site.faviconMetaTags, ...seoMetaTags]}
     />
+    <slot name="head" />
   </head>
   <body>
     <PreviewModeProvider>
