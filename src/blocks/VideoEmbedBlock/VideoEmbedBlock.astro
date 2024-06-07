@@ -113,18 +113,22 @@ function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; vide
     width: 100%;
     background-color: #f1f1f1;
   }
-  img {
+
+  img,
+  iframe {
     position: absolute;
-    z-index: 0;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
+
+  }
+  img {
+    z-index: 0;
     object-fit: cover;
   }
   iframe {
-    position: absolute;
     z-index: 3;
-    width: 100%;
-    height: 100%;
     border: none;
   }
 
