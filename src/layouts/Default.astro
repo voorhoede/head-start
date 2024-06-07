@@ -42,7 +42,7 @@ const mainContentId = 'content';
       <SkipLink targetId={ mainContentId } />
       <header { ...datocmsNoIndex }>
         { /* accessible home link, inspired by https://www.gov.uk/; with Microformats rel */ }
-        <a rel="home" href="/" aria-label={ t('go_to_home_page', { siteName }) }>[Logo]</a>
+        <a rel="home" href={ `/${ locale }/` } aria-label={ t('go_to_home_page', { siteName }) }>[Logo]</a>
         <div>
           <LocaleSelector pageUrls={ pageUrls } />
           <a rel="search" href={ getSearchPathname(locale) }>{ t('search') }</a>
