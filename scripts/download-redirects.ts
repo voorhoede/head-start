@@ -1,4 +1,4 @@
-import { writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { buildClient } from '@datocms/cma-client-node';
 import dotenv from 'dotenv-safe';
 import { datocmsEnvironment } from '../datocms-environment';
@@ -40,7 +40,9 @@ async function fetchRedirectRules() {
 async function downloadRedirectRules() {
   const redirectRules = await fetchRedirectRules();
   const cloudflareRedirectFile = redirectRules.map(rule => `${rule.from} ${rule.to} ${rule.statusCode}`).join('\n');
-  await writeFile('./dist/_redirects', cloudflareRedirectFile);
+  const existingFile = await readFile('./dist/_redirects', 'utf-8');
+  const combinedFile = [existingFile, cloudflareRedirectFile].join('\n');
+  await writeFile('./dist/_redirects', combinedFile);
 }
 
 downloadRedirectRules()

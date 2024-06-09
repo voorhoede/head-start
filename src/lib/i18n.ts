@@ -31,6 +31,7 @@ export function setLocale(locale?: SiteLocale) {
  * To add more, see: https://github.com/adlawson/nodejs-langs/blob/master/data.js (not available in ESM)
  */
 export function getLocaleName(code: string) {
+  // @todo: replace by new Intl.DisplayNames() like in FileLink.astro
   const localeNamesByCode = {
     'de': 'Deutsch',
     'en': 'English',

@@ -1,0 +1,54 @@
+---
+import type { FileLinkFragment } from '@lib/types/datocms';
+import prettyBytes from 'pretty-bytes';
+import { getLocale } from '@lib/i18n';
+import Icon from '@components/Icon';
+
+type Props = {
+  link: FileLinkFragment;
+};
+const { link } = Astro.props;
+const { file, locale: fileLocale, title } = link;
+const pageLocale = getLocale();
+
+// todo: move this logic to lib/routing/file.ts
+const href =
+  link.slug ||
+  file.url.replace('https://www.datocms-assets.com/', '/files/').concat('/');
+
+// todo: move this logic to lib/routing/file.ts ?
+const downloadName = link.slug
+  ? new URL(href).pathname.split('/').pop()
+  : file.filename;
+
+const localeText =
+  fileLocale && fileLocale !== pageLocale
+    ? new Intl.DisplayNames([pageLocale], { type: 'language' }).of(fileLocale)
+    : '';
+
+const format = file.format.toUpperCase();
+const size = prettyBytes(file.size, { locale: pageLocale });
+const metaText = [localeText, format, size].filter(Boolean).join(', ');
+---
+
+<a
+  href={href}
+  hreflang={fileLocale}
+  download={downloadName}
+  type={file.mimeType}
+>
+  <span class="title"><slot>{title}</slot></span>
+  ({metaText})
+  <Icon class="icon" name="download" /></a
+>
+
+<style>
+  /* Underline only the title, so the meta data doesn't obscure the link visually, 
+     but is still part of the link content for assistive technology */
+  a {
+    display: contents;
+  }
+  .title {
+    text-decoration: inherit;
+  }
+</style>

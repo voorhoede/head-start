@@ -27,3 +27,7 @@ Astro supports [API routes](https://docs.astro.build/en/core-concepts/endpoints/
 Head Start supports redirect rules which are editable and [sortable](https://www.datocms.com/docs/content-modelling/record-ordering) in the CMS. These redirect rules are compiled to a [Cloudflare Pages `_redirects` file](https://developers.cloudflare.com/pages/configuration/redirects/)* during build, and support placeholders (`:placeholder_name`) and wildcards (`:*` -> `:splat`).
 
 \* See [decision entry on editable redirects](./decision-log/2024-01-20-editable-redirects.md) for motivation.
+
+## File redirects
+
+...

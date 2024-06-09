@@ -1,7 +1,15 @@
 ---
+import FileLink from '@blocks/File/FileLink.astro';
 import InternalLink from '@blocks/InternalLink/InternalLink.astro';
 
 const { link } = Astro.props;
+const isType = (type: string) => link.__typename === type;
 ---
 
-<InternalLink {link} />
+{
+  isType('InternalLinkRecord') ? (
+    <InternalLink {link} />
+  ) : isType('FileRecord') ? (
+    <FileLink {link} />
+  ) : null
+}
