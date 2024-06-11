@@ -18,7 +18,7 @@ const getImageSrc = (url: string, params: Record<string, number|string> = {}) =>
 
 const getImageSrcSet = (url: string, sizes = defaultSizes, params = {}) => {
   return sizes.map((size) => {
-    const src = getImageSrc(url, { ...params, w: size });
+    const src = getImageSrc(url, { ...params, w: size, fit: 'max' });
     return `${src} ${size}w`;
   }).join(', ');
 };
@@ -65,7 +65,7 @@ const imageUnavailableMessage = t('image_unavailable');
 /* functional styling */
 img {
   display: block;
-  width: 100%;
+  max-width: 100%;
   background-size: cover;
 }
 
