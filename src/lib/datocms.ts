@@ -43,6 +43,10 @@ export const datocmsRequest = async <T>({ query, variables = {}, retryCount = 1 
     if (retryCount >= retryLimit) throw Error('DatoCMS request failed. Too many retries.');
     return datocmsRequest({ query, variables, retryCount: retryCount + 1 });
   }
+  
+  if (!response.ok) {
+    throw Error(`DatoCMS request failed with status ${response.status}`);
+  }
 
   const { data, errors } = await response.json();
   if (errors) throw Error(JSON.stringify(errors, null, 4));
