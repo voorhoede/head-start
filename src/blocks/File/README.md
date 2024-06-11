@@ -1,6 +1,14 @@
 # File
 
-The file model ...
+**The file model provides a generic pattern for content editors to add and reference files.**
+
+## Features
+
+- Editors can upload an asset and link to the file records in text and other fields.
+- Editors can select the locale of a file for improved accessibility.
+- Editors can define a custom URL slug, so files can be under specific URLs. These might be needed due to a migration of a former website or because other software may expect specific URLs.
+
+---
 
 # File Link
 
@@ -14,7 +22,6 @@ The file model ...
 - Shows the file size in human readable. This allows users to avoid unnecessary downloads, which is also eco-responsible (green) best practice. Example: `(2.5 MB)`.
 - Has icon to visually distinguish downloads. Can easily be removed or replaced with another (format specific) icon.
 - Adds locale (`a[hreflang]`) and mime type (`a[type]`) for assistive technology and other applications. Example: `<a href="..." hreflang="fr" type="application/pdf">`.
-
 
 ## Relevant links
 

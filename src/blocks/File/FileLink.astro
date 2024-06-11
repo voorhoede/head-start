@@ -2,6 +2,7 @@
 import type { FileLinkFragment } from '@lib/types/datocms';
 import prettyBytes from 'pretty-bytes';
 import { getLocale } from '@lib/i18n';
+import { getFileLinkHref } from '@lib/routing/file';
 import Icon from '@components/Icon';
 
 type Props = {
@@ -10,16 +11,6 @@ type Props = {
 const { link } = Astro.props;
 const { file, locale: fileLocale, title } = link;
 const pageLocale = getLocale();
-
-// todo: move this logic to lib/routing/file.ts
-const href =
-  link.slug ||
-  file.url.replace('https://www.datocms-assets.com/', '/files/').concat('/');
-
-// todo: move this logic to lib/routing/file.ts ?
-const downloadName = link.slug
-  ? new URL(href).pathname.split('/').pop()
-  : file.filename;
 
 const localeText =
   fileLocale && fileLocale !== pageLocale
@@ -32,9 +23,9 @@ const metaText = [localeText, format, size].filter(Boolean).join(', ');
 ---
 
 <a
-  href={href}
+  href={getFileLinkHref(link)}
   hreflang={fileLocale}
-  download={downloadName}
+  download={title}
   type={file.mimeType}
 >
   <span class="title"><slot>{title}</slot></span>

@@ -107,7 +107,7 @@ export default async function (client: Client) {
       parameters: {
         editFunction: false,
         defaultFunction:
-          'const upload = await getUpload(file.upload_id)\nreturn `${upload.filename}`',
+          'if (slug) {\n  return slug.split(\'/\').pop()\n}\nconst upload = await getUpload(file.upload_id)\nreturn `${upload.filename}`',
       },
       field_extension: 'computedFields',
     },
