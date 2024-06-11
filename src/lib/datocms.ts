@@ -4,6 +4,7 @@ import type { DocumentNode } from 'graphql';
 import type { SiteLocale } from '@lib/i18n.types';
 import { titleSuffix } from './seo';
 import { datocmsBuildTriggerId, datocmsEnvironment } from '../../datocms-environment';
+import { getSecret } from 'astro:env/server';
 
 const wait = (milliSeconds: number) => new Promise((resolve) => setTimeout(resolve, milliSeconds));
 
@@ -19,12 +20,12 @@ type DatocmsRequest = {
  */
 export const datocmsRequest = async <T>({ query, variables = {}, retryCount = 1 }: DatocmsRequest): Promise<T> => {
   const headers = new Headers({
-    Authorization: import.meta.env.DATOCMS_READONLY_API_TOKEN,
+    Authorization: getSecret('DATOCMS_READONLY_API_TOKEN'),
     'Content-Type': 'application/json',
     'X-Environment': datocmsEnvironment,
     'X-Exclude-Invalid': 'true', // https://www.datocms.com/docs/content-delivery-api/api-endpoints#strict-mode-for-non-nullable-graphql-types
   });
-  if (import.meta.env.HEAD_START_PREVIEW) {
+  if (getSecret('HEAD_START_PREVIEW')) {
     headers.append('X-Include-Drafts', 'true');
   }
 
@@ -167,7 +168,7 @@ export const datocmsSearch = async({ locale, query, fuzzy = true }: { locale: Si
 
   const response = await fetch(url.toString(), {
     headers: {
-      'Authorization': `Bearer ${import.meta.env.DATOCMS_READONLY_API_TOKEN}`,
+      'Authorization': `Bearer ${getSecret('DATOCMS_READONLY_API_TOKEN')}`,
       'Accept': 'application/json',
       'X-Api-Version': '3',
     },
