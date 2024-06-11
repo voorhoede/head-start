@@ -45,7 +45,7 @@ export const datocmsRequest = async <T>({ query, variables = {}, retryCount = 1 
   }
 
   const { data, errors } = await response.json();
-  if (errors) throw Error(JSON.stringify(response, null, 4));
+  if (errors) throw Error(JSON.stringify(errors, null, 4));
   return data;
 };
 
