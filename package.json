@@ -38,7 +38,7 @@
     "postinstall": "npx husky install"
   },
   "dependencies": {
-    "@astrojs/check": "^0.4.1",
+    "@astrojs/check": "^0.7.0",
     "@astrojs/cloudflare": "^10.4.0",
     "@astrojs/sitemap": "^3.0.5",
     "@rollup/plugin-graphql": "^2.0.3",
