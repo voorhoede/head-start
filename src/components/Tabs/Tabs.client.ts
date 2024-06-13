@@ -251,8 +251,6 @@ class TabsComponent extends HTMLElement {
     // depending on the key that was pressed.
     let newTab;
 
-    console.log(event.key);
-    
     switch (event.key) {
     case 'ArrowLeft':
     case 'ArrowUp':
