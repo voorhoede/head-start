@@ -1,4 +1,4 @@
-/// <reference types="astro/client" />
+/// <reference path="../.astro/env.d.ts" />
 import type { Env } from 'astro:env';
 type Runtime = import('@astrojs/cloudflare').Runtime<Env>;
 
