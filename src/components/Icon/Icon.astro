@@ -3,21 +3,22 @@ import type { IconName } from '@assets/icon-sprite';
 
 interface Props {
   name: IconName;
+  title?: string;
+  description?: string;
   [x:string]: any;
 }
-const { name, ...props } = Astro.props;
-const ariaLabel = props['aria-label'];
+
+const { name, title, description, ...props } = Astro.props;
 const attributes = { 
   ...props,
-  'aria-hidden': !ariaLabel,
-  role: props.role 
-    ? props.role
-    : ariaLabel ? 'img' : 'presentation',
+  role: props.role ? props.role : title ? 'graphics-symbol' : 'presentation',
 };
 ---
 
-<svg { ...attributes } data-icon={name}>
-  <use href={`#${name}`}xlink:href={`#${name}`} />
+<svg { ...attributes } data-icon={name} aria-hidden={!title}>
+  { title && <title>{title}</title> }
+  <use href={`#${name}`} xlink:href={`#${name}`} />
+  { description && <desc>{description}</desc> }
 </svg>
 
 <style>
