@@ -1,4 +1,4 @@
-import type { DirectoryRuntime as Runtime } from '@astrojs/cloudflare';
+import type { Runtime } from '@astrojs/cloudflare';
 
 export const prerender = false;
 

@@ -1,7 +1,8 @@
-/// <reference types="astro/client" />
+/// <reference path="../.astro/env.d.ts" />
+type Runtime = import('@astrojs/cloudflare').Runtime<Env>;
 
 declare namespace App {
-  interface Locals {
+  interface Locals extends Runtime {
     datocmsEnvironment: string;
     datocmsToken: string;
     isPreview: boolean;
