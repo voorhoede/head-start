@@ -31,7 +31,7 @@ const maxWidth = data.width ? `${data.width}px` : '100%';
   </slot>
   <slot name="noscript">
     { scripts.map(({ src, ...attributes }) => (
-      <script data-src={ src } {...attributes} />
+      <script is:inline data-src={ src } {...attributes} />
     )) }
   </slot>
 </default-embed>

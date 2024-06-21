@@ -1,0 +1,43 @@
+---
+import Icon from '@components/Icon';
+const { href, ...props } = Astro.props;
+---
+
+<a href={href} target="_blank" rel="noopener noreferrer" {...props}>
+  <slot />
+  <span class="play-button__icon">
+    <Icon name="play" />
+  </span>
+</a>
+
+<style>
+  span {
+    --circle-radius: 30px;
+    position: absolute;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    left: calc(50% - var(--circle-radius));
+    top: calc(50% - var(--circle-radius));
+    width: calc(var(--circle-radius) * 2);
+    height: calc(var(--circle-radius) * 2);
+    border-radius: var(--circle-radius);
+    transform: scale(1);
+    transition: transform 0.2s ease-in-out;
+    background-color: black;
+    opacity: 0.8;
+    color: white;
+  }
+  span [data-icon] {
+    width: 35px;
+    height: 35px;
+    margin-left: 5px;
+    line-height: 1;
+  }
+
+  a:hover span,
+  a:focus span {
+    transform: scale(1.5);
+  }
+</style>

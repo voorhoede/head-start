@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { hashSecret, previewCookieName } from '../../../middleware';
+import { PUBLIC_IS_PRODUCTION } from 'astro:env/server';
 
 export const prerender = false;
 
@@ -15,7 +16,7 @@ export const GET: APIRoute = async ({ cookies, locals, request }) => {
   if (userSecret && userSecret === locals.previewSecret) {
     cookies.set(previewCookieName, await hashSecret(locals.previewSecret), {
       httpOnly: true,
-      secure: import.meta.env.PROD,
+      secure: PUBLIC_IS_PRODUCTION,
       path: cookiePath,
       sameSite: 'strict',
       maxAge: 60 * 60 * 24 * 7, // 1 week

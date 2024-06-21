@@ -2,15 +2,17 @@
 import type { VideoEmbedBlockFragment, VideoField } from '@lib/types/datocms';
 import { t } from '@lib/i18n';
 import Icon from '@components/Icon';
+import PlayButton from './PlayButton.astro';
 
 interface Props {
-  block: VideoEmbedBlockFragment
+  block: VideoEmbedBlockFragment;
 }
 const { block } = Astro.props;
 const { autoplay = false, loop = false, mute = false, video } = block;
 const aspectRatio = `${video.width} / ${video.height}`;
 const title = block.title || video.title;
-const providerName = { youtube: 'YouTube', vimeo: 'Vimeo' }[video.provider] || video.provider;
+const providerName =
+  { youtube: 'YouTube', vimeo: 'Vimeo' }[video.provider] || video.provider;
 const vimeoSizeRegex = /_\d+(x\d+)?(\.\w+)?$/; // match _123(.ext) and _123x123(.ext)
 
 function getImageSrcSet({ video }: { video: VideoField }) {
@@ -25,10 +27,15 @@ function getImageSrcSet({ video }: { video: VideoField }) {
     ].join(', ');
   case 'vimeo':
     // Vimeo can generate thumbnails at any size. We'll match the YouTube sizes:
-    return [1280, 640, 480, 320].map(size => {
-      const url =  video.thumbnailUrl.replace(vimeoSizeRegex, `_${size}.jpg`);
-      return `${url} ${size}w`;
-    }).join(', ');
+    return [1280, 640, 480, 320]
+      .map((size) => {
+        const url = video.thumbnailUrl.replace(
+          vimeoSizeRegex,
+          `_${size}.jpg`
+        );
+        return `${url} ${size}w`;
+      })
+      .join(', ');
   default:
     return video.thumbnailUrl;
   }
@@ -45,7 +52,15 @@ function getImageUrl({ video }: { video: VideoField }) {
   }
 }
 
-function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; video: VideoField }) {
+function getVideoUrl({
+  loop,
+  mute,
+  video,
+}: {
+  loop: boolean;
+  mute: boolean;
+  video: VideoField;
+}) {
   // the video only loads if block.autoplay is true or user clicks the thumbnail
   // so in any case the autoplay option in the video url should always be true:
   const autoplay = true;
@@ -82,23 +97,56 @@ function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; vide
 <figure>
   <video-embed
     data-autoplay={autoplay ? 'true' : undefined}
-    data-video-url={getVideoUrl({ loop: Boolean(loop), mute: Boolean(mute), video })}
+    data-provider={video.provider}
+    data-video-url={getVideoUrl({
+      loop: Boolean(loop),
+      mute: Boolean(mute),
+      video,
+    })}
     style={{ aspectRatio }}
   >
-    <a href={video.url} target="_blank" rel="noopener noreferrer">
+    <PlayButton href={video.url}>
       <img
-        alt={t('play_video_title', { title }) }
+        alt={t('play_video_title', { title })}
         loading="lazy"
         src={getImageUrl({ video })}
         srcset={getImageSrcSet({ video })}
         style={{ aspectRatio }}
       />
-    </a>
-    <iframe hidden allowfullscreen allow="autoplay" title={ title } style={{ aspectRatio }}></iframe>
+    </PlayButton>
+
+    <div class="consent-alert" role="alert" hidden>
+      <p class="consent-alert__text">
+        {t('consent_message_service', { service: providerName })}
+      </p>
+      <div class="consent-alert__actions">
+        <button type="button" class="action--primary"
+        >{t('allow_service', { service: providerName })}</button
+        >
+        <a
+          href={video.url}
+          class="action--secondary"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t('watch_video_on_provider', { provider: providerName })}
+          <Icon name="external" />
+        </a>
+      </div>
+    </div>
+
+    <iframe
+      hidden
+      allowfullscreen
+      allow="autoplay"
+      title={title}
+      style={{ aspectRatio }}></iframe>
   </video-embed>
   <figcaption>
     <a href={video.url} target="_blank" rel="noopener noreferrer">
-      {title} ({t('watch_video_on_provider', { provider: providerName }) }) <Icon name="external" />
+      {title} ({t('watch_video_on_provider', { provider: providerName })}) <Icon
+        name="external"
+      />
     </a>
   </figcaption>
 </figure>
@@ -132,6 +180,24 @@ function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; vide
     border: none;
   }
 
+  .consent-alert:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+    width: 100%;
+    min-height: 100%;
+  }
+
+  .consent-alert__text {
+    max-width: 400px;
+    margin-inline: auto;
+    text-align: center;
+  }
+  .consent-alert__actions {
+    text-align: center;
+  }
+
   /* basic styling, can be removed */
   video-embed {
     margin-block: 20px;
@@ -145,46 +211,5 @@ function getVideoUrl({ loop, mute, video }: { loop: boolean; mute: boolean; vide
     height: 1em;
     margin-left: 0.5em;
     vertical-align: middle;
-  }
-
-  /* play icon using pseudo elements */
-  video-embed a::before {
-    --circle-radius: 30px;
-    content: "";
-    display: block;
-    position: absolute;
-    z-index: 1;
-    left: calc(50% - var(--circle-radius));
-    top: calc(50% - var(--circle-radius));
-    width: calc(var(--circle-radius) * 2);
-    height: calc(var(--circle-radius) * 2);
-    border-radius: var(--circle-radius);
-    background-color: black;
-    opacity: 0.8;
-  }
-  video-embed a::after {
-    --triangle-width: 20px;
-    content: "";
-    display: block;
-    position: absolute;
-    z-index: 2;
-    left: calc(50% - var(--triangle-width) * 0.4);
-    top: calc(50% - var(--triangle-width) * 0.5);
-    width: 0;
-    height: 0;
-    border-top: calc(var(--triangle-width) * 0.5) solid transparent;
-    border-bottom: calc(var(--triangle-width) * 0.5) solid transparent;
-    border-left: var(--triangle-width) solid white;
-  }
-  video-embed a::before,
-  video-embed a::after {
-    transform: scale(1);
-    transition: transform 0.2s ease-in-out;
-  }
-  video-embed a:hover::before,
-  video-embed a:hover::after,
-  video-embed a:focus::before,
-  video-embed a:focus::after {
-    transform: scale(1.5);
   }
 </style>
