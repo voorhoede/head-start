@@ -42,6 +42,7 @@
     "@astrojs/check": "^0.4.1",
     "@astrojs/cloudflare": "^9.0.0",
     "@astrojs/sitemap": "^3.0.5",
+    "@nanostores/persistent": "^0.10.1",
     "@rollup/plugin-graphql": "^2.0.3",
     "accept-language-parser": "^1.5.0",
     "astro": "^4.3.2",
