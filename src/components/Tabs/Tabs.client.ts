@@ -4,18 +4,6 @@
  * Added TypeScript support. Removed ShadyCSS. Updated fake private props (`_*`) with native private props (`#*`).
  */
 
-/**
- * Define key codes to help with handling keyboard events.
- */
-const KEYCODE = {
-  DOWN: 40,
-  LEFT: 37,
-  RIGHT: 39,
-  UP: 38,
-  HOME: 36,
-  END: 35,
-};
-
 // To avoid invoking the parser with `.innerHTML` for every new instance, a
 // template for the contents of the shadow DOM is shared by all
 // `<tabs-component>` instances.
@@ -262,22 +250,23 @@ class TabsComponent extends HTMLElement {
     // The switch-case will determine which tab should be marked as active
     // depending on the key that was pressed.
     let newTab;
-    switch (event.keyCode) {
-    case KEYCODE.LEFT:
-    case KEYCODE.UP:
+
+    switch (event.key) {
+    case 'ArrowLeft':
+    case 'ArrowUp':
       newTab = this.#prevTab();
       break;
 
-    case KEYCODE.RIGHT:
-    case KEYCODE.DOWN:
+    case 'ArrowRight':
+    case 'ArrowDown':
       newTab = this.#nextTab();
       break;
 
-    case KEYCODE.HOME:
+    case 'Home':
       newTab = this.#firstTab();
       break;
 
-    case KEYCODE.END:
+    case 'End':
       newTab = this.#lastTab();
       break;
       // Any other key press is ignored and passed back to the browser.

@@ -11,7 +11,12 @@ const i18n = rosetta(messages);
 i18n.locale(defaultLocale);
 
 export type T = typeof i18n.t & ((key: TranslationKey) => string);
-export const t: T = i18n.t.bind(i18n);
+export const t: T = (key: TranslationKey) => {
+  const translate = i18n.t.bind(i18n);
+  const translation = translate(key);
+  if (!translation) console.warn(`\x1b[33mMissing translation for key: ${key}`);
+  return translation;
+};
 
 export function getLocale() {
   return i18n.locale();
