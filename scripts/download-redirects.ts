@@ -56,7 +56,7 @@ async function fetchFileRedirectRules() {
 
     redirectRules.push({
       from: item.slug,
-      to: file.url,
+      to: file.url.replace('https://www.datocms-assets.com/', '/files/'),
       statusCode: '200',
     });
   }
@@ -65,7 +65,7 @@ async function fetchFileRedirectRules() {
 
 async function downloadRedirectRules() {
   const fileRedirects = await fetchFileRedirectRules();
-  const redirects = fetchRedirectRules();
+  const redirects = await fetchRedirectRules();
   const existingFile = await readFile('./dist/_redirects', 'utf-8');
 
   const combinedFile = [
@@ -76,7 +76,7 @@ async function downloadRedirectRules() {
     rulesToText(fileRedirects),
     '',
     '# Redirect rule records from DatoCMS:',
-    rulesToText(await redirects),
+    rulesToText(redirects),
   ].join('\n');
 
   await writeFile('./dist/_redirects', combinedFile);
