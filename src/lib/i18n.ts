@@ -22,7 +22,6 @@ export function getLocale() {
   return i18n.locale();
 }
 
-
 export function setLocale(locale?: SiteLocale) {
   if (locale && locales.includes(locale)) {
     return i18n.locale(locale);
