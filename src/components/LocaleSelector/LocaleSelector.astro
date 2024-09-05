@@ -1,5 +1,5 @@
 ---
-import { getLocale, locales, t } from '@lib/i18n';
+import { getLocale, getLocaleName, locales, t } from '@lib/i18n';
 import type { SiteLocale } from '@lib/types/datocms';
 import type { PageUrl } from '@lib/seo';
 import '@assets/a11y.css';
@@ -7,7 +7,7 @@ import '@assets/a11y.css';
 const activeLocale = getLocale();
 
 interface Props {
-  pageUrls: PageUrl[],
+  pageUrls: PageUrl[];
 }
 const { pageUrls } = Astro.props;
 
@@ -15,26 +15,32 @@ const getPageHref = (locale: SiteLocale) => {
   const pageUrl = pageUrls.find((pageUrl) => pageUrl.locale === locale);
   return pageUrl
     ? new URL(pageUrl.pathname, Astro.site)
-    : new URL(`/${ locale }/`, Astro.site);
+    : new URL(`/${locale}/`, Astro.site);
 };
 ---
+
 <locale-selector>
   <nav aria-labelledby="locale-selector-title">
     <span id="locale-selector-title" class="a11y-sr-only">
-      { t('select_language') }
+      {t('select_language')}
     </span>
     <!-- [html-validate-disable-next no-redundant-role -- see ./README.md] -->
     <ul role="list" style="list-style: none;">
-      { locales.map(locale => (
-        <li>
-          <a hreflang={ locale }
-            href={ getPageHref(locale as SiteLocale) }
-            aria-current={ locale === activeLocale ? 'page' : 'false' }>
-            { /* tip: use @lib/i18n getLocaleName for locale names ('English', 'Deutsch', etc) */ }
-            { locale }
-          </a>
-        </li>
-      )) }
+      {
+        locales.map((locale) => (
+          <li>
+            <a
+              hreflang={locale}
+              href={getPageHref(locale as SiteLocale)}
+              lang={locale}
+              aria-current={locale === activeLocale ? 'page' : 'false'}
+              aria-label={getLocaleName(locale)}
+            >
+              <abbr title={getLocaleName(locale)}>{locale}</abbr>
+            </a>
+          </li>
+        ))
+      }
     </ul>
   </nav>
 </locale-selector>

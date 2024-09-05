@@ -1,0 +1,14 @@
+fragment FileLink on FileRecord {
+  id
+  file {
+    basename
+    filename
+    format
+    mimeType
+    size
+    url
+  }
+  locale
+  slug
+  title
+}

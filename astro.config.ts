@@ -56,7 +56,7 @@ export default defineConfig({
   output: isPreview ? 'server' : 'hybrid',
   server: { port: localhostPort },
   site: siteUrl,
-  trailingSlash: 'always',
+  // trailingSlash: 'always',
   vite: {
     plugins: [
       graphql() as PluginOption,

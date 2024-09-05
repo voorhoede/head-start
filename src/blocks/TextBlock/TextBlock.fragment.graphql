@@ -1,3 +1,4 @@
+#import '@blocks/File/FileLink.fragment.graphql'
 #import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
 #import '@blocks/InternalLink/InternalLink.fragment.graphql'
 #import '@blocks/TableBlock/TableBlock.fragment.graphql'
@@ -22,8 +23,14 @@ fragment TextBlock on TextBlockRecord {
       }
     }
     links {
-      id
-      ...InternalLink
+      __typename
+      ... on InternalLinkRecord {
+        id
+        ...InternalLink
+      }
+      ... on FileRecord {
+        ...FileLink
+      }
     }
     value
   }

@@ -1,6 +1,10 @@
 ---
+import FileLink from '@blocks/File/FileLink.astro';
 import InternalLink from '@blocks/InternalLink/InternalLink.astro';
-import type { InternalLinkFragment } from '@lib/types/datocms';
+import type {
+  FileLinkFragment,
+  InternalLinkFragment,
+} from '@lib/types/datocms';
 
 type Node = {
   meta?: {
@@ -10,13 +14,26 @@ type Node = {
 };
 type Props = {
   node: Node;
-  link: InternalLinkFragment;
+  link: FileLinkFragment | InternalLinkFragment;
 };
 
 const { node, link } = Astro.props;
-const openInNewTab = Boolean(node.meta?.find(entry => entry.id === 'target' && entry.value === '_blank'));
+const openInNewTab = Boolean(
+  node.meta?.find((entry) => entry.id === 'target' && entry.value === '_blank')
+);
+const isType = (type: string) => link.__typename === type;
 ---
 
-<InternalLink link={link} {openInNewTab}>
-  <slot />
-</InternalLink>
+{
+  isType('InternalLinkRecord') ? (
+    <InternalLink link={link as InternalLinkFragment} {openInNewTab}>
+      <slot />
+    </InternalLink>
+  ) : isType('FileRecord') ? (
+    <FileLink link={link as FileLinkFragment}>
+      <slot />
+    </FileLink>
+  ) : (
+    <slot />
+  )
+}
