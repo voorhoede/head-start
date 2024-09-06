@@ -17,7 +17,7 @@ vi.mock('./i18n.messages.json', () => {
 const EN_LOCALE = 'en';
 const NL_LOCALE = 'nl';
 
-describe('i18n', () => {
+describe('i18n:', () => {
   test('"setLocale" should update the current locale', () => {
     const baseline = setLocale(EN_LOCALE);
     expect(baseline).toBe(EN_LOCALE);
@@ -74,7 +74,8 @@ describe('i18n', () => {
   });
 
   test('"t" should log a warning if translation for given key does not exist', () => {
-    const consoleSpy = vi.spyOn(console, 'warn');
+    // we use .mockImplementation(() => {}) to prevent the console from actually logging the warning
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const translationKey = 'some_unsupported_translation_key';
 
     setLocale(EN_LOCALE);
@@ -82,6 +83,5 @@ describe('i18n', () => {
 
     expect(consoleSpy).toHaveBeenCalled();
     expect(consoleSpy).toHaveBeenCalledWith(`\x1b[33mMissing translation for key: ${translationKey}`);
-
   });
 });
