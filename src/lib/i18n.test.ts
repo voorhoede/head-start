@@ -12,8 +12,17 @@ vi.mock('./i18n.messages.json', () => {
       },
       nl: {
         search: 'zoek',
-      }
+      },
     }
+  };
+});
+
+vi.mock('./site.json', () => {
+  return {
+    locales: [
+      'en',
+      'nl',
+    ],
   };
 });
 
