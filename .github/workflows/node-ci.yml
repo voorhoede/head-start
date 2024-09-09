@@ -116,5 +116,8 @@ jobs:
           path: ./node_modules
           key: modules-${{ hashFiles('package-lock.json') }}
 
+      - name: Create production build
+        run: npm run build
+
       - name: Run unit tests
         run: npm run test:unit
