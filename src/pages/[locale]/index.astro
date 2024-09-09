@@ -11,20 +11,28 @@ import ShareButton from '@components/ShareButton/ShareButton.astro';
 import query from './_index.query.graphql';
 
 export async function getStaticPaths() {
-  return locales.map(locale => ({ params: { locale } }));
+  return locales.map((locale) => ({ params: { locale } }));
 }
 
 const { locale } = Astro.params;
 const variables = { locale };
-const { page } = await datocmsRequest<HomePageQuery>({ query, variables }) as { page: HomePageRecord };
-const pageUrls = locales.map(locale => ({ locale, pathname: `/${locale}/` })) as PageUrl[];
+const { page } = (await datocmsRequest<HomePageQuery>({
+  query,
+  variables,
+})) as { page: HomePageRecord };
+const pageUrls = locales.map((locale) => ({
+  locale,
+  pathname: `/${locale}/`,
+})) as PageUrl[];
 ---
-<Layout 
+
+<Layout
   pageUrls={pageUrls}
   seoMetaTags={page._seoMetaTags}
+  cmsEditUrl={page._editingUrl}
 >
-  <PreviewModeSubscription query={ query } variables={ variables }  />
-  <h1>{page.title}</h1>
+  <PreviewModeSubscription query={query} variables={variables} />
+  <h1 data-cms-field={`title.${locale}`}>{page.title}</h1>
   <Blocks blocks={page.bodyBlocks as AnyBlock[]} />
   <ShareButton />
 </Layout>

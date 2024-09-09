@@ -17,6 +17,7 @@ type QueryVariables = { query: Query; variables?: Variables };
 class PreviewMode extends HTMLElement {
   barElement: PreviewModeBar;
   subscriptionElements: PreviewModeSubscription[];
+  editableElements: HTMLElement[];
   #datocmsToken: string = '';
   #datocmsEnvironment: string = '';
   $connections = map<Connection>({});
@@ -29,6 +30,7 @@ class PreviewMode extends HTMLElement {
 
     this.barElement = this.querySelector('preview-mode-bar') as PreviewModeBar;
     this.subscriptionElements = [...this.querySelectorAll('preview-mode-subscription')] as PreviewModeSubscription[];
+    this.editableElements = [...this.querySelectorAll('[data-cms-edit-url] [data-cms-field]')] as HTMLElement[];
 
     const { datocmsEnvironment, datocmsToken } = this.dataset;
     if (!datocmsEnvironment) {
@@ -75,6 +77,16 @@ class PreviewMode extends HTMLElement {
     subscriptionConfigs.forEach(({ query, variables }) => {
       this.subscribe({ query, variables });
     });
+
+    this.addEventListener('click', (event) => {
+      const element = event.target as HTMLElement;
+      if (this.editableElements.includes(element)) {
+        const { cmsEditUrl } = (element.closest('[data-cms-edit-url]') as HTMLElement).dataset;
+        const fieldPath = element.dataset.cmsField;
+        const url = `${cmsEditUrl}#fieldPath=${fieldPath}`;
+        window.open(url, '_blank');
+      }
+    });
   }
 
   getSubscriptionConfigs () {
@@ -86,7 +98,7 @@ class PreviewMode extends HTMLElement {
     this.$connections.setKey(key, 'closed');
     this.$updateCounts.setKey(key, 0);
     await subscribeToQuery({
-      query,
+      query: query.replace(/_editingUrl/g, ''),
       variables,
       environment: this.#datocmsEnvironment,
       token: this.#datocmsToken,

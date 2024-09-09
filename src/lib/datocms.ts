@@ -3,9 +3,11 @@ import { print } from 'graphql/language/printer';
 import type { DocumentNode } from 'graphql';
 import type { SiteLocale } from '@lib/i18n.types';
 import { titleSuffix } from './seo';
+import { internalDomain } from './site.json';
 import { datocmsBuildTriggerId, datocmsEnvironment } from '../../datocms-environment';
 import { getSecret } from 'astro:env/server';
 
+const datocmsBaseEditingUrl = `https://${ internalDomain }`;
 const wait = (milliSeconds: number) => new Promise((resolve) => setTimeout(resolve, milliSeconds));
 
 type DatocmsRequest = {
@@ -24,6 +26,7 @@ export const datocmsRequest = async <T>({ query, variables = {}, retryCount = 1 
     'Content-Type': 'application/json',
     'X-Environment': datocmsEnvironment,
     'X-Exclude-Invalid': 'true', // https://www.datocms.com/docs/content-delivery-api/api-endpoints#strict-mode-for-non-nullable-graphql-types
+    'X-Base-Editing-Url': datocmsBaseEditingUrl,
   });
   if (getSecret('HEAD_START_PREVIEW')) {
     headers.append('X-Include-Drafts', 'true');

@@ -1,5 +1,10 @@
 ---
-import type { DefaultLayoutQuery, Site, SiteLocale, Tag } from '@lib/types/datocms';
+import type {
+  DefaultLayoutQuery,
+  Site,
+  SiteLocale,
+  Tag,
+} from '@lib/types/datocms';
 import { datocmsRequest } from '@lib/datocms';
 import { defaultLocale, t } from '@lib/i18n';
 import { datocmsNoIndex, getSearchPathname } from '@lib/search';
@@ -17,45 +22,55 @@ import '@assets/a11y.css';
 
 interface Props {
   breadcrumbs?: Breadcrumb[];
+  cmsEditUrl?: string;
   pageUrls: PageUrl[];
   seoMetaTags: Tag[];
 }
 
 const { locale = defaultLocale } = Astro.params as { locale?: SiteLocale };
-const data = await datocmsRequest<DefaultLayoutQuery>({ query, variables: { locale } }) as { site: Site };
-const { breadcrumbs = [], pageUrls, seoMetaTags } = Astro.props;
+const data = (await datocmsRequest<DefaultLayoutQuery>({
+  query,
+  variables: { locale },
+})) as { site: Site };
+const { breadcrumbs = [], cmsEditUrl, pageUrls, seoMetaTags } = Astro.props;
 const mainContentId = 'content';
 ---
 
-<!DOCTYPE html>
-<html lang={ locale }>
+<!doctype html>
+<html lang={locale}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <SeoHead
-      pageUrls={ pageUrls }
+      pageUrls={pageUrls}
       tags={[...data.site.faviconMetaTags, ...seoMetaTags]}
     />
   </head>
   <body>
     <PreviewModeProvider>
-      <SkipLink targetId={ mainContentId } />
-      <header { ...datocmsNoIndex }>
-        { /* accessible home link, inspired by https://www.gov.uk/; with Microformats rel */ }
-        <a rel="home" href={ `/${ locale }/` } aria-label={ t('go_to_home_page', { siteName }) }>[Logo]</a>
+      <SkipLink targetId={mainContentId} />
+      <header {...datocmsNoIndex}>
+        {
+          /* accessible home link, inspired by https://www.gov.uk/; with Microformats rel */
+        }
+        <a
+          rel="home"
+          href={`/${locale}/`}
+          aria-label={t('go_to_home_page', { siteName })}>[Logo]</a
+        >
         <div>
-          <LocaleSelector pageUrls={ pageUrls } />
-          <a rel="search" href={ getSearchPathname(locale) }>{ t('search') }</a>
+          <LocaleSelector pageUrls={pageUrls} />
+          <a rel="search" href={getSearchPathname(locale)}>{t('search')}</a>
         </div>
       </header>
-      { (breadcrumbs.length > 0) && (
-        <Breadcrumbs items={breadcrumbs} /> 
-      ) }
-      { /* main element requires tabindex to be focusable, see SkipLink/README.md */ }
-      <main id={ mainContentId } tabindex="-1">
+      {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
+      {
+        /* main element requires tabindex to be focusable, see SkipLink/README.md */
+      }
+      <main id={mainContentId} tabindex="-1" data-cms-edit-url={cmsEditUrl}>
         <slot />
       </main>
-      <footer { ...datocmsNoIndex }>
+      <footer {...datocmsNoIndex}>
         <p>Footer</p>
       </footer>
     </PreviewModeProvider>
@@ -65,10 +80,13 @@ const mainContentId = 'content';
 
 <style is:global>
   /* very basic reset */
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     box-sizing: border-box;
   }
-  html, body {
+  html,
+  body {
     margin: 0;
     padding: 0;
     font-family: sans-serif;
@@ -79,7 +97,8 @@ const mainContentId = 'content';
 </style>
 <style>
   /* Sticky footer. @see https://css-tricks.com/a-clever-sticky-footer-technique/ */
-  html, body {
+  html,
+  body {
     height: 100%;
   }
   footer {

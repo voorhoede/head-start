@@ -13,37 +13,50 @@ export const prerender = false;
 
 const { locale } = Astro.params as { locale: SiteLocale };
 const query = new URL(Astro.request.url).searchParams.get(queryParamName) || '';
-const { results } = hasValidQuery(query) ? await datocmsSearch({ locale, query }) : { results: [] };
+const { results } = hasValidQuery(query)
+  ? await datocmsSearch({ locale, query })
+  : { results: [] };
 const hasResults = results.length > 0;
-const pageTitle = t('search_on_site', { siteName }); 
-const getPathWithQuery = (locale: SiteLocale) => getSearchPathname(locale) + (query ? `?${queryParamName}=${query}` : '');
-const pageUrls = locales.map(locale => ({ locale, pathname: getPathWithQuery(locale) }));
+const pageTitle = t('search_on_site', { siteName });
+const getPathWithQuery = (locale: SiteLocale) =>
+  getSearchPathname(locale) + (query ? `?${queryParamName}=${query}` : '');
+const pageUrls = locales.map((locale) => ({
+  locale,
+  pathname: getPathWithQuery(locale),
+}));
 const breadcrumbs = [
   { text: t('search'), href: getSearchPathname(locale) },
-  hasResults && { text: t('search_results_for_query', { query }), href: getPathWithQuery(locale) },
+  hasResults && {
+    text: t('search_results_for_query', { query }),
+    href: getPathWithQuery(locale),
+  },
 ].filter(Boolean) as Breadcrumb[];
 ---
+
 <Layout
   breadcrumbs={breadcrumbs}
   pageUrls={pageUrls}
-  seoMetaTags={[ noIndexTag, titleTag(pageTitle) ]}
+  seoMetaTags={[noIndexTag, titleTag(pageTitle)]}
 >
-  <h1>{ pageTitle }</h1>
-  <SearchForm query={ query } />
-  { hasValidQuery(query) && (
-    <section>
-      <h2>{ 
-        hasResults
-          ? t('search_results_for_query', { query }) 
-          : t('search_no_results_for_query', { query })
-      }</h2>
-      { hasResults && (
-        <ol>
-          { results.map((item) => (
-            <SearchResult item={ item } />
-          )) }
-        </ol>
-      ) }
-    </section>
-  )}
+  <h1>{pageTitle}</h1>
+  <SearchForm query={query} />
+  {
+    hasValidQuery(query) && (
+      <section>
+        <h2>
+          {hasResults
+            ? t('search_results_for_query', { query })
+            : t('search_no_results_for_query', { query })}
+          {query}
+        </h2>
+        {hasResults && (
+          <ol>
+            {results.map((item) => (
+              <SearchResult item={item} />
+            ))}
+          </ol>
+        )}
+      </section>
+    )
+  }
 </Layout>

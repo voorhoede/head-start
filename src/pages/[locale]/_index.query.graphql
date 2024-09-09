@@ -10,6 +10,7 @@
 query HomePage($locale: SiteLocale!) {
   page: homePage(locale: $locale) {
     title
+    _editingUrl
     _seoMetaTags {
       attributes
       content
