@@ -11,9 +11,11 @@ const i18n = rosetta(messages);
 i18n.locale(defaultLocale);
 
 export type T = typeof i18n.t & ((key: TranslationKey) => string);
-export const t: T = (key: TranslationKey) => {
+// we use the 'any' type since this is used in the rosetta source-code
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const t: T = (key: TranslationKey, params?: any[] | Record<string, any>, lang?: string) => {
   const translate = i18n.t.bind(i18n);
-  const translation = translate(key);
+  const translation = translate(key, params, lang);
   if (!translation) console.warn(`\x1b[33mMissing translation for key: ${key}`);
   return translation;
 };
