@@ -1,0 +1,12 @@
+import { renderToFragment } from '@lib/renderer';
+import type { {{ pascalCase name }}Fragment } from '@lib/types/datocms';
+import { describe, expect, test } from 'vitest';
+import {{ pascalCase name }} from './{{ pascalCase name }}.astro';
+
+const fragment = await renderToFragment<{ block: {{ pascalCase name }}Fragment }>({{ pascalCase name }});
+
+describe('{{ pascalCase name }}', () => {
+  test('Component is rendered', () => {
+    expect(fragment).toBeDefined();
+  });
+});
