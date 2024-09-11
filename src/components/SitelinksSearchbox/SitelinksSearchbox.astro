@@ -1,20 +1,28 @@
 ---
+import { getSearchPathname, getOpenSearchName, queryParamName } from '@lib/search';
+
 const { locale } = Astro.params;
+
+/* Combine base URL and path, removing any double slashes (except "://" in "http://" or "https://"). */
+function getSearchUrl() {
+  let fullUrl = `${Astro.site}${getSearchPathname(locale)}`;
+  return fullUrl.replace(/([^:]\/)\/+/g, '$1');
+}
 
 const script = `
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "name": "Head Start",
+      "name": "${getOpenSearchName(locale)}",
       "url": "${Astro.site}",
       "potentialAction": {
         "@type": "SearchAction",
         "target": {
           "@type": "EntryPoint",
-          "urlTemplate": "${Astro.site}api/search/?locale=${locale}&query={search_term_string}"
+          "urlTemplate": "${ getSearchUrl() }?${ queryParamName }={searchTerms}"
         },
-        "query-input": "required name=search_term_string"
+        "query-input": "required name=searchTerms"
       }
     }
   </script>
