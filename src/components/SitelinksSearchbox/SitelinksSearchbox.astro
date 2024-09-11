@@ -3,11 +3,7 @@ import { getSearchPathname, getOpenSearchName, queryParamName } from '@lib/searc
 
 const { locale } = Astro.params;
 
-/* Combine base URL and path, removing any double slashes (except "://" in "http://" or "https://"). */
-function getSearchUrl() {
-  let fullUrl = `${Astro.site}${getSearchPathname(locale)}`;
-  return fullUrl.replace(/([^:]\/)\/+/g, '$1');
-}
+const url = new URL(getSearchPathname(locale), Astro.site);
 
 const script = `
   <script type="application/ld+json">
@@ -20,7 +16,7 @@ const script = `
         "@type": "SearchAction",
         "target": {
           "@type": "EntryPoint",
-          "urlTemplate": "${ getSearchUrl() }?${ queryParamName }={searchTerms}"
+          "urlTemplate": "${ url }?${ queryParamName }={searchTerms}"
         },
         "query-input": "required name=searchTerms"
       }
