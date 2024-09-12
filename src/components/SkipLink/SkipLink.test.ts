@@ -1,10 +1,10 @@
 import { renderToFragment } from '@lib/renderer';
 import { describe, expect, test } from 'vitest';
-import {{ pascalCase name }} from './{{ pascalCase name }}.astro';
+import SkipLink from './SkipLink.astro';
 
-const fragment = await renderToFragment({{ pascalCase name }});
+const fragment = await renderToFragment(SkipLink);
 
-describe('{{ pascalCase name }}', () => {
+describe('SkipLink', () => {
   test('Component is rendered', () => {
     expect(fragment).toBeDefined();
   });

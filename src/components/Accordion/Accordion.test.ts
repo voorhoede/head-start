@@ -1,10 +1,10 @@
 import { renderToFragment } from '@lib/renderer';
 import { describe, expect, test } from 'vitest';
-import {{ pascalCase name }} from './{{ pascalCase name }}.astro';
+import Accordion from './Accordion.astro';
 
-const fragment = await renderToFragment({{ pascalCase name }});
+const fragment = await renderToFragment(Accordion);
 
-describe('{{ pascalCase name }}', () => {
+describe('Accordion', () => {
   test('Component is rendered', () => {
     expect(fragment).toBeDefined();
   });

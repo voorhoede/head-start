@@ -19,4 +19,6 @@ describe('InternalLink', () => {
   test('Component is rendered', () => {
     expect(fragment).toBeDefined();
   });
+
+  // Add more tests here
 });

@@ -6,7 +6,9 @@ import {{ pascalCase name }} from './{{ pascalCase name }}.astro';
 const fragment = await renderToFragment<{ block: {{ pascalCase name }}Fragment }>({{ pascalCase name }});
 
 describe('{{ pascalCase name }}', () => {
-  test('Component is rendered', () => {
+  test('Block is rendered', () => {
     expect(fragment).toBeDefined();
   });
+
+  // Add more tests here
 });

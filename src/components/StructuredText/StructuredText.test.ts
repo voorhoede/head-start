@@ -1,10 +1,10 @@
 import { renderToFragment } from '@lib/renderer';
 import { describe, expect, test } from 'vitest';
-import {{ pascalCase name }} from './{{ pascalCase name }}.astro';
+import StructuredText from './StructuredText.astro';
 
-const fragment = await renderToFragment({{ pascalCase name }});
+const fragment = await renderToFragment(StructuredText);
 
-describe('{{ pascalCase name }}', () => {
+describe('StructuredText', () => {
   test('Component is rendered', () => {
     expect(fragment).toBeDefined();
   });
