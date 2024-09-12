@@ -14,8 +14,8 @@ const { pageUrls } = Astro.props;
 const getPageHref = (locale: SiteLocale) => {
   const pageUrl = pageUrls.find((pageUrl) => pageUrl.locale === locale);
   return pageUrl
-    ? new URL(pageUrl.pathname, Astro.site)
-    : new URL(`/${ locale }/`, Astro.site);
+    ? new URL(pageUrl.pathname, Astro.site || 'http://localhost:5173/')
+    : new URL(`/${ locale }/`, Astro.site || 'http://localhost:5173/');
 };
 ---
 <locale-selector>

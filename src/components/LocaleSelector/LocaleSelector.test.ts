@@ -1,15 +1,16 @@
+import { renderToFragment } from '@lib/renderer';
 import { describe, expect, test } from 'vitest';
+import LocaleSelector from './LocaleSelector.astro';
 
-// const fragment = await renderToFragment(LocaleSelector, {
-//   props: {
-//     pageUrls: []
-//   }
-// });
+const fragment = await renderToFragment(LocaleSelector, {
+  props: {
+    pageUrls: []
+  }
+});
 
 describe('LocaleSelector', () => {
   test('Component is rendered', () => {
-    // expect(fragment).toBeDefined();
-    expect(true).toBe(true);
+    expect(fragment).toBeDefined();
   });
 
   // Add more tests here
