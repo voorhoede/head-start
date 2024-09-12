@@ -8,7 +8,6 @@ import Blocks from '@blocks/Blocks.astro';
 import type { AnyBlock } from '@blocks/Blocks';
 import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
 import ShareButton from '@components/ShareButton/ShareButton.astro';
-import SitelinksSearchbox from '@components/SitelinksSearchbox/SitelinksSearchbox.astro';
 import query from './_index.query.graphql';
 
 export async function getStaticPaths() {
@@ -28,10 +27,6 @@ const pageUrls = locales.map((locale) => ({
 ---
 
 <Layout pageUrls={pageUrls} seoMetaTags={page._seoMetaTags}>
-  <Fragment slot="head">
-    <SitelinksSearchbox />
-  </Fragment>
-  
   <PreviewModeSubscription query={query} variables={variables} />
   <h1>{page.title}</h1>
   <Blocks blocks={page.bodyBlocks as AnyBlock[]} />
