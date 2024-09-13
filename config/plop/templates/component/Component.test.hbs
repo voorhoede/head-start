@@ -1,8 +1,8 @@
-import { renderToFragment } from '@lib/renderer';
 import { describe, expect, test } from 'vitest';
-import {{ pascalCase name }} from './{{ pascalCase name }}.astro';
+import { renderToFragment } from '@lib/renderer';
+import {{ pascalCase name }}, { type Props as {{ pascalCase name }} } from './{{ pascalCase name }}.astro';
 
-const fragment = await renderToFragment({{ pascalCase name }});
+const fragment = await renderToFragment<{{ pascalCase name }}Props>({{ pascalCase name }});
 
 describe('{{ pascalCase name }}', () => {
   test('Component is rendered', () => {
