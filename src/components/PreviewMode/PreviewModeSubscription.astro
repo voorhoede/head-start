@@ -11,7 +11,8 @@ const { isPreview } = Astro.locals;
 ---
 { isPreview && (
   <preview-mode-subscription>
-    <script 
+    <script
+      is:inline
       type="application/graphql+json" 
       set:html={ JSON.stringify({
         query: print(query), 

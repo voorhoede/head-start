@@ -37,6 +37,7 @@ module.exports = {
           { argsIgnorePattern: '^_', destructuredArrayIgnorePattern: '^_' },
         ],
         '@typescript-eslint/no-non-null-assertion': 'off',
+        '@typescript-eslint/triple-slash-reference': 'off',
       },
     },
   ],

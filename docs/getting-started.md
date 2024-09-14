@@ -13,7 +13,7 @@ Head Start requires Node.js to be installed. See [/.nvmrc](../.nvmrc) for the co
 - Install the project dependencies (`npm install`).
 - Create a `.env` file (`cp .env.example .env`).
 
-```bash
+```shell
 git clone ...
 cd ...
 npm install
@@ -22,7 +22,7 @@ cp .env.example .env
 
 - Set `HEAD_START_PREVIEW_SECRET` in your `.env` file to a secret value. You can think up your own value or use a [passphrase generator](https://bitwarden.com/password-generator/) to help you create a secret like 'wooing-uncured-backspace'.
 
-```bash
+```shell
 # .env
 HEAD_START_PREVIEW_SECRET=create-your-own
 ```
@@ -31,14 +31,11 @@ Before you can run your project locally, you need to set-up a DatoCMS project.
 
 ## Create a DatoCMS project
 
-> [!WARNING]
-> Head Start has an open [issue on running migrations](https://github.com/voorhoede/head-start/issues/62). For now (instead of creating a blank project and running migrations) duplicate the 'Head Start' project in the Dato dashboard. You can ignore the steps below, but make sure to configure Dato API tokens in your `.env` file and set `datocmsEnvironment = 'main'` in `datocms-environment.ts`.
-
 - [Signup](https://dashboard.datocms.com/signup) or [signin](https://dashboard.datocms.com/) to your DatoCMS account.
-- [Create a new DatoCMS project](https://dashboard.datocms.com/personal-account/projects/browse/new) (select blank project).
+- Create a new blank DatoCMS project.
 - In your CMS, go to Project Settings > API tokens (`/project_settings/access_tokens`) and copy the tokens full-access API token (`DATOCMS_API_TOKEN`) and read-only API token (`DATOCMS_READONLY_API_TOKEN`) to your `.env` file (see below).
 
-```bash
+```dotenv
 # .env
 DATOCMS_READONLY_API_TOKEN=copy-read-only-token
 DATOCMS_API_TOKEN=copy-full-access-token
@@ -48,7 +45,7 @@ DATOCMS_API_TOKEN=copy-full-access-token
 - Promote the new `start` environment to primary environment: `npx datocms environments:promote start` Alternatively you can go to Project Settings > Environments (`/project_settings/environments`) and 'Promote' the `start` environment to primary.
 - In your CMS, you can now safely remove the original environment via Project Settings > Environments (`/project_settings/environments`).
 
-```bash
+```shell
 npx datocms migrations:run --destination=start --fast-fork
 npx datocms environments:promote start
 ```
@@ -61,11 +58,11 @@ export const datocmsEnvironment = 'start';
 ```
 
 > [!WARNING]
-> Head Start has an open [issue on providing seed scripts](https://github.com/voorhoede/head-start/issues/27). You will manually add a bit of required (placeholder) content to your new CMS instance for the Home and 404 Page and add some translations.
+> Head Start has an open [issue on providing seed scripts](https://github.com/voorhoede/head-start/issues/27). You will manually add a bit of required (placeholder) content to your new CMS instance for the global SEO data, Home and 404 Page.
 
 You can now run your project locally:
 
-```bash
+```shell
 npm run dev
 ```
 

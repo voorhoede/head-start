@@ -1,5 +1,5 @@
 ---
-import { t } from '@lib/i18n';
+import { getLocale, t } from '@lib/i18n';
 import Icon from '@components/Icon';
 import type { Breadcrumb } from './index';
 
@@ -8,6 +8,7 @@ interface Props {
 }
 
 const { items } = Astro.props;
+const locale = getLocale();
 const isLast = (index: number) => index === items.length - 1;
 // @see https://developers.google.com/search/docs/appearance/structured-data/breadcrumb#json-ld
 const schema = {
@@ -17,7 +18,7 @@ const schema = {
     {
       '@type': 'ListItem',
       name: t('breadcrumbs_home'),
-      item: new URL('/', Astro.site),
+      item: new URL(`/${ locale }/`, Astro.site),
     },
     ... items.map(item => ({
       '@type': 'ListItem',
@@ -33,7 +34,7 @@ const schema = {
 
 <nav aria-label={t('breadcrumbs_title')}>
   <ol>
-    <li><a href='/'>{t('breadcrumbs_home')}</a></li>
+    <li><a href={ `/${ locale }/` }>{t('breadcrumbs_home')}</a></li>
     {
       items.map((item, index) => (
         <li>
@@ -53,7 +54,7 @@ const schema = {
   </ol>
 </nav>
 
-<script type="application/ld+json" set:html={ JSON.stringify(schema, null, 2) } />
+<script is:inline type="application/ld+json" set:html={ JSON.stringify(schema, null, 2) } />
 
 <style>
   nav {
