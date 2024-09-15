@@ -10,9 +10,14 @@
       "@lib/*": ["src/lib/*"],
       "@pages/*": ["src/pages/*"],
       "@root/*": ["./*"],
-      "@src/*": ["src/*"],
+      "@src/*": ["src/*"]
     },
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    "plugins": [
+      {
+        "name": "@astrojs/ts-plugin"
+      }
+    ]
   },
   "exclude": ["node_modules", "dist"]
 }
