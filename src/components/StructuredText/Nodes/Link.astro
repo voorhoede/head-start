@@ -7,7 +7,19 @@ interface Props {
 
 const { node } = Astro.props;
 const { url, meta } = node;
-const targetBlank = Boolean(meta?.find(entry => entry.id === 'target' && entry.value === '_blank'));
+const targetBlank = Boolean(
+  meta?.find((entry) => entry.id === 'target' && entry.value === '_blank')
+);
+
+// Strip trailing spaces from slot contents so underlined links
+// do not extend further than the text.
+let html;
+if (Astro.slots.has('default')) {
+  html = await Astro.slots.render('default');
+  html = html.trim();
+}
 ---
 
-<a href={url} target={targetBlank ? '_blank' : null} rel="noopener noreferrer"><slot /></a>
+<a href={url} target={targetBlank ? '_blank' : null} rel="noopener noreferrer"
+><Fragment set:html={html} /></a
+>

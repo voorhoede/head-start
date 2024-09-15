@@ -1,5 +1,9 @@
 ---
-import type { InternalLinkFragment, PageRecord, SiteLocale } from '@lib/types/datocms';
+import type {
+  InternalLinkFragment,
+  PageRecord,
+  SiteLocale,
+} from '@lib/types/datocms';
 import { getPagePath } from './index';
 
 interface Props {
@@ -15,23 +19,31 @@ const { locale } = Astro.params as Params;
 const { title, page } = link;
 
 // Determine pathname based on record type
-const getHref = (
-  { locale, page }: 
-    { locale: SiteLocale, page: InternalLinkFragment['page'] 
-  }) => {
+const getHref = ({
+  locale,
+  page,
+}: {
+  locale: SiteLocale;
+  page: InternalLinkFragment['page'];
+}) => {
   const pathParams = {
     HomePageRecord: [],
     PageRecord: [getPagePath({ page: page as PageRecord, locale })],
   }[page.__typename];
-  
-  return `/${[
-    locale,
-    ...pathParams,
-  ].filter(Boolean).join('/')}/`;
+
+  return `/${[locale, ...pathParams].filter(Boolean).join('/')}/`;
 };
 
 const href = getHref({ locale, page });
 const target = openInNewTab ? '_blank' : null;
+
+// Strip trailing spaces from slot contents so underlined links
+// do not extend further than the text.
+let html;
+if (Astro.slots.has('default')) {
+  html = await Astro.slots.render('default');
+  html = html.trim();
+}
 ---
 
-<a href={href} {target}><slot>{title}</slot></a>
+<a {href} {target}>{html ? <Fragment set:html={html} /> : title}</a>
