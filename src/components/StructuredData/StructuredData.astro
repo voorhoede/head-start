@@ -1,0 +1,32 @@
+---
+import { getSearchPathname, getOpenSearchName, queryParamName } from '@lib/search';
+
+const { locale } = Astro.params;
+
+const url = new URL(getSearchPathname(locale), Astro.site);
+
+const data = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      'name': `${getOpenSearchName(locale)}`,
+      'url':`${Astro.site}`,
+      'potentialAction': {
+        '@type': 'SearchAction',
+        'target': {
+          '@type': 'EntryPoint',
+          'urlTemplate': `${ url }?${ queryParamName }={searchTerms}`
+        },
+        'query-input': 'required name=searchTerms'
+      }
+    }
+  ]
+};
+---
+
+<script
+  type="application/ld+json"
+  is:inline
+  set:html={JSON.stringify(data, null, 2)}
+></script>

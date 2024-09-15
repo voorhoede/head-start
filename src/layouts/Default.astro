@@ -11,6 +11,7 @@ import type { Breadcrumb } from '@components/Breadcrumbs';
 import IconSprite from '@components/Icon/IconSprite.astro';
 import LocaleSelector from '@components/LocaleSelector/LocaleSelector.astro';
 import PreviewModeProvider from '@components/PreviewMode/PreviewModeProvider.astro';
+import StructuredData from '@components/StructuredData/StructuredData.astro';
 import SeoHead from '@components/SeoHead.astro';
 import SkipLink from '@components/SkipLink/SkipLink.astro';
 import '@assets/a11y.css';
@@ -32,6 +33,7 @@ const mainContentId = 'content';
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
+    <StructuredData />
     <SeoHead
       pageUrls={ pageUrls }
       tags={[...data.site.faviconMetaTags, ...seoMetaTags]}
@@ -49,7 +51,7 @@ const mainContentId = 'content';
         </div>
       </header>
       { (breadcrumbs.length > 0) && (
-        <Breadcrumbs items={breadcrumbs} /> 
+        <Breadcrumbs items={breadcrumbs} />
       ) }
       { /* main element requires tabindex to be focusable, see SkipLink/README.md */ }
       <main id={ mainContentId } tabindex="-1">
