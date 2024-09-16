@@ -10,7 +10,7 @@ const fragment = await renderToFragment(LocaleSelector, {
 
 describe('LocaleSelector', () => {
   test('Component is rendered', () => {
-    expect(fragment).toBeDefined();
+    expect(fragment).toBeTruthy();
   });
 
   // Add more tests here

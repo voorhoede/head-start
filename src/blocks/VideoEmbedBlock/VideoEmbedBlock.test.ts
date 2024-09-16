@@ -25,7 +25,7 @@ const fragment = await renderToFragment<{ block: VideoEmbedBlockFragment }>(Vide
 
 describe('VideoEmbedBlock', () => {
   test('Component is rendered', () => {
-    expect(fragment).toBeDefined();
+    expect(fragment).toBeTruthy();
   });
 
   // Add more tests here

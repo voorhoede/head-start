@@ -1,38 +1,66 @@
 import { renderToFragment } from '@lib/renderer';
-import type { VideoBlockFragment } from '@lib/types/datocms';
 import { describe, expect, test } from 'vitest';
-import VideoBlock from './VideoBlock.astro';
-
-const fragment = await renderToFragment<{ block: VideoBlockFragment }>(VideoBlock, {
-  props: {
-    block: {
-      id: '123',
-      autoplay: false,
-      mute: false,
-      loop: true,
-      videoAsset: {
-        video: {
-          muxAssetId: '123',
-          muxPlaybackId: '123',
-          streamingUrl: 'https://example.com/',
-          thumbnailUrl: 'https://example.com/',
-        }
-      },
-      tracks: [{
-        locale: 'en',
-        kind: 'mp4',
-        file: {
-          url: 'https://example.com/'
-        }
-      }]
-    }
-  }
-});
+import VideoBlock, { type Props } from './VideoBlock.astro';
 
 describe('VideoBlock', () => {
-  test('Component is rendered', () => {
-    expect(fragment).toBeDefined();
+  test('Simple video', async () => {
+    const fragment = await renderToFragment<Props>(VideoBlock, {
+      props: {
+        block: {
+          id: '123',
+          title: 'A test video',
+          autoplay: false,
+          mute: false,
+          loop: false,
+          videoAsset: {
+            video: {
+              muxAssetId: '123',
+              muxPlaybackId: '123',
+              streamingUrl: 'https://example.com/',
+              thumbnailUrl: 'https://example.com/',
+            }
+          },
+          tracks: []
+        }
+      }
+    });
+
+    expect(fragment.querySelector('figure')).toBeTruthy();
+    expect(fragment.querySelector('figcaption')).toBeTruthy();
+    expect(fragment.querySelector('video')).toBeTruthy();
   });
 
-  // Add more tests here
+  test('Video with subtitle tracks', async () => {
+    const fragment = await renderToFragment<Props>(VideoBlock, {
+      props: {
+        block: {
+          id: '123',
+          title: 'A test video',
+          autoplay: false,
+          mute: false,
+          loop: false,
+          videoAsset: {
+            video: {
+              muxAssetId: '123',
+              muxPlaybackId: '123',
+              streamingUrl: 'https://example.com/',
+              thumbnailUrl: 'https://example.com/',
+            }
+          },
+          tracks: [{
+            locale: 'en',
+            kind: 'mp4',
+            file: {
+              url: 'https://example.com/'
+            }
+          }]
+        }
+      }
+    });
+
+    expect(fragment.querySelector('figure')).toBeTruthy();
+    expect(fragment.querySelector('figcaption')).toBeTruthy();
+    expect(fragment.querySelector('video')).toBeTruthy();
+    expect(fragment.querySelector('track[srclang="en"]')).toBeTruthy();
+  });
 });

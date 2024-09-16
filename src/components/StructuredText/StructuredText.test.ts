@@ -6,7 +6,7 @@ const fragment = await renderToFragment(StructuredText);
 
 describe('StructuredText', () => {
   test('Component is rendered', () => {
-    expect(fragment).toBeDefined();
+    expect(fragment).toBeTruthy();
   });
 
   // Add more tests here

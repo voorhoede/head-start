@@ -2,10 +2,11 @@ import { renderToFragment } from '@lib/renderer';
 import { describe, expect, test } from 'vitest';
 import {{ pascalCase name }} from './{{ pascalCase name }}.astro';
 
-const fragment = await renderToFragment({{ pascalCase name }});
 
 describe('{{ pascalCase name }}', () => {
-  test('Component is rendered', () => {
+  test('Component is rendered', async () => {
+    const fragment = await renderToFragment({{ pascalCase name }});
+
     expect(fragment).toBeTruthy();
   });
 

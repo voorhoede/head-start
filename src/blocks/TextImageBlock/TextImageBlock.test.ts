@@ -6,7 +6,7 @@ import TextImageBlock from './TextImageBlock.astro';
 
 
 describe('TextImageBlock', () => {
-  test('Component is rendered', async () => {
+  test('Text Image', async () => {
     const fragment = await renderToFragment<{ block: TextImageBlockFragment }>(TextImageBlock, {
       props: {
         block: {
@@ -53,7 +53,7 @@ describe('TextImageBlock', () => {
     expect(fragment.querySelector('.layout--text-image')).toBeTruthy();
   });
 
-  test('Component is rendered', async () => {
+  test('Image Text', async () => {
     const fragment = await renderToFragment<{ block: TextImageBlockFragment }>(TextImageBlock, {
       props: {
         block: {

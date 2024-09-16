@@ -1,12 +1,15 @@
 import { renderToFragment } from '@lib/renderer';
-import type { {{ pascalCase name }}Fragment } from '@lib/types/datocms';
 import { describe, expect, test } from 'vitest';
-import {{ pascalCase name }} from './{{ pascalCase name }}.astro';
-
-const fragment = await renderToFragment<{ block: {{ pascalCase name }}Fragment }>({{ pascalCase name }});
+import {{ pascalCase name }}, { type Props } from './{{ pascalCase name }}.astro';
 
 describe('{{ pascalCase name }}', () => {
-  test('Block is rendered', () => {
+  test('Block is rendered', async () => {
+    const fragment = await renderToFragment<Props>({{ pascalCase name }}, {
+        props: {
+            block: {}
+        }
+    });
+
     expect(fragment).toBeTruthy();
   });
 

@@ -13,7 +13,7 @@ const fragment = await renderToFragment<{ items: Breadcrumb[] }>(Breadcrumbs, {
 
 describe('Breadcrumbs', () => {
   test('Component is rendered', () => {
-    expect(fragment).toBeDefined();
+    expect(fragment).toBeTruthy();
   });
 
   // Add more tests here

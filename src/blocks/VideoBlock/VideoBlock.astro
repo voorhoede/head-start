@@ -3,7 +3,7 @@ import type { UploadVideoField, VideoBlockFragment, VideoTextTrackRecord } from 
 import VideoFallback from './VideoFallback.astro';
 import VideoTextTracks from './VideoTextTracks.astro';
 
-interface Props {
+export interface Props {
   block: VideoBlockFragment;
 }
 const { block } = Astro.props;
@@ -30,7 +30,7 @@ const videoAttributes = {
   data-streaming-url={ video.streamingUrl }
 >
   <figure>
-    { /* We use 2 video elements: 
+    { /* We use 2 video elements:
       - The first is enhanced in the client-side script to use streaming with adaptive bitrate.
       - The second is fallback native video element that works without JS or custom elmenet support.
       As a JS check is needed for the first video to appear, it's wrapped in a div to reserve space for it.
