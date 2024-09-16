@@ -27,39 +27,6 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci --ignore-scripts --no-audit --no-fund
 
-  build:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs: setup
-
-    env:
-      DATOCMS_READONLY_API_TOKEN: ${{ secrets.DATOCMS_READONLY_API_TOKEN }}
-      DATOCMS_API_TOKEN: '' # required but unused in this workflow
-      HEAD_START_PREVIEW_SECRET: '' # required but unused in this workflow
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-
-      - name: Use dependencies cache
-        uses: actions/cache@v3
-        with:
-          path: ./node_modules
-          key: modules-${{ hashFiles('package-lock.json') }}
-
-      - name: Create production build
-        run: npm run build
-
-      - name: Upload dist directory
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist
-
   lint-code:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -98,7 +65,7 @@ jobs:
   validate-html:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [setup, build]
+    needs: setup
 
     env:
       DATOCMS_READONLY_API_TOKEN: ${{ secrets.DATOCMS_READONLY_API_TOKEN }}
@@ -119,11 +86,8 @@ jobs:
           path: ./node_modules
           key: modules-${{ hashFiles('package-lock.json') }}
 
-      - name: Download dist directory
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist
+      - name: Create production build
+        run: npm run build
 
       - name: Validate HTML
         run: npm run lint:html
@@ -131,7 +95,7 @@ jobs:
   unit-test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [setup, build]
+    needs: setup
 
     env:
       DATOCMS_READONLY_API_TOKEN: '' # required but unused in this workflow
@@ -152,11 +116,8 @@ jobs:
           path: ./node_modules
           key: modules-${{ hashFiles('package-lock.json') }}
 
-      - name: Download dist directory
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist
+      - name: Prepare setup
+        run: npm run prep
 
       - name: Run unit tests
         run: npm run test:unit
