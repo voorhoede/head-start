@@ -6,7 +6,7 @@ const fragment = await renderToFragment({{ pascalCase name }});
 
 describe('{{ pascalCase name }}', () => {
   test('Component is rendered', () => {
-    expect(fragment).toBeDefined();
+    expect(fragment).toBeTruthy();
   });
 
   // Add more tests here
