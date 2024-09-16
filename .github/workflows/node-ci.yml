@@ -98,7 +98,7 @@ jobs:
     needs: setup
 
     env:
-      DATOCMS_READONLY_API_TOKEN: '' # required but unused in this workflow
+      DATOCMS_READONLY_API_TOKEN: ${{ secrets.DATOCMS_READONLY_API_TOKEN }}
       DATOCMS_API_TOKEN: '' # required but unused in this workflow
       HEAD_START_PREVIEW_SECRET: '' # required but unused in this workflow
 
