@@ -1,5 +1,8 @@
 import { describe, expect, test, vi } from 'vitest';
-import { t, getLocale, getLocaleName, setLocale } from './i18n';
+import { defaultLocale, t, getLocale, getLocaleName, setLocale } from './i18n';
+
+// these imports will resolve to their mocked counterparts
+import { locales } from './site.json';
 
 // to verify that unsupported locales are handled correctly we test with locales that we know do not exist (e.g. 'unsupported_locale')
 // TS does not like this, so we supress the warnings with a ts-expect-error comment
@@ -9,9 +12,17 @@ vi.mock('./i18n.messages.json', () => {
     default: {
       en: {
         search: 'search',
+        login: {
+          enter_password: 'enter your password',
+          welcome: 'welcome back {{ name }}',
+        },
       },
       nl: {
         search: 'zoek',
+        login: {
+          enter_password: 'vul je wachtwoord in',
+          welcome: 'welkom terug {{ name }}',
+        },
       },
     }
   };
@@ -26,9 +37,15 @@ vi.mock('./site.json', () => {
   };
 });
 
-// TODO: add tests for interpolation and language options
-
 describe('i18n:', () => {
+  test('"defaultLocale" should be the first locale', () => {
+    expect(defaultLocale).toBe(locales[0]);
+  });
+
+  test('i18n instance should be initialized with the defaultLocale', () => {
+    expect(getLocale()).toBe(defaultLocale);
+  });
+
   test('"setLocale" should update the current locale', () => {
     expect(setLocale('en')).toBe('en');
     expect(setLocale('nl')).toBe('nl');
@@ -52,6 +69,7 @@ describe('i18n:', () => {
     setLocale('en');
     expect(getLocale()).toBe('en');
 
+    // expect 'en' because the locale was most recently set to 'en'
     setLocale();
     expect(getLocale()).toBe('en');
   });
@@ -66,12 +84,28 @@ describe('i18n:', () => {
     expect(getLocaleName('bb')).toBe('BB');
   });
 
-  test('"t" should return a translation', () => {
+  test('"t" should return translations', () => {
     setLocale('en');
     expect(t('search')).toBe('search');
+    expect(t('login.enter_password')).toBe('enter your password');
 
     setLocale('nl');
     expect(t('search')).toBe('zoek');
+    expect(t('login.enter_password')).toBe('vul je wachtwoord in');
+  });
+
+  test('"t" should return translations with interpolated values', () => {
+    setLocale('en');
+    expect(t('login.welcome', { name: 'wessel' })).toBe('welcome back wessel');
+
+    setLocale('nl');
+    expect(t('login.welcome', { name: 'wessel' })).toBe('welkom terug wessel smit');
+
+    // TODO moet dit nog uitgebreid worden?
+  });
+
+  test('"t" should return translations for a specific locale', () => {
+    // TODO
   });
 
   test('"t" should log a warning if translation for given key does not exist', () => {
