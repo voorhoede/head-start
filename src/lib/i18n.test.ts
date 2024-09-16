@@ -100,12 +100,16 @@ describe('i18n:', () => {
 
     setLocale('nl');
     expect(t('login.welcome', { name: 'wessel' })).toBe('welkom terug wessel');
-
-    // TODO moet dit nog uitgebreid worden?
   });
 
   test('"t" should return translations for a specific locale', () => {
-    // TODO
+    expect(t('search', {}, 'en')).toBe('search');
+    expect(t('search', {}, 'nl')).toBe('zoek');
+  });
+
+  test('"t" should return translations for a specific locale with interpolated values', () => {
+    expect(t('login.welcome', { name: 'wessel' }, 'en')).toBe('welcome back wessel');
+    expect(t('login.welcome', { name: 'wessel' }, 'nl')).toBe('welkom terug wessel');
   });
 
   test('"t" should log a warning if translation for given key does not exist', () => {
