@@ -99,7 +99,7 @@ describe('i18n:', () => {
     expect(t('login.welcome', { name: 'wessel' })).toBe('welcome back wessel');
 
     setLocale('nl');
-    expect(t('login.welcome', { name: 'wessel' })).toBe('welkom terug wessel smit');
+    expect(t('login.welcome', { name: 'wessel' })).toBe('welkom terug wessel');
 
     // TODO moet dit nog uitgebreid worden?
   });
