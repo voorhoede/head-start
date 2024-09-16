@@ -1,87 +1,124 @@
 import { describe, expect, test, vi } from 'vitest';
-import { t, getLocale, getLocaleName, setLocale } from './i18n';
+import { defaultLocale, t, getLocale, getLocaleName, setLocale } from './i18n';
+
+// these imports will resolve to their mocked counterparts
+import { locales } from './site.json';
+
+// to verify that unsupported locales are handled correctly we test with locales that we know do not exist (e.g. 'unsupported_locale')
+// TS does not like this, so we supress the warnings with a ts-expect-error comment
 
 vi.mock('./i18n.messages.json', () => {
   return {
     default: {
       en: {
         search: 'search',
+        login: {
+          enter_password: 'enter your password',
+          welcome: 'welcome back {{ name }}',
+        },
       },
       nl: {
         search: 'zoek',
-      }
+        login: {
+          enter_password: 'vul je wachtwoord in',
+          welcome: 'welkom terug {{ name }}',
+        },
+      },
     }
   };
 });
 
-const EN_LOCALE = 'en';
-const NL_LOCALE = 'nl';
+vi.mock('./site.json', () => {
+  return {
+    locales: [
+      'en',
+      'nl',
+    ],
+  };
+});
 
 describe('i18n:', () => {
-  test('"setLocale" should update the current locale', () => {
-    const baseline = setLocale(EN_LOCALE);
-    expect(baseline).toBe(EN_LOCALE);
-
-    const updatedLocale = setLocale(NL_LOCALE);
-    expect(updatedLocale).toBe(NL_LOCALE);
+  test('"defaultLocale" should be the first locale', () => {
+    expect(defaultLocale).toBe(locales[0]);
   });
 
-  test('"setLocale" should not update current locale if no locale is given', () => {
-    const baseline = setLocale(EN_LOCALE);
-    expect(baseline).toBe(EN_LOCALE);
+  test('i18n instance should be initialized with the defaultLocale', () => {
+    expect(getLocale()).toBe(defaultLocale);
+  });
 
-    const updatedLocale = setLocale();
-    expect(updatedLocale).toBe(baseline);
+  test('"setLocale" should update the current locale', () => {
+    expect(setLocale('en')).toBe('en');
+    expect(setLocale('nl')).toBe('nl');
+  });
+
+  test('"setLocale" should only update current locale if locale is supported', () => {
+    expect(setLocale('en')).toBe('en');
+    expect(setLocale('nl')).toBe('nl');
+
+    // expect 'nl' because the locale was most recently set to 'nl'
+    expect(setLocale()).toBe('nl');
+
+    // @ts-expect-error we know that 'unsupported_locale' is not a supported locale
+    expect(setLocale('unsupported_locale')).not.toBe('unsupported_locale');
   });
 
   test('"getLocale" should return the current locale', () => {
-    setLocale(NL_LOCALE);
-    const baselineLocale = getLocale();
+    setLocale('nl');
+    expect(getLocale()).toBe('nl');
 
-    expect(baselineLocale).toBe(NL_LOCALE);
+    setLocale('en');
+    expect(getLocale()).toBe('en');
 
-    setLocale(EN_LOCALE);
-    const updatedLocale = getLocale();
-
-    expect(updatedLocale).toBe(EN_LOCALE);
+    // expect 'en' because the locale was most recently set to 'en'
+    setLocale();
+    expect(getLocale()).toBe('en');
   });
 
   test('"getLocaleName" should return the name of a locale', () => {
-    const locale = setLocale(EN_LOCALE);
-    const localeName = getLocaleName(locale);
-
-    expect(localeName).toBe('English');
+    expect(getLocaleName('en')).toBe('English');
+    expect(getLocaleName('nl')).toBe('Nederlands');
   });
 
   test('"getLocaleName" should return a code instead of a name if locale is not supported', () => {
-    const localeName = getLocaleName('aa');
-
-    expect(localeName).toBe('AA');
+    expect(getLocaleName('aa')).toBe('AA');
+    expect(getLocaleName('bb')).toBe('BB');
   });
 
-  test('"t" should return a translation', () => {
-    const translationKey = 'search';
+  test('"t" should return translations', () => {
+    setLocale('en');
+    expect(t('search')).toBe('search');
+    expect(t('login.enter_password')).toBe('enter your password');
 
-    setLocale(EN_LOCALE);
-    const enTranslation = t(translationKey);
+    setLocale('nl');
+    expect(t('search')).toBe('zoek');
+    expect(t('login.enter_password')).toBe('vul je wachtwoord in');
+  });
 
-    expect(enTranslation).toBe('search');
+  test('"t" should return translations with interpolated values', () => {
+    setLocale('en');
+    expect(t('login.welcome', { name: 'wessel' })).toBe('welcome back wessel');
 
-    setLocale(NL_LOCALE);
-    const nlTranslation = t(translationKey);
+    setLocale('nl');
+    expect(t('login.welcome', { name: 'wessel' })).toBe('welkom terug wessel');
+  });
 
-    expect(nlTranslation).toBe('zoek');
+  test('"t" should return translations for a specific locale', () => {
+    expect(t('search', {}, 'en')).toBe('search');
+    expect(t('search', {}, 'nl')).toBe('zoek');
+  });
+
+  test('"t" should return translations for a specific locale with interpolated values', () => {
+    expect(t('login.welcome', { name: 'wessel' }, 'en')).toBe('welcome back wessel');
+    expect(t('login.welcome', { name: 'wessel' }, 'nl')).toBe('welkom terug wessel');
   });
 
   test('"t" should log a warning if translation for given key does not exist', () => {
     // we use .mockImplementation(() => {}) to prevent the console from actually logging the warning
     const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const translationKey = 'some_unsupported_translation_key';
 
-    setLocale(EN_LOCALE);
-    t(translationKey);
+    t('unsupported_translation_key');
 
     expect(consoleSpy).toHaveBeenCalled();
-    expect(consoleSpy).toHaveBeenCalledWith(`\x1b[33mMissing translation for key: ${translationKey}`);
+    expect(consoleSpy).toHaveBeenCalledWith('\x1b[33mMissing translation for key: unsupported_translation_key');
   });
 });
