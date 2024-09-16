@@ -1,45 +1,49 @@
 import { renderToFragment } from '@lib/renderer';
-import type { TextBlockFragment } from '@lib/types/datocms';
 import { describe, expect, test } from 'vitest';
-import TextBlock from './TextBlock.astro';
+import TextBlock, { type Props } from './TextBlock.astro';
 
-const fragment = await renderToFragment<{ block: TextBlockFragment }>(TextBlock, {
-  props: {
-    block: {
-      text: {
-        value: {
-          schema: 'dast',
-          document: {
-            type: 'root',
-            children: [
-              {
-                type: 'heading',
-                level: 1,
-                children: [{ type: 'span', value: 'Welcome to My Blog!' }]
-              },
-              {
-                type: 'paragraph',
+describe('TextBlock', () => {
+  test('Component is rendered', async () => {
+    const fragment = await renderToFragment<Props>(TextBlock, {
+      props: {
+        block: {
+          __typename: 'TextBlockRecord',
+          text: {
+            blocks: [],
+            links: [],
+            value: {
+              schema: 'dast',
+              document: {
+                type: 'root',
                 children: [
                   {
-                    type: 'span',
-                    value: 'This is a paragraph explaining the topic in detail.'
+                    type: 'heading',
+                    level: 1,
+                    children: [
+                      {
+                        type: 'span',
+                        value: 'This is a test'
+                      }
+                    ]
+                  },
+                  {
+                    type: 'paragraph',
+                    children: [
+                      {
+                        type: 'span',
+                        value: 'This is a test'
+                      },
+                    ]
                   }
                 ]
               }
-            ]
+            }
           }
-        },
-        blocks: [],
-        links: []
+        }
       }
-    }
-  }
-});
+    });
 
-describe('TextBlock', () => {
-  test('Component is rendered', () => {
-    expect(fragment).toBeDefined();
+    expect(fragment.querySelector('h2')?.textContent).toBe('This is a test');
+    expect(fragment.querySelector('p')?.textContent).toBe('This is a test');
   });
-
-  // Add more tests here
 });
