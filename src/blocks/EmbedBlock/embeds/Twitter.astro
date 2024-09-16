@@ -5,11 +5,11 @@ import { extractScripts } from '../index';
 import type { OEmbedRich } from '../index';
 
 const data = Astro.props.data as OEmbedRich;
-const url = Astro.props.url;
+const { context, url } = Astro.props;
 const { noscriptHtml } = extractScripts(data.html);
 ---
 
-<DefaultEmbed { data } { url } class="twitter-embed">
+<DefaultEmbed { data } { url } context={ context } class="twitter-embed">
   <div slot="html">
     <Icon name="twitter" aria-label={ data.provider_name } />
     <div
