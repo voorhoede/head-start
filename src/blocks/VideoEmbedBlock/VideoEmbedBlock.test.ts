@@ -1,32 +1,32 @@
 import { renderToFragment } from '@lib/renderer';
-import type { VideoEmbedBlockFragment } from '@lib/types/datocms';
 import { describe, expect, test } from 'vitest';
-import VideoEmbedBlock from './VideoEmbedBlock.astro';
-
-const fragment = await renderToFragment<{ block: VideoEmbedBlockFragment }>(VideoEmbedBlock, {
-  props: {
-    block: {
-      id: '123',
-      autoplay: false,
-      mute: false,
-      loop: true,
-      video: {
-        provider: '',
-        providerUid: '',
-        thumbnailUrl: '',
-        title: '',
-        url: '',
-        height: 0,
-        width: 0
-      }
-    }
-  }
-});
+import VideoEmbedBlock, { type Props } from './VideoEmbedBlock.astro';
 
 describe('VideoEmbedBlock', () => {
-  test('Component is rendered', () => {
-    expect(fragment).toBeTruthy();
-  });
+  test('Component is rendered', async () => {
+    const fragment = await renderToFragment<Props>(VideoEmbedBlock, {
+      props: {
+        block: {
+          id: '123',
+          video: {
+            provider: 'youtube',
+            providerUid: 'feylP4p1-KU',
+            thumbnailUrl: 'https://i.ytimg.com/vi/feylP4p1-KU/hqdefault.jpg',
+            title: 'Green Caravan pitch (NL)',
+            url: 'https://www.youtube.com/watch?v=feylP4p1-KU',
+            height: 113,
+            width: 200
+          },
+          title: '',
+          autoplay: false,
+          mute: false,
+          loop: false
+        }
+      }
+    });
 
-  // Add more tests here
+    expect(fragment.querySelector('[data-provider="youtube"]')).toBeTruthy();
+    expect(fragment.querySelector('.play-button__icon')).toBeTruthy();
+    expect(fragment.querySelector('.consent-alert')).toBeTruthy();
+  });
 });
