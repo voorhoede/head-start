@@ -9,8 +9,9 @@
 - Provide pre-configured services like a CMS and deployment platform.
 - Support common needs like internationalisation (i18n), SEO, redirects and analytics.
 - Provide functional interactivity without a JS framework (React, Vue, Svelte, etc)*.
-- Provide functional interactivity without specific styling ("unstyled")*. 
+- Provide functional interactivity without specific styling ("unstyled")*.
 - Provide a fully accessible and highly performant baseline for every project.
+- Utilise testing to ensure quality and prevent regressions.
 
 \* We'll leave the choice for a JS framework and strategy for styling to developers using Head Start for their project.
 
@@ -28,7 +29,7 @@ Progress can also be tracked on the [Head Start project board](https://github.co
 
 The site is created as lightweight progressively enhanced website connected to a headless CMS:
 
-- [Astro](https://astro.build/) - web framework to structure this project. Astro is selected because it embraces web standards, is designed for performance, and supports all our favourite UI frameworks (React, Vue and Svelte). 
+- [Astro](https://astro.build/) - web framework to structure this project. Astro is selected because it embraces web standards, is designed for performance, and supports all our favourite UI frameworks (React, Vue and Svelte).
 - [DatoCMS](https://www.datocms.com/) - a headless CMS is connected to manage web content. DatoCMS is selected for its modular and structured content options, advanced image service, multi-language support and GraphQL API.
 - [Cloudflare Pages](https://pages.cloudflare.com/) - is a JAMstack hosting platform. Cloudflare Pages is selected for its reliable CDN, zero cold-start workers, green hosting and affordable pricing.
 
@@ -81,12 +82,13 @@ All documentation is located in [`docs/`](docs/):
 - [Routing](docs/routing.md)
 - [Search](docs/search.md)
 - [Search Engine Optimisation (SEO)](docs/seo.md)
+- [Testing](docs/testing.md)
 
 ## Commands
 
 All commands are run from the root of the project, from a terminal:
 
-| Command (`npm run ...`) | Action                                          
+| Command (`npm run ...`) | Action
 |:------------------------| :-----------------------------------------------
 | `dev`                   | Starts local dev server at `localhost:4323` (head in T9)
 | `build`                 | Build your production site to `./dist/`
@@ -94,6 +96,7 @@ All commands are run from the root of the project, from a terminal:
 | `astro ...`             | Run commands like `astro add` (see `astro -- --help`)
 | `create`                | Scaffold new Block, Component, API or Page route
 | `lint`                  | Check code style and valide HTML output
+| `test`                  | Runs the test suite, individual tests are available using `test:...`
 
 ## Contributing
 
