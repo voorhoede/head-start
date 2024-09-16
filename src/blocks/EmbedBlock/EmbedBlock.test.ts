@@ -1,11 +1,10 @@
 import { renderToFragment } from '@lib/renderer';
-import type { EmbedBlockFragment } from '@lib/types/datocms';
 import { describe, expect, test } from 'vitest';
-import EmbedBlock, { type Props as EmbedBlockProps } from './EmbedBlock.astro';
+import EmbedBlock, { type Props } from './EmbedBlock.astro';
 
 describe('EmbedBlock', () => {
   test('Component renders Twitter Embed', async () => {
-    const fragment = await renderToFragment<EmbedBlockProps>(
+    const fragment = await renderToFragment<Props>(
       EmbedBlock,
       {
         props: {
@@ -35,7 +34,7 @@ describe('EmbedBlock', () => {
   });
 
   test('Component renders Flickr Embed', async () => {
-    const fragment = await renderToFragment<{ block: EmbedBlockFragment }>(
+    const fragment = await renderToFragment<Props>(
       EmbedBlock,
       {
         props: {
@@ -76,7 +75,7 @@ describe('EmbedBlock', () => {
   });
 
   test('Component renders CodePen Embed', async () => {
-    const fragment = await renderToFragment<{ block: EmbedBlockFragment }>(
+    const fragment = await renderToFragment<Props>(
       EmbedBlock,
       {
         props: {
@@ -110,7 +109,7 @@ describe('EmbedBlock', () => {
   });
 
   test('Component renders YouTube Embed', async () => {
-    const fragment = await renderToFragment<{ block: EmbedBlockFragment }>(
+    const fragment = await renderToFragment<Props>(
       EmbedBlock,
       {
         props: {
@@ -143,7 +142,7 @@ describe('EmbedBlock', () => {
   });
 
   test('Component renders Vimeo Embed', async () => {
-    const fragment = await renderToFragment<{ block: EmbedBlockFragment }>(
+    const fragment = await renderToFragment<Props>(
       EmbedBlock,
       {
         props: {

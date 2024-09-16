@@ -1,9 +1,8 @@
 import { renderToFragment } from '@lib/renderer';
-import type { InternalLinkFragment } from '@lib/types/datocms';
 import { describe, expect, test } from 'vitest';
-import InternalLink from './InternalLink.astro';
+import InternalLink, { type Props } from './InternalLink.astro';
 
-const fragment = await renderToFragment<{ link: InternalLinkFragment }>(InternalLink, {
+const fragment = await renderToFragment<Props>(InternalLink, {
   props: {
     link: {
       title: 'A test link',

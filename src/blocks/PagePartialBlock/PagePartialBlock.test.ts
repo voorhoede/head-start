@@ -1,10 +1,10 @@
 import { renderToFragment } from '@lib/renderer';
 import { describe, expect, test } from 'vitest';
-import PagePartialBlock, { type Props as PagePartialBlockProps } from './PagePartialBlock.astro';
+import PagePartialBlock, { type Props } from './PagePartialBlock.astro';
 
 describe('PagePartialBlock', () => {
   test('Layout Stack, untitled', async () => {
-    const fragment = await renderToFragment<PagePartialBlockProps>(PagePartialBlock, {
+    const fragment = await renderToFragment<Props>(PagePartialBlock, {
       props: {
         block: {
           __typename: 'PagePartialBlockRecord',
@@ -50,7 +50,7 @@ describe('PagePartialBlock', () => {
   });
 
   test('Layout Stack, titled', async () => {
-    const fragment = await renderToFragment<PagePartialBlockProps>(PagePartialBlock, {
+    const fragment = await renderToFragment<Props>(PagePartialBlock, {
       props: {
         block: {
           __typename: 'PagePartialBlockRecord',
@@ -96,7 +96,7 @@ describe('PagePartialBlock', () => {
   });
 
   test('Layout Accordion, closed', async () => {
-    const fragment = await renderToFragment<PagePartialBlockProps>(PagePartialBlock, {
+    const fragment = await renderToFragment<Props>(PagePartialBlock, {
       props: {
         block: {
           __typename: 'PagePartialBlockRecord',
@@ -142,7 +142,7 @@ describe('PagePartialBlock', () => {
   });
 
   test('Layout Accordion, open', async () => {
-    const fragment = await renderToFragment<PagePartialBlockProps>(PagePartialBlock, {
+    const fragment = await renderToFragment<Props>(PagePartialBlock, {
       props: {
         block: {
           __typename: 'PagePartialBlockRecord',
@@ -187,7 +187,7 @@ describe('PagePartialBlock', () => {
   });
 
   test('Layout Tabs', async () => {
-    const fragment = await renderToFragment<PagePartialBlockProps>(PagePartialBlock, {
+    const fragment = await renderToFragment<Props>(PagePartialBlock, {
       props: {
         block: {
           __typename: 'PagePartialBlockRecord',

@@ -1,12 +1,12 @@
 import { renderToFragment } from '@lib/renderer';
 import { describe, expect, test } from 'vitest';
-import ImageBlock, { type Props as ImageBlockProps } from './ImageBlock.astro';
+import ImageBlock, { type Props } from './ImageBlock.astro';
 
 
 
 describe('ImageBlock', () => {
   test('Component renders image', async () => {
-    const fragment = await renderToFragment<ImageBlockProps>(ImageBlock, {
+    const fragment = await renderToFragment<Props>(ImageBlock, {
       props: {
         block: {
           id: '123',
@@ -32,7 +32,7 @@ describe('ImageBlock', () => {
   });
 
   test('Component renders responsive image', async () => {
-    const fragment = await renderToFragment<ImageBlockProps>(ImageBlock, {
+    const fragment = await renderToFragment<Props>(ImageBlock, {
       props: {
         block: {
           id: '123',

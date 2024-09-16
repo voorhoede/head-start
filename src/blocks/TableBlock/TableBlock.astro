@@ -12,8 +12,8 @@ type Table = {
 type Block = Omit<TableBlockFragment, 'table'> & {
   table: Table
 }
-type Props = {
-  block: Block 
+export type Props = {
+  block: Block
 };
 const { block } = Astro.props;
 const { title, table, hasHeaderRow, hasHeaderColumn } = block;
@@ -24,7 +24,7 @@ const isNumeric = (value: string) => !isNaN(Number(value.replace('%','')));
 <figure class="component">
   { /* using figcaption instead of table > caption as the latter would scroll horizontally on overflow */ }
   { title && (
-    <figcaption>{title}</figcaption> 
+    <figcaption>{title}</figcaption>
   )}
   <div class="canvas">
     <table>
@@ -47,7 +47,7 @@ const isNumeric = (value: string) => !isNaN(Number(value.replace('%','')));
                 scope={ isHeaderColumn(index) ? 'row' : undefined }
               >
                 {value}
-              </DynamicTag> 
+              </DynamicTag>
             ))}
           </tr>
         ))}
