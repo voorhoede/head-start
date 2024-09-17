@@ -5,7 +5,7 @@ import InternalLink, { type Props } from './InternalLink.astro';
 
 
 describe('InternalLink', () => {
-  test('Component is rendered', async () => {
+  test('Component has all props', async () => {
     const fragment = await renderToFragment<Props>(InternalLink, {
       props: {
         link: {
@@ -18,6 +18,6 @@ describe('InternalLink', () => {
       }
     });
 
-    expect(fragment).toBeTruthy();
+    expect(fragment.querySelector('a')).toBeTruthy();
   });
 });

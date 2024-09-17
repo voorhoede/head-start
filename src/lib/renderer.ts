@@ -2,7 +2,6 @@ import { experimental_AstroContainer as AstroContainer, type ContainerRenderOpti
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 import { JSDOM } from 'jsdom';
 
-
 export async function renderToString<Props>(
   component: AstroComponentFactory,
   options?: ContainerRenderOptions & { props?: Props }
