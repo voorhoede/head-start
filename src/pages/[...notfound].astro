@@ -1,0 +1,7 @@
+---
+export const prerender = false;
+
+const { pathname } = new URL(Astro.request.url);
+---
+
+<h1>Page not found ({pathname})</h1>
