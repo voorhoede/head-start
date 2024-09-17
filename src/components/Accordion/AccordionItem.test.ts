@@ -11,8 +11,6 @@ describe('Accordion Item', () => {
       name: 'test'
     } });
 
-    console.log(fragment.querySelector('[slot="body"]'));
-
     expect(fragment.querySelector('details')).toBeTruthy();
     expect(fragment.querySelector('details')?.getAttribute('name')).toBe('test');
     expect(fragment.querySelector('details')?.textContent).toContain('Body');
