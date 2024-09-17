@@ -3,7 +3,7 @@ import { describe, expect, test } from 'vitest';
 import TextBlock, { type Props } from './TextBlock.astro';
 
 describe('TextBlock', () => {
-  test('Component is rendered', async () => {
+  test('Block is rendered', async () => {
     const fragment = await renderToFragment<Props>(TextBlock, {
       props: {
         block: {

@@ -5,7 +5,7 @@ import ImageBlock, { type Props } from './ImageBlock.astro';
 
 
 describe('ImageBlock', () => {
-  test('Component renders image', async () => {
+  test('Block renders image', async () => {
     const fragment = await renderToFragment<Props>(ImageBlock, {
       props: {
         block: {
@@ -31,7 +31,7 @@ describe('ImageBlock', () => {
     expect(fragment.querySelector('img')?.style.aspectRatio).toBe('150/150');
   });
 
-  test('Component renders responsive image', async () => {
+  test('Block renders responsive image', async () => {
     const fragment = await renderToFragment<Props>(ImageBlock, {
       props: {
         block: {

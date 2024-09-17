@@ -3,7 +3,7 @@ import { describe, expect, test } from 'vitest';
 import EmbedBlock, { type Props } from './EmbedBlock.astro';
 
 describe('EmbedBlock', () => {
-  test('Component renders Twitter Embed', async () => {
+  test('Block renders Twitter Embed', async () => {
     const fragment = await renderToFragment<Props>(
       EmbedBlock,
       {
@@ -16,7 +16,7 @@ describe('EmbedBlock', () => {
               url: 'https://twitter.com/devoorhoede/status/1670853955285565440',
               author_name: 'De Voorhoede',
               author_url: 'https://twitter.com/devoorhoede',
-              html: '<blockquote class="twitter-tweet"><p lang="en" dir="ltr">💡🤔 What if you could build a universal Design System with <a href="https://twitter.com/reactjs?ref_src=twsrc%5Etfw">@reactjs</a> and use it in any web application or framework? <br><br>👨‍💻 We achieved this by compiling React to Web Components. <br><br>✨ This is how: <a href="https://t.co/pxHTsj2IE8">https://t.co/pxHTsj2IE8</a> <a href="https://t.co/ZfzQtniidF">pic.twitter.com/ZfzQtniidF</a></p>&mdash; De Voorhoede (@devoorhoede) <a href="https://twitter.com/devoorhoede/status/1670853955285565440?ref_src=twsrc%5Etfw">June 19, 2023</a></blockquote>\n<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>\n\n',
+              html: '<blockquote class="twitter-tweet"><p lang="en" dir="ltr">💡🤔 What if you could build a universal Design System with <a href="https://twitter.com/reactjs?ref_src=twsrc%5Etfw">@reactjs</a> and use it in any web application or framework? <br><br>👨‍💻 We achieved this by compiling React to Web Blocks. <br><br>✨ This is how: <a href="https://t.co/pxHTsj2IE8">https://t.co/pxHTsj2IE8</a> <a href="https://t.co/ZfzQtniidF">pic.twitter.com/ZfzQtniidF</a></p>&mdash; De Voorhoede (@devoorhoede) <a href="https://twitter.com/devoorhoede/status/1670853955285565440?ref_src=twsrc%5Etfw">June 19, 2023</a></blockquote>\n<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>\n\n',
               width: 550,
               height: null,
               type: 'rich',
@@ -33,7 +33,7 @@ describe('EmbedBlock', () => {
     expect(fragment.querySelector('[data-provider="Twitter"]')).toBeTruthy();
   });
 
-  test('Component renders Flickr Embed', async () => {
+  test('Block renders Flickr Embed', async () => {
     const fragment = await renderToFragment<Props>(
       EmbedBlock,
       {
@@ -74,7 +74,7 @@ describe('EmbedBlock', () => {
     expect(fragment.querySelector('[data-provider="Flickr"]')).toBeTruthy();
   });
 
-  test('Component renders CodePen Embed', async () => {
+  test('Block renders CodePen Embed', async () => {
     const fragment = await renderToFragment<Props>(
       EmbedBlock,
       {
@@ -108,7 +108,7 @@ describe('EmbedBlock', () => {
     expect(fragment.querySelector('[data-provider="CodePen"]')).toBeTruthy();
   });
 
-  test('Component renders YouTube Embed', async () => {
+  test('Block renders YouTube Embed', async () => {
     const fragment = await renderToFragment<Props>(
       EmbedBlock,
       {
@@ -141,7 +141,7 @@ describe('EmbedBlock', () => {
     expect(fragment.querySelector('[data-provider="youtube"]')).toBeTruthy();
   });
 
-  test('Component renders Vimeo Embed', async () => {
+  test('Block renders Vimeo Embed', async () => {
     const fragment = await renderToFragment<Props>(
       EmbedBlock,
       {

@@ -5,7 +5,7 @@ import InternalLink, { type Props } from './InternalLink.astro';
 
 
 describe('InternalLink', () => {
-  test('Component has all props', async () => {
+  test('Block has all props', async () => {
     const fragment = await renderToFragment<Props>(InternalLink, {
       props: {
         link: {

@@ -3,7 +3,7 @@ import { describe, expect, test } from 'vitest';
 import VideoEmbedBlock, { type Props } from './VideoEmbedBlock.astro';
 
 describe('VideoEmbedBlock', () => {
-  test('Component is rendered', async () => {
+  test('Block is rendered', async () => {
     const fragment = await renderToFragment<Props>(VideoEmbedBlock, {
       props: {
         block: {
