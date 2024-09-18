@@ -4,6 +4,7 @@ import type { DetailsBlockFragment } from '@lib/types/datocms';
 interface Props {
   block: DetailsBlockFragment
 }
+
 const { block } = Astro.props;
 const splitChar = '|';
 const hasMultipleValues = (value: string) => value.includes(splitChar);
