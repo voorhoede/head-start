@@ -1,5 +1,6 @@
 ---
 import type { AnyBlock } from './Blocks';
+import DetailsBlock from './DetailsBlock/DetailsBlock.astro';
 import EmbedBlock from './EmbedBlock/EmbedBlock.astro';
 import ImageBlock from './ImageBlock/ImageBlock.astro';
 import PagePartialBlock from './PagePartialBlock/PagePartialBlock.astro';
@@ -10,6 +11,7 @@ import VideoBlock from './VideoBlock/VideoBlock.astro';
 import VideoEmbedBlock from './VideoEmbedBlock/VideoEmbedBlock.astro';
 
 const blocksByTypename = {
+  DetailsBlockRecord: DetailsBlock,
   EmbedBlockRecord: EmbedBlock,
   ImageBlockRecord: ImageBlock,
   PagePartialBlockRecord: PagePartialBlock,

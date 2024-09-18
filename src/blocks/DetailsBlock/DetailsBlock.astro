@@ -1,0 +1,39 @@
+---
+const { block } = Astro.props;
+const splitChar = '|';
+const hasMultipleValues = (value: string) => value.includes(splitChar);
+const splitValues = (value: string) => value.split(splitChar);
+---
+
+<dl class:list={['details-block', `details-block--${block.display}`]}>
+  {
+    Object.keys(block.json).map((key) => (
+      <>
+        <dt>{key}</dt>
+        {hasMultipleValues(block.json[key]) ? (
+          <div>
+            {splitValues(block.json[key]).map((value) => (
+              <dd>{value}</dd>
+            ))}
+          </div>
+        ) : (
+          <dd>{block.json[key]}</dd>
+        )}
+      </>
+    ))
+  }
+</dl>
+
+<style>
+    .details-block {
+        display: grid;
+    }
+
+    .details-block--vertical {
+        grid-template-columns: 1fr;
+    }
+
+    .details-block--horizontal {
+        grid-template-columns: max-content 1fr;
+    }
+</style>

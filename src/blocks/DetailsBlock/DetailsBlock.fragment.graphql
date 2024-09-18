@@ -1,0 +1,4 @@
+fragment DetailsBlock on DetailsBlockRecord {
+  json
+  display
+}
