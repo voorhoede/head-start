@@ -2,44 +2,33 @@
 import type { DetailsBlockFragment } from '@lib/types/datocms';
 
 interface Props {
-  block: DetailsBlockFragment
+    block: DetailsBlockFragment;
 }
 
 const { block } = Astro.props;
-const splitChar = '|';
-const hasMultipleValues = (value: string) => value.includes(splitChar);
-const splitValues = (value: string) => value.split(splitChar);
+const splitCharacter = '|';
 ---
 
-<dl class:list={['details-block', `details-block--${block.display}`]}>
+<dl data-layout={block.layout}>
   {
-    Object.keys(block.details).map((key) => (
+    Object.entries(block.details).map(([key, value]) => (
       <>
         <dt>{key}</dt>
-        {hasMultipleValues(block.details[key]) ? (
-          <div>
-            {splitValues(block.details[key]).map((value) => (
-              <dd>{value}</dd>
-            ))}
-          </div>
-        ) : (
-          <dd>{block.details[key]}</dd>
-        )}
+        {(value as string).split(splitCharacter).map((splitValue) => (
+          <dd>{splitValue}</dd>
+        ))}
       </>
     ))
   }
 </dl>
 
 <style>
-    .details-block {
+    dl[data-layout="horizontal"] {
         display: grid;
-    }
-
-    .details-block--vertical {
-        grid-template-columns: 1fr;
-    }
-
-    .details-block--horizontal {
         grid-template-columns: max-content 1fr;
+    }
+
+    dl[data-layout="horizontal"] dd {
+        grid-column: 2;
     }
 </style>
