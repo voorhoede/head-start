@@ -7,17 +7,17 @@ const splitValues = (value: string) => value.split(splitChar);
 
 <dl class:list={['details-block', `details-block--${block.display}`]}>
   {
-    Object.keys(block.json).map((key) => (
+    Object.keys(block.details).map((key) => (
       <>
         <dt>{key}</dt>
-        {hasMultipleValues(block.json[key]) ? (
+        {hasMultipleValues(block.details[key]) ? (
           <div>
-            {splitValues(block.json[key]).map((value) => (
+            {splitValues(block.details[key]).map((value) => (
               <dd>{value}</dd>
             ))}
           </div>
         ) : (
-          <dd>{block.json[key]}</dd>
+          <dd>{block.details[key]}</dd>
         )}
       </>
     ))

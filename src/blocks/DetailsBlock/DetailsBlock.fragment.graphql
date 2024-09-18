@@ -1,4 +1,4 @@
 fragment DetailsBlock on DetailsBlockRecord {
-  json
+  details
   display
 }
