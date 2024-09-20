@@ -36,7 +36,7 @@
     "pretest": "npm run prep",
     "test": "run-s test:*",
     "test:unit": "vitest run",
-    "post": "run-s post:* --print-label",
+    "post": "echo 'add post:x scripts and change this like to \"run-s post:* --print-label\"'",
     "postinstall": "npx husky install"
   },
   "dependencies": {
