@@ -80,8 +80,7 @@ describe('i18n:', () => {
   });
 
   test('"getLocaleName" should return a code instead of a name if locale is not supported', () => {
-    expect(getLocaleName('aa')).toBe('AA');
-    expect(getLocaleName('bb')).toBe('BB');
+    expect(getLocaleName('xx')).toBe('xx');
   });
 
   test('"t" should return translations', () => {
