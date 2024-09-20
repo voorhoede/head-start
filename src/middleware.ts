@@ -1,7 +1,8 @@
 import { defineMiddleware, sequence } from 'astro/middleware';
 import { setLocale } from './lib/i18n';
 import type { SiteLocale } from '@lib/i18n.types';
-import { datocmsEnvironment } from '../datocms-environment';
+import { getRedirectTarget } from '@lib/routing/redirects';
+import { datocmsEnvironment } from '@root/datocms-environment';
 import { getSecret } from 'astro:env/server';
 
 export const previewCookieName = 'HEAD_START_PREVIEW';
@@ -16,16 +17,16 @@ export const hashSecret = async (secret: string) => {
 export const datocms = defineMiddleware(async ({ locals }, next) => {
   locals.datocmsEnvironment = datocmsEnvironment;
   locals.datocmsToken = getSecret('DATOCMS_READONLY_API_TOKEN');
-  const repsonse = await next();
-  return repsonse;
+  const response = await next();
+  return response;
 });
 
 const i18n = defineMiddleware(async ({ params }, next) => {
   if (params.locale) {
     setLocale(params.locale as SiteLocale);
   }
-  const repsonse = await next();
-  return repsonse;
+  const response = await next();
+  return response;
 });
 
 const preview = defineMiddleware(async ({ cookies, locals }, next) => {
@@ -42,4 +43,21 @@ const preview = defineMiddleware(async ({ cookies, locals }, next) => {
   return response;
 });
 
-export const onRequest = sequence(datocms, i18n, preview);
+/**
+ * Redirects middleware:
+ * If there is no matching route (404) and there is a matching redirect rule,
+ * redirect to the target URL with the specified status code.
+ */
+const redirects = defineMiddleware(async ({ request, redirect }, next) => {
+  const response = await next();
+  if (response.status === 404) {
+    const { pathname } = new URL(request.url);
+    const redirectTarget = getRedirectTarget(pathname);
+    if (redirectTarget) {
+      return redirect(redirectTarget.url, redirectTarget.statusCode);
+    }
+  }
+  return response;
+});
+
+export const onRequest = sequence(datocms, i18n, preview, redirects);
