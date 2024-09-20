@@ -16,7 +16,7 @@ To make nested routes more useful for website visitors and easier to manage for 
 
 ## 404 routes
 
-Head Start leverages [Cloudflare's Not Found behaviour](https://developers.cloudflare.com/pages/configuration/serving-pages/#not-found-behavior), which supports different 404 pages on different routes. Cloudflare will look up the directory tree until it finds a matching 404 page. A localised [root 404 page](../src/pages/[locale]/404.astro) is provided and can be edit from the CMS. You can add more specific 404 pages on specific routes, for example a `src/pages/[locale]/products/404.astro`.
+Head Start leverages [Astro's Custom 404 Error page](https://docs.astro.build/en/basics/astro-pages/#custom-404-error-page) (located in [`src/pages/404.astro`](../src/pages/404.astro)), connected to the Not Found model in DatoCMS.
 
 ## API routes
 

@@ -15,11 +15,15 @@ import query from './_404.query.graphql';
 export const prerender = false;
 
 Astro.response.status = 404;
+
+// The Astro.params.locale is unavailabe in this route,
+// so we need to extract it from the URL instead:
 const url = new URL(Astro.request.url);
 const pathLocale = url.pathname.split('/')[1];
 const locale = locales.includes(pathLocale as SiteLocale)
   ? pathLocale
   : defaultLocale;
+
 const { page } = (await datocmsRequest<NotFoundPageQuery>({
   query,
   variables: { locale },
