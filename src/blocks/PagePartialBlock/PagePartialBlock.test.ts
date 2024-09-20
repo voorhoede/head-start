@@ -186,51 +186,50 @@ describe('PagePartialBlock', () => {
     expect(fragment.querySelector('details[open]')).toBeTruthy();
   });
 
-  // Todo: Tabs are rendered on the client and therefore not testable for now.
-  //
-  // test('Layout Tabs', async () => {
-  //   const fragment = await renderToFragment<Props>(PagePartialBlock, {
-  //     props: {
-  //       block: {
-  //         __typename: 'PagePartialBlockRecord',
-  //         id: 'ay-D0Z1ZTqWVszeV9ZqfJA',
-  //         layout: 'tabs',
-  //         items: [
-  //           {
-  //             title: 'Partial A',
-  //             blocks: [
-  //               {
-  //                 __typename: 'TextBlockRecord',
-  //                 text: {
-  //                   blocks: [],
-  //                   links: [],
-  //                   value: {
-  //                     schema: 'dast',
-  //                     document: {
-  //                       type: 'root',
-  //                       children: [
-  //                         {
-  //                           type: 'paragraph',
-  //                           children: [
-  //                             {
-  //                               type: 'span',
-  //                               value: 'This is a test'
-  //                             },
-  //                           ]
-  //                         }
-  //                       ]
-  //                     }
-  //                   }
-  //                 }
-  //               }
-  //             ]
-  //           }
-  //         ]
-  //       }
-  //     }
-  //   });
+  test('Layout Tabs', async () => {
+    const fragment = await renderToFragment<Props>(PagePartialBlock, {
+      props: {
+        block: {
+          __typename: 'PagePartialBlockRecord',
+          id: 'ay-D0Z1ZTqWVszeV9ZqfJA',
+          layout: 'tabs',
+          items: [
+            {
+              title: 'Partial A',
+              blocks: [
+                {
+                  __typename: 'TextBlockRecord',
+                  text: {
+                    blocks: [],
+                    links: [],
+                    value: {
+                      schema: 'dast',
+                      document: {
+                        type: 'root',
+                        children: [
+                          {
+                            type: 'paragraph',
+                            children: [
+                              {
+                                type: 'span',
+                                value: 'This is a test'
+                              },
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    });
 
-  //   expect(fragment.querySelector('[role="tab"]')).toBeTruthy();
-  //   expect(fragment.querySelector('[role="tabpanel"]')).toBeTruthy();
-  // });
+    expect(fragment.querySelector('tabs-component')).toBeTruthy();
+    expect(fragment.querySelector('tabs-tab[role="heading"]')?.textContent).toContain('Partial A');
+    expect(fragment.querySelector('tabs-panel[role="region"] p')?.textContent).toContain('This is a test');
+  });
 });
