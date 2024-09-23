@@ -2,7 +2,7 @@ import { renderToFragment } from '@lib/renderer';
 import { describe, expect, test } from 'vitest';
 import ImageBlock, { type Props } from './ImageBlock.astro';
 
-describe('ImageBlock Component', () => {
+describe('ImageBlock', () => {
   test('renders the image with the correct source, alt text, and loading attribute', async () => {
     const fragment = await renderToFragment<Props>(ImageBlock, {
       props: {

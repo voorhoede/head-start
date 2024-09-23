@@ -3,7 +3,7 @@ import { describe, expect, test } from 'vitest';
 import VideoEmbedBlock, { type Props } from './VideoEmbedBlock.astro';
 
 describe('VideoEmbedBlock', () => {
-  test('Block is rendered', async () => {
+  test('renders a YouTube embed block with the expected elements', async () => {
     const fragment = await renderToFragment<Props>(VideoEmbedBlock, {
       props: {
         block: {

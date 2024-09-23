@@ -3,7 +3,7 @@ import { describe, expect, test } from 'vitest';
 import PagePartialBlock, { type Props } from './PagePartialBlock.astro';
 
 describe('PagePartialBlock', () => {
-  test('Layout Stack, untitled', async () => {
+  test('renders a stack layout without a title when layout is "stack-untitled"', async () => {
     const fragment = await renderToFragment<Props>(PagePartialBlock, {
       props: {
         block: {
@@ -49,7 +49,7 @@ describe('PagePartialBlock', () => {
     expect(fragment.querySelector('p')).toBeTruthy();
   });
 
-  test('Layout Stack, titled', async () => {
+  test('renders a stack layout with a title when layout is "stack-titled"', async () => {
     const fragment = await renderToFragment<Props>(PagePartialBlock, {
       props: {
         block: {
@@ -95,7 +95,7 @@ describe('PagePartialBlock', () => {
     expect(fragment.querySelector('p')).toBeTruthy();
   });
 
-  test('Layout Accordion, closed', async () => {
+  test('renders a closed accordion layout when layout is "accordion-closed"', async () => {
     const fragment = await renderToFragment<Props>(PagePartialBlock, {
       props: {
         block: {
@@ -141,7 +141,7 @@ describe('PagePartialBlock', () => {
     expect(fragment.querySelector('details[open]')).toBeFalsy();
   });
 
-  test('Layout Accordion, open', async () => {
+  test('renders an open accordion layout when layout is "accordion-open"', async () => {
     const fragment = await renderToFragment<Props>(PagePartialBlock, {
       props: {
         block: {
@@ -186,7 +186,7 @@ describe('PagePartialBlock', () => {
     expect(fragment.querySelector('details[open]')).toBeTruthy();
   });
 
-  test('Layout Tabs', async () => {
+  test('renders a tabs layout with the correct structure and content when layout is "tabs"', async () => {
     const fragment = await renderToFragment<Props>(PagePartialBlock, {
       props: {
         block: {

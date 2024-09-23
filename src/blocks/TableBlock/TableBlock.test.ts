@@ -3,7 +3,7 @@ import { describe, expect, test } from 'vitest';
 import TableBlock, { type Props } from './TableBlock.astro';
 
 describe('TableBlock', () => {
-  test('With header row and header column', async () => {
+  test('renders a table with both header row and header column', async () => {
     const fragment = await renderToFragment<Props>(TableBlock, {
       props: {
         block: {
@@ -29,7 +29,7 @@ describe('TableBlock', () => {
     expect(fragment.querySelector('th[scope="row"]')).toBeTruthy();
   });
 
-  test('With header row only', async () => {
+  test('renders a table with a header row only', async () => {
     const fragment = await renderToFragment<Props>(TableBlock, {
       props: {
         block: {
@@ -55,7 +55,7 @@ describe('TableBlock', () => {
     expect(fragment.querySelector('th[scope="row"]')).toBeFalsy();
   });
 
-  test('With header column only', async () => {
+  test('renders a table with a header column only', async () => {
     const fragment = await renderToFragment<Props>(TableBlock, {
       props: {
         block: {
@@ -81,7 +81,7 @@ describe('TableBlock', () => {
     expect(fragment.querySelector('th[scope="row"]')).toBeTruthy();
   });
 
-  test('No column or row headers', async () => {
+  test('renders a table without header row and header column', async () => {
     const fragment = await renderToFragment<Props>(TableBlock, {
       props: {
         block: {

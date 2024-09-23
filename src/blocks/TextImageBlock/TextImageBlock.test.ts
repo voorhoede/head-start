@@ -3,10 +3,8 @@ import type { TextImageBlockFragment } from '@lib/types/datocms';
 import { describe, expect, test } from 'vitest';
 import TextImageBlock from './TextImageBlock.astro';
 
-
-
 describe('TextImageBlock', () => {
-  test('Text Image', async () => {
+  test('renders with "text-image" layout correctly', async () => {
     const fragment = await renderToFragment<{ block: TextImageBlockFragment }>(TextImageBlock, {
       props: {
         block: {
@@ -53,7 +51,7 @@ describe('TextImageBlock', () => {
     expect(fragment.querySelector('.layout--text-image')).toBeTruthy();
   });
 
-  test('Image Text', async () => {
+  test('renders with "image-text" layout correctly', async () => {
     const fragment = await renderToFragment<{ block: TextImageBlockFragment }>(TextImageBlock, {
       props: {
         block: {

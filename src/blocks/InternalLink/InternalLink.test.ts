@@ -2,11 +2,10 @@ import { renderToFragment } from '@lib/renderer';
 import { describe, expect, test } from 'vitest';
 import InternalLink, { type Props } from './InternalLink.astro';
 
-
-
 describe('InternalLink', () => {
-  test('Block has all props', async () => {
+  test('renders an anchor element with the correct href and text when provided with valid link and page properties', async () => {
     const fragment = await renderToFragment<Props>(InternalLink, {
+      params: { locale: 'en' },
       props: {
         link: {
           title: 'A test link',
@@ -19,5 +18,7 @@ describe('InternalLink', () => {
     });
 
     expect(fragment.querySelector('a')).toBeTruthy();
+    expect(fragment.querySelector('a')?.href).toBe('/en/');
+    expect(fragment.querySelector('a')?.textContent).toBe('A test link');
   });
 });

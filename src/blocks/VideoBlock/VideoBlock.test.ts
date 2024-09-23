@@ -3,7 +3,7 @@ import { describe, expect, test } from 'vitest';
 import VideoBlock, { type Props } from './VideoBlock.astro';
 
 describe('VideoBlock', () => {
-  test('Simple video', async () => {
+  test('renders a video block with a simple video', async () => {
     const fragment = await renderToFragment<Props>(VideoBlock, {
       props: {
         block: {
@@ -30,7 +30,7 @@ describe('VideoBlock', () => {
     expect(fragment.querySelector('video')).toBeTruthy();
   });
 
-  test('Video with subtitle tracks', async () => {
+  test('renders a video block with subtitle tracks', async () => {
     const fragment = await renderToFragment<Props>(VideoBlock, {
       props: {
         block: {
