@@ -37,7 +37,6 @@
     "test:unit": "vitest run",
     "post": "run-s post:* --print-label",
     "post:download-redirects": "jiti scripts/download-redirects.ts",
-    "post:move-404-pages": "jiti scripts/move-404-pages.ts",
     "postinstall": "npx husky install"
   },
   "dependencies": {
