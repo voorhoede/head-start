@@ -18,12 +18,12 @@ const schema = {
     {
       '@type': 'ListItem',
       name: t('breadcrumbs_home'),
-      item: new URL(`/${ locale }/`, Astro.site || 'http://localhost:5173/'),
+      item: new URL(`/${ locale }/`, Astro.site),
     },
     ... items.map(item => ({
       '@type': 'ListItem',
       name: item.text,
-      item: new URL(item.href || '', Astro.site || 'http://localhost:5173/'),
+      item: new URL(item.href || '', Astro.site),
     }))
   ].map((item, index) => ({
     ...item,

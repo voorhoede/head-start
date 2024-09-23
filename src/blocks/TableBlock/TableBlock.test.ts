@@ -2,20 +2,24 @@ import { renderToFragment } from '@lib/renderer';
 import { describe, expect, test } from 'vitest';
 import TableBlock, { type Props } from './TableBlock.astro';
 
+const block = {
+  _modelApiKey: 'table_block',
+  id: '123',
+  title: 'Table Block',
+  table: {
+    columns: ['test_1', 'test_2'],
+    data: [
+      { test_1: 'Test 1', test_2: 'Test 2' }
+    ]
+  },
+};
+
 describe('TableBlock', () => {
   test('renders a table with both header row and header column', async () => {
     const fragment = await renderToFragment<Props>(TableBlock, {
       props: {
         block: {
-          _modelApiKey: 'table_block',
-          id: '123',
-          title: 'Table Block',
-          table: {
-            columns: ['test_1', 'test_2'],
-            data: [
-              { test_1: 'Test 1', test_2: 'Test 2' }
-            ]
-          },
+          ...block,
           hasHeaderRow: true,
           hasHeaderColumn: true
         }
@@ -33,15 +37,7 @@ describe('TableBlock', () => {
     const fragment = await renderToFragment<Props>(TableBlock, {
       props: {
         block: {
-          _modelApiKey: 'table_block',
-          id: '123',
-          title: 'Table Block',
-          table: {
-            columns: ['test_1', 'test_2'],
-            data: [
-              { test_1: 'Test 1', test_2: 'Test 2' }
-            ]
-          },
+          ...block,
           hasHeaderRow: true,
           hasHeaderColumn: false
         }
@@ -59,15 +55,7 @@ describe('TableBlock', () => {
     const fragment = await renderToFragment<Props>(TableBlock, {
       props: {
         block: {
-          _modelApiKey: 'table_block',
-          id: '123',
-          title: 'Table Block',
-          table: {
-            columns: ['test_1', 'test_2'],
-            data: [
-              { test_1: 'Test 1', test_2: 'Test 2' }
-            ]
-          },
+          ...block,
           hasHeaderRow: false,
           hasHeaderColumn: true
         }
@@ -85,15 +73,7 @@ describe('TableBlock', () => {
     const fragment = await renderToFragment<Props>(TableBlock, {
       props: {
         block: {
-          _modelApiKey: 'table_block',
-          id: '123',
-          title: 'Table Block',
-          table: {
-            columns: ['test_1', 'test_2'],
-            data: [
-              { test_1: 'Test 1', test_2: 'Test 2' }
-            ]
-          },
+          ...block,
           hasHeaderRow: false,
           hasHeaderColumn: false
         }

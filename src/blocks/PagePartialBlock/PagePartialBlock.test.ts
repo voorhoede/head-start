@@ -47,6 +47,7 @@ describe('PagePartialBlock', () => {
 
     expect(fragment.querySelector('h2')).toBeFalsy();
     expect(fragment.querySelector('p')).toBeTruthy();
+    expect(fragment.querySelector('p')?.textContent).toBe('This is a test');
   });
 
   test('renders a stack layout with a title when layout is "stack-titled"', async () => {
@@ -92,7 +93,9 @@ describe('PagePartialBlock', () => {
     });
 
     expect(fragment.querySelector('h2')).toBeTruthy();
+    expect(fragment.querySelector('h2')?.textContent).toBe('Partial A');
     expect(fragment.querySelector('p')).toBeTruthy();
+    expect(fragment.querySelector('p')?.textContent).toBe('This is a test');
   });
 
   test('renders a closed accordion layout when layout is "accordion-closed"', async () => {

@@ -11,7 +11,6 @@ describe('ImageBlock', () => {
           image: {
             url: 'https://example.com/test.jpg',
             alt: 'A test image',
-            title: 'A test image',
             height: 150,
             width: 150
           }
@@ -53,7 +52,7 @@ describe('ImageBlock', () => {
           image: {
             url: 'https://example.com/test.jpg',
             alt: 'A test image',
-            title: 'A test image',
+            title: 'See the test image',
             height: 150,
             width: 150
           }
@@ -62,7 +61,7 @@ describe('ImageBlock', () => {
     });
 
     expect(fragment.querySelector('figcaption')).toBeTruthy();
-    expect(fragment.querySelector('figcaption')?.textContent).toBe('A test image');
+    expect(fragment.querySelector('figcaption')?.textContent).toBe('See the test image');
   });
 
   test('does not render figcaption when no title is provided', async () => {
