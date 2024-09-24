@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import { defaultRedirectStatus, redirectStatusCode } from './redirects';
+import { defaultRedirectStatus, getRedirectTarget, redirectStatusCode } from './redirects';
 
 vi.mock('./redirects.json', () => (
   {
@@ -11,12 +11,12 @@ vi.mock('./redirects.json', () => (
       },
       {
         from: '/redirect-wildcard/*',
-        to: '/en/:splat/',
+        to: '/en/:splat',
         statusCode: '302',
       },
       {
         from: '/redirect-order/static-slug/',
-        to: '/nl/gedeeltelijke-pagina-layouts/',
+        to: '/nl/static/',
         statusCode: '302',
       },
       {
@@ -28,19 +28,38 @@ vi.mock('./redirects.json', () => (
   }
 ));
 
-
 describe('redirects:', () => {
-  test('redirectStatusCode returns valid redirect status', () => {
+  describe('redirectStatusCode returns valid redirect status:', () => {
     const validStatusCodes = [301, 302, 303, 307, 308];
-    validStatusCodes.forEach(
-      (statusCode) => {
+    validStatusCodes.forEach((statusCode) =>
+      test(`${statusCode} returns valid ${statusCode}`, () => {
         expect(redirectStatusCode(statusCode)).toBe(statusCode);
-      }
+      })
     );
     const invalidStatusCodes = [100, 200, 304, 400, 500, 999];
-    invalidStatusCodes.forEach(
-      (statusCode) => {
+    invalidStatusCodes.forEach((statusCode) =>
+      test(`${statusCode} returns default ${defaultRedirectStatus}`, () => {
         expect(redirectStatusCode(statusCode)).toBe(defaultRedirectStatus);
-      });
+      })
+    );
   });
+
+  describe('getRedirectPaths returns valid redirect payload', () => {
+    [
+      { from: '/foo', to: undefined },
+      { from: '/redirect-placeholder/', to: undefined },
+      { from: '/redirect-placeholder/bar/', to: '/en/bar/' },
+      { from: '/redirect-wildcard/', to: '/en/:splat' },
+      { from: '/redirect-wildcard/foo/bar/baz/', to: '/en/foo/bar/baz/' },
+      { from: '/redirect-order/', to: '/nl/' },
+      { from: '/redirect-order/static-slug', to: '/nl/static/' },
+      { from: '/redirect-order/wildcard-slug', to: '/nl/' },
+    ].forEach(({ from, to }) => {
+      test(`Would redirect ${from} to ${to}`, () => {
+        const { url } = getRedirectTarget(from) || {};
+        expect(url).toBe(to);
+      });
+    });
+  });
+
 });
