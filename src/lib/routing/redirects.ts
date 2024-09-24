@@ -2,7 +2,7 @@ import type { ValidRedirectStatus } from 'astro';
 import { parse, inject } from 'regexparam';
 import redirectConfiguration from './redirects.json';
 
-const defaultRedirectStatus = 302;
+export const defaultRedirectStatus = 302;
 
 interface getPathParamsInput {
   pathname: string;
@@ -14,7 +14,7 @@ interface ParamsOutput {
   [key: string]: string | null;
 }
 
-const redirectStatusCode = (statusCode: number): ValidRedirectStatus => {
+export const redirectStatusCode = (statusCode: number): ValidRedirectStatus => {
   switch (statusCode) {
   case 301:
   case 302:
