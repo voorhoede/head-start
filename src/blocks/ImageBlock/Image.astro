@@ -27,39 +27,42 @@ const { image, loading = 'lazy' } = Astro.props;
 const altText = image.alt ? image.alt : ''; // default to empty string for accessibility
 const imageUnavailableMessage = t('image_unavailable');
 ---
+<enhanced-image>
+  <figure>
+    {
+      image.responsiveImage
+        ? // bitmap images have Imgix generated props (responsiveImage.*):
+        <img
+          alt={ altText }
+          loading={ loading }
+          srcset={ getImageSrcSet(image.url) }
+          src={ getImageSrc(image.url) }
+          style={{
+            aspectRatio: image.responsiveImage.aspectRatio,
+            backgroundImage: `url(${image.responsiveImage.base64})`
+          }}
+          data-unavailable={ imageUnavailableMessage }
+        />
+        : // vector images do not have Imgix generated props, so using as is:
+        <img
+          alt={ altText }
+          loading={ loading }
+          src={ image.url }
+          style={{
+            aspectRatio: `${image.width}/${image.height}`,
+          }}
+          data-unavailable={ imageUnavailableMessage }
+        />
+    }
+    { image.title && (
+      <figcaption>
+        { image.title }
+      </figcaption>
+    )}
+  </figure>
+</enhanced-image>
 
-<figure>
-  {
-    image.responsiveImage
-      ? // bitmap images have Imgix generated props (responsiveImage.*):
-      <img
-        alt={ altText }
-        loading={ loading }
-        srcset={ getImageSrcSet(image.url) }
-        src={ getImageSrc(image.url) }
-        style={{
-          aspectRatio: image.responsiveImage.aspectRatio,
-          backgroundImage: `url(${image.responsiveImage.base64})`
-        }}
-        data-unavailable={ imageUnavailableMessage }
-      />
-      : // vector images do not have Imgix generated props, so using as is:
-      <img 
-        alt={ altText }
-        loading={ loading }
-        src={ image.url } 
-        style={{
-          aspectRatio: `${image.width}/${image.height}`,
-        }}
-        data-unavailable={ imageUnavailableMessage }
-      />
-  }
-  { image.title && (
-    <figcaption>
-      { image.title }
-    </figcaption>
-  )}
-</figure>
+<script src="./Image.client.ts"></script>
 
 <style>
 /* functional styling */
