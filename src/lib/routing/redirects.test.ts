@@ -49,7 +49,7 @@ describe('redirects:', () => {
       { from: '/foo', to: undefined },
       { from: '/redirect-placeholder/', to: undefined },
       { from: '/redirect-placeholder/bar/', to: '/en/bar/' },
-      { from: '/redirect-wildcard/', to: '/en/:splat' },
+      { from: '/redirect-wildcard/', to: '/en/:splat' }, // This is an issue with regexparams inject
       { from: '/redirect-wildcard/foo/bar/baz/', to: '/en/foo/bar/baz/' },
       { from: '/redirect-order/', to: '/nl/' },
       { from: '/redirect-order/static-slug', to: '/nl/static/' },

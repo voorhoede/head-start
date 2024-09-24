@@ -45,9 +45,7 @@ const getPathParams = ({
   }, {});
 
   // we used to support Netlify- and Cloudflare-style patterns which use a :splat for wildcard placeholders
-  if (params['*']) {
-    params.splat = params['*'];
-  }
+  params.splat = params['*'];
 
   return params;
 };
