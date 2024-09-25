@@ -1,0 +1,17 @@
+import { renderToFragment } from '@lib/renderer';
+import { describe, expect, test } from 'vitest';
+import {{ pascalCase name }}, { type Props } from './{{ pascalCase name }}.astro';
+
+describe('{{ pascalCase name }}', () => {
+  test('Block is rendered', async () => {
+    const fragment = await renderToFragment<Props>({{ pascalCase name }}, {
+        props: {
+            block: {}
+        }
+    });
+
+    expect(fragment).toBeTruthy();
+  });
+
+  // Add more tests here
+});
