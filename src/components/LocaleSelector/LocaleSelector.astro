@@ -11,8 +11,6 @@ interface Props {
 }
 const { pageUrls } = Astro.props;
 
-console.log(Astro.site);
-
 const getPageHref = (locale: SiteLocale) => {
   const pageUrl = pageUrls.find((pageUrl) => pageUrl.locale === locale);
   return pageUrl

@@ -8,11 +8,3 @@ export default getViteConfig({
     reporters: process.env.GITHUB_ACTIONS ? ['dot', 'github-actions'] : ['dot'],
   }
 });
-
-// import { defineConfig } from 'vitest/config';
-
-// export default defineConfig({
-//   test: {
-//     reporters: process.env.GITHUB_ACTIONS ? ['dot', 'github-actions'] : ['dot'],
-//   },
-// });
