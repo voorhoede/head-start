@@ -30,4 +30,4 @@ Head Start supports redirect rules which are editable and [sortable](https://www
 - from `/path-with-param/:name/` to `/new-path-with-param/:name/more-slug`
 - from `/path-with-wildcard/*` to `/new-path-with-wildcard/*` (or `/new-path-with-wildcard/:splat`)
 
-\* See [decision entry on editable redirects](./decision-log/2024-01-20-editable-redirects.md) for motivation.
+\* See [decision entry on redirects](./decision-log/2024-09-24-redirects-middleware.md) for motivation.
