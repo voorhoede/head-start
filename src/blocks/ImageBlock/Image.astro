@@ -44,10 +44,10 @@ const imageUnavailableMessage = t('image_unavailable');
         data-unavailable={ imageUnavailableMessage }
       />
       : // vector images do not have Imgix generated props, so using as is:
-      <img 
+      <img
         alt={ altText }
         loading={ loading }
-        src={ image.url } 
+        src={ image.url }
         style={{
           aspectRatio: `${image.width}/${image.height}`,
         }}
@@ -55,9 +55,7 @@ const imageUnavailableMessage = t('image_unavailable');
       />
   }
   { image.title && (
-    <figcaption>
-      { image.title }
-    </figcaption>
+    <figcaption>{ image.title }</figcaption>
   )}
 </figure>
 
