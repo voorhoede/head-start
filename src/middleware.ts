@@ -1,5 +1,5 @@
 import { defineMiddleware, sequence } from 'astro/middleware';
-import { setLocale } from './lib/i18n';
+import { defaultLocale, locales, setLocale } from './lib/i18n';
 import type { SiteLocale } from '@lib/i18n.types';
 import { datocmsEnvironment } from '../datocms-environment';
 import { getSecret } from 'astro:env/server';
@@ -20,10 +20,18 @@ export const datocms = defineMiddleware(async ({ locals }, next) => {
   return repsonse;
 });
 
-const i18n = defineMiddleware(async ({ params }, next) => {
-  if (params.locale) {
-    setLocale(params.locale as SiteLocale);
+const i18n = defineMiddleware(async ({ params, request }, next) => {
+  if (!params.locale) {
+    // if the locale param is unavailable, it didn't match a [locale]/* route
+    // so we attempt to extract the locale from the URL and fallback to the default locale
+    const pathLocale = new URL(request.url).pathname.split('/')[1];
+    const locale = locales.includes(pathLocale as SiteLocale)
+      ? pathLocale
+      : defaultLocale;
+    Object.assign(params, { locale });
   }
+  setLocale(params.locale as SiteLocale);
+  
   const repsonse = await next();
   return repsonse;
 });
