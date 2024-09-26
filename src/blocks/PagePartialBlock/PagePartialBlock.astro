@@ -9,7 +9,7 @@ type Item = {
   title: string;
   blocks: AnyBlock[];
 };
-interface Props {
+export interface Props {
   block: PagePartialBlockFragment
 }
 const { block } = Astro.props;
@@ -35,7 +35,7 @@ const isLayout = (layout: PagePartialBlockFragment['layout']) => block.layout ==
 { (isLayout('accordion-open') || isLayout('accordion-closed')) && (
   <Accordion>
     { items.map(item => (
-      <AccordionItem 
+      <AccordionItem
         name={ `block-${block.id}` }
         open={ isLayout('accordion-open') }
       >
