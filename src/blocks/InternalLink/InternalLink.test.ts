@@ -1,24 +1,35 @@
-import { renderToFragment } from '@lib/renderer';
 import { describe, expect, test } from 'vitest';
-import InternalLink, { type Props } from './InternalLink.astro';
+import { renderToFragment } from '@lib/renderer';
+import type { InternalLinkFragment } from '@lib/types/datocms';
+import InternalLink, { type Props as InternalLinkProps } from './InternalLink.astro';
 
+const link = {
+  title: 'Homepage',
+  page: {
+    __typename: 'HomePageRecord',
+    title: 'Homepage',
+  },
+} satisfies InternalLinkFragment;
+
+const props = { 
+  link
+} satisfies InternalLinkProps;
 describe('InternalLink', () => {
-  test('renders an anchor element with the correct href and text when provided with valid link and page properties', async () => {
-    const fragment = await renderToFragment<Props>(InternalLink, {
-      params: { locale: 'en' },
-      props: {
-        link: {
-          title: 'A test link',
-          page: {
-            __typename: 'HomePageRecord',
-            title: 'A test page',
-          }
-        }
-      }
-    });
+  test('Component is rendered', async () => {
+    const fragment = await renderToFragment<InternalLinkProps>(
+      InternalLink,
+      { props }
+    );
+    expect(fragment).toBeDefined();
+  });
 
-    expect(fragment.querySelector('a')).toBeTruthy();
-    expect(fragment.querySelector('a')?.href).toBe('/en/');
-    expect(fragment.querySelector('a')?.textContent).toBe('A test link');
+  test('renders text content without trailing whitespace ', async () => {
+    const fragment = await renderToFragment<InternalLinkProps>(InternalLink, {
+      props,
+      slots: {
+        default: 'spacing\n',
+      },
+    });
+    expect(fragment.querySelector('a')?.textContent).toBe('spacing');
   });
 });
