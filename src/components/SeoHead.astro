@@ -2,8 +2,8 @@
 import DynamicTag from './DynamicTag.astro';
 import { getLocale } from '@lib/i18n';
 import { getOpenSearchName, getOpenSearchPathname } from '@lib/search';
-import type { PageUrl } from '@lib/seo';
-import type { Tag } from '@lib/types/datocms';
+import type { PageUrl } from '@lib/page-url.d.ts';
+import type { Tag } from '@lib/datocms/datocms.d.ts';
 
 interface Props {
   pageUrls: PageUrl[];
@@ -17,7 +17,7 @@ const metaTags = tags.filter(tag => tag.tag !== 'title');
 const titleTag = tags.find(tag => tag.tag === 'title');
 ---
 { titleTag && (
-  <title>{titleTag.content}</title> 
+  <title>{titleTag.content}</title>
 )}
 {
   metaTags.map(tag => (

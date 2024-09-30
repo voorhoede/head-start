@@ -1,6 +1,6 @@
 ---
 import { locales, t } from '@lib/i18n';
-import type { SiteLocale } from '@lib/i18n.types';
+import type { SiteLocale } from '@lib/i18n/i18n.types';
 import { noIndexTag, siteName, titleTag } from '@lib/seo';
 import { datocmsSearch } from '@lib/datocms';
 import { hasValidQuery, getSearchPathname, queryParamName } from '@lib/search';
@@ -8,14 +8,13 @@ import Layout from '@layouts/Default.astro';
 import SearchForm from '@components/SearchForm.astro';
 import SearchResult from '@components/SearchResult.astro';
 import type { Breadcrumb } from '@components/Breadcrumbs';
-
 export const prerender = false;
 
 const { locale } = Astro.params as { locale: SiteLocale };
 const query = new URL(Astro.request.url).searchParams.get(queryParamName) || '';
 const { results } = hasValidQuery(query) ? await datocmsSearch({ locale, query }) : { results: [] };
 const hasResults = results.length > 0;
-const pageTitle = t('search_on_site', { siteName }); 
+const pageTitle = t('search_on_site', { siteName });
 const getPathWithQuery = (locale: SiteLocale) => getSearchPathname(locale) + (query ? `?${queryParamName}=${query}` : '');
 const pageUrls = locales.map(locale => ({ locale, pathname: getPathWithQuery(locale) }));
 const breadcrumbs = [
@@ -32,9 +31,9 @@ const breadcrumbs = [
   <SearchForm query={ query } />
   { hasValidQuery(query) && (
     <section>
-      <h2>{ 
+      <h2>{
         hasResults
-          ? t('search_results_for_query', { query }) 
+          ? t('search_results_for_query', { query })
           : t('search_no_results_for_query', { query })
       }</h2>
       { hasResults && (

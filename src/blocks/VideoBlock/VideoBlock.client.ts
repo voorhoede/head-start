@@ -28,11 +28,11 @@ class VideoBlock extends HTMLElement {
   #useDataSaveMode = (() => {
     type NetworkInformation = { saveData: boolean; }
     const connection = (navigator as unknown as { connection: NetworkInformation }).connection;
-    return connection.saveData === true; 
+    return connection.saveData === true;
   })();
   #video: HTMLVideoElement;
 
-  constructor() { 
+  constructor() {
     super();
     this.#autoplay = (this.dataset.autoplay === 'true') && !this.#useDataSaveMode && !this.#useReducedMotion;
     this.#mp4Url = this.dataset.mp4Url;

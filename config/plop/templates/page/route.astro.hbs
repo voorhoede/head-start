@@ -10,7 +10,7 @@ export async function getStaticPaths() {
 // todo
 }
 
-type Params = { 
+type Params = {
   {{#if (hasRouteLocale route) }}
   locale: SiteLocale;
   {{/if}}

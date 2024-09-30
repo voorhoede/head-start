@@ -1,8 +1,8 @@
 import { describe, expect, test, vi } from 'vitest';
-import { defaultLocale, t, getLocale, getLocaleName, setLocale } from './i18n';
+import { defaultLocale, t, getLocale, getLocaleName, setLocale } from './index';
 
 // these imports will resolve to their mocked counterparts
-import { locales } from './site.json';
+import { locales } from '../site.json';
 
 // to verify that unsupported locales are handled correctly we test with locales that we know do not exist (e.g. 'unsupported_locale')
 // TS does not like this, so we supress the warnings with a ts-expect-error comment

@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import { renderToFragment } from '@lib/renderer';
-import type { InternalLinkFragment } from '@lib/types/datocms';
+import { renderToFragment } from '@lib/renderer/renderer';
+import type { InternalLinkFragment } from '@lib/datocms/datocms';
 import InternalLink, { type Props as InternalLinkProps } from './InternalLink.astro';
 
 const link = {
@@ -11,7 +11,7 @@ const link = {
   },
 } satisfies InternalLinkFragment;
 
-const props = { 
+const props = {
   link
 } satisfies InternalLinkProps;
 describe('InternalLink', () => {

@@ -1,7 +1,7 @@
 import { defineMiddleware, sequence } from 'astro/middleware';
 import { defaultLocale, locales, setLocale } from './lib/i18n';
-import type { SiteLocale } from '@lib/i18n.types';
-import { getRedirectTarget } from '@lib/routing/redirects';
+import type { SiteLocale } from '@lib/i18n/i18n.types';
+import { getRedirectTarget } from '@lib/routing';
 import { datocmsEnvironment } from '@root/datocms-environment';
 import { getSecret } from 'astro:env/server';
 
@@ -32,7 +32,7 @@ const i18n = defineMiddleware(async ({ params, request }, next) => {
     Object.assign(params, { locale });
   }
   setLocale(params.locale as SiteLocale);
-  
+
   const response = await next();
   return response;
 });

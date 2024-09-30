@@ -95,9 +95,9 @@ Register a new Block's type:
 ```ts
 // src/Blocks/Blocks.d.ts:
 
-import { 
+import {
   ImageBlockFragment,
-  // import new Block's Fragment: 
+  // import new Block's Fragment:
   SomeContentBlockFragment,
   TextBlockFragment,
 } from '@lib/types/datocms';

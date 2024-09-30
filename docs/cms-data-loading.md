@@ -94,9 +94,9 @@ import { datocmsRequest } from '@lib/datocms';
 import type { PageQuery, PageRecord } from '@lib/types/datocms';
 import query from './_index.query.graphql';
 
-const { page } = await datocmsRequest<PageQuery>({ 
+const { page } = await datocmsRequest<PageQuery>({
   query,
-  variables: { locale, slug: Astro.params.slug } 
+  variables: { locale, slug: Astro.params.slug }
 }) as { page: PageRecord };
 ---
 ```
@@ -128,7 +128,7 @@ Simplified example without types:
 ```ts
 import { datocmsCollection } from '@lib/datocms';
 
-const pages = await datocmsCollection({ 
+const pages = await datocmsCollection({
   collection: 'Pages',
   fragment: `slugs: _allSlugLocales { locale, value }`,
 });
@@ -144,7 +144,7 @@ export async function getStaticPaths() {
   interface PagesCollectionItem {
     slugs: Array<{ locale: string; value: string; }>;
   }
-  const pages = await datocmsCollection<PagesCollectionItem>({ 
+  const pages = await datocmsCollection<PagesCollectionItem>({
     collection: 'Pages',
     fragment: `slugs: _allSlugLocales { locale, value }`,
   });

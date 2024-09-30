@@ -61,5 +61,8 @@ export default defineConfig({
     plugins: [
       graphql() as PluginOption,
     ],
+    optimizeDeps: {
+      exclude: ['msw'],
+    }
   },
 });

@@ -3,7 +3,7 @@
 **Renders the content from a [DatoCMS Structured Text](https://www.datocms.com/docs/structured-text/dast) field, with configurable renderers per Structured Text node type.**
 
 > [!NOTE]
-> This component is based on the [`StructuredText` component from `@datocms/svelte`](https://github.com/datocms/datocms-svelte/tree/main/src/lib/components/StructuredText) (there currently is no official DatoCMS Astro package available). The documentation and examples below are also borrowed and adapted from the Svelte version.
+> This component is based on the [`StructuredText` component from `@datocms/svelte`](https://github.com/types/datocms-svelte/tree/main/src/lib/components/StructuredText) (there currently is no official DatoCMS Astro package available). The documentation and examples below are also borrowed and adapted from the Svelte version.
 
 ## Setup
 
@@ -62,7 +62,7 @@ You need to use custom components in the following cases:
 
 ### Custom components for blocks
 
-Here is an example using custom components for blocks, inline and item links. Take a look at the [test fixtures (Svelte)](https://github.com/datocms/datocms-svelte/tree/main/src/lib/components/StructuredText/__tests__/__fixtures__) to see examples on how to implement these components.
+Here is an example using custom components for blocks, inline and item links. Take a look at the [test fixtures (Svelte)](https://github.com/types/datocms-svelte/tree/main/src/lib/components/StructuredText/__tests__/__fixtures__) to see examples on how to implement these components.
 
 ```astro
 ---
@@ -149,7 +149,7 @@ const { data } = await response.json()
 - For `heading` nodes, you might want to add an anchor;
 - For `code` nodes, you might want to use a custom syntax highlighting component;
 
-In this case, you can easily override default rendering rules with the `components` props. See test fixtures for example implementations of custom components (e.g. [this special heading component (Svelte)](https://github.com/datocms/datocms-svelte/blob/main/src/lib/components/StructuredText/__tests__/__fixtures__/IncreasedLevelHeading.svelte)).
+In this case, you can easily override default rendering rules with the `components` props. See test fixtures for example implementations of custom components (e.g. [this special heading component (Svelte)](https://github.com/types/datocms-svelte/blob/main/src/lib/components/StructuredText/__tests__/__fixtures__/IncreasedLevelHeading.svelte)).
 
 ```astro
 ---

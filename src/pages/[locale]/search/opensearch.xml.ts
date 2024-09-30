@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import { locales } from '@lib/i18n';
 import { datocmsRequest } from '@lib/datocms';
-import type { OpenSearchXmlQuery, Site } from '@lib/types/datocms';
+import type { OpenSearchXmlQuery, Site } from '@lib/datocms/datocms.d.ts';
 import { getSearchPathname, getOpenSearchName, queryParamName } from '@lib/search';
 import query from './_opensearch.query.graphql';
 
@@ -12,7 +12,7 @@ export async function getStaticPaths() {
 }
 
 const openSearchXml = (
-  { shortName, description, favicons, language, resultsHtmlUrl, searchFormUrl }: 
+  { shortName, description, favicons, language, resultsHtmlUrl, searchFormUrl }:
   { shortName: string, description: string, favicons: { width: number, height: number, type: string, url: string }[], language: string, resultsHtmlUrl: string, searchFormUrl: string }
 ) => /* xml */`
 

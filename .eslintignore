@@ -1,4 +1,5 @@
 dist
 node_modules
 
-src/lib/types/datocms.d.ts
+src/lib/datocms/datocms.d.ts
+!**/.graphqlrc.ts

@@ -1,9 +1,9 @@
 import { parse } from 'graphql';
 import { print } from 'graphql/language/printer';
 import type { DocumentNode } from 'graphql';
-import type { SiteLocale } from '@lib/i18n.types';
-import { titleSuffix } from './seo';
-import { datocmsBuildTriggerId, datocmsEnvironment } from '../../datocms-environment';
+import type { SiteLocale } from '@lib/i18n/i18n.types';
+import { titleSuffix } from '../seo';
+import { datocmsBuildTriggerId, datocmsEnvironment } from '../../../datocms-environment';
 import { getSecret } from 'astro:env/server';
 
 const wait = (milliSeconds: number) => new Promise((resolve) => setTimeout(resolve, milliSeconds));
@@ -44,7 +44,7 @@ export const datocmsRequest = async <T>({ query, variables = {}, retryCount = 1 
     if (retryCount >= retryLimit) throw Error('DatoCMS request failed. Too many retries.');
     return datocmsRequest({ query, variables, retryCount: retryCount + 1 });
   }
-  
+
   if (!response.ok) {
     throw Error(`DatoCMS request failed with status ${response.status}`);
   }
@@ -63,16 +63,16 @@ type CollectionMeta = {
 /**
  * Returns all records from a DatoCMS collection (like 'Pages')
  * with data for each record based on the provided fragment.
- * 
+ *
  * DatoCMS GraphQL API has a limit of 100 records per request.
  * This function uses pagination to get all records.
  * @see https://www.datocms.com/docs/content-delivery-api/pagination
  */
-export const datocmsCollection = async <CollectionType>({ 
+export const datocmsCollection = async <CollectionType>({
   collection,
   fragment
-}: { 
-  collection: string, 
+}: {
+  collection: string,
   fragment: string
 }) => {
   const { meta } = await datocmsRequest({
@@ -92,7 +92,7 @@ export const datocmsCollection = async <CollectionType>({
       query: parse(/* graphql */`
         query All${collection} {
           ${collection}: all${collection} (
-             first: ${recordsPerPage}, 
+             first: ${recordsPerPage},
              skip: ${page * recordsPerPage}
           ) {
             ${fragment}
@@ -107,7 +107,7 @@ export const datocmsCollection = async <CollectionType>({
   return records;
 };
 
-// src: https://github.com/datocms/react-datocms/blob/master/src/useSiteSearch/index.tsx#L29C1-L42C3
+// src: https://github.com/datocms/react-datocms/blob/master/src/useSitesearch.tsx#L29C1-L42C3
 type RawSearchResult = {
   type: 'search_result';
   id: string;
@@ -131,7 +131,7 @@ type SearchResponse = {
 const formatSearchResults = ({ query, results }: { query: string, results: RawSearchResult[] }) => {
   return results.map((result) => {
     const { title, body_excerpt, highlight, score, url } = result.attributes;
-    const defaultMatch = { 
+    const defaultMatch = {
       matchingTerm: query,
       markedText: body_excerpt.replace(/</g, '&lt;'), // escape HTML tags
     };

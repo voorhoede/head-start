@@ -1,4 +1,4 @@
-import type { PageRecord, SiteLocale } from '@lib/types/datocms';
+import type { PageRecord, SiteLocale } from '@lib/datocms/datocms';
 
 type AnyPage = PageRecord;
 type MaybeSlug = string | undefined;
@@ -18,7 +18,7 @@ export const getParentPages = (page: AnyPage): AnyPage[] => {
 /**
  * Returns a list of slugs for the parent pages of a page.
  * A (parent) page may not be available in all locales, so the list may contain undefined values.
- * 
+ *
  * Example return values:
  * - []                               (no parent pages)
  * - ['parent-slug']                  (parent page available in given locale)
@@ -30,7 +30,7 @@ export const getParentSlugs = ({ page, locale }: { page: AnyPage, locale: SiteLo
   if (page.parentPage) {
     const slug = page.parentPage._allSlugLocales?.find(slug => slug.locale === locale)?.value;
     return [
-      ...getParentSlugs({ page: page.parentPage, locale }), 
+      ...getParentSlugs({ page: page.parentPage, locale }),
       slug
     ];
   }
@@ -39,9 +39,9 @@ export const getParentSlugs = ({ page, locale }: { page: AnyPage, locale: SiteLo
 
 /**
  * Returns the URL path for a page based on its slug and the slugs of its parent pages.
- * A (parent) page may not be available in all locales, 
+ * A (parent) page may not be available in all locales,
  * in which case its slug is replaced with a dash.
- * 
+ *
  * Example return values:
  * - page-slug
  * - parent-slug/page-slug
@@ -58,7 +58,7 @@ export const getPagePath = ({ page, locale }: { page: AnyPage, locale: SiteLocal
 
 /**
  * Returns the page slug from a URL path.
- * 
+ *
  * Returns page-1 in the following examples:
  * - /page-1
  * - /page-1/
