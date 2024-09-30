@@ -1,4 +1,8 @@
-class EnhancedImage extends HTMLElement {
+/**
+ * A custom HTML element that enhances an `<img>` element with additional behavior.
+ * Automatically removes the inline `background-image` style once the image is fully loaded.
+ */
+class ImageBlock extends HTMLElement {
   imgElement: HTMLImageElement;
 
   handleImageLoad = (): void => {
@@ -24,4 +28,4 @@ class EnhancedImage extends HTMLElement {
   }
 }
 
-customElements.define('enhanced-image', EnhancedImage);
+customElements.define('image-block', ImageBlock);

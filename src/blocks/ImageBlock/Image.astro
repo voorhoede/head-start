@@ -27,7 +27,7 @@ const { image, loading = 'lazy' } = Astro.props;
 const altText = image.alt ? image.alt : ''; // default to empty string for accessibility
 const imageUnavailableMessage = t('image_unavailable');
 ---
-<enhanced-image>
+<image-block>
   <figure>
     {
       image.responsiveImage
@@ -60,7 +60,7 @@ const imageUnavailableMessage = t('image_unavailable');
       </figcaption>
     )}
   </figure>
-</enhanced-image>
+</image-block>
 
 <script src="./Image.client.ts"></script>
 
