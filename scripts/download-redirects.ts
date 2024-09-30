@@ -39,8 +39,7 @@ async function fetchRedirectRules() {
 
 async function downloadRedirectRules() {
   const redirectRules = await fetchRedirectRules();
-  const cloudflareRedirectFile = redirectRules.map(rule => `${rule.from} ${rule.to} ${rule.statusCode}`).join('\n');
-  await writeFile('./dist/_redirects', cloudflareRedirectFile);
+  await writeFile('./src/lib/routing/redirects.json', JSON.stringify(redirectRules, null, 2));
 }
 
 downloadRedirectRules()

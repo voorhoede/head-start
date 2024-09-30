@@ -24,6 +24,7 @@
     "prep:clean-astro-env": "rm -rf node_modules/.astro",
     "prep:cloudflare-env": "touch .dev.vars",
     "prep:datocms-types": "graphql-codegen --config .graphqlrc.ts",
+    "prep:download-redirects": "jiti scripts/download-redirects.ts",
     "prep:download-site-data": "jiti scripts/download-site-data.ts",
     "prep:download-translations": "jiti scripts/download-translations.ts",
     "prep:icons": "svg-sprite --symbol --symbol-dest='src/assets' --symbol-sprite=icon-sprite.svg src/assets/icons/*.svg && jiti scripts/icon-types.ts",
@@ -35,8 +36,7 @@
     "pretest": "npm run prep",
     "test": "run-s test:*",
     "test:unit": "vitest run",
-    "post": "run-s post:* --print-label",
-    "post:download-redirects": "jiti scripts/download-redirects.ts",
+    "post": "echo 'add post:x scripts and change this like to \"run-s post:* --print-label\"'",
     "postinstall": "npx husky install"
   },
   "dependencies": {
@@ -57,6 +57,7 @@
     "nanostores": "^0.9.5",
     "oembed-providers": "^1.0.20230906",
     "promise-all-props": "^3.0.0",
+    "regexparam": "^3.0.0",
     "rosetta": "^1.1.0",
     "typescript": "^5.2.2"
   },
@@ -73,6 +74,7 @@
     "@types/accept-language-parser": "^1.5.6",
     "@types/dotenv-safe": "^8.1.4",
     "@types/eventsource": "^1.1.15",
+    "@types/jsdom": "^21.1.7",
     "@typescript-eslint/eslint-plugin": "^6.7.2",
     "@typescript-eslint/parser": "^6.7.2",
     "chokidar-cli": "^3.0.0",
@@ -82,6 +84,7 @@
     "eslint-plugin-astro": "^0.29.0",
     "eventsource": "^2.0.2",
     "husky": "^8.0.3",
+    "jsdom": "^25.0.0",
     "nano-staged": "^0.8.0",
     "npm-run-all": "^4.1.5",
     "plop": "^4.0.0",
