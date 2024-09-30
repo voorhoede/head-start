@@ -22,7 +22,7 @@
     "dev:translations": "jiti scripts/watch-translations.ts",
     "prep": "run-s prep:* --print-label",
     "prep:clean-astro-env": "rm -rf node_modules/.astro",
-    "prep:cloudflare-env": "touch .dev.vars",
+    "prep:cloudflare-env": "cp .env .dev.vars",
     "prep:datocms-types": "graphql-codegen --config .graphqlrc.ts",
     "prep:download-redirects": "jiti scripts/download-redirects.ts",
     "prep:download-site-data": "jiti scripts/download-site-data.ts",
@@ -35,7 +35,8 @@
     "lint:html": "html-validate --config config/htmlvalidate/config.json dist/",
     "pretest": "npm run prep",
     "test": "run-s test:*",
-    "test:unit": "vitest run",
+    "test:unit": "vitest run --project unit",
+    "test:integration": "vitest run --project integration",
     "post": "echo 'add post:x scripts and change this like to \"run-s post:* --print-label\"'",
     "postinstall": "npx husky install"
   },
