@@ -40,7 +40,7 @@ const i18n = defineMiddleware(async ({ params, request }, next) => {
 });
 
 const preview = defineMiddleware(async ({ cookies, locals }, next) => {
-  const previewSecret = getSecret('HEAD_START_PREVIEW_SECRET') || '';
+  const previewSecret = getSecret('HEAD_START_PREVIEW_SECRET')!;
   Object.assign(locals, {
     isPreview: getSecret('HEAD_START_PREVIEW'),
     isPreviewAuthOk: Boolean(previewSecret) && cookies.get(previewCookieName)?.value === await hashSecret(previewSecret),
