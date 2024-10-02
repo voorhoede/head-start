@@ -16,7 +16,7 @@ export const hashSecret = async (secret: string) => {
 
 export const datocms = defineMiddleware(async ({ locals }, next) => {
   Object.assign(locals, {
-    datocmsEnvironment: datocmsEnvironment,
+    datocmsEnvironment,
     datocmsToken: getSecret('DATOCMS_READONLY_API_TOKEN')
   });
   const response = await next();
@@ -44,7 +44,7 @@ const preview = defineMiddleware(async ({ cookies, locals }, next) => {
   Object.assign(locals, {
     isPreview: getSecret('HEAD_START_PREVIEW'),
     isPreviewAuthOk: Boolean(previewSecret) && cookies.get(previewCookieName)?.value === await hashSecret(previewSecret),
-    previewSecret: previewSecret
+    previewSecret
   });
   const response = await next();
 
