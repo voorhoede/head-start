@@ -21,30 +21,28 @@ export default defineConfig({
       enabled: true,
     },
   }),
-  experimental: {
-    env: {
-      schema: {
-        DATOCMS_READONLY_API_TOKEN: envField.string({
-          context: 'server',
-          access: 'secret',
-          default: process.env.DATOCMS_READONLY_API_TOKEN
-        }),
-        HEAD_START_PREVIEW_SECRET: envField.string({
-          context: 'server',
-          access: 'secret',
-          default: process.env.HEAD_START_PREVIEW_SECRET
-        }),
-        HEAD_START_PREVIEW: envField.boolean({
-          context: 'server',
-          access: 'secret',
-          default: isPreview
-        }),
-        PUBLIC_IS_PRODUCTION: envField.boolean({
-          context: 'server',
-          access: 'public',
-          default: process.env.NODE_ENV === 'production'
-        })
-      }
+  env: {
+    schema: {
+      DATOCMS_READONLY_API_TOKEN: envField.string({
+        context: 'server',
+        access: 'secret',
+        default: process.env.DATOCMS_READONLY_API_TOKEN
+      }),
+      HEAD_START_PREVIEW_SECRET: envField.string({
+        context: 'server',
+        access: 'secret',
+        default: process.env.HEAD_START_PREVIEW_SECRET
+      }),
+      HEAD_START_PREVIEW: envField.boolean({
+        context: 'server',
+        access: 'secret',
+        default: isPreview
+      }),
+      PUBLIC_IS_PRODUCTION: envField.boolean({
+        context: 'server',
+        access: 'public',
+        default: process.env.NODE_ENV === 'production'
+      })
     }
   },
   image: {
@@ -53,7 +51,7 @@ export default defineConfig({
     service: passthroughImageService()
   },
   integrations: [sitemap()],
-  output: isPreview ? 'server' : 'hybrid',
+  output: isPreview ? 'server' : 'static',
   server: { port: localhostPort },
   site: siteUrl,
   trailingSlash: 'always',
