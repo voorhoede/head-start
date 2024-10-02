@@ -60,7 +60,7 @@ const isLayout = (layout: PagePartialBlockFragment['layout']) => block.layout ==
 )}
 
 { isLayout('details-vertical') && (
-  <dl>
+  <dl data-layout="vertical">
     { items.map((item) => (
       <>
         <dt>{ item.title }</dt>
@@ -75,7 +75,7 @@ const isLayout = (layout: PagePartialBlockFragment['layout']) => block.layout ==
 )}
 
 { isLayout('details-horizontal') && (
-  <dl class="details--horizontal">
+  <dl data-layout="horizontal">
     { items.map((item) => (
       <>
         <dt>{ item.title }</dt>
@@ -91,12 +91,12 @@ const isLayout = (layout: PagePartialBlockFragment['layout']) => block.layout ==
 )}
 
 <style>
-    dl.details--horizontal {
+    dl[data-layout="horizontal"] {
         display: grid;
         grid-template-columns: max-content 1fr;
     }
 
-    dl.details--horizontal dd {
+    dl[data-layout="horizontal"] dd {
         grid-column: 2;
     }
 </style>
