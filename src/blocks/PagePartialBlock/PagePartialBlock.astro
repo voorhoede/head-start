@@ -9,7 +9,7 @@ type Item = {
   title: string;
   blocks: AnyBlock[];
 };
-interface Props {
+export interface Props {
   block: PagePartialBlockFragment
 }
 const { block } = Astro.props;

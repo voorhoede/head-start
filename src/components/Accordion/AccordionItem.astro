@@ -1,10 +1,11 @@
 ---
 import Icon from '@components/Icon';
 
-interface Props {
+export interface Props {
   name: string;
   open?: boolean;
 }
+
 const { name, open } = Astro.props;
 const attributes = { name, open };
 ---

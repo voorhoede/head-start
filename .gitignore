@@ -21,3 +21,4 @@ src/lib/types/datocms.d.ts
 src/lib/i18n.messages.json
 src/lib/i18n.types.ts
 src/lib/site.json
+src/lib/routing/redirects.json

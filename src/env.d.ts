@@ -1,4 +1,3 @@
-/// <reference path="../.astro/env.d.ts" />
 type Runtime = import('@astrojs/cloudflare').Runtime<Env>;
 
 declare namespace App {
@@ -10,6 +9,7 @@ declare namespace App {
     previewSecret: string;
   }
 }
+
 declare module '*.query.graphql' {
   import { DocumentNode } from 'graphql';
   const value: DocumentNode;

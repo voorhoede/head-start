@@ -25,7 +25,7 @@ export default async function (client: Client) {
     field_type: 'string',
     api_key: 'from',
     hint:
-      'URL or URL pattern to redirect from when visited. <br><br>Pattern can contain wildcards (<code>*</code>) and placeholders (<code>:placeholder_name</code>) which can then be used in the <strong>To URL</strong> field below. Examples (related to <strong>To URL</strong> examples below):<br>\n\u2022 <code>/old-page-slug/</code><br>\n\u2022 <code>/en/catalogue/:code/details/:name</code><br>\n\u2022 <code>/archive/*</code><br><br>\nSee <a href="https://developers.cloudflare.com/pages/configuration/redirects/">Cloudflare documentation on redirects</a> for more info.',
+      'URL or URL pattern to redirect from when visited. <br><br>Pattern can contain wildcards (<code>*</code>) and placeholders (<code>:placeholder_name</code>) which can then be used in the <strong>To URL</strong> field below. Examples (related to <strong>To URL</strong> examples below):<br>\n\u2022 <code>/old-page-slug/</code><br>\n\u2022 <code>/en/catalogue/:code/details/:name</code><br>\n\u2022 <code>/archive/*</code>',
     validators: { required: {} },
     appearance: {
       addons: [],
@@ -44,7 +44,7 @@ export default async function (client: Client) {
     field_type: 'string',
     api_key: 'to',
     hint:
-      'URL or URL pattern to redirect a visitor to.<br><br>Pattern can contain any placeholders (<code>:placeholder_name</code>) and a splat (<code>:splat</code>) if a wildcard was used in the <strong>From URL</strong> field above. Examples (related to <strong>From URL</strong> examples above):<br>\n\u2022 <code>/en/new-page-slug/</code><br>\n\u2022 <code>/en/products/:code-:name</code><br>\n\u2022 <code>/en/:splat/</code><br><br>\nSee <a href="https://developers.cloudflare.com/pages/configuration/redirects/">Cloudflare documentation on redirects</a> for more info.',
+      'URL or URL pattern to redirect a visitor to.<br><br>Pattern can contain any placeholders (<code>:placeholder_name</code>) and a splat (<code>:splat</code>) if a wildcard was used in the <strong>From URL</strong> field above. Examples (related to <strong>From URL</strong> examples above):<br>\n\u2022 <code>/en/new-page-slug/</code><br>\n\u2022 <code>/en/products/:code-:name</code><br>\n\u2022 <code>/en/:splat/</code>',
     validators: { required: {} },
     appearance: {
       addons: [],
