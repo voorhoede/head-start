@@ -58,3 +58,45 @@ const isLayout = (layout: PagePartialBlockFragment['layout']) => block.layout ==
     </>))}
   </Tabs>
 )}
+
+{ isLayout('details-vertical') && (
+  <dl data-layout="vertical">
+    { items.map((item) => (
+      <>
+        <dt>{ item.title }</dt>
+        {item.blocks.map((block) => (
+          <dd>
+            <Blocks blocks={ [block] }/>
+          </dd>
+        ))}
+      </>
+    )) }
+  </dl>
+)}
+
+{ isLayout('details-horizontal') && (
+  <dl data-layout="horizontal">
+    { items.map((item) => (
+      <>
+        <dt>{ item.title }</dt>
+        {item.blocks.map((block) => (
+          <dd>
+            <Blocks blocks={ [block] }/>
+          </dd>
+        ))}
+
+      </>
+    )) }
+  </dl>
+)}
+
+<style>
+    dl[data-layout="horizontal"] {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+    }
+
+    dl[data-layout="horizontal"] dd {
+        grid-column: 2;
+    }
+</style>
