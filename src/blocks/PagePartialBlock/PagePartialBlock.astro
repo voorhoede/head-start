@@ -35,7 +35,7 @@ const isLayout = (layout: PagePartialBlockFragment['layout']) => block.layout ==
 { (isLayout('accordion-open') || isLayout('accordion-closed')) && (
   <Accordion>
     { items.map(item => (
-      <AccordionItem 
+      <AccordionItem
         name={ `block-${block.id}` }
         open={ isLayout('accordion-open') }
       >
@@ -58,3 +58,45 @@ const isLayout = (layout: PagePartialBlockFragment['layout']) => block.layout ==
     </>))}
   </Tabs>
 )}
+
+{ isLayout('details-vertical') && (
+  <dl>
+    { items.map((item) => (
+      <>
+        <dt>{ item.title }</dt>
+        {item.blocks.map((block) => (
+          <dd>
+            <Blocks blocks={ [block] }/>
+          </dd>
+        ))}
+      </>
+    )) }
+  </dl>
+)}
+
+{ isLayout('details-horizontal') && (
+  <dl class="details--horizontal">
+    { items.map((item) => (
+      <>
+        <dt>{ item.title }</dt>
+        {item.blocks.map((block) => (
+          <dd>
+            <Blocks blocks={ [block] }/>
+          </dd>
+        ))}
+
+      </>
+    )) }
+  </dl>
+)}
+
+<style>
+    dl.details--horizontal {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+    }
+
+    dl.details--horizontal dd {
+        grid-column: 2;
+    }
+</style>

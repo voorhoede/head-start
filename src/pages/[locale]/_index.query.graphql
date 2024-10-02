@@ -1,4 +1,3 @@
-#import '@blocks/DetailsBlock/DetailsBlock.fragment.graphql'
 #import '@blocks/EmbedBlock/EmbedBlock.fragment.graphql'
 #import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
 #import '@blocks/PagePartialBlock/PagePartialBlock.fragment.graphql'
@@ -18,9 +17,6 @@ query HomePage($locale: SiteLocale!) {
     }
     bodyBlocks {
       __typename
-      ... on DetailsBlockRecord {
-        ...DetailsBlock
-      }
       ... on EmbedBlockRecord {
         ...EmbedBlock
       }

@@ -1,4 +1,0 @@
-fragment DetailsBlock on DetailsBlockRecord {
-  details
-  layout
-}
