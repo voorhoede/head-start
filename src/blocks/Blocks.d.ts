@@ -1,4 +1,4 @@
-import { 
+import {
   EmbedBlockFragment,
   ImageBlockFragment,
   PagePartialBlockFragment,
