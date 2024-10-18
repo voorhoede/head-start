@@ -9,6 +9,7 @@
     "build": "astro build",
     "postbuild": "npm run post",
     "backup": "jiti scripts/backup.ts",
+    "restore": "jiti scripts/restore.ts",
     "cloudflare:build": "jiti scripts/build.ts",
     "create": "plop --plopfile config/plop/plopfile.mjs",
     "create:api": "plop --plopfile config/plop/plopfile.mjs api",
