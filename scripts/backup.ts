@@ -14,7 +14,6 @@ import {
   type BackupRecord,
 } from './utils/backup.ts';
 
-
 dotenv.config({
   allowEmptyValues: Boolean(process.env.CI),
 });

@@ -1,6 +1,8 @@
 export type Model = {
-  item_type: string,
+  api_key: string,
   id: string,
+  type: 'item_type',
+  name: string,
   [key: string]: unknown,
 }
 
