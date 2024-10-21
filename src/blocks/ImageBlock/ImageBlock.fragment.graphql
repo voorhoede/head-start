@@ -7,7 +7,6 @@ fragment ImageBlock on ImageBlockRecord {
     height
     url
     responsiveImage {
-      aspectRatio
       base64
     }
   }
