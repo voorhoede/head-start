@@ -37,8 +37,9 @@ const imageUnavailableMessage = t('image_unavailable');
           loading={ loading }
           srcset={ getImageSrcSet(image.url) }
           src={ getImageSrc(image.url) }
+          width={ image.width }
+          height={ image.height }
           style={{
-            aspectRatio: image.responsiveImage.aspectRatio,
             backgroundImage: `url(${image.responsiveImage.base64})`
           }}
           data-unavailable={ imageUnavailableMessage }
@@ -48,9 +49,8 @@ const imageUnavailableMessage = t('image_unavailable');
           alt={ altText }
           loading={ loading }
           src={ image.url }
-          style={{
-            aspectRatio: `${image.width}/${image.height}`,
-          }}
+          width={ image.width }
+          height={ image.height }
           data-unavailable={ imageUnavailableMessage }
         />
     }
@@ -64,14 +64,10 @@ const imageUnavailableMessage = t('image_unavailable');
 
 <style>
 /* functional styling */
-figure {
-    max-width: 100%;
-    height: auto;
-}
 
 img {
   display: block;
-  width: 100%;
+  max-width: 100%;
   height: auto;
   background-size: cover;
 }
