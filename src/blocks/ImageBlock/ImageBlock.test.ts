@@ -25,7 +25,7 @@ describe('ImageBlock', () => {
     expect(img?.getAttribute('loading')).toBe('lazy');
   });
 
-  test('renders the correct aspect ratio style', async () => {
+  test('renders the correct width and height', async () => {
     const fragment = await renderToFragment<Props>(ImageBlock, {
       props: {
         block: {
@@ -41,7 +41,8 @@ describe('ImageBlock', () => {
     });
 
     const img = fragment.querySelector('img');
-    expect(img?.style.aspectRatio).toBe('150/150');
+    expect(img?.width).toBe(150);
+    expect(img?.height).toBe(150);
   });
 
   test('renders with a figcaption when title is provided', async () => {
@@ -90,8 +91,9 @@ describe('ImageBlock', () => {
           image: {
             url: 'https://example.com/test.jpg',
             alt: 'A responsive test image',
+            height: 150,
+            width: 150,
             responsiveImage: {
-              aspectRatio: 1.9526315789473685,
               base64: 'data:image/jpeg;base64,...'
             }
           }
@@ -100,7 +102,8 @@ describe('ImageBlock', () => {
     });
 
     const img = fragment.querySelector('img');
-    expect(img?.style.aspectRatio).toBe('1.9526315789473685');
+    expect(img?.width).toBe(150);
+    expect(img?.height).toBe(150);
     expect(img?.style.backgroundImage).toContain('base64');
   });
 });

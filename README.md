@@ -83,6 +83,7 @@ All documentation is located in [`docs/`](docs/):
 - [Search](docs/search.md)
 - [Search Engine Optimisation (SEO)](docs/seo.md)
 - [Testing](docs/testing.md)
+- [Upgrading](docs/upgrading.md)
 
 ## Commands
 

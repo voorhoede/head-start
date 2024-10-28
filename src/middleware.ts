@@ -3,7 +3,7 @@ import { defaultLocale, locales, setLocale } from './lib/i18n';
 import type { SiteLocale } from '@lib/i18n/i18n.types';
 import { getRedirectTarget } from '@lib/routing';
 import { datocmsEnvironment } from '@root/datocms-environment';
-import { getSecret } from 'astro:env/server';
+import { DATOCMS_READONLY_API_TOKEN, HEAD_START_PREVIEW_SECRET, HEAD_START_PREVIEW } from 'astro:env/server';
 
 export const previewCookieName = 'HEAD_START_PREVIEW';
 
@@ -15,8 +15,10 @@ export const hashSecret = async (secret: string) => {
 };
 
 export const datocms = defineMiddleware(async ({ locals }, next) => {
-  locals.datocmsEnvironment = datocmsEnvironment;
-  locals.datocmsToken = getSecret('DATOCMS_READONLY_API_TOKEN');
+  Object.assign(locals, {
+    datocmsEnvironment,
+    datocmsToken: DATOCMS_READONLY_API_TOKEN
+  });
   const response = await next();
   return response;
 });
@@ -38,10 +40,12 @@ const i18n = defineMiddleware(async ({ params, request }, next) => {
 });
 
 const preview = defineMiddleware(async ({ cookies, locals }, next) => {
-  const previewSecret = getSecret('HEAD_START_PREVIEW_SECRET');
-  locals.isPreview = getSecret('HEAD_START_PREVIEW');
-  locals.isPreviewAuthOk = Boolean(previewSecret) && cookies.get(previewCookieName)?.value === await hashSecret(previewSecret);
-  locals.previewSecret = previewSecret;
+  const previewSecret = HEAD_START_PREVIEW_SECRET!;
+  Object.assign(locals, {
+    isPreview: HEAD_START_PREVIEW,
+    isPreviewAuthOk: Boolean(previewSecret) && cookies.get(previewCookieName)?.value === await hashSecret(previewSecret),
+    previewSecret
+  });
   const response = await next();
 
   if (locals.isPreview) {
