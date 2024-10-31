@@ -1,6 +1,6 @@
 ---
-import InternalLink from '@blocks/InternalLink/InternalLink.astro';
-import type { InternalLinkFragment } from '@lib/types/datocms';
+import LinkToRecord from '@components/LinkToRecord/LinkToRecord.astro';
+import type { RecordRoute } from '@lib/routing';
 
 type Node = {
   meta?: {
@@ -8,13 +8,15 @@ type Node = {
     value: string;
   }[];
 };
-type Props = {
-  node: Node;
-  link: InternalLinkFragment;
+
+export type Props = {
+  node?: Node;
+  link: RecordRoute;
 };
 
-const { node, link , ...props } = Astro.props;
-const openInNewTab = Boolean(node.meta?.find(entry => entry.id === 'target' && entry.value === '_blank'));
+const { link: record, node, ...props } = Astro.props;
+
+const openInNewTab = Boolean(node?.meta?.find(entry => entry.id === 'target' && entry.value === '_blank'));
 ---
 
-<InternalLink {link} {openInNewTab} {...props}><slot /></InternalLink>
+<LinkToRecord {record} {openInNewTab} {...props}><slot>{record.title}</slot></LinkToRecord>

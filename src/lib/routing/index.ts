@@ -3,7 +3,7 @@ import { getLocale } from '@lib/i18n';
 
 import { getPagePath } from './page';
 
-type RecordRoute =
+export type RecordRoute =
   | HomeRouteFragment
   | PageRouteFragment;
 
