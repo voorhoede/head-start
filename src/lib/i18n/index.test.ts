@@ -28,7 +28,7 @@ vi.mock('./messages.json', () => {
   };
 });
 
-vi.mock('./site.json', () => {
+vi.mock('../site.json', () => {
   return {
     locales: [
       'en',
