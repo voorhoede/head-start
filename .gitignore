@@ -18,7 +18,7 @@ node_modules/
 src/assets/icon-sprite.svg
 src/assets/icon-sprite.d.ts
 src/lib/datocms/datocms.d.ts
-src/lib/i18n/i18n.messages.json
-src/lib/i18n/i18n.types.ts
+src/lib/i18n/messages.json
+src/lib/i18n/types.ts
 src/lib/site.json
 src/lib/routing/redirects.json

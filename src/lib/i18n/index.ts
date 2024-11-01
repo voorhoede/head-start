@@ -1,6 +1,6 @@
 import rosetta from 'rosetta';
-import type { SiteLocale, TranslationKey } from '@lib/i18n/i18n.types';
-import messages from '@lib/i18n/i18n.messages.json';
+import type { SiteLocale, TranslationKey } from '@lib/i18n/types';
+import messages from '@lib/i18n/messages.json';
 import { locales as siteLocales } from '@lib/site.json';
 
 export const locales = siteLocales as SiteLocale[];

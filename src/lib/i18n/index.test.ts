@@ -7,7 +7,7 @@ import { locales } from '../site.json';
 // to verify that unsupported locales are handled correctly we test with locales that we know do not exist (e.g. 'unsupported_locale')
 // TS does not like this, so we supress the warnings with a ts-expect-error comment
 
-vi.mock('./i18n.messages.json', () => {
+vi.mock('./messages.json', () => {
   return {
     default: {
       en: {

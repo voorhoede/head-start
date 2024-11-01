@@ -1,7 +1,7 @@
 import { parse } from 'graphql';
 import { print } from 'graphql/language/printer';
 import type { DocumentNode } from 'graphql';
-import type { SiteLocale } from '@lib/i18n/i18n.types';
+import type { SiteLocale } from '@lib/i18n/types';
 import { titleSuffix } from '@lib/seo';
 import { datocmsBuildTriggerId, datocmsEnvironment } from '../../../datocms-environment';
 import { DATOCMS_READONLY_API_TOKEN, HEAD_START_PREVIEW } from 'astro:env/server';
