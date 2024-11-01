@@ -423,7 +423,7 @@ describe('datocms:', () => {
     });
 
     test('should set correct search parameters', async () => {
-      let requestUrl: URL;
+      let requestUrl: URL | undefined;
 
       server.use(
         http.get('https://site-api.datocms.com/search-results', ({ request }) => {
@@ -436,20 +436,20 @@ describe('datocms:', () => {
       );
 
       await datocmsSearch({ locale: 'en', query: 'test' });
-
-      expect(requestUrl.searchParams.get('locale')).toBe('en');
-      expect(requestUrl.searchParams.get('q')).toBe('test');
-      expect(requestUrl.searchParams.get('build_trigger_id')).toBe('mock-build-trigger-id');
+      expect(requestUrl).toBeDefined();
+      expect(requestUrl!.searchParams.get('locale')).toBe('en');
+      expect(requestUrl!.searchParams.get('q')).toBe('test');
+      expect(requestUrl!.searchParams.get('build_trigger_id')).toBe('mock-build-trigger-id');
 
       await datocmsSearch({ locale: 'nl', query: 'my mock query' });
-
-      expect(requestUrl.searchParams.get('locale')).toBe('nl');
-      expect(requestUrl.searchParams.get('q')).toBe('my mock query');
-      expect(requestUrl.searchParams.get('build_trigger_id')).toBe('mock-build-trigger-id');
+      expect(requestUrl).toBeDefined();
+      expect(requestUrl!.searchParams.get('locale')).toBe('nl');
+      expect(requestUrl!.searchParams.get('q')).toBe('my mock query');
+      expect(requestUrl!.searchParams.get('build_trigger_id')).toBe('mock-build-trigger-id');
     });
 
     test('should handle fuzzy search correctly', async () => {
-      let requestUrl: URL;
+      let requestUrl: URL | undefined;
 
       server.use(
         http.get('https://site-api.datocms.com/search-results', ({ request }) => {
@@ -462,13 +462,16 @@ describe('datocms:', () => {
       );
 
       await datocmsSearch({ locale: 'en', query: 'test' });
-      expect(requestUrl.searchParams.get('fuzzy')).toBe('true');
+      expect(requestUrl).toBeDefined();
+      expect(requestUrl!.searchParams.get('fuzzy')).toBe('true');
 
       await datocmsSearch({ locale: 'en', query: 'test', fuzzy: true });
-      expect(requestUrl.searchParams.get('fuzzy')).toBe('true');
+      expect(requestUrl).toBeDefined();
+      expect(requestUrl!.searchParams.get('fuzzy')).toBe('true');
 
       await datocmsSearch({ locale: 'en', query: 'test', fuzzy: false });
-      expect(requestUrl.searchParams.has('fuzzy')).toBe(false);
+      expect(requestUrl).toBeDefined();
+      expect(requestUrl!.searchParams.has('fuzzy')).toBe(false);
     });
 
     test('should handle API errors correctly', async () => {
