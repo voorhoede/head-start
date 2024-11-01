@@ -1,5 +1,5 @@
-import { getLocale } from '../i18n';
-import { globalSeo } from '../site.json';
+import { getLocale } from '@lib/i18n';
+import { globalSeo } from '@lib/site.json';
 
 export const queryParamName = 'query';
 export const minQueryLength = 3;

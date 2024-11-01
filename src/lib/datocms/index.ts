@@ -109,7 +109,7 @@ export const datocmsCollection = async <CollectionType>({
   return records;
 };
 
-// src: https://github.com/datocms/react-datocms/blob/master/src/useSitesearch.tsx#L29C1-L42C3
+// src: https://github.com/datocms/react-datocms/blob/master/src/useSiteSearch/index.tsx#L29C1-L42C3
 export type RawSearchResult = {
   type: 'search_result';
   id: string;

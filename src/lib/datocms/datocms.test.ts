@@ -16,7 +16,7 @@ import {
   datocmsSearch,
   formatSearchResults,
   type RawSearchResult,
-} from './index';
+} from '@lib/datocms';
 
 // these imports will resolve to their mocked counterparts
 import * as env from 'astro:env/server';

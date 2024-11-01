@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import { defaultLocale, t, getLocale, getLocaleName, setLocale } from './index';
+import { defaultLocale, t, getLocale, getLocaleName, setLocale } from '@lib/i18n';
 
 // these imports will resolve to their mocked counterparts
 import { locales } from '../site.json';
