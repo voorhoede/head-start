@@ -18,6 +18,18 @@ import {
   type RawSearchResult,
 } from './index';
 
+// these imports will resolve to their mocked counterparts
+import * as env from 'astro:env/server';
+
+vi.mock('astro:env/server', async () => {
+  const actual = await import('astro:env/server');
+
+  return {
+    ...actual,
+    HEAD_START_PREVIEW: true,
+  };
+});
+
 vi.mock('../../../datocms-environment', () => ({
   datocmsBuildTriggerId: 'mock-build-trigger-id',
   datocmsEnvironment: 'mock-environment',
@@ -31,7 +43,6 @@ afterEach(() => {
   server.resetHandlers();
   vi.resetAllMocks();
   vi.restoreAllMocks();
-  vi.unstubAllEnvs();
 });
 
 afterAll(() => server.close());
@@ -158,18 +169,14 @@ describe('datocms:', () => {
       // note the difference in casing -- HTTP headers are case-insensitive and are often normalized to lowercase when processed
       // this is why we check for 'x-include-drafts' instead of 'X-Include-Drafts'
 
-      // 'true' instead of true because subEnv expects a string
-      vi.stubEnv('HEAD_START_PREVIEW', 'true');
-      await datocmsRequest({
-        query: parse('query MockQuery { id }')
-      });
+      // test implementation when HEAD_START_PREVIEW is true
+      (env.HEAD_START_PREVIEW as boolean) = true;
+      await datocmsRequest({ query: parse('query MockQuery { id }') });
       expect(requestHeaders['x-include-drafts']).toBe('true');
 
-      // empty string because subEnv expects a string, but the value should be falsy
-      vi.stubEnv('HEAD_START_PREVIEW', '');
-      await datocmsRequest({
-        query: parse('query MockQuery { id }')
-      });
+      // test implementation when HEAD_START_PREVIEW is false
+      (env.HEAD_START_PREVIEW as boolean) = false;
+      await datocmsRequest({ query: parse('query MockQuery { id }') });
       expect(requestHeaders['x-include-drafts']).toBeUndefined();
     });
   });
