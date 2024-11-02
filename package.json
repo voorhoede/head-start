@@ -59,7 +59,7 @@
     "promise-all-props": "^3.0.0",
     "regexparam": "^3.0.0",
     "rosetta": "^1.1.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.6.3"
   },
   "devDependencies": {
     "@astrojs/ts-plugin": "^1.10.2",
