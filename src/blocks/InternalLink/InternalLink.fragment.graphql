@@ -1,17 +1,11 @@
-#import '@blocks/InternalLink/ParentPage.fragment.graphql'
+#import '@lib/routing/PageRoute.fragment.graphql'
 
 fragment InternalLink on InternalLinkRecord {
   title
   page {
     __typename
     ... on PageRecord {
-      title
-      slug
-      _allSlugLocales {
-        locale
-        value
-      }
-      ...ParentPage
+      ...PageRoute
     }
     ... on HomePageRecord {
       title

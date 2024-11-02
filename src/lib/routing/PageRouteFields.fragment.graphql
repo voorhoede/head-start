@@ -1,0 +1,10 @@
+fragment PageRouteFields on PageRecord {
+  __typename
+  id
+  title
+  slug
+  _allSlugLocales {
+    locale
+    value
+  }
+}

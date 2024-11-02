@@ -1,6 +1,6 @@
 ---
 import { datocmsCollection, datocmsRequest } from '@lib/datocms';
-import type { PageQuery, PageRecord, ParentPageFragment, SiteLocale } from '@lib/types/datocms';
+import type { PageQuery, PageRecord, PageRouteParentFragment, SiteLocale } from '@lib/types/datocms';
 import type { PageUrl } from '@lib/types/page-url';
 import Layout from '@layouts/Default.astro';
 import Blocks from '@blocks/Blocks.astro';
@@ -18,7 +18,7 @@ import query from './_index.query.graphql';
 export async function getStaticPaths() {
   interface PagesCollectionItem {
     _allSlugLocales: Array<{ locale: SiteLocale; value: string }>;
-    parentPage: ParentPageFragment;
+    parentPage: PageRouteParentFragment;
   }
   const pages = await datocmsCollection<PagesCollectionItem>({
     collection: 'Pages',
