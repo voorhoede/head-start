@@ -1,0 +1,20 @@
+---
+export interface Props {
+  href: string;
+  openInNewTab?: boolean;
+}
+
+const { href, openInNewTab, ...props } = Astro.props;
+
+const target = openInNewTab ? '_blank' : null;
+
+// Strip trailing spaces from slot contents so underlined links
+// do not extend further than the text.
+let html;
+if (Astro.slots.has('default')) {
+  html = await Astro.slots.render('default');
+  html = html.trim();
+}
+---
+
+<a {href} {target} {...props}><Fragment set:html={html} /></a>

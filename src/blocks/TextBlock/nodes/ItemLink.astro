@@ -13,10 +13,8 @@ type Props = {
   link: InternalLinkFragment;
 };
 
-const { node, link } = Astro.props;
+const { node, link , ...props } = Astro.props;
 const openInNewTab = Boolean(node.meta?.find(entry => entry.id === 'target' && entry.value === '_blank'));
 ---
 
-<InternalLink link={link} {openInNewTab}>
-  <slot />
-</InternalLink>
+<InternalLink {link} {openInNewTab} {...props}><slot /></InternalLink>

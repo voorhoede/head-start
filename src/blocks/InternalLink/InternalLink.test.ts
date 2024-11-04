@@ -22,14 +22,4 @@ describe('InternalLink', () => {
     );
     expect(fragment).toBeDefined();
   });
-
-  test('renders text content without trailing whitespace ', async () => {
-    const fragment = await renderToFragment<InternalLinkProps>(InternalLink, {
-      props,
-      slots: {
-        default: 'spacing\n',
-      },
-    });
-    expect(fragment.querySelector('a')?.textContent).toBe('spacing');
-  });
 });
