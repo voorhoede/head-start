@@ -1,19 +1,21 @@
-fragment ParentPage on PageRecord {
+#import '@lib/routing/PageRouteFields.fragment.graphql'
+
+fragment PageRouteParent on PageRecord {
   parentPage {
     ... on PageRecord {
-      ...ParentPageFields
+      ...PageRouteFields
       parentPage {
         ... on PageRecord {
-          ...ParentPageFields
+          ...PageRouteFields
           parentPage {
             ... on PageRecord {
-              ...ParentPageFields
+              ...PageRouteFields
               parentPage {
                 ... on PageRecord {
-                  ...ParentPageFields
+                  ...PageRouteFields
                   parentPage {
                     ... on PageRecord {
-                      ...ParentPageFields
+                      ...PageRouteFields
                     }
                   }
                 }
@@ -23,13 +25,5 @@ fragment ParentPage on PageRecord {
         }
       }
     }
-  }
-}
-
-fragment ParentPageFields on PageRecord {
-  title
-  _allSlugLocales {
-    locale
-    value
   }
 }

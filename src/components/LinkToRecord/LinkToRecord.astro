@@ -1,0 +1,17 @@
+---
+import type { SiteLocale } from '@lib/datocms/types';
+import { getLocale } from '@lib/i18n';
+import { getHref, type RecordRoute } from '@lib/routing';
+import Link from '@components/Link/Link.astro';
+
+export type Props = {
+  openInNewTab?: boolean;
+  record: RecordRoute;
+};
+
+const { record, openInNewTab, ...props } = Astro.props;
+const locale = getLocale() as SiteLocale;
+const href = getHref({ locale, record });
+---
+
+<Link {href} {openInNewTab} {...props}><slot>{record.title}</slot></Link>

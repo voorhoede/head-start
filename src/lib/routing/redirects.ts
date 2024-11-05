@@ -1,6 +1,7 @@
 import type { ValidRedirectStatus } from 'astro';
 import { parse, inject } from 'regexparam';
-import redirectConfiguration from '@lib/routing/redirects.json';
+import type { RedirectRule } from '@root/scripts/download-redirects';
+import redirectConfiguration from './redirects.json';
 
 export const defaultRedirectStatus = 302;
 
@@ -50,7 +51,7 @@ const getPathParams = ({
   return params;
 };
 
-const redirectRules = redirectConfiguration.map((rule) => {
+const redirectRules = redirectConfiguration.map((rule: RedirectRule) => {
   const { keys, pattern } = parse(rule.from);
   const statusCode = redirectStatusCode(Number(rule.statusCode));
   return {

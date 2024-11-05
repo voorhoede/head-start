@@ -1,26 +1,19 @@
 ---
 import { datocmsCollection, datocmsRequest } from '@lib/datocms';
-import type { PageQuery, PageRecord, ParentPageFragment, SiteLocale } from '@lib/datocms/types';
+import { type PageRouteForPath, getPagePath, getPageSlugFromPath, getParentPages } from '@lib/routing/page';
+import type { PageQuery, SiteLocale } from '@lib/datocms/types';
 import type { PageUrl } from '@lib/seo';
 import Layout from '@layouts/Default.astro';
 import Blocks from '@blocks/Blocks.astro';
 import type { AnyBlock } from '@blocks/Blocks';
-import {
-  getParentPages,
-  getPagePath,
-  getPageSlugFromPath,
-} from '@blocks/InternalLink';
+
 import { formatBreadcrumb } from '@components/Breadcrumbs';
 import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
 import ShareButton from '@components/ShareButton/ShareButton.astro';
 import query from './_index.query.graphql';
 
 export async function getStaticPaths() {
-  interface PagesCollectionItem {
-    _allSlugLocales: Array<{ locale: SiteLocale; value: string }>;
-    parentPage: ParentPageFragment;
-  }
-  const pages = await datocmsCollection<PagesCollectionItem>({
+  const pages = await datocmsCollection<PageRouteForPath>({
     collection: 'Pages',
     fragment: `
       _allSlugLocales { locale, value }
@@ -40,9 +33,9 @@ export async function getStaticPaths() {
   });
 
   return pages.flatMap((page) => {
-    const locales = page._allSlugLocales.map((slug) => slug.locale);
-    return locales.map((locale) => {
-      return { params: { locale, path: getPagePath({ page: page as PageRecord, locale }) } };
+    const locales = page._allSlugLocales?.map((slug) => slug.locale).filter(locale => !!locale);
+    return locales?.map((locale) => {
+      return { params: { locale, path: getPagePath({ page, locale }) } };
     });
   });
 }
@@ -55,7 +48,7 @@ type Params = {
 const { locale, path } = Astro.params as Params;
 const variables = { locale, slug: getPageSlugFromPath(path) };
 const { page } = (await datocmsRequest<PageQuery>({ query, variables })) as {
-  page: PageRecord;
+  page: NonNullable<PageQuery['page']>; // Only NonNullable when statically generated. Handle as a 404 when this is a server route!
 };
 const breadcrumbs = [...getParentPages(page), page].map((page) =>
   formatBreadcrumb({
