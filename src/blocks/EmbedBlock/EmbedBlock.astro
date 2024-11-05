@@ -12,7 +12,7 @@ export interface Props {
   block: EmbedBlockFragment;
 }
 const { block } = Astro.props;
-const { data, url }: { data: OEmbedAny; url: string } = block;
+const { data, url }: { data: OEmbedAny; url: string } = block as { data: OEmbedAny; url: string };
 const providerName = (data || getOEmbedProvider(url))?.provider_name;
 const isProvider = (name: string) =>
   providerName?.toLowerCase() === name.toLowerCase();

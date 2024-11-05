@@ -44,7 +44,7 @@ module.exports = {
               FloatType: 'number',
               IntType: 'number',
               ItemId: 'string',
-              JsonField: 'unkown',
+              JsonField: 'unknown',
               MetaTagAttributes: 'Record<string, string>',
               UploadId: 'string',
             },
