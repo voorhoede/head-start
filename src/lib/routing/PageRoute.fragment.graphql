@@ -1,0 +1,7 @@
+#import '@lib/routing/PageRouteFields.fragment.graphql'
+#import '@lib/routing/PageRouteParent.fragment.graphql'
+
+fragment PageRoute on PageRecord {
+  ...PageRouteFields
+  ...PageRouteParent
+}

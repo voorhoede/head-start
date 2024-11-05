@@ -10,9 +10,21 @@ Head Start supports multi-language websites with localised routing (`/:locale/pa
 
 Head Start supports nested pages, so editors can create page URLs like `/en/overview-page/category-page/detail-page/`. This is achieved using a `parentPage` field* in Page models in the CMS, combined with a catch all route `src/pages/[locale]/[...path]/` using [Astro rest parameters](https://docs.astro.build/en/core-concepts/routing/#rest-parameters). This setup can be copied for new page models added to your project.
 
-To make nested routes more useful for website visitors and easier to manage for developers, Head Start provides a [Breadcrumbs component](../src/components/Breadcrumbs/) and an [Internal Link component](../src/blocks/InternalLink/) which resolves URLs for all content models.
+To make nested routes more useful for website visitors and easier to manage for developers, Head Start provides a [Breadcrumbs component](../src/components/Breadcrumbs/) and [`getHref()` helpers for all linkable models](../src/lib/routing/index.ts).
 
 \* See [decision entry on nested page setup](./decision-log/2023-12-26-nested-page-setup.md) for motivation.
+
+## Internal links to records
+
+Content editors can link to other models (like Home or generic Page) within Structured Text fields. To create nodes for these links, Head Start provides a reusable [Item Link](../src/blocks/TextBlock/nodes/ItemLink.astro).
+
+When you want to make a new content model available for linking:
+
+1. Add the model to the references option of all relevant Structured Text fields in the CMS.
+2. Add the links to the GraphQL fragments of the related blocks (like [`TextBlock.fragment.graphql`](../src/blocks/TextBlock/TextBlock.fragment.graphql)).
+3. Extend the generic [`getHref()` helper](../src/lib/routing/index.ts) to resolve the URL for the new model.
+
+\* See [decision entry on record linking](./decision-log/2024-10-31-record-linking.md) for motivation.
 
 ## 404 routes
 

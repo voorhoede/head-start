@@ -13,7 +13,7 @@ type RedirectRuleRecord = {
   status_code: string;
   [key: string]: string | object;
 }
-type RedirectRule = {
+export type RedirectRule = {
   from: string;
   to: string;
   statusCode: '301'|'302';

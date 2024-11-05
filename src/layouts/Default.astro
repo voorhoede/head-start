@@ -2,6 +2,7 @@
 import type { DefaultLayoutQuery, Site, SiteLocale, Tag } from '@lib/types/datocms';
 import { datocmsRequest } from '@lib/datocms';
 import { defaultLocale, t } from '@lib/i18n';
+import { getHomeHref } from '@lib/routing';
 import { datocmsNoIndex, getSearchPathname } from '@lib/search';
 import { siteName } from '@lib/seo';
 import type { PageUrl } from '@lib/seo';
@@ -46,7 +47,7 @@ const mainContentId = 'content';
         <SkipLink targetId={ mainContentId } />
         <header { ...datocmsNoIndex }>
           { /* accessible home link, inspired by https://www.gov.uk/; with Microformats rel */ }
-          <a rel="home" href={ `/${ locale }/` } aria-label={ t('go_to_home_page', { siteName }) }>[Logo]</a>
+          <a rel="home" href={ getHomeHref() } aria-label={ t('go_to_home_page', { siteName }) }>[Logo]</a>
           <div>
             <LocaleSelector pageUrls={ pageUrls } />
             <a rel="search" href={ getSearchPathname(locale) }>{ t('search') }</a>

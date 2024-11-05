@@ -1,7 +1,12 @@
 ---
-import InternalLink from '@blocks/InternalLink/InternalLink.astro';
+import type { RecordRoute } from '@lib/routing';
+import ItemLink from './ItemLink.astro';
+
+export type Props = {
+  link: RecordRoute;
+};
 
 const { link } = Astro.props;
 ---
 
-<InternalLink {link} />
+<ItemLink {link} />
