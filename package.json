@@ -53,7 +53,6 @@
     "github-slugger": "^2.0.0",
     "globby": "^13.2.2",
     "hast-util-from-html": "^2.0.3",
-    "hast-util-heading": "^3.0.0",
     "hast-util-to-string": "^3.0.1",
     "hls.js": "^1.5.2",
     "html-validate": "^8.7.4",
