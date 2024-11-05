@@ -1,6 +1,6 @@
+#import '@lib/routing/PageRoute.fragment.graphql'
 #import '@blocks/EmbedBlock/EmbedBlock.fragment.graphql'
 #import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
-#import '@blocks/InternalLink/ParentPage.fragment.graphql'
 #import '@blocks/PagePartialBlock/PagePartialBlock.fragment.graphql'
 #import '@blocks/TableBlock/TableBlock.fragment.graphql'
 #import '@blocks/TextBlock/TextBlock.fragment.graphql'
@@ -10,18 +10,12 @@
 
 query Page($locale: SiteLocale!, $slug: String!) {
   page(locale: $locale, filter: { slug: { eq: $slug } }) {
-    title
-    slug
-    _allSlugLocales {
-      locale
-      value
-    }
+    ...PageRoute
     _seoMetaTags {
       attributes
       content
       tag
     }
-    ...ParentPage
     bodyBlocks {
       __typename
       ... on EmbedBlockRecord {

@@ -1,0 +1,4 @@
+fragment HomeRoute on HomePageRecord {
+  __typename
+  title
+}

@@ -3,6 +3,7 @@ import { datocmsRequest } from '@lib/datocms';
 import type { HomePageQuery, HomePageRecord } from '@lib/types/datocms';
 import type { PageUrl } from '@lib/types/page-url';
 import { locales } from '@lib/i18n';
+import { getHomeHref } from '@lib/routing';
 import Layout from '@layouts/Default.astro';
 import Blocks from '@blocks/Blocks.astro';
 import type { AnyBlock } from '@blocks/Blocks';
@@ -22,7 +23,7 @@ const { page } = (await datocmsRequest<HomePageQuery>({
 })) as { page: HomePageRecord };
 const pageUrls = locales.map((locale) => ({
   locale,
-  pathname: `/${locale}/`,
+  pathname: getHomeHref({ locale }),
 })) as PageUrl[];
 ---
 
