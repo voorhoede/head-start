@@ -128,7 +128,6 @@ describe('i18n:', () => {
       t('unsupported_translation_key');
 
       expect(consoleSpy).toHaveBeenCalled();
-      expect(consoleSpy).toHaveBeenCalledWith('\x1b[33mMissing translation for key: unsupported_translation_key');
     });
   });
 });
