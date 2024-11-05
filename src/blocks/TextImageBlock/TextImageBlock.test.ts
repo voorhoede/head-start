@@ -1,5 +1,5 @@
 import { renderToFragment } from '@lib/renderer';
-import type { TextImageBlockFragment } from '@lib/datocms/datocms';
+import type { TextImageBlockFragment } from '@lib/datocms/types';
 import { describe, expect, test } from 'vitest';
 import TextImageBlock from './TextImageBlock.astro';
 

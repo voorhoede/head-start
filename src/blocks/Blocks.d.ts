@@ -1,4 +1,4 @@
-import {
+import type {
   EmbedBlockFragment,
   ImageBlockFragment,
   PagePartialBlockFragment,
@@ -7,7 +7,7 @@ import {
   TextImageBlockFragment,
   VideoBlockFragment,
   VideoEmbedBlockFragment,
-} from '@lib/datocms';
+} from '@lib/datocms/types';
 
 export type AnyBlock =
   | EmbedBlockFragment

@@ -1,4 +1,4 @@
-import type { PageRecord, SiteLocale } from '@lib/datocms/datocms';
+import type { PageRecord, SiteLocale } from '@lib/datocms/types';
 
 type AnyPage = PageRecord;
 type MaybeSlug = string | undefined;

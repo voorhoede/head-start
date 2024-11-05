@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import { locales } from '@lib/i18n';
 import { datocmsRequest } from '@lib/datocms';
-import type { OpenSearchXmlQuery, Site } from '@lib/datocms/datocms.d.ts';
+import type { OpenSearchXmlQuery, Site } from '@lib/datocms/types';
 import { getSearchPathname, getOpenSearchName, queryParamName } from '@lib/search';
 import query from './_opensearch.query.graphql';
 

@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { datocmsEnvironment } from './datocms-environment';
 
-const outputFilename = 'src/lib/datocms/datocms.d.ts';
+const outputFilename = 'src/lib/datocms/types.ts';
 
 console.log(`Saving generated types for DatoCMS (environment: '${datocmsEnvironment}') to '${outputFilename}'.`);
 

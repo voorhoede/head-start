@@ -79,7 +79,7 @@ console.log(typeof query) // DocumentNode
 Head Start automatically generates TypeScript types for all your GraphQL files, which you can import:
 
 ```ts
-import type { ImageBlockFragment, PageQuery, PageRecord } from '@lib/types/datocms';
+import type { ImageBlockFragment, PageQuery, PageRecord } from '@lib/datocms/types';
 ```
 
 ## DatoCMS requests
@@ -91,7 +91,7 @@ Example usage:
 ```astro
 ---
 import { datocmsRequest } from '@lib/datocms';
-import type { PageQuery, PageRecord } from '@lib/types/datocms';
+import type { PageQuery, PageRecord } from '@lib/datocms/types';
 import query from './_index.query.graphql';
 
 const { page } = await datocmsRequest<PageQuery>({
