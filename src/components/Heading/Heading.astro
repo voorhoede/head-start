@@ -1,0 +1,20 @@
+---
+import type { HTMLTag } from 'astro/types';
+import type { Heading } from 'datocms-structured-text-utils';
+import { htmlIdSlug } from '@components/HtmlIdSlugProvider/';
+
+interface Props {
+  id: string;
+  level: Heading['level'];
+}
+const { id, level = 2, ...props } = Astro.props;
+
+const slug = htmlIdSlug({
+  id,
+  html: await Astro.slots.render('default')
+});
+
+const Tag = `h${level}` as HTMLTag;
+---
+
+<Tag {...props} id={ slug } tabindex="-1"><slot /></Tag>

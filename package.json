@@ -50,7 +50,11 @@
     "datocms-listen": "^0.1.15",
     "datocms-structured-text-utils": "^2.0.4",
     "get-video-id": "^3.6.5",
+    "github-slugger": "^2.0.0",
     "globby": "^13.2.2",
+    "hast-util-from-html": "^2.0.3",
+    "hast-util-heading": "^3.0.0",
+    "hast-util-to-string": "^3.0.1",
     "hls.js": "^1.5.2",
     "html-validate": "^8.7.4",
     "jiti": "^1.20.0",
@@ -59,7 +63,8 @@
     "promise-all-props": "^3.0.0",
     "regexparam": "^3.0.0",
     "rosetta": "^1.1.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
     "@astrojs/ts-plugin": "^1.10.2",

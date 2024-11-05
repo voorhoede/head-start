@@ -1,0 +1,19 @@
+---
+import type { TreeItem } from './index';
+
+interface Props {
+  items: TreeItem[];
+}
+const { items } = Astro.props;
+---
+
+<ol>
+  { items.map((item) => (
+    <li class:list={[ `level-${item.level}` ]}>
+      <a href={ `#${ item.id }` }>{ item.text }</a>
+      { item.items && (
+        <Astro.self items={ item.items } />
+      ) }
+    </li>
+  )) }
+</ol>

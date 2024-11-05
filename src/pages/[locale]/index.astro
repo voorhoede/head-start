@@ -4,10 +4,11 @@ import type { HomePageQuery, HomePageRecord } from '@lib/types/datocms';
 import type { PageUrl } from '@lib/types/page-url';
 import { locales } from '@lib/i18n';
 import Layout from '@layouts/Default.astro';
-import Blocks from '@blocks/Blocks.astro';
+import { renderBlocks } from '@blocks/index';
 import type { AnyBlock } from '@blocks/Blocks';
 import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
 import ShareButton from '@components/ShareButton/ShareButton.astro';
+import TableOfContents from '@components/TableOfContents/TableOfContents.astro';
 import query from './_index.query.graphql';
 
 export async function getStaticPaths() {
@@ -24,11 +25,13 @@ const pageUrls = locales.map((locale) => ({
   locale,
   pathname: `/${locale}/`,
 })) as PageUrl[];
+const blocksHtml = await renderBlocks(page.bodyBlocks as AnyBlock[]);
 ---
 
 <Layout pageUrls={pageUrls} seoMetaTags={page._seoMetaTags}>
   <PreviewModeSubscription query={query} variables={variables} />
   <h1>{page.title}</h1>
-  <Blocks blocks={page.bodyBlocks as AnyBlock[]} />
+  <TableOfContents html={ blocksHtml } />
+  <Fragment set:html={blocksHtml} />
   <ShareButton />
 </Layout>
