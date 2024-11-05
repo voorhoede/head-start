@@ -1,4 +1,4 @@
-import { renderToFragment } from '@lib/renderer/renderer';
+import { renderToFragment } from '@lib/renderer';
 import { describe, expect, test } from 'vitest';
 import TableBlock, { type Props } from './TableBlock.astro';
 
