@@ -8,6 +8,17 @@ const { href, openInNewTab, ...props } = Astro.props;
 
 const target = openInNewTab ? '_blank' : null;
 
+const external = (() => { 
+  try {
+    return new URL(href).origin !== new URL(Astro.url).origin;
+  } catch (e: unknown) {
+    // If new URL throws, it means the URL is relative, so it's internal.
+    return false;
+  }
+})();
+
+const rel = external ? 'noopener noreferrer' : null;
+
 // Strip trailing spaces from slot contents so underlined links
 // do not extend further than the text.
 let html;
@@ -17,4 +28,4 @@ if (Astro.slots.has('default')) {
 }
 ---
 
-<a {href} {target} {...props}><Fragment set:html={html} /></a>
+<a {href} {target} {rel} {...props}><Fragment set:html={html} /></a>
