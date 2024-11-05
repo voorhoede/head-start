@@ -27,7 +27,7 @@ module.exports = {
           plugins: [
             'typescript',
             'typescript-operations',
-            'typed-document-node',
+            '@graphql-codegen/typescript-document-nodes',
           ],
           /**
           * scalar config borrowed from DatoCMS team:
