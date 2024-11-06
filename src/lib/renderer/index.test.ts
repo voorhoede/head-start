@@ -37,7 +37,7 @@ const mockComponent = vi.fn().mockImplementation((props: Props) => {
 const mockRenderResult = (props: Props) => `<div>Test Content with ${JSON.stringify(props)}</div>`;
 
 const mockContainer = {
-  renderToString: vi.fn().mockImplementation((component: typeof mockComponent, options: RenderOptions) => {
+  renderToString: vi.fn().mockImplementation((_component: typeof mockComponent, options: RenderOptions) => {
     return Promise.resolve(mockRenderResult(options?.props || {}));
   }),
 };
@@ -50,8 +50,9 @@ beforeAll(async () => {
 
 beforeEach(() => {
   vi.clearAllMocks();
-  (AstroContainer.create as vi.Mock).mockResolvedValue(mockContainer);
   vi.mocked(JSDOM.fragment).mockReturnValue(document.createDocumentFragment());
+
+  (AstroContainer.create as vi.Mock).mockResolvedValue(mockContainer);
 });
 
 afterAll(() => {
