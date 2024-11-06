@@ -1,0 +1,43 @@
+---
+import type { FileRouteFragment } from '@lib/types/datocms';
+import prettyBytes from 'pretty-bytes';
+import { getLocale } from '@lib/i18n';
+import { getFileHref } from '@lib/routing/';
+import Icon from '@components/Icon';
+type Props = {
+  record: FileRouteFragment;
+};
+const { record, ...props } = Astro.props;
+const { file, locale: fileLocale, title } = record;
+const pageLocale = getLocale();
+const localeText =
+  fileLocale && fileLocale !== pageLocale
+    ? new Intl.DisplayNames([pageLocale], { type: 'language' }).of(fileLocale)
+    : '';
+const format = file.format.toUpperCase();
+const size = prettyBytes(file.size, { locale: pageLocale });
+const metaText = [localeText, format, size].filter(Boolean).join(', ');
+---
+
+<a
+  href={getFileHref(record)}
+  hreflang={fileLocale}
+  download={title}
+  type={file.mimeType}
+  {...props}
+>
+  <span class="title"><slot>{title}</slot></span>
+  ({metaText})
+  <Icon class="icon" name="download" /></a
+>
+
+<style>
+  /* Underline only the title, so the meta data doesn't obscure the link visually, 
+     but is still part of the link content for assistive technology */
+  a {
+    display: contents;
+  }
+  .title {
+    text-decoration: inherit;
+  }
+</style>
