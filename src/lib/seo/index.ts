@@ -8,10 +8,19 @@ export type PageUrl = {
   pathname: string,
 };
 
-const locale = getLocale();
+export const siteName = () => {
+  const locale = getLocale();
+  const localeSeo = globalSeo[locale as keyof typeof globalSeo];
 
-export const siteName = globalSeo[locale as keyof typeof globalSeo].siteName;
-export const titleSuffix = globalSeo[locale as keyof typeof globalSeo].titleSuffix;
+  return localeSeo.siteName;
+};
+
+export const titleSuffix = () => {
+  const locale = getLocale();
+  const localeSeo = globalSeo[locale as keyof typeof globalSeo];
+
+  return localeSeo.titleSuffix;
+};
 
 export const noIndexTag: Tag = {
   attributes: { name: 'robots' },
@@ -19,7 +28,7 @@ export const noIndexTag: Tag = {
   tag: 'meta',
 };
 
-export const titleTag = (title:string): Tag => ({
+export const titleTag = (title: string): Tag => ({
   tag: 'title',
-  content: `${title} ${titleSuffix}`,
+  content: `${title} ${titleSuffix()}`,
 });
