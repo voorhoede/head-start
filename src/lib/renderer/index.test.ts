@@ -51,7 +51,6 @@ beforeAll(async () => {
 beforeEach(() => {
   vi.clearAllMocks();
   vi.mocked(JSDOM.fragment).mockReturnValue(document.createDocumentFragment());
-
   (AstroContainer.create as vi.Mock).mockResolvedValue(mockContainer);
 });
 
