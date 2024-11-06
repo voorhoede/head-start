@@ -23,7 +23,7 @@ const mockedSearchResults = [
     attributes: {
       title: 'Test Title',
       body_excerpt: 'Test body',
-      url: 'https://test.com',
+      url: 'https://example.com',
       score: 1,
       highlight: {
         title: ['Test [h]Title[/h]'],
