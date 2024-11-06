@@ -1,7 +1,7 @@
 ---
 {{#if name }}
 import { datocmsRequest } from '@lib/datocms';
-import type { {{ name }}Query } from '@lib/types/datocms';
+import type { {{ name }}Query } from '@lib/datocms/types';
 import query from './_index.query.graphql';
 {{/if}}
 import Layout from '@layouts/Default.astro';
@@ -10,7 +10,7 @@ export async function getStaticPaths() {
 // todo
 }
 
-type Params = { 
+type Params = {
   {{#if (hasRouteLocale route) }}
   locale: SiteLocale;
   {{/if}}

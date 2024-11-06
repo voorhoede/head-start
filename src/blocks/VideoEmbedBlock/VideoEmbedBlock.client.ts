@@ -1,5 +1,5 @@
 import { persistentMap } from '@nanostores/persistent';
-import type { VideoField } from '@lib/types/datocms';
+import type { VideoField } from '@lib/datocms/types';
 
 type ConsentKey = VideoField['provider'];
 type ConsentMap = {

@@ -1,9 +1,9 @@
 import { parse } from 'graphql';
 import { print } from 'graphql/language/printer';
 import type { DocumentNode } from 'graphql';
-import type { SiteLocale } from '@lib/i18n.types';
-import { titleSuffix } from './seo';
-import { datocmsBuildTriggerId, datocmsEnvironment } from '../../datocms-environment';
+import type { SiteLocale } from '@lib/i18n/types';
+import { titleSuffix } from '@lib/seo';
+import { datocmsBuildTriggerId, datocmsEnvironment } from '../../../datocms-environment';
 import { DATOCMS_READONLY_API_TOKEN, HEAD_START_PREVIEW } from 'astro:env/server';
 
 const wait = (milliSeconds: number) => new Promise((resolve) => setTimeout(resolve, milliSeconds));
@@ -57,9 +57,11 @@ export const datocmsRequest = async <T>({ query, variables = {}, retryCount = 1 
 interface CollectionData<CollectionType> {
   [key: string]: CollectionType[];
 }
+
 type CollectionMeta = {
   count: number;
 };
+
 /**
  * Returns all records from a DatoCMS collection (like 'Pages')
  * with data for each record based on the provided fragment.
@@ -108,7 +110,7 @@ export const datocmsCollection = async <CollectionType>({
 };
 
 // src: https://github.com/datocms/react-datocms/blob/master/src/useSiteSearch/index.tsx#L29C1-L42C3
-type RawSearchResult = {
+export type RawSearchResult = {
   type: 'search_result';
   id: string;
   attributes: {
@@ -122,13 +124,15 @@ type RawSearchResult = {
     };
   };
 };
+
 type SearchResponse = {
   data: RawSearchResult[];
   meta: {
     total_count: number;
   };
 };
-const formatSearchResults = ({ query, results }: { query: string, results: RawSearchResult[] }) => {
+
+export const formatSearchResults = ({ query, results }: { query: string, results: RawSearchResult[] }) => {
   return results.map((result) => {
     const { title, body_excerpt, highlight, score, url } = result.attributes;
     const defaultMatch = {

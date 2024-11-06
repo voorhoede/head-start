@@ -1,6 +1,6 @@
 import { defineMiddleware, sequence } from 'astro/middleware';
 import { defaultLocale, locales, setLocale } from './lib/i18n';
-import type { SiteLocale } from '@lib/i18n.types';
+import type { SiteLocale } from '@lib/i18n/types';
 import { getRedirectTarget } from '@lib/routing/redirects';
 import { datocmsEnvironment } from '@root/datocms-environment';
 import { DATOCMS_READONLY_API_TOKEN, HEAD_START_PREVIEW_SECRET, HEAD_START_PREVIEW } from 'astro:env/server';

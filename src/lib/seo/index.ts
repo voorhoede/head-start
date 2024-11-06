@@ -1,10 +1,10 @@
-import type { Tag } from './types/datocms';
-import { getLocale } from './i18n';
-import { globalSeo } from './site.json';
-import type { SiteLocale } from './i18n.types';
+import type { Tag } from '@lib/datocms/types';
+import { getLocale } from '@lib/i18n';
+import type { SiteLocale } from '@lib/i18n/types';
+import { globalSeo } from '@lib/site.json';
 
-export type PageUrl = { 
-  locale: SiteLocale, 
+export type PageUrl = {
+  locale: SiteLocale,
   pathname: string,
 };
 

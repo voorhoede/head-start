@@ -1,9 +1,9 @@
-import 'dotenv/config'
-import { datocmsEnvironment} from './datocms-environment';
+import 'dotenv/config';
+import { datocmsEnvironment } from './datocms-environment';
 
-const outputFilename = 'src/lib/types/datocms.d.ts';
+const outputFilename = 'src/lib/datocms/types.ts';
 
-console.log(`Saving generated types for DatoCMS (environment: '${datocmsEnvironment}') to '${outputFilename}'.`)
+console.log(`Saving generated types for DatoCMS (environment: '${datocmsEnvironment}') to '${outputFilename}'.`);
 
 /**
  * @link https://graphql-config.com/introduction
@@ -13,8 +13,8 @@ module.exports = {
     'https://graphql.datocms.com': {
       headers: {
         Authorization: process.env.DATOCMS_READONLY_API_TOKEN,
-        "X-Environment": datocmsEnvironment,
-        "X-Exclude-Invalid": "true",
+        'X-Environment': datocmsEnvironment,
+        'X-Exclude-Invalid': 'true',
       },
     },
   },
@@ -27,7 +27,7 @@ module.exports = {
           plugins: [
             'typescript',
             'typescript-operations',
-            'typed-document-node',
+            '@graphql-codegen/typescript-document-nodes',
           ],
           /**
           * scalar config borrowed from DatoCMS team:
@@ -44,7 +44,7 @@ module.exports = {
               FloatType: 'number',
               IntType: 'number',
               ItemId: 'string',
-              JsonField: 'unkown',
+              JsonField: 'unknown',
               MetaTagAttributes: 'Record<string, string>',
               UploadId: 'string',
             },
@@ -67,5 +67,5 @@ module.exports = {
       },
     },
   },
-}
+};
 

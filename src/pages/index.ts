@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import parser from 'accept-language-parser';
 import { cookieName, defaultLocale, locales } from '@lib/i18n';
-import type { SiteLocale } from '@lib/i18n.types';
+import type { SiteLocale } from '@lib/i18n/types';
 
 export const prerender = false;
 

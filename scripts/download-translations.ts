@@ -15,7 +15,7 @@ async function fetchTranslations() {
   });
   const { locales } = await client.site.find();
   const translations = Object.fromEntries(locales.map(locale => [locale, {}]));
-    
+
   for await (const item of client.items.listPagedIterator({ filter: { type: 'translation' } })) {
     locales.forEach(locale => {
       // @ts-expect-error dato item is not typed
@@ -27,10 +27,10 @@ async function fetchTranslations() {
 
 async function downloadTranslations() {
   const translations = await fetchTranslations();
-  await writeFile('./src/lib/i18n.messages.json', JSON.stringify(translations, null, 2));
+  await writeFile('./src/lib/i18n/messages.json', JSON.stringify(translations, null, 2));
   const locales = Object.keys(translations);
   const translationKeys = Object.keys(translations[locales[0]]);
-  await writeFile('./src/lib/i18n.types.ts', 
+  await writeFile('./src/lib/i18n/types.ts',
     `export type TranslationKey = \n | ${translationKeys.map(key => `'${key}'`).join('\n | ')};\n` +
     `export type SiteLocale = \n | ${locales.map(locale => `'${locale}'`).join('\n | ')};\n`
   );

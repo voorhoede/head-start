@@ -33,7 +33,7 @@ Head Start uses the same convention for props and types for every Block: the `Pr
 
 ```astro
 ---
-import type { SomeContentBlockFragment } from '@lib/types/datocms';
+import type { SomeContentBlockFragment } from '@lib/datocms/types';
 
 interface Props {
   block: SomeContentBlockFragment
@@ -95,12 +95,12 @@ Register a new Block's type:
 ```ts
 // src/Blocks/Blocks.d.ts:
 
-import { 
+import {
   ImageBlockFragment,
-  // import new Block's Fragment: 
+  // import new Block's Fragment:
   SomeContentBlockFragment,
   TextBlockFragment,
-} from '@lib/types/datocms';
+} from '@lib/datocms/types';
 
 export type AnyBlock =
   | ImageBlockFragment
