@@ -11,13 +11,13 @@ export type Props = {
 };
 
 const { record, openInNewTab, ...props } = Astro.props;
+
 const locale = getLocale() as SiteLocale;
 const href = getHref({ locale, record });
-const isType = (type: string) => record.__typename === type;
 ---
 
 {
-  (isType('FileRecord'))
-    ? <LinkToFile { record } {...props}><slot>{record.title}</slot></LinkToFile>
+  (record.__typename === 'FileRecord')
+    ? <LinkToFile {record} {...props}><slot>{record.title}</slot></LinkToFile>
     : <Link {href} {openInNewTab} {...props}><slot>{record.title}</slot></Link>
 }
