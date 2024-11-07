@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import { defaultRedirectStatus, getRedirectTarget, redirectStatusCode } from '@lib/routing/redirects';
+import { defaultRedirectStatus, getRedirectTarget, redirectStatusCode } from './redirects';
 
 vi.mock('./redirects.json', () => (
   {
