@@ -16,6 +16,10 @@ export const getHomeHref = ({ locale = getLocale() } = {}) => {
   return `/${locale}/`;
 };
 
+export const getPageHref = ({ locale, record }: { locale: SiteLocale, record: PageRouteFragment }) => {
+  return `/${locale}/${getPagePath({ page: record, locale })}/`;
+};
+
 /**
  * Determine pathname based on locale and record type
  */
@@ -33,7 +37,7 @@ export const getHref = (
     return homeUrl;
   }
   if (record.__typename === 'PageRecord') {
-    return `/${locale}/${getPagePath({ page: record, locale })}/`;
+    return getPageHref({ locale, record });
   }
   return homeUrl;
 };
