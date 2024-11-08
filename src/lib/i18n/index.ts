@@ -8,7 +8,12 @@ export const defaultLocale = locales[0];
 export const cookieName = 'HEAD_START_LOCALE';
 
 const i18n = rosetta(messages);
-i18n.locale(defaultLocale);
+
+if (typeof document !== 'undefined') {
+  i18n.locale(document.documentElement.lang as SiteLocale);
+} else {
+  i18n.locale(defaultLocale);
+}
 
 export type T = typeof i18n.t & ((key: TranslationKey) => string);
 // we use the 'any' type since this is used in the rosetta source-code
