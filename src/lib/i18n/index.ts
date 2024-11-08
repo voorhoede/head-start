@@ -10,7 +10,7 @@ export const cookieName = 'HEAD_START_LOCALE';
 const i18n = rosetta(messages);
 
 if (typeof document !== 'undefined') {
-  i18n.locale(document.documentElement.lang as SiteLocale);
+  setLocale(document.documentElement.lang as SiteLocale);
 } else {
   i18n.locale(defaultLocale);
 }
