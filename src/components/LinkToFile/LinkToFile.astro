@@ -4,7 +4,8 @@ import prettyBytes from 'pretty-bytes';
 import { getLocale } from '@lib/i18n';
 import { getFileHref } from '@lib/routing/';
 import Icon from '@components/Icon';
-type Props = {
+
+export type Props = {
   record: FileRouteFragment;
 };
 const { record, ...props } = Astro.props;
