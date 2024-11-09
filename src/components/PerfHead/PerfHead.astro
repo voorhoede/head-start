@@ -1,8 +1,9 @@
 ---
 import { datocmsAssetsOrigin, datocmsGraphqlOrigin } from '@lib/datocms';
-import { woff2urls } from '@assets/fonts';
+import { fontCssDeclarations, woff2urls } from '@assets/fonts';
 
 const preConnectOrigins = [datocmsAssetsOrigin, datocmsGraphqlOrigin];
+const criticalCss = fontCssDeclarations.join('\n');
 ---
 
 {preConnectOrigins.map((origin) => <link rel="preconnect" href={origin} />)}
@@ -17,3 +18,4 @@ const preConnectOrigins = [datocmsAssetsOrigin, datocmsGraphqlOrigin];
     />
   ))
 }
+<style set:text={criticalCss}></style>
