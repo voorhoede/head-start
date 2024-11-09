@@ -1,9 +1,10 @@
 ---
 import { datocmsAssetsOrigin, datocmsGraphqlOrigin } from '@lib/datocms';
-import { fontCssDeclarations, woff2urls } from '@assets/fonts';
+import { fonts, getFontCss } from '@assets/fonts';
 
 const preConnectOrigins = [datocmsAssetsOrigin, datocmsGraphqlOrigin];
-const criticalCss = fontCssDeclarations.join('\n');
+const woff2urls = fonts.map((font) => font.woff2Url);
+const criticalCss = fonts.map((font) => getFontCss(font)).join('\n');
 ---
 
 {preConnectOrigins.map((origin) => <link rel="preconnect" href={origin} />)}

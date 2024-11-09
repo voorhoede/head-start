@@ -1,10 +1,40 @@
-import archivo400css from '@fontsource/archivo/latin-400.css?raw'; // works in production
-import archivo600css from '@fontsource/archivo/latin-600.css?raw';
 import archivo400url from '@fontsource/archivo/files/archivo-latin-400-normal.woff2?url';
 import archivo600url from '@fontsource/archivo/files/archivo-latin-600-normal.woff2?url';
-import '@fontsource/archivo/latin-400.css'; // works local development
+// urls above only resolve corrently in production, so we use the following for local development:
+import '@fontsource/archivo/latin-400.css';
 import '@fontsource/archivo/latin-600.css';
 
 export const fontFamilyArchivo = 'Archivo, Times New Roman';
-export const fontCssDeclarations = [archivo400css, archivo600css];
-export const woff2urls = [archivo400url, archivo600url];
+
+export type Font = {
+  family: string;
+  weight: number;
+  style: string;
+  woff2Url: string;
+}
+
+export const fonts = [
+  {
+    family: 'Archivo',
+    weight: 400,
+    style: 'normal',
+    woff2Url: archivo400url,
+  },
+  {
+    family: 'Archivo',
+    weight: 600,
+    style: 'normal',
+    woff2Url: archivo600url,
+  },
+];
+
+export const getFontCss = (font: Font) => {
+  return /* css */`
+    @font-face {
+      font-family: '${font.family}';
+      font-style: ${font.style};
+      font-weight: ${font.weight};
+      src: url('${font.woff2Url}') format('woff2');
+    }
+  `;
+};
