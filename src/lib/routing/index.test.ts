@@ -1,65 +1,107 @@
 import { describe, expect, test, vi } from 'vitest';
-import { defaultRedirectStatus, getRedirectTarget, redirectStatusCode } from '@lib/routing/redirects';
+import type { FileRouteFragment, HomeRouteFragment, PageRouteFragment, SiteLocale } from '@lib/datocms/types';
+import { datocmsAssetsOrigin } from '@lib/datocms';
+import { getHref, getFileHref, getHomeHref, getPageHref } from './index';
 
-vi.mock('./redirects.json', () => (
-  {
-    default: [
-      {
-        from: '/redirect-placeholder/:slug/',
-        to: '/en/:slug/',
-        statusCode: '302',
-      },
-      {
-        from: '/redirect-wildcard/*',
-        to: '/en/:splat',
-        statusCode: '302',
-      },
-      {
-        from: '/redirect-order/static-slug/',
-        to: '/nl/static/',
-        statusCode: '302',
-      },
-      {
-        from: '/redirect-order/*',
-        to: '/nl/',
-        statusCode: '302',
-      },
-    ]
-  }
-));
+vi.mock('@lib/datocms', () => ({
+  datocmsAssetsOrigin: 'https://www.datocms-assets.com/',
+}));
 
-describe('redirects:', () => {
-  describe('redirectStatusCode returns valid redirect status:', () => {
-    const validStatusCodes = [301, 302, 303, 307, 308];
-    validStatusCodes.forEach((statusCode) =>
-      test(`${statusCode} returns valid ${statusCode}`, () => {
-        expect(redirectStatusCode(statusCode)).toBe(statusCode);
-      })
-    );
-    const invalidStatusCodes = [100, 200, 304, 400, 500, 999];
-    invalidStatusCodes.forEach((statusCode) =>
-      test(`${statusCode} returns default ${defaultRedirectStatus}`, () => {
-        expect(redirectStatusCode(statusCode)).toBe(defaultRedirectStatus);
-      })
-    );
+vi.mock('@lib/i18n', () => ({
+  getLocale: () => 'en',
+}));
+
+const fileRecord: FileRouteFragment = { 
+  __typename: 'FileRecord',
+  id: '123',
+  title: 'example.pdf',
+  file: { 
+    basename: 'example.pdf',
+    filename: 'example.pdf',
+    format: 'pdf',
+    mimeType: 'application/pdf',
+    size: 123456,
+    url: new URL('/path/to/example.pdf', datocmsAssetsOrigin).toString(),
+  },
+};
+
+const homeRecord: HomeRouteFragment = { 
+  __typename: 'HomePageRecord',
+  title: 'Home'
+};
+
+const pageRecord: PageRouteFragment = {
+  __typename: 'PageRecord',
+  id: '123',
+  title: 'Example Page',
+  slug: 'example-page',
+  _allSlugLocales: [{ locale: 'en' as SiteLocale, value: 'example-page' }],
+};
+
+describe('getFileHref', () => {
+  test('returns relative (/files/:filename) href for a given file record', () => {
+    const href = getFileHref(fileRecord);
+    expect(href).toBe('/files/path/to/example.pdf');
+  });
+});
+
+describe('getHomeHref', () => {
+  test('returns the home href for a given locale', () => {
+    expect(getHomeHref({ locale: 'en' })).toBe('/en/');
+    expect(getHomeHref({ locale: 'nl' })).toBe('/nl/');
   });
 
-  describe('getRedirectPaths returns valid redirect payload', () => {
-    [
-      { from: '/foo', to: undefined },
-      { from: '/redirect-placeholder/', to: undefined },
-      { from: '/redirect-placeholder/bar/', to: '/en/bar/' },
-      { from: '/redirect-wildcard/', to: '/en/:splat' }, // This is an issue with regexparams inject
-      { from: '/redirect-wildcard/foo/bar/baz/', to: '/en/foo/bar/baz/' },
-      { from: '/redirect-order/', to: '/nl/' },
-      { from: '/redirect-order/static-slug', to: '/nl/static/' },
-      { from: '/redirect-order/wildcard-slug', to: '/nl/' },
-    ].forEach(({ from, to }) => {
-      test(`Would redirect ${from} to ${to}`, () => {
-        const { url } = getRedirectTarget(from) || {};
-        expect(url).toBe(to);
-      });
-    });
+  test('returns the home href for current locale if no locale is provided', () => {
+    expect(getHomeHref()).toBe('/en/');
   });
 
+  test('returns href with trailing slash', () => {
+    expect(getHomeHref()).toMatch(/\/$/);
+  });
+});
+
+describe('getPageHref', () => {
+  const locale = 'en' as SiteLocale;
+  test('returns the page href for a given locale and page record', () => {
+    expect(getPageHref({ locale, record: pageRecord })).toBe('/en/example-page/');
+  });
+
+  test('returns href with trailing slash', () => {
+    expect(getPageHref({ locale, record: pageRecord })).toMatch(/\/$/);
+  });
+
+  const nestedRecord: PageRouteFragment = {
+    __typename: 'PageRecord',
+    id: '123',
+    title: 'Nested Page',
+    slug: 'nested-page',
+    _allSlugLocales: [{ locale, value: 'nested-page' }],
+    parentPage: {
+      __typename: 'PageRecord',
+      id: '456',
+      title: 'Parent Page',
+      slug: 'parent-page',
+      _allSlugLocales: [{ locale, value: 'parent-page' }],
+    },
+  };
+
+  test('returns the full page href for a nested page record', () => {
+    expect(getPageHref({ locale, record: nestedRecord })).toBe('/en/parent-page/nested-page/');
+  });
+});
+
+describe('getHref', () => {
+  const locale = 'en' as SiteLocale;
+
+  test('returns file href for a FileRecord', () => {
+    expect(getHref({ locale, record: fileRecord })).toBe('/files/path/to/example.pdf');
+  });
+
+  test('returns home href for a HomeRecord', () => {
+    expect(getHref({ locale, record: homeRecord })).toBe('/en/');
+  });
+
+  test('returns page href for a PageRecord', () => {
+    expect(getHref({ locale, record: pageRecord })).toBe('/en/example-page/');
+  });
 });
