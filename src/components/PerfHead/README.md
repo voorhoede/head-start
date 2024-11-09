@@ -5,3 +5,4 @@
 ## Relevant links
 
 - [web.dev: Establish network connections early to improve perceived page speed](https://web.dev/articles/preconnect-and-dns-prefetch)
+- [web.dev: Preload web fonts to improve loading speed](https://web.dev/articles/codelab-preload-web-fonts)
