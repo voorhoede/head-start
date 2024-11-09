@@ -1,0 +1,14 @@
+fragment FileRoute on FileRecord {
+  __typename
+  id
+  file {
+    basename
+    filename
+    format
+    mimeType
+    size
+    url
+  }
+  locale
+  title
+}

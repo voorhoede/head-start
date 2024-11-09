@@ -8,6 +8,8 @@ import { DATOCMS_READONLY_API_TOKEN, HEAD_START_PREVIEW } from 'astro:env/server
 
 const wait = (milliSeconds: number) => new Promise((resolve) => setTimeout(resolve, milliSeconds));
 
+export const datocmsAssetsOrigin = 'https://www.datocms-assets.com/';
+
 type DatocmsRequest = {
   query: DocumentNode;
   variables?: { [key: string]: string };
