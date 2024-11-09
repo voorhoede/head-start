@@ -4,8 +4,6 @@ import archivo600url from '@fontsource/archivo/files/archivo-latin-600-normal.wo
 import '@fontsource/archivo/latin-400.css';
 import '@fontsource/archivo/latin-600.css';
 
-export const fontFamilyArchivo = 'Archivo, Times New Roman';
-
 export type Font = {
   family: string;
   weight: number;
@@ -13,7 +11,9 @@ export type Font = {
   woff2Url: string;
 }
 
-export const fonts = [
+export const fontFamilyArchivo = 'Archivo, sans-serif';
+
+export const fonts: Font[] = [
   {
     family: 'Archivo',
     weight: 400,
