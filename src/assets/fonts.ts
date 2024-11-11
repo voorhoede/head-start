@@ -1,3 +1,4 @@
+// example use of custom fonts. Replace these with your own fonts:
 import archivo400url from '@fontsource/archivo/files/archivo-latin-400-normal.woff2?url';
 import archivo600url from '@fontsource/archivo/files/archivo-latin-600-normal.woff2?url';
 // urls above only resolve corrently in production, so we use the following for local development:

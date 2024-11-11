@@ -154,7 +154,7 @@ export const formatSearchResults = ({ query, results }: { query: string, results
     const textFragmentUrl = `${url}#:~:${ matches.map(({ matchingTerm }) => `text=${encodeURIComponent(matchingTerm)}`).join('&')}`;
 
     return {
-      title: title.replace(new RegExp(`${titleSuffix}$`), '').trim(),
+      title: title.replace(new RegExp(`${titleSuffix()}$`), '').trim(),
       matches: matches.length ? matches : [defaultMatch],
       score,
       pathname,
