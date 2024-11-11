@@ -9,6 +9,7 @@ import { DATOCMS_READONLY_API_TOKEN, HEAD_START_PREVIEW } from 'astro:env/server
 const wait = (milliSeconds: number) => new Promise((resolve) => setTimeout(resolve, milliSeconds));
 
 export const datocmsAssetsOrigin = 'https://www.datocms-assets.com/';
+export const datocmsGraphqlOrigin = 'https://graphql.datocms.com/';
 
 type DatocmsRequest = {
   query: DocumentNode;
@@ -31,7 +32,7 @@ export const datocmsRequest = async <T>({ query, variables = {}, retryCount = 1 
     headers.append('X-Include-Drafts', 'true');
   }
 
-  const response = await fetch('https://graphql.datocms.com/', {
+  const response = await fetch(datocmsGraphqlOrigin, {
     method: 'post',
     headers,
     body: JSON.stringify({ query: print(query), variables }),
