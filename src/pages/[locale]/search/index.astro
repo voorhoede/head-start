@@ -14,7 +14,7 @@ const { locale } = Astro.params as { locale: SiteLocale };
 const query = new URL(Astro.request.url).searchParams.get(queryParamName) || '';
 const { results } = hasValidQuery(query) ? await datocmsSearch({ locale, query }) : { results: [] };
 const hasResults = results.length > 0;
-const pageTitle = t('search_on_site', { siteName });
+const pageTitle = t('search_on_site', { siteName: siteName() });
 const getPathWithQuery = (locale: SiteLocale) => getSearchPathname(locale) + (query ? `?${queryParamName}=${query}` : '');
 const pageUrls = locales.map(locale => ({ locale, pathname: getPathWithQuery(locale) }));
 const breadcrumbs = [
