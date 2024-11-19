@@ -1,5 +1,6 @@
 import { defineConfig, envField, passthroughImageService } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
+import worker from '@astropub/worker';
 import graphql from '@rollup/plugin-graphql';
 import sitemap from '@astrojs/sitemap';
 import type { PluginOption } from 'vite';
@@ -50,7 +51,7 @@ export default defineConfig({
     // @see https://docs.astro.build/en/guides/images/#configure-no-op-passthrough-service
     service: passthroughImageService()
   },
-  integrations: [sitemap()],
+  integrations: [sitemap(), worker()],
   output: isPreview ? 'server' : 'static',
   server: { port: localhostPort },
   site: siteUrl,

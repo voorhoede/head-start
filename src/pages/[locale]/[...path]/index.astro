@@ -1,13 +1,19 @@
 ---
 import { datocmsCollection, datocmsRequest } from '@lib/datocms';
 import { getPageHref } from '@lib/routing/';
-import { type PageRouteForPath, getPagePath, getPageSlugFromPath, getParentPages } from '@lib/routing/page';
+import {
+  type PageRouteForPath,
+  getPagePath,
+  getPageSlugFromPath,
+  getParentPages,
+} from '@lib/routing/page';
 import type { PageQuery, SiteLocale } from '@lib/datocms/types';
 import type { PageUrl } from '@lib/seo';
 import Layout from '@layouts/Default.astro';
 import Blocks from '@blocks/Blocks.astro';
 import type { AnyBlock } from '@blocks/Blocks';
-
+import AskQuestion from '@components/AskQuestion/AskQuestion.astro';
+import AskSummary from '@components/AskSummary/AskSummary.astro';
 import { formatBreadcrumb } from '@components/Breadcrumbs';
 import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
 import ShareButton from '@components/ShareButton/ShareButton.astro';
@@ -34,7 +40,9 @@ export async function getStaticPaths() {
   });
 
   return pages.flatMap((page) => {
-    const locales = page._allSlugLocales?.map((slug) => slug.locale).filter(locale => !!locale);
+    const locales = page._allSlugLocales
+      ?.map((slug) => slug.locale)
+      .filter((locale) => !!locale);
     return locales?.map((locale) => {
       return { params: { locale, path: getPagePath({ page, locale }) } };
     });
@@ -70,6 +78,11 @@ const pageUrls = (page._allSlugLocales || []).map(({ locale }) => ({
 >
   <PreviewModeSubscription query={query} variables={variables} />
   <h1>{page.title}</h1>
+  <section style={{ backgroundColor: '#FFFFE0' }}>
+    <h2>AI experiments</h2>
+    <AskQuestion />
+    <AskSummary />
+  </section>
   <Blocks blocks={page.bodyBlocks as AnyBlock[]} />
   <ShareButton />
 </Layout>
