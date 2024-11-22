@@ -24,6 +24,8 @@ Inside of this project, you'll see the following folders and files:
 │   │   └── SomeUiComponent.astro
 │   ├── layouts/
 │   │   └── Default.astro
+│   ├── lib/
+│   │   └── some-helper-function.ts
 │   └── pages/
 │       ├── api/
 |       |   └── some-dynamic-endpoint.ts
@@ -41,6 +43,7 @@ Inside of this project, you'll see the following folders and files:
   - `components/` - [Components](https://docs.astro.build/en/core-concepts/astro-components/) are the elements the website is composed of. This can be Astro and framework specific components.
   - `blocks/` - Blocks are a specific set of components which have a complementary content [Block](https://www.datocms.com/docs/content-modelling/blocks) in DatoCMS and therefore have a paired GraphQL fragment file.
   - `layouts/` - [Layouts](https://docs.astro.build/en/core-concepts/layouts/) are Astro components used to provide a reusable UI structure, such as a page template.
+  - `lib/` - Shared logic and utility helpers, like `datocms`, `i18n` and `routing`.
   - `assets/icons/` - SVG icons, can be used with `<Icon name={ basename }>` (See [`src/components/Icon/`](../src/components/Icon/)).
 - `public/` is for any static assets, like fonts and favicons, that should be available on the website as-is.
 - `config/` bundles all our configuration files (like DatoCMS migrations), so the project root doesn't become too cluttered.
