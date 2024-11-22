@@ -54,10 +54,12 @@ export default defineConfig({
   output: isPreview ? 'server' : 'static',
   server: { port: localhostPort },
   site: siteUrl,
-  trailingSlash: 'always',
   vite: {
     plugins: [
       graphql() as PluginOption,
     ],
+    optimizeDeps: {
+      exclude: ['msw'],
+    }
   },
 });

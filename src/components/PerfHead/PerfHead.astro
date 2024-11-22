@@ -1,0 +1,7 @@
+---
+import { datocmsAssetsOrigin, datocmsGraphqlOrigin } from '@lib/datocms';
+
+const preConnectOrigins = [datocmsAssetsOrigin, datocmsGraphqlOrigin];
+---
+
+{preConnectOrigins.map((origin) => <link rel="preconnect" href={origin} />)}

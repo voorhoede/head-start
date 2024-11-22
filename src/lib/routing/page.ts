@@ -1,4 +1,4 @@
-import type { PageRouteFragment, SiteLocale } from '@lib/types/datocms';
+import type { PageRouteFragment, SiteLocale } from '@lib/datocms/types';
 
 export type PageRouteForPath =
   & Pick<PageRouteFragment, '_allSlugLocales' | 'parentPage'>

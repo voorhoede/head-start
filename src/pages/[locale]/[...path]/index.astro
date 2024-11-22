@@ -1,8 +1,9 @@
 ---
 import { type PageRouteForPath, getPagePath, getPageSlugFromPath, getParentPages } from '@lib/routing/page';
-import type { PageQuery, SiteLocale } from '@lib/types/datocms';
 import type { PageUrl } from '@lib/types/page-url';
 import { datocmsCollection, datocmsRequest } from '@lib/datocms';
+import { getPageHref } from '@lib/routing/';
+import type { PageQuery, SiteLocale } from '@lib/datocms/types';
 import Layout from '@layouts/Default.astro';
 import { renderBlocks } from '@blocks/index';
 import type { AnyBlock } from '@blocks/Blocks';
@@ -54,15 +55,12 @@ const { page } = (await datocmsRequest<PageQuery>({ query, variables })) as {
 const breadcrumbs = [...getParentPages(page), page].map((page) =>
   formatBreadcrumb({
     text: page.title,
-    href: `/${locale}/${getPagePath({ page, locale })}/`,
+    href: getPageHref({ locale, record: page }),
   })
 );
 const pageUrls = (page._allSlugLocales || []).map(({ locale }) => ({
   locale: locale as SiteLocale,
-  pathname: `/${locale}/${getPagePath({
-    page,
-    locale: locale as SiteLocale,
-  })}/`,
+  pathname: getPageHref({ locale: locale as SiteLocale, record: page }),
 })) as PageUrl[];
 
 const blocksHtml = await renderBlocks(page.bodyBlocks as AnyBlock[]);
