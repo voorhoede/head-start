@@ -1,5 +1,10 @@
 ---
-import type { DefaultLayoutQuery, Site, SiteLocale, Tag } from '@lib/datocms/types';
+import type {
+  DefaultLayoutQuery,
+  Site,
+  SiteLocale,
+  Tag,
+} from '@lib/datocms/types';
 import { datocmsRequest } from '@lib/datocms';
 import { defaultLocale, t } from '@lib/i18n';
 import { getHomeHref } from '@lib/routing';
@@ -11,6 +16,7 @@ import Breadcrumbs from '@components/Breadcrumbs/Breadcrumbs.astro';
 import type { Breadcrumb } from '@components/Breadcrumbs';
 import IconSprite from '@components/Icon/IconSprite.astro';
 import LocaleSelector from '@components/LocaleSelector/LocaleSelector.astro';
+import PerfHead from '@components/PerfHead/PerfHead.astro';
 import PreviewModeProvider from '@components/PreviewMode/PreviewModeProvider.astro';
 import StructuredData from '@components/StructuredData/StructuredData.astro';
 import SeoHead from '@components/SeoHead.astro';
@@ -24,41 +30,51 @@ interface Props {
 }
 
 const { locale = defaultLocale } = Astro.params as { locale?: SiteLocale };
-const data = await datocmsRequest<DefaultLayoutQuery>({ query, variables: { locale } }) as { site: Site };
+const data = (await datocmsRequest<DefaultLayoutQuery>({
+  query,
+  variables: { locale },
+})) as { site: Site };
 const { breadcrumbs = [], pageUrls, seoMetaTags } = Astro.props;
 const mainContentId = 'content';
 ---
 
-<!DOCTYPE html>
-<html lang={ locale }>
+<!doctype html>
+<html lang={locale}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <StructuredData />
+    <PerfHead />
     <SeoHead
-      pageUrls={ pageUrls }
+      pageUrls={pageUrls}
       tags={[...data.site.faviconMetaTags, ...seoMetaTags]}
     />
+    <StructuredData />
   </head>
   <body>
     <PreviewModeProvider>
-      <SkipLink targetId={ mainContentId } />
-      <header { ...datocmsNoIndex }>
-        { /* accessible home link, inspired by https://www.gov.uk/; with Microformats rel */ }
-        <a rel="home" href={ getHomeHref() } aria-label={ t('go_to_home_page', { siteName }) }>[Logo]</a>
+      <SkipLink targetId={mainContentId} />
+      <header {...datocmsNoIndex}>
+        {
+          /* accessible home link, inspired by https://www.gov.uk/; with Microformats rel */
+        }
+        <a
+          rel="home"
+          href={getHomeHref()}
+          aria-label={t('go_to_home_page', { siteName: siteName() })}>[Logo]</a
+        >
         <div>
-          <LocaleSelector pageUrls={ pageUrls } />
-          <a rel="search" href={ getSearchPathname(locale) }>{ t('search') }</a>
+          <LocaleSelector pageUrls={pageUrls} />
+          <a rel="search" href={getSearchPathname(locale)}>{t('search')}</a>
         </div>
       </header>
-      { (breadcrumbs.length > 0) && (
-        <Breadcrumbs items={breadcrumbs} />
-      ) }
-      { /* main element requires tabindex to be focusable, see SkipLink/README.md */ }
-      <main id={ mainContentId } tabindex="-1">
+      {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
+      {
+        /* main element requires tabindex to be focusable, see SkipLink/README.md */
+      }
+      <main id={mainContentId} tabindex="-1">
         <slot />
       </main>
-      <footer { ...datocmsNoIndex }>
+      <footer {...datocmsNoIndex}>
         <p>Footer</p>
       </footer>
     </PreviewModeProvider>
@@ -68,10 +84,13 @@ const mainContentId = 'content';
 
 <style is:global>
   /* very basic reset */
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     box-sizing: border-box;
   }
-  html, body {
+  html,
+  body {
     margin: 0;
     padding: 0;
     font-family: sans-serif;
@@ -82,7 +101,8 @@ const mainContentId = 'content';
 </style>
 <style>
   /* Sticky footer. @see https://css-tricks.com/a-clever-sticky-footer-technique/ */
-  html, body {
+  html,
+  body {
     height: 100%;
   }
   footer {
