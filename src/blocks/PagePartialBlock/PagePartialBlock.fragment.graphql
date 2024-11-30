@@ -6,6 +6,15 @@ fragment PagePartialBlock on PagePartialBlockRecord {
   items {
     blocks {
       ... PagePartialContentBlocks
+      # Nested PagePartialBlock. Repeat if necessary.
+      ... on PagePartialBlockRecord {
+        ... PagePartialFields
+        items {
+          blocks {
+            ...PagePartialContentBlocks
+          }
+        }
+      }
     }
   }
 }
