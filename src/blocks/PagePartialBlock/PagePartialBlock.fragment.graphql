@@ -1,10 +1,12 @@
 #import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
 #import '@blocks/TableBlock/TableBlock.fragment.graphql'
 #import '@blocks/TextBlock/TextBlock.fragment.graphql'
+#import '@blocks/TextImageBlock/TextImageBlock.fragment.graphql'
 #import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
 
 fragment PagePartialBlock on PagePartialBlockRecord {
   id
+  layout
   items {
     title
     blocks {
@@ -18,10 +20,12 @@ fragment PagePartialBlock on PagePartialBlockRecord {
       ... on TextBlockRecord {
         ...TextBlock
       }
+      ... on TextImageBlockRecord {
+        ...TextImageBlock
+      }
       ... on VideoEmbedBlockRecord {
         ...VideoEmbedBlock
       }
     }
   }
-  layout
 }
