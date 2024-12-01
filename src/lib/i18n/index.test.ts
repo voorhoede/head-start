@@ -1,11 +1,17 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { defaultLocale, t, getLocale, getLocaleName, setLocale } from '@lib/i18n';
+import type { SiteLocale } from './types';
 
 // these imports will resolve to their mocked counterparts
 import { locales } from '@lib/site.json';
 
-// to verify that unsupported locales are handled correctly we test with locales that we know do not exist (e.g. 'unsupported_locale')
-// TS does not like this, so we supress the warnings with a ts-expect-error comment
+// These locales are asserted as SiteLocale so that they are not dependent on the locales defined in Dato.
+const mockLocales = {
+  en: 'en' as SiteLocale,
+  nl: 'nl' as SiteLocale,
+  unsupported: 'unsupported_locale' as SiteLocale,
+};
+
 
 vi.mock('@lib/i18n/messages.json', () => {
   return {
@@ -31,8 +37,8 @@ vi.mock('@lib/i18n/messages.json', () => {
 vi.mock('@lib/site.json', () => {
   return {
     locales: [
-      'en',
-      'nl',
+      mockLocales.en,
+      mockLocales.nl
     ],
   };
 });
@@ -53,27 +59,26 @@ describe('i18n:', () => {
 
   describe('setLocale:', () => {
     test('should update the current locale', () => {
-      expect(setLocale('en')).toBe('en');
-      expect(setLocale('nl')).toBe('nl');
+      expect(setLocale(mockLocales.en)).toBe('en');
+      expect(setLocale(mockLocales.nl)).toBe('nl');
     });
 
     test('should only update current locale if locale is supported', () => {
-      expect(setLocale('en')).toBe('en');
-      expect(setLocale('nl')).toBe('nl');
+      expect(setLocale(mockLocales.en)).toBe('en');
+      expect(setLocale(mockLocales.nl)).toBe('nl');
 
       // expect 'nl' because the locale was most recently set to 'nl'
       expect(setLocale()).toBe('nl');
-
-      // @ts-expect-error we know that 'unsupported_locale' is not a supported locale
-      expect(setLocale('unsupported_locale')).not.toBe('unsupported_locale');
+      
+      expect(setLocale(mockLocales.unsupported)).not.toBe(mockLocales.unsupported);
     });
   });
 
   test('"getLocale" should return the current locale', () => {
-    setLocale('nl');
+    setLocale(mockLocales.nl);
     expect(getLocale()).toBe('nl');
 
-    setLocale('en');
+    setLocale(mockLocales.en);
     expect(getLocale()).toBe('en');
 
     // expect 'en' because the locale was most recently set to 'en'
@@ -94,20 +99,20 @@ describe('i18n:', () => {
 
   describe('t:', () => {
     test('should return translations', () => {
-      setLocale('en');
+      setLocale(mockLocales.en);
       expect(t('search')).toBe('search');
       expect(t('login.enter_password')).toBe('enter your password');
 
-      setLocale('nl');
+      setLocale(mockLocales.nl);
       expect(t('search')).toBe('zoek');
       expect(t('login.enter_password')).toBe('vul je wachtwoord in');
     });
 
     test('should return translations with interpolated values', () => {
-      setLocale('en');
+      setLocale(mockLocales.en);
       expect(t('login.welcome', { name: 'wessel' })).toBe('welcome back wessel');
 
-      setLocale('nl');
+      setLocale(mockLocales.nl);
       expect(t('login.welcome', { name: 'wessel' })).toBe('welkom terug wessel');
     });
 
