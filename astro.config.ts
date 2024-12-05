@@ -2,7 +2,6 @@ import { defineConfig, envField, passthroughImageService } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import graphql from '@rollup/plugin-graphql';
 import sitemap from '@astrojs/sitemap';
-import type { PluginOption } from 'vite';
 import { isPreview } from './config/preview';
 import pkg from './package.json';
 
@@ -56,7 +55,7 @@ export default defineConfig({
   site: siteUrl,
   vite: {
     plugins: [
-      graphql() as PluginOption,
+      graphql(),
     ],
     optimizeDeps: {
       exclude: ['msw'],
