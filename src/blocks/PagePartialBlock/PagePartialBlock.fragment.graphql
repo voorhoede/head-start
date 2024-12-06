@@ -1,27 +1,20 @@
-#import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
-#import '@blocks/TableBlock/TableBlock.fragment.graphql'
-#import '@blocks/TextBlock/TextBlock.fragment.graphql'
-#import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
+#import '@blocks/PagePartialBlock/PagePartialContentBlocks.fragment.graphql'
+#import '@blocks/PagePartialBlock/PagePartialFields.fragment.graphql'
 
 fragment PagePartialBlock on PagePartialBlockRecord {
-  id
+  ... PagePartialFields
   items {
-    title
     blocks {
-      __typename
-      ... on ImageBlockRecord {
-        ...ImageBlock
-      }
-      ... on TableBlockRecord {
-        ...TableBlock
-      }
-      ... on TextBlockRecord {
-        ...TextBlock
-      }
-      ... on VideoEmbedBlockRecord {
-        ...VideoEmbedBlock
+      ... PagePartialContentBlocks
+      # Nested PagePartialBlock. Repeat if necessary.
+      ... on PagePartialBlockRecord {
+        ... PagePartialFields
+        items {
+          blocks {
+            ...PagePartialContentBlocks
+          }
+        }
       }
     }
   }
-  layout
 }

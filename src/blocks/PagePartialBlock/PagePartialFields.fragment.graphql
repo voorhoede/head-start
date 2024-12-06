@@ -1,0 +1,7 @@
+fragment PagePartialFields on PagePartialBlockRecord {
+  id
+  layout
+  items {
+    title
+  }
+}
