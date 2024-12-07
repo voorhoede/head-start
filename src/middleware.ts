@@ -4,6 +4,7 @@ import type { SiteLocale } from '@lib/i18n/types';
 import { getRedirectTarget } from '@lib/routing/redirects';
 import { datocmsEnvironment } from '@root/datocms-environment';
 import { DATOCMS_READONLY_API_TOKEN, HEAD_START_PREVIEW_SECRET, HEAD_START_PREVIEW } from 'astro:env/server';
+import { proxyFiles } from './middleware/proxy-files';
 
 export const previewCookieName = 'HEAD_START_PREVIEW';
 
@@ -72,4 +73,4 @@ const redirects = defineMiddleware(async ({ request, redirect }, next) => {
   return response;
 });
 
-export const onRequest = sequence(datocms, i18n, preview, redirects);
+export const onRequest = sequence(datocms, i18n, preview, proxyFiles, redirects);
