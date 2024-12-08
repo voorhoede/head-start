@@ -1,0 +1,22 @@
+#import '@lib/routing/FileRoute.fragment.graphql'
+#import '@lib/routing/HomeRoute.fragment.graphql'
+#import '@lib/routing/PageRoute.fragment.graphql'
+
+fragment InternalLinkBlock on InternalLinkBlockRecord {
+  __typename
+  id
+  title
+  style
+  link {
+    __typename
+    ... on FileRecord {
+      ...FileRoute
+    }
+    ... on HomePageRecord {
+      ...HomeRoute
+    }
+    ... on PageRecord {
+      ...PageRoute
+    }
+  }
+}

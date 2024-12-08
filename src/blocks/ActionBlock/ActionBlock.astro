@@ -1,0 +1,55 @@
+---
+import type { ActionBlockFragment } from '@lib/datocms/types';
+import InternalLinkBlock from '@blocks/InternalLinkBlock/InternalLinkBlock.astro';
+
+export interface Props {
+  block: ActionBlockFragment;
+}
+const { block } = Astro.props;
+
+export const getActionClassList = (style: string) => {
+  return ['action', `action--${style}`];
+};
+
+// ensure there's only one primary action
+let primaryActionCount = 0;
+let sanitisedItems: ActionBlockFragment['items'] = [];
+block.items.forEach((item) => {
+  if (item.style === 'primary') {
+    primaryActionCount++;
+    if (primaryActionCount <= 1) {
+      sanitisedItems.push(item);
+    } else {
+      sanitisedItems.push({ ...item, style: 'secondary' });
+    }
+  } else {
+    sanitisedItems.push(item);
+  }
+});
+
+const warningText =
+  primaryActionCount > 1 &&
+  `ActionBlock: Only one primary action is allowed. 
+The first primary action is treated as primary, and the rest is treated assecondary.`;
+warningText && console.warn(warningText);
+---
+
+<div class="action-block">
+  {sanitisedItems.map((item) => <InternalLinkBlock block={item} />)}
+</div>
+
+{
+  warningText && (
+    <script is:inline define:vars={{ warningText }}>
+      console.warn(warningText);
+    </script>
+  )
+}
+
+<style>
+  /* basic styling, can be replaced */
+  .action-block {
+    display: flex;
+    gap: 1em;
+  }
+</style>
