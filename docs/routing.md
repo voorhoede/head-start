@@ -50,4 +50,11 @@ Head Start supports redirect rules which are editable and [sortable](https://www
 
 ## Cloudflare runtime
 
-Routes have access 
+Head Start uses the [Astro Cloudflare adapter](https://docs.astro.build/en/guides/integrations-guide/cloudflare/) to deploy to Cloudflare Pages. This means routes have access to the [Cloudflare runtime](https://docs.astro.build/en/guides/integrations-guide/cloudflare/#cloudflare-runtime) via `locals.runtime`. For example, each dynamic route, has access to geo information of the request:
+
+```ts
+export function GET ({ locals }) {
+  const { city, latitude, longitude } = locals.runtime.cf;
+  return new Response(JSON.stringify({ city, latitude, longitude }, null, 2));
+}
+```
