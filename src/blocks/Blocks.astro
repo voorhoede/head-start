@@ -1,5 +1,6 @@
 ---
 import type { AnyBlock } from './Blocks';
+import ActionBlock from './ActionBlock/ActionBlock.astro';
 import EmbedBlock from './EmbedBlock/EmbedBlock.astro';
 import ImageBlock from './ImageBlock/ImageBlock.astro';
 import PagePartialBlock from './PagePartialBlock/PagePartialBlock.astro';
@@ -10,6 +11,7 @@ import VideoBlock from './VideoBlock/VideoBlock.astro';
 import VideoEmbedBlock from './VideoEmbedBlock/VideoEmbedBlock.astro';
 
 const blocksByTypename = {
+  ActionBlockRecord: ActionBlock,
   EmbedBlockRecord: EmbedBlock,
   ImageBlockRecord: ImageBlock,
   PagePartialBlockRecord: PagePartialBlock,
@@ -25,13 +27,18 @@ interface Props {
 }
 const { blocks } = Astro.props;
 ---
-{ blocks.map((block) => {
-  const typename = block.__typename as keyof typeof blocksByTypename;
-  const Block = blocksByTypename[typename];
-  return Block
-    // @ts-ignore next line
-    ? <Block block={ block } />
-    : <script define:vars={{ typename }} is:inline>
+
+{
+  blocks.map((block) => {
+    const typename = block.__typename as keyof typeof blocksByTypename;
+    const Block = blocksByTypename[typename];
+    return Block ? (
+      // @ts-ignore next line
+      <Block block={block} />
+    ) : (
+      <script define:vars={{ typename }} is:inline>
         console.log(`No Block found for "${typename}"`);
-    </script>;
-})}
+      </script>
+    );
+  })
+}

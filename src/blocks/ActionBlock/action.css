@@ -1,0 +1,15 @@
+/* basic styling, can be replaced */
+
+.action {
+  padding: 10px;
+}
+
+.action--primary {
+  background: black;
+  color: white;
+}
+
+.action--secondary {
+  border: 2px solid currentColor;
+  color: currentColor;
+}
