@@ -7,10 +7,11 @@ async function writeIconNameTypes() {
     .filter(file => file.endsWith('.svg'))
     .map(file => path.basename(file, '.svg'));
 
-  await fs.writeFile('./src/assets/icon-sprite.d.ts', 
-    `export type IconName = ${iconNames.map(name => `'${name}'`).join(' | ')};`
+  await fs.writeFile('./src/assets/icon-sprite.ts', 
+    `export const iconNames = [${iconNames.map(name => `'${name}'`)}] as const;\n` +
+    'export type IconName = typeof iconNames[number];'
   );
 }
 
 writeIconNameTypes()
-  .then(() => console.log('Icon names written to src/assets/icon-sprite.d.ts'));
+  .then(() => console.log('Icon names written to src/assets/icon-sprite.ts'));
