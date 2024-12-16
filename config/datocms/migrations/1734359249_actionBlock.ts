@@ -21,13 +21,13 @@ export default async function (client: Client) {
   );
 
   console.log(
-    'Create block model "\uD83D\uDD17 Internal Link Block" (`internal_link_block`)'
+    'Create block model "\uD83D\uDD17 Internal Link" (`internal_link`)'
   );
   await client.itemTypes.create(
     {
       id: 'GWnhoQDqQoGJj4-sQTVttw',
-      name: '\uD83D\uDD17 Internal Link Block',
-      api_key: 'internal_link_block',
+      name: '\uD83D\uDD17 Internal Link',
+      api_key: 'internal_link',
       modular_block: true,
       inverse_relationships_enabled: false,
     },
@@ -60,7 +60,7 @@ export default async function (client: Client) {
   });
 
   console.log(
-    'Create Single-line string field "Title" (`title`) in block model "\uD83D\uDD17 Internal Link Block" (`internal_link_block`)'
+    'Create Single-line string field "Title" (`title`) in block model "\uD83D\uDD17 Internal Link" (`internal_link`)'
   );
   await client.fields.create('GWnhoQDqQoGJj4-sQTVttw', {
     id: 'XTl0xPRsTpWg9zFauwDl5Q',
@@ -77,7 +77,7 @@ export default async function (client: Client) {
   });
 
   console.log(
-    'Create Single link field "Link" (`link`) in block model "\uD83D\uDD17 Internal Link Block" (`internal_link_block`)'
+    'Create Single link field "Link" (`link`) in block model "\uD83D\uDD17 Internal Link" (`internal_link`)'
   );
   await client.fields.create('GWnhoQDqQoGJj4-sQTVttw', {
     id: 'bN5K_JObRQqv7tkzt4RG2w',
@@ -102,7 +102,7 @@ export default async function (client: Client) {
   });
 
   console.log(
-    'Create Single-line string field "Style" (`style`) in block model "\uD83D\uDD17 Internal Link Block" (`internal_link_block`)'
+    'Create Single-line string field "Style" (`style`) in block model "\uD83D\uDD17 Internal Link" (`internal_link`)'
   );
   await client.fields.create('GWnhoQDqQoGJj4-sQTVttw', {
     id: 'S3JQgijhRmalePX3GeugPg',

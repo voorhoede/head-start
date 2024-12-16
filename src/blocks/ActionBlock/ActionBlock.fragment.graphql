@@ -1,12 +1,12 @@
-#import '@blocks/InternalLinkBlock/InternalLinkBlock.fragment.graphql'
+#import './InternalLink.fragment.graphql'
 
 fragment ActionBlock on ActionBlockRecord {
   __typename
   id
   items {
     __typename
-    ... on InternalLinkBlockRecord {
-      ...InternalLinkBlock
+    ... on InternalLinkRecord {
+      ...InternalLink
     }
   }
 }

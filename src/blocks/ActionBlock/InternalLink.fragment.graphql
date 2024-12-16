@@ -2,7 +2,7 @@
 #import '@lib/routing/HomeRoute.fragment.graphql'
 #import '@lib/routing/PageRoute.fragment.graphql'
 
-fragment InternalLinkBlock on InternalLinkBlockRecord {
+fragment InternalLink on InternalLinkRecord {
   __typename
   id
   title
