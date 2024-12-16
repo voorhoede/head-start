@@ -89,11 +89,7 @@ export default async function (client: Client) {
         on_publish_with_unpublished_references_strategy: 'fail',
         on_reference_unpublish_strategy: 'delete_references',
         on_reference_delete_strategy: 'delete_references',
-        item_types: [
-          'GjWw8t-hTFaYYWyc53FeIg',
-          'LjXdkuCdQxCFT4hv8_ayew',
-          'X_tZn3TxQY28ltSyjZUGHQ',
-        ],
+        item_types: ['LjXdkuCdQxCFT4hv8_ayew', 'X_tZn3TxQY28ltSyjZUGHQ'],
       },
       required: {},
     },

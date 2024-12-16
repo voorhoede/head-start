@@ -1,4 +1,3 @@
-#import '@lib/routing/FileRoute.fragment.graphql'
 #import '@lib/routing/HomeRoute.fragment.graphql'
 #import '@lib/routing/PageRoute.fragment.graphql'
 
@@ -9,9 +8,6 @@ fragment InternalLink on InternalLinkRecord {
   style
   link {
     __typename
-    ... on FileRecord {
-      ...FileRoute
-    }
     ... on HomePageRecord {
       ...HomeRoute
     }
