@@ -1,0 +1,113 @@
+---
+import type { AppMenuFragment } from '@lib/datocms/types';
+import { t } from '@lib/i18n';
+import type { PageUrl } from '@lib/seo';
+import AppLogo from '@components/AppLogo/AppLogo.astro';
+import IconButton from '@components/IconButton/IconButton.astro';
+import LocaleSelector from '@components/LocaleSelector/LocaleSelector.astro';
+import SearchLink from '@components/SearchLink/SearchLink.astro';
+import UnstyledList from '@components/UnstyledList/UnstyledList.astro';
+import AppMenuItem from './AppMenuItem.astro';
+
+export interface Props {
+  items: AppMenuFragment['menuItems'];
+  pageUrls: PageUrl[];
+}
+const { items, pageUrls } = Astro.props;
+---
+
+<app-menu>
+  <nav class="main-menu" aria-labelledby="main-menu-title">
+    <span id="main-menu-title" class="a11y-sr-only">{t('main_menu')}</span>
+    <UnstyledList class:list="main-menu__list" data-menu-list>
+      {items.map((item) => <AppMenuItem {item} class:list="main-menu__item" />)}
+      <li class="main-menu__item main-menu__item--last"><SearchLink /></li>
+    </UnstyledList>
+  </nav>
+  <LocaleSelector pageUrls={pageUrls} />
+  <IconButton icon="menu" label={t('open_menu')} data-menu-button hidden />
+
+  <dialog data-menu-dialog>
+    <AppLogo />
+    <nav aria-labelledby="menu-dialog-title">
+      <span id="menu-dialog-title" class="a11y-sr-only">{t('main_menu')}</span>
+      <UnstyledList class="dialog__list">
+        {items.map((item) => <AppMenuItem {item} class:list="dialog__item" />)}
+        <li><SearchLink /></li>
+      </UnstyledList>
+    </nav>
+    <LocaleSelector pageUrls={pageUrls} />
+    <IconButton icon="close" label={t('close_menu')} data-menu-close />
+  </dialog>
+</app-menu>
+
+<script src="./AppMenu.client.ts"></script>
+
+<style>
+  app-menu {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    gap: 20px;
+  }
+
+  app-menu a {
+    padding: 5px;
+  }
+
+  .main-menu {
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .main-menu__list {
+    display: flex;
+    gap: 10px;
+  }
+
+  .main-menu__item--last {
+    margin-inline-start: auto;
+  }
+
+  button {
+    display: none;
+  }
+
+  app-menu.is-compact button {
+    display: block;
+  }
+  app-menu.is-compact .main-menu__list {
+    display: none;
+  }
+
+  dialog {
+    height: 100vh;
+    max-height: 100vh; /* overwrite default */
+    width: 300px;
+    max-width: 100vw;
+    background-color: white;
+    color: black;
+    border: none;
+    margin-block: 0;
+    margin-inline-start: auto;
+    margin-inline-end: 0;
+    padding: 20px;
+  }
+
+  dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+
+  .dialog__list {
+    margin-block: 30px;
+  }
+  .dialog__item {
+    margin-block: 20px;
+  }
+  dialog button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+</style>

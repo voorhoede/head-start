@@ -2,6 +2,7 @@
 import { getLocale, getLocaleName, locales, t } from '@lib/i18n';
 import type { SiteLocale } from '@lib/datocms/types';
 import type { PageUrl } from '@lib/seo';
+import UnstyledList from '@components/UnstyledList/UnstyledList.astro';
 import '@assets/a11y.css';
 
 const activeLocale = getLocale();
@@ -24,8 +25,7 @@ const getPageHref = (locale: SiteLocale) => {
     <span id="locale-selector-title" class="a11y-sr-only">
       {t('select_language')}
     </span>
-    <!-- [html-validate-disable-next no-redundant-role -- see ./README.md] -->
-    <ul role="list" style="list-style: none;">
+    <UnstyledList>
       {
         locales.map((locale) => (
           <li>
@@ -41,7 +41,7 @@ const getPageHref = (locale: SiteLocale) => {
           </li>
         ))
       }
-    </ul>
+    </UnstyledList>
   </nav>
 </locale-selector>
 
@@ -49,13 +49,8 @@ const getPageHref = (locale: SiteLocale) => {
 
 <style>
   /* basic styling, can be removed */
-  ul {
-    margin: 0;
-    margin-inline-end: 20px;
-    padding: 0;
-  }
   li {
     display: inline-block;
-    margin-right: 10px;
+    margin-inline: 5px;
   }
 </style>

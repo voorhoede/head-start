@@ -1,0 +1,17 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+export interface Props extends HTMLAttributes<'ul'> {}
+const { ...props } = Astro.props;
+---
+
+<!-- [html-validate-disable-next no-redundant-role -- see ./README.md] -->
+<ul role="list" {...props}><slot /></ul>
+
+<style>
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+</style>
