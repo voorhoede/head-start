@@ -5,24 +5,25 @@ import type { PageUrl } from '@lib/seo';
 import UnstyledList from '@components/UnstyledList/UnstyledList.astro';
 import '@assets/a11y.css';
 
-const activeLocale = getLocale();
-
-interface Props {
+export interface Props {
   pageUrls: PageUrl[];
 }
 const { pageUrls } = Astro.props;
 
+const activeLocale = getLocale();
 const getPageHref = (locale: SiteLocale) => {
   const pageUrl = pageUrls.find((pageUrl) => pageUrl.locale === locale);
   return pageUrl
     ? new URL(pageUrl.pathname, Astro.site)
     : new URL(`/${locale}/`, Astro.site);
 };
+const instanceId = Math.random().toString(36).substring(2);
+const titleHtmlId = `locale-selector-title-${instanceId}`;
 ---
 
 <locale-selector>
-  <nav aria-labelledby="locale-selector-title">
-    <span id="locale-selector-title" class="a11y-sr-only">
+  <nav aria-labelledby={titleHtmlId}>
+    <span id={titleHtmlId} class="a11y-sr-only">
       {t('select_language')}
     </span>
     <UnstyledList>
