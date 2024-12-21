@@ -1,15 +1,17 @@
-import { Client } from '@datocms/cli/lib/cma-client-node';
+import type { Client } from '@datocms/cli/lib/cma-client-node';
+import { createPreviewToken } from '../lib/createPreviewToken';
 
 export default async function (client: Client) {
   console.log('Manage upload filters');
 
   console.log('Install plugin "Model Deployment Links"');
+  const previewApiToken = await createPreviewToken(client);
   await client.plugins.create({
     id: 'MKba9NT5QBKZaeI4HcERwA',
     package_name: 'datocms-plugin-model-deployment-links',
   });
   await client.plugins.update('MKba9NT5QBKZaeI4HcERwA', {
-    parameters: { datoApiToken: 'See documentation/getting-started.md' },
+    parameters: { datoApiToken: previewApiToken.token },
   });
 
   console.log('Creating new fields/fieldsets');
