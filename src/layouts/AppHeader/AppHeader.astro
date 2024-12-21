@@ -1,0 +1,27 @@
+---
+import type { AppMenuFragment } from '@lib/datocms/types';
+import type { PageUrl } from '@lib/seo';
+import AppLogo from '@components/AppLogo/AppLogo.astro';
+import AppMenu from '@layouts/AppMenu/AppMenu.astro';
+
+interface Props {
+  menuItems: AppMenuFragment['menuItems'];
+  pageUrls: PageUrl[];
+}
+const { menuItems, pageUrls } = Astro.props;
+---
+
+<header>
+  <AppLogo />
+  <AppMenu items={menuItems} {pageUrls} />
+</header>
+
+<style>
+  header {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    padding: 20px;
+    border-bottom: 2px solid black;
+  }
+</style>
