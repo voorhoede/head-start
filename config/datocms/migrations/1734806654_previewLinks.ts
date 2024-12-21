@@ -9,7 +9,7 @@ export default async function (client: Client) {
     package_name: 'datocms-plugin-model-deployment-links',
   });
   await client.plugins.update('MKba9NT5QBKZaeI4HcERwA', {
-    parameters: { datoApiToken: process.env.DATOCMS_PREVIEW_API_TOKEN },
+    parameters: { datoApiToken: 'See documentation/getting-started.md' },
   });
 
   console.log('Creating new fields/fieldsets');
