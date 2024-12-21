@@ -76,16 +76,18 @@ const mockSubItems = [
         {
           items.map((item) => (
             <AppMenuItem {item} class:list="dialog__item">
-              {mockSubItems.map((subItem) => (
-                <li>
-                  {subItem.title}
-                  <ul>
-                    {subItem.items.map((subSubItem) => (
-                      <li>{subSubItem}</li>
-                    ))}
-                  </ul>
-                </li>
-              ))}
+              <ul>
+                {mockSubItems.map((subItem) => (
+                  <li>
+                    {subItem.title}
+                    <ul>
+                      {subItem.items.map((subSubItem) => (
+                        <li>{subSubItem}</li>
+                      ))}
+                    </ul>
+                  </li>
+                ))}
+              </ul>
             </AppMenuItem>
           ))
         }
