@@ -1,3 +1,10 @@
 {
-  "type": "commonjs"
+  "type": "commonjs",
+  "dependencies": {
+    "datocms-html-to-structured-text": "^4.0.1",
+    "dotenv-safe": "^9.1.0",
+    "mdast-util-to-hast": "^13.2.0",
+    "remark-parse": "^11.0.0",
+    "unified": "^11.0.5"
+  }
 }
