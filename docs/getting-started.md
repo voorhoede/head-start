@@ -66,6 +66,18 @@ You can now run your project locally:
 npm run dev
 ```
 
+### Configure DatoCMS plugins
+
+Head Start comes with a few DatoCMS plugins pre-installed. Some plugins require additional project-specific configuration:
+
+#### Model Deployments Links plugin
+
+The [Model Deployment Links plugin](https://www.datocms.com/marketplace/plugins/i/datocms-plugin-model-deployment-links) requires an API key:
+
+- In your DatoCMS instance go to Project Settings > API Tokens (`/project_settings/access_tokens`) and "Add a new access token". Name it "Preview" (or whatever you prefer), for the "Role associated with this API token
+" select "Editor" and keep the other settings as is.
+- Go to Enviroment Configuration > Plugins > Model Deployment Links and enter the newly created access token in the plugin settings under "DatoCMS API Token".
+
 ### Add DatoCMS secrets to repository
 
 Head Start provides GitHub Actions which include linting code and validating HTML on PR changes. These Actions require the DatoCMS tokens to be available.
