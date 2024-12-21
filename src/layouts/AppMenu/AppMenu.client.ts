@@ -1,3 +1,6 @@
+import { computePosition } from '@floating-ui/dom';
+import type { Placement } from '@floating-ui/dom';
+
 class AppMenu extends HTMLElement {
   #closeButton: HTMLButtonElement;
   #menuButton: HTMLButtonElement;
@@ -24,7 +27,7 @@ class AppMenu extends HTMLElement {
 
   #onDialogClick(event: MouseEvent) {
     const rect = this.#dialog.getBoundingClientRect();
-    const isClickOutside = 
+    const isClickOutside =
       event.clientY < rect.top ||
       event.clientY > rect.bottom ||
       event.clientX < rect.left ||
