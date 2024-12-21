@@ -6,7 +6,6 @@ export interface Props {
   item: AppMenuFragment['menuItems'][number];
 }
 const { item, ...props } = Astro.props;
-const mockSubItems = ['sub item 1', 'sub item 2', 'sub item 3'];
 ---
 
 <li {...props}>
@@ -19,29 +18,5 @@ const mockSubItems = ['sub item 1', 'sub item 2', 'sub item 3'];
       item.title
     )
   }
-  <button type="button" popovertarget={`popover-${item.id}`}>open</button>
-  <ul popover id={`popover-${item.id}`} data-placement="bottom-start">
-    {
-      mockSubItems.map((subItem, index) => (
-        <li>
-          {subItem}
-          <button
-            type="button"
-            popovertarget={`popover-${item.id}-sub-${index}`}
-          >
-            open
-          </button>
-          <ul
-            popover
-            id={`popover-${item.id}-sub-${index}`}
-            data-placement="right-start"
-          >
-            <li>sub sub item 1</li>
-            <li>sub sub item 2</li>
-            <li>sub sub item 3</li>
-          </ul>
-        </li>
-      ))
-    }
-  </ul>
+  <slot />
 </li>

@@ -14,25 +14,81 @@ export interface Props {
   pageUrls: PageUrl[];
 }
 const { items, pageUrls } = Astro.props;
+const mockSubItems = [
+  { title: 'sub item 1', items: [1, 2, 3].map((n) => `sub sub item ${n}`) },
+  { title: 'sub item 2', items: [1, 2, 3].map((n) => `sub sub item ${n}`) },
+  { title: 'sub item 3', items: [1, 2, 3].map((n) => `sub sub item ${n}`) },
+];
 ---
 
 <app-menu>
   <nav class="main-menu" aria-labelledby="main-menu-title">
     <span id="main-menu-title" class="a11y-sr-only">{t('main_menu')}</span>
     <UnstyledList class:list="main-menu__list" data-menu-list>
-      {items.map((item) => <AppMenuItem {item} class:list="main-menu__item" />)}
+      {
+        items.map((item) => (
+          <AppMenuItem {item} class:list="main-menu__item">
+            <button type="button" popovertarget={`popover-${item.id}`}>
+              open
+            </button>
+            <ul popover id={`popover-${item.id}`} data-placement="bottom-start">
+              {mockSubItems.map((subItem, index) => (
+                <li>
+                  {subItem.title}
+                  <button
+                    type="button"
+                    popovertarget={`popover-${item.id}-sub-${index}`}
+                  >
+                    open
+                  </button>
+                  <ul
+                    popover
+                    id={`popover-${item.id}-sub-${index}`}
+                    data-placement="right-start"
+                  >
+                    {subItem.items.map((subSubItem) => (
+                      <li>{subSubItem}</li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          </AppMenuItem>
+        ))
+      }
       <li class="main-menu__item main-menu__item--last"><SearchLink /></li>
     </UnstyledList>
   </nav>
   <LocaleSelector pageUrls={pageUrls} />
-  <IconButton icon="menu" label={t('open_menu')} data-menu-button hidden />
+  <IconButton
+    icon="menu"
+    label={t('open_menu')}
+    class:list="main-menu__button"
+    data-menu-button
+    hidden
+  />
 
   <dialog data-menu-dialog>
     <AppLogo />
     <nav aria-labelledby="menu-dialog-title">
       <span id="menu-dialog-title" class="a11y-sr-only">{t('main_menu')}</span>
       <UnstyledList class="dialog__list">
-        {items.map((item) => <AppMenuItem {item} class:list="dialog__item" />)}
+        {
+          items.map((item) => (
+            <AppMenuItem {item} class:list="dialog__item">
+              {mockSubItems.map((subItem) => (
+                <li>
+                  {subItem.title}
+                  <ul>
+                    {subItem.items.map((subSubItem) => (
+                      <li>{subSubItem}</li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </AppMenuItem>
+          ))
+        }
         <li><SearchLink /></li>
       </UnstyledList>
     </nav>
@@ -70,11 +126,11 @@ const { items, pageUrls } = Astro.props;
     margin-inline-start: auto;
   }
 
-  button {
+  .main-menu__button {
     display: none;
   }
 
-  app-menu.is-compact button {
+  app-menu.is-compact .main-menu__button {
     display: block;
   }
   app-menu.is-compact .main-menu__list {
