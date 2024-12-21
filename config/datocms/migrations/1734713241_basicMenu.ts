@@ -29,7 +29,6 @@ export default async function (client: Client) {
       name: '\uD83D\uDD17 Menu Item (Internal)',
       api_key: 'menu_item_internal',
       modular_block: true,
-      draft_saving_active: false,
       inverse_relationships_enabled: false,
     },
     {

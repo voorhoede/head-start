@@ -47,7 +47,7 @@ const menuItems = data.app?.menuItems ?? [];
   <body>
     <PreviewModeProvider>
       <SkipLink targetId={mainContentId} />
-      <div class="layout__header" {...datocmsNoIndex}>
+      <div {...datocmsNoIndex}>
         <AppHeader {menuItems} {pageUrls} />
       </div>
       {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
