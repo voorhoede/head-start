@@ -54,7 +54,7 @@ async function upsertRecord ({ model, document, parent }: { model: Model, docume
   const textBlockItemType = await client.itemTypes.find('text_block');
 
   const data = {
-    item_type: { type: 'item_type', id: model.id },
+    item_type: { type: 'item_type' as const, id: model.id },
     title: { en: document.title },
     slug: { en: document.slug },
     parent_page: parent?.id,
