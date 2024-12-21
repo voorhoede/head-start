@@ -10,7 +10,6 @@ export default async function (client: Client) {
       name: '\uD83D\uDDA5\uFE0F Website',
       singleton: true,
       api_key: 'app',
-      draft_saving_active: false,
       all_locales_required: true,
       collection_appearance: 'table',
       inverse_relationships_enabled: false,
@@ -30,7 +29,6 @@ export default async function (client: Client) {
       name: '\uD83D\uDD17 Menu Item (Internal)',
       api_key: 'menu_item_internal',
       modular_block: true,
-      draft_saving_active: false,
       inverse_relationships_enabled: false,
     },
     {
