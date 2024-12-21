@@ -72,6 +72,9 @@ export default async function (client: Client) {
     'skip_to_content': 'Skip to content',
     'not_found': 'The page you requested could not be found.',
     'watch_video_on_provider': 'watch on {{provider}}',
+    'main_menu': 'main menu',
+    'open_menu': 'open menu',
+    'close_menu': 'close menu',
   };
 
   console.log('Create required translation content');

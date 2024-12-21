@@ -1,0 +1,21 @@
+#import '@lib/routing/HomeRoute.fragment.graphql'
+#import '@lib/routing/PageRoute.fragment.graphql'
+
+fragment AppMenu on AppRecord {
+  menuItems {
+    ... on MenuItemInternalRecord {
+      __typename
+      id
+      title
+      link {
+        __typename
+        ... on HomePageRecord {
+          ...HomeRoute
+        }
+        ... on PageRecord {
+          ...PageRoute
+        }
+      }
+    }
+  }
+}
