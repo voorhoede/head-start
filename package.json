@@ -33,6 +33,7 @@
     "lint:astro": "astro check",
     "lint:eslint": "eslint . --ext .js,.ts,.astro",
     "lint:html": "html-validate --config config/htmlvalidate/config.json dist/",
+    "seed:docs": "jiti config/datocms/scripts/seed-docs.ts",
     "pretest": "npm run prep",
     "test": "run-s test:*",
     "test:unit": "vitest run",
