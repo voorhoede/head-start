@@ -11,7 +11,6 @@
 - Provide functional interactivity without a JS framework (React, Vue, Svelte, etc)*.
 - Provide functional interactivity without specific styling ("unstyled")*.
 - Provide a fully accessible and highly performant baseline for every project.
-- Utilise testing to ensure quality and prevent regressions.
 
 \* We'll leave the choice for a JS framework and strategy for styling to developers using Head Start for their project.
 

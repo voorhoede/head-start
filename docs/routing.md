@@ -34,6 +34,10 @@ Head Start leverages [Astro's Custom 404 Error page](https://docs.astro.build/en
 
 Astro supports [API routes](https://docs.astro.build/en/core-concepts/endpoints/#server-endpoints-api-routes) (server endpoints), which can be any route in `src/pages/`. Head Start uses a convention to place all API routes in `src/pages/api/`. This way it's clear where all API routes live, they have a logical URL prefix in the browser (`/api/`) and [API routes not found](../src/pages/api/[...notFound].ts) can be caught and respond with a 404 JSON response, rather than an HTML response.
 
+## Partial page routes
+
+Astro supports [Page Partials](https://docs.astro.build/en/basics/astro-pages/#page-partials) to fetch and use in conjuction with client-side scripts. As a convention Head Start uses a `.partial.astro` for these routes. An example is the [`search/results.partial.astro` route](../src/pages/[locale]/search/results.partial.astro).
+
 ## Redirects
 
 Head Start supports redirect rules which are editable and [sortable](https://www.datocms.com/docs/content-modelling/record-ordering) in the CMS. Head Start uses [`regexparam`](https://github.com/lukeed/regexparam) to handle redirect rules with static paths, (optional) parameters and (optional) wildcards. Examples:
@@ -43,3 +47,14 @@ Head Start supports redirect rules which are editable and [sortable](https://www
 - from `/path-with-wildcard/*` to `/new-path-with-wildcard/*` (or `/new-path-with-wildcard/:splat`)
 
 \* See [decision entry on redirects](./decision-log/2024-09-24-redirects-middleware.md) for motivation.
+
+## Cloudflare runtime
+
+Head Start uses the [Astro Cloudflare adapter](https://docs.astro.build/en/guides/integrations-guide/cloudflare/) to deploy to Cloudflare Pages. This means routes have access to the [Cloudflare runtime](https://docs.astro.build/en/guides/integrations-guide/cloudflare/#cloudflare-runtime) via `locals.runtime`. For example, each dynamic route, has access to geo information of the request:
+
+```ts
+export function GET ({ locals }) {
+  const { city, latitude, longitude } = locals.runtime.cf;
+  return new Response(JSON.stringify({ city, latitude, longitude }, null, 2));
+}
+```

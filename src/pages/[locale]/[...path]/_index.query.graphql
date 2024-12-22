@@ -1,4 +1,5 @@
 #import '@lib/routing/PageRoute.fragment.graphql'
+#import '@blocks/ActionBlock/ActionBlock.fragment.graphql'
 #import '@blocks/EmbedBlock/EmbedBlock.fragment.graphql'
 #import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
 #import '@blocks/PagePartialBlock/PagePartialBlock.fragment.graphql'
@@ -18,6 +19,9 @@ query Page($locale: SiteLocale!, $slug: String!) {
     }
     bodyBlocks {
       __typename
+      ... on ActionBlockRecord {
+        ...ActionBlock
+      }
       ... on EmbedBlockRecord {
         ...EmbedBlock
       }
