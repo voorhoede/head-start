@@ -1,13 +1,17 @@
 ---
-import { type PageRouteForPath, getPagePath, getPageSlugFromPath, getParentPages } from '@lib/routing/page';
+import {
+  type PageRouteForPath,
+  getPagePath,
+  getPageSlugFromPath,
+  getParentPages,
+} from '@lib/routing/page';
 import type { PageUrl } from '@lib/types/page-url';
 import { datocmsCollection, datocmsRequest } from '@lib/datocms';
 import { getPageHref } from '@lib/routing/';
 import type { PageQuery, SiteLocale } from '@lib/datocms/types';
 import Layout from '@layouts/Default.astro';
-import { renderBlocks } from '@blocks/index';
-import type { AnyBlock } from '@blocks/Blocks';
-
+import type { AnyBlock } from '@blocks/Blocks.astro';
+import Blocks from '@blocks/Blocks.astro';
 import { formatBreadcrumb } from '@components/Breadcrumbs';
 import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
 import ShareButton from '@components/ShareButton/ShareButton.astro';
@@ -35,7 +39,9 @@ export async function getStaticPaths() {
   });
 
   return pages.flatMap((page) => {
-    const locales = page._allSlugLocales?.map((slug) => slug.locale).filter(locale => !!locale);
+    const locales = page._allSlugLocales
+      ?.map((slug) => slug.locale)
+      .filter((locale) => !!locale);
     return locales?.map((locale) => {
       return { params: { locale, path: getPagePath({ page, locale }) } };
     });
@@ -62,8 +68,6 @@ const pageUrls = (page._allSlugLocales || []).map(({ locale }) => ({
   locale: locale as SiteLocale,
   pathname: getPageHref({ locale: locale as SiteLocale, record: page }),
 })) as PageUrl[];
-
-const blocksHtml = await renderBlocks(page.bodyBlocks as AnyBlock[]);
 ---
 
 <Layout
@@ -73,7 +77,8 @@ const blocksHtml = await renderBlocks(page.bodyBlocks as AnyBlock[]);
 >
   <PreviewModeSubscription query={query} variables={variables} />
   <h1>{page.title}</h1>
-  <TableOfContents html={ blocksHtml } />
-  <Fragment set:html={blocksHtml} />
+  <TableOfContents>
+    <Blocks blocks={page.bodyBlocks as AnyBlock[]} />
+  </TableOfContents>
   <ShareButton />
 </Layout>

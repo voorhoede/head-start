@@ -3,11 +3,16 @@ import { t } from '@lib/i18n';
 import { extractTocItemsFromHtml } from './index';
 import List from './List.astro';
 
-const { html } = Astro.props;
+const html = await Astro.slots.render('default');
 const items = extractTocItemsFromHtml(html);
 ---
 
-<nav>
-  <h2>{ t('table_of_contents') }</h2>
-  <List items={ items } />
-</nav>
+{
+  items.length > 0 && (
+    <nav>
+      <h2>{t('table_of_contents')}</h2>
+      <List items={items} />
+    </nav>
+  )
+}
+<Fragment set:html={html} />
