@@ -14,6 +14,7 @@ import type { PageUrl } from '@lib/seo';
 import query from './default.query.graphql';
 import Breadcrumbs from '@components/Breadcrumbs/Breadcrumbs.astro';
 import type { Breadcrumb } from '@components/Breadcrumbs';
+import HtmlIdSlugProvider from '@components/HtmlIdSlugProvider/HtmlIdSlugProvider.astro';
 import IconSprite from '@components/Icon/IconSprite.astro';
 import LocaleSelector from '@components/LocaleSelector/LocaleSelector.astro';
 import PerfHead from '@components/PerfHead/PerfHead.astro';
@@ -52,31 +53,33 @@ const mainContentId = 'content';
   </head>
   <body>
     <PreviewModeProvider>
-      <SkipLink targetId={mainContentId} />
-      <header {...datocmsNoIndex}>
+      <HtmlIdSlugProvider>
+        <SkipLink targetId={mainContentId} />
+        <header {...datocmsNoIndex}>
+          {
+            /* accessible home link, inspired by https://www.gov.uk/; with Microformats rel */
+          }
+          <a
+            rel="home"
+            href={getHomeHref()}
+            aria-label={t('go_to_home_page', { siteName: siteName() })}>[Logo]</a
+          >
+          <div>
+            <LocaleSelector pageUrls={pageUrls} />
+            <a rel="search" href={getSearchPathname(locale)}>{t('search')}</a>
+          </div>
+        </header>
+        {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
         {
-          /* accessible home link, inspired by https://www.gov.uk/; with Microformats rel */
+          /* main element requires tabindex to be focusable, see SkipLink/README.md */
         }
-        <a
-          rel="home"
-          href={getHomeHref()}
-          aria-label={t('go_to_home_page', { siteName: siteName() })}>[Logo]</a
-        >
-        <div>
-          <LocaleSelector pageUrls={pageUrls} />
-          <a rel="search" href={getSearchPathname(locale)}>{t('search')}</a>
-        </div>
-      </header>
-      {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
-      {
-        /* main element requires tabindex to be focusable, see SkipLink/README.md */
-      }
-      <main id={mainContentId} tabindex="-1">
-        <slot />
-      </main>
-      <footer {...datocmsNoIndex}>
-        <p>Footer</p>
-      </footer>
+        <main id={mainContentId} tabindex="-1">
+          <slot />
+        </main>
+        <footer {...datocmsNoIndex}>
+          <p>Footer</p>
+        </footer>
+      </HtmlIdSlugProvider>
     </PreviewModeProvider>
     <IconSprite />
   </body>
