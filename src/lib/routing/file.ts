@@ -3,8 +3,8 @@ import { datocmsAssetsOrigin } from '@lib/datocms';
 import fileProxyMapUntyped from './file-proxy-map.json';
 
 export const getFileHref = (record: FileRouteFragment) => {
-  if (record.slug) {
-    return record.slug;
+  if (record.customSlug) {
+    return record.customSlug;
   }
 
   return record.file.url.replace(datocmsAssetsOrigin, '/files/');
