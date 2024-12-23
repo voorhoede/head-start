@@ -1,0 +1,45 @@
+---
+import type { ActionBlockFragment } from '@lib/datocms/types';
+import LinkToRecord from '@components/LinkToRecord/LinkToRecord.astro';
+
+export interface Props {
+  block: ActionBlockFragment;
+}
+const { block } = Astro.props;
+const { items } = block;
+---
+
+<div class="action-block">
+  {
+    items.map((item) => (
+      <LinkToRecord
+        record={item.link}
+        class:list={['action', `action--${item.style}`]}
+      >
+        {item.title}
+      </LinkToRecord>
+    ))
+  }
+</div>
+
+<style>
+  /* basic styling, can be replaced */
+  .action-block {
+    display: flex;
+    gap: 1em;
+  }
+
+  .action {
+    padding: 10px;
+  }
+
+  .action--primary {
+    background: black;
+    color: white;
+  }
+
+  .action--secondary {
+    border: 2px solid currentColor;
+    color: currentColor;
+  }
+</style>

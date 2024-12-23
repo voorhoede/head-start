@@ -1,6 +1,7 @@
 ---
-import LinkToRecord from '@components/LinkToRecord/LinkToRecord.astro';
+import type { HTMLAttributes } from 'astro/types';
 import type { RecordRoute } from '@lib/routing';
+import LinkToRecord from '@components/LinkToRecord/LinkToRecord.astro';
 
 type Node = {
   meta?: {
@@ -9,7 +10,7 @@ type Node = {
   }[];
 };
 
-export type Props = {
+export type Props = HTMLAttributes<'a'> & {
   node?: Node;
   link: RecordRoute;
 };

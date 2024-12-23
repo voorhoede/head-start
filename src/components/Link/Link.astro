@@ -1,5 +1,7 @@
 ---
-export interface Props {
+import type { HTMLAttributes } from 'astro/types';
+
+export type Props = HTMLAttributes<'a'> & {
   href: string;
   openInNewTab?: boolean;
 }
