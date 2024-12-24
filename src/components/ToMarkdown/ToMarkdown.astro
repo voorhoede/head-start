@@ -2,13 +2,17 @@
 import { fromHtml } from 'hast-util-from-html';
 import { toMdast } from 'hast-util-to-mdast';
 import { toMarkdown } from 'mdast-util-to-markdown';
+import { select } from 'hast-util-select';
 
-// const { selector } = Astro.props;
+export interface Props {
+  selector?: string;
+}
+const { selector = 'body' } = Astro.props;
 
 const html = await Astro.slots.render('default');
-const mainHtml = html.match(/<main[^>]*>([\s\S]*)<\/main>/)?.[1] || html;
-const hast = fromHtml(mainHtml, { fragment: true });
-const mdast = toMdast(hast);
+const hast = fromHtml(html, { fragment: true });
+const matchingHast = select(selector, hast) ?? hast;
+const mdast = toMdast(matchingHast);
 const markdown = toMarkdown(mdast);
 ---
 
