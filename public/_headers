@@ -15,4 +15,4 @@
   Cache-Control: public, max-age=31536000, immutable
 
 /*/markdown/
-  Content-Type: text/markdown
+  Content-Type: text/markdown; charset=utf-8

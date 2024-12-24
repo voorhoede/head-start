@@ -5,7 +5,7 @@ export { getStaticPaths } from './_index';
 
 export const partial = true;
 
-Astro.response.headers.set('Content-Type', 'text/markdown');
+Astro.response.headers.set('Content-Type', 'text/markdown; charset=utf-8');
 ---
 
 <ToMarkdown selector="main">
