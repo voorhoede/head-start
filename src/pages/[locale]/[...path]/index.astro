@@ -1,12 +1,7 @@
 ---
-import { datocmsCollection, datocmsRequest } from '@lib/datocms';
+import { datocmsRequest } from '@lib/datocms';
 import { getPageHref } from '@lib/routing/';
-import {
-  type PageRouteForPath,
-  getPagePath,
-  getPageSlugFromPath,
-  getParentPages,
-} from '@lib/routing/page';
+import { getPageSlugFromPath, getParentPages } from '@lib/routing/page';
 import type { PageQuery, SiteLocale } from '@lib/datocms/types';
 import type { PageUrl } from '@lib/seo';
 import Layout from '@layouts/Default.astro';
@@ -15,36 +10,7 @@ import type { AnyBlock } from '@blocks/Blocks';
 import { formatBreadcrumb } from '@components/Breadcrumbs';
 import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
 import query from './_index.query.graphql';
-
-export async function getStaticPaths() {
-  const pages = await datocmsCollection<PageRouteForPath>({
-    collection: 'Pages',
-    fragment: `
-      _allSlugLocales { locale, value }
-      parentPage {
-        _allSlugLocales { locale, value }
-        parentPage {
-          _allSlugLocales { locale, value }
-          parentPage {
-            _allSlugLocales { locale, value }
-            parentPage {
-              _allSlugLocales { locale, value }
-            }
-          }
-        }
-      }
-    `,
-  });
-
-  return pages.flatMap((page) => {
-    const locales = page._allSlugLocales
-      ?.map((slug) => slug.locale)
-      .filter((locale) => !!locale);
-    return locales?.map((locale) => {
-      return { params: { locale, path: getPagePath({ page, locale }) } };
-    });
-  });
-}
+export { getStaticPaths } from './_index';
 
 type Params = {
   locale: SiteLocale;

@@ -1,0 +1,15 @@
+---
+import { fromHtml } from 'hast-util-from-html';
+import { toMdast } from 'hast-util-to-mdast';
+import { toMarkdown } from 'mdast-util-to-markdown';
+
+// const { selector } = Astro.props;
+
+const html = await Astro.slots.render('default');
+const mainHtml = html.match(/<main[^>]*>([\s\S]*)<\/main>/)?.[1] || html;
+const hast = fromHtml(mainHtml, { fragment: true });
+const mdast = toMdast(hast);
+const markdown = toMarkdown(mdast);
+---
+
+<Fragment set:text={markdown} />

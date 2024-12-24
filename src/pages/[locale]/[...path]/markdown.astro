@@ -1,0 +1,13 @@
+---
+import ToMarkdown from '@components/ToMarkdown/ToMarkdown.astro';
+import Page from './index.astro';
+export { getStaticPaths } from './_index';
+
+export const partial = true;
+
+Astro.response.headers.set('Content-Type', 'text/markdown');
+---
+
+<ToMarkdown>
+  <Page />
+</ToMarkdown>
