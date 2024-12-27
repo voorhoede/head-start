@@ -1,0 +1,15 @@
+---
+import { createClient } from '@libsql/client/web';
+
+const dbUrl = new URL('/docs.db', Astro.request.url).toString();
+console.log('dbUrl', dbUrl);
+const db = await createClient({
+  url: dbUrl,
+  // encryptionKey: process.env.ENCRYPTION_KEY,
+});
+const entry = await db.execute('SELECT * FROM docs WHERE id = 1');
+---
+
+<h1>AI</h1>
+<pre><code>{dbUrl}</code></pre>
+<pre><code>{JSON.stringify(entry, null, 2)}</code></pre>
