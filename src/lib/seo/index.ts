@@ -32,3 +32,12 @@ export const titleTag = (title: string): Tag => ({
   tag: 'title',
   content: `${title} ${titleSuffix()}`,
 });
+
+export const markdownLinkTag = (href: string): Tag => ({
+  tag: 'link',
+  attributes: {
+    rel: 'alternate',
+    type: 'text/markdown',
+    href,
+  },
+});

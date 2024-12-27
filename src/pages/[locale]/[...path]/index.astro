@@ -3,7 +3,7 @@ import { datocmsRequest } from '@lib/datocms';
 import { getPageHref } from '@lib/routing/';
 import { getPageSlugFromPath, getParentPages } from '@lib/routing/page';
 import type { PageQuery, SiteLocale } from '@lib/datocms/types';
-import type { PageUrl } from '@lib/seo';
+import { markdownLinkTag, type PageUrl } from '@lib/seo';
 import Layout from '@layouts/Default.astro';
 import Blocks from '@blocks/Blocks.astro';
 import type { AnyBlock } from '@blocks/Blocks';
@@ -34,14 +34,7 @@ const pageUrls = (page._allSlugLocales || []).map(({ locale }) => ({
 })) as PageUrl[];
 const seoMetaTags = [
   ...page._seoMetaTags,
-  {
-    tag: 'link',
-    attributes: {
-      rel: 'alternate',
-      type: 'text/markdown',
-      href: `${getPageHref({ locale, record: page })}.md`,
-    },
-  },
+  markdownLinkTag(`/${locale}/${path}.md`),
 ];
 ---
 
