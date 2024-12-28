@@ -56,6 +56,8 @@
     "hls.js": "^1.5.2",
     "html-validate": "^8.7.4",
     "jiti": "^1.20.0",
+    "mdast-util-gfm": "^3.0.0",
+    "mdast-util-gfm-table": "^2.0.0",
     "nanostores": "^0.9.5",
     "oembed-providers": "^1.0.20230906",
     "pretty-bytes": "^6.1.1",
