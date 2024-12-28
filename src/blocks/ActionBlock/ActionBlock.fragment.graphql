@@ -1,5 +1,6 @@
 #import './InternalLink.fragment.graphql'
 #import './ExternalLink.fragment.graphql'
+#import './EmailLink.fragment.graphql'
 #import './PhoneLink.fragment.graphql'
 
 fragment ActionBlock on ActionBlockRecord {
@@ -12,6 +13,9 @@ fragment ActionBlock on ActionBlockRecord {
     }
     ... on ExternalLinkRecord {
       ...ExternalLink
+    }
+    ... on EmailLinkRecord {
+      ...EmailLink
     }
     ... on PhoneLinkRecord {
       ...PhoneLink

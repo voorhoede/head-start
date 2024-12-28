@@ -1,0 +1,22 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import type { EmailLinkFragment } from '@lib/datocms/types';
+
+type EmailLinkProps = Pick<
+  EmailLinkFragment,
+  'emailAddress' | 'emailSubject' | 'emailBody'
+>;
+export type Props = HTMLAttributes<'a'> & EmailLinkProps;
+const { emailAddress, emailSubject, emailBody, ...props } = Astro.props;
+
+const getHref = ({ emailAddress, emailSubject, emailBody }: EmailLinkProps) => {
+  const url = new URL(`mailto:${emailAddress}`);
+  if (emailSubject) url.searchParams.set('subject', emailSubject);
+  if (emailBody) url.searchParams.set('body', emailBody);
+  return url.href;
+};
+
+const href = getHref({ emailAddress, emailSubject, emailBody });
+---
+
+<a {href} {...props}><slot /></a>
