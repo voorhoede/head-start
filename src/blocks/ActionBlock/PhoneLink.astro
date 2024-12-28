@@ -1,7 +1,6 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
 import type { PhoneLinkFragment } from '@lib/datocms/types';
-import { phone } from 'phone';
 
 type PhoneLinkProps = Pick<
   PhoneLinkFragment,
@@ -11,9 +10,7 @@ export type Props = HTMLAttributes<'a'> & PhoneLinkProps;
 const { action, phoneNumber, text, ...props } = Astro.props;
 
 const formatPhoneNumber = (phoneNumber: string) => {
-  const output = phone(phoneNumber);
-  // console.log(output);
-  return output.isValid ? output.phoneNumber : phoneNumber.replace(/\s/g, '');
+  return phoneNumber.replace(/\s/g, '');
 };
 
 const getHref = ({ action, phoneNumber, text }: PhoneLinkProps) => {
