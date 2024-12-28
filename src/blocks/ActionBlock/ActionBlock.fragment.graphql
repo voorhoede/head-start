@@ -1,0 +1,12 @@
+#import './InternalLink.fragment.graphql'
+
+fragment ActionBlock on ActionBlockRecord {
+  __typename
+  id
+  items {
+    __typename
+    ... on InternalLinkRecord {
+      ...InternalLink
+    }
+  }
+}
