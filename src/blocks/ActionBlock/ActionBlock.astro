@@ -2,6 +2,7 @@
 import type { ActionBlockFragment } from '@lib/datocms/types';
 import Link from '@components/Link/Link.astro';
 import LinkToRecord from '@components/LinkToRecord/LinkToRecord.astro';
+import PhoneLink from './PhoneLink.astro';
 
 export interface Props {
   block: ActionBlockFragment;
@@ -29,6 +30,15 @@ const actionClassList = (style: string) => ['action', `action--${style}`];
         >
           {item.title}
         </Link>
+      ) : item.__typename === 'PhoneLinkRecord' ? (
+        <PhoneLink
+          action={item.action}
+          phoneNumber={item.phoneNumber}
+          text={item.text}
+          class:list={actionClassList(item.style)}
+        >
+          {item.title}
+        </PhoneLink>
       ) : (
         <Fragment />
       )

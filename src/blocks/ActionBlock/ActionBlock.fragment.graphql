@@ -1,5 +1,6 @@
 #import './InternalLink.fragment.graphql'
 #import './ExternalLink.fragment.graphql'
+#import './PhoneLink.fragment.graphql'
 
 fragment ActionBlock on ActionBlockRecord {
   __typename
@@ -11,6 +12,9 @@ fragment ActionBlock on ActionBlockRecord {
     }
     ... on ExternalLinkRecord {
       ...ExternalLink
+    }
+    ... on PhoneLinkRecord {
+      ...PhoneLink
     }
   }
 }

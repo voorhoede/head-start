@@ -1,0 +1,9 @@
+fragment PhoneLink on PhoneLinkRecord {
+  __typename
+  id
+  title
+  phoneNumber
+  action
+  text
+  style
+}
