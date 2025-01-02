@@ -2,7 +2,12 @@ import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import dotenv from 'dotenv-safe';
 import { buildClient } from '@datocms/cma-client-node';
-import { markdownToStructuredText } from '../lib/markdownToStructuredText';
+import { fromMarkdown } from 'mdast-util-from-markdown';
+import type { Root } from 'mdast';
+import { toHast } from 'mdast-util-to-hast';
+import { hastToStructuredText, type HastRootNode } from 'datocms-html-to-structured-text';
+import { validate } from 'datocms-structured-text-utils';
+import { visit } from 'unist-util-visit';
 import { datocmsEnvironment } from '../../../datocms-environment';
 
 dotenv.config({
@@ -46,7 +51,7 @@ type Page = {
 }
 async function upsertRecord ({ model, document, parent }: { model: Model, document: Document, parent?: Page }) {
   const record = await findRecordBySlug(document.slug);
-  const structuredText = await markdownToStructuredText(document.text, {});
+  const structuredText = await markdownToStructuredText(document.text);
   const textBlockItemType = await client.itemTypes.find('text_block');
 
   const data = {
@@ -95,9 +100,32 @@ async function findRecordBySlug (slug: string) {
   return items[0];
 }
 
-// function resolveLinks () {
+/**
+ * adapted from https://www.datocms.com/docs/structured-text/migrating-content-to-structured-text#migrating-markdown-content
+ */
+async function markdownToStructuredText(markdown: string) {
+  const mdast = fromMarkdown(markdown);
+  resolveLinks(mdast);
+  const hast = toHast(mdast) as HastRootNode;
+  const structuredText = await hastToStructuredText(hast);
+  const validationResult = validate(structuredText);
+  if (!validationResult.valid) {
+    throw new Error(validationResult.message);
+  }
+  return structuredText;
+}
 
-// }
+function resolveLinks (mdast: Root) {
+  visit(mdast, 'link', (node) => {
+    if (node.url.startsWith('./') && node.url.includes('.md')) {
+      node.url = node.url
+        .replace('./', '../')
+        .replace('.md', '/');
+    } else if (node.url.startsWith('../')) {
+      node.url = node.url.replace('../', 'https://github.com/voorhoede/head-start/tree/main/');
+    }
+  });
+}
 
 async function seedDocs() {
   const filenames = await listDocs();
