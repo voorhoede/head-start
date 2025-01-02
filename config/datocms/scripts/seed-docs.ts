@@ -95,13 +95,63 @@ async function findRecordBySlug (slug: string) {
   const items = await client.items.list({
     nested: true,
     filter: {
-      type: 'page',
+      type: modelType,
       fields: {
         slug: { eq: slug },
       }
     },
   });
   return items[0];
+}
+
+async function upsertDocumentationPartialRecord(documents: Document[]) {
+  const title = 'Documentation index';
+  const itemType = 'page_partial';
+  const model = await client.itemTypes.find(itemType);
+  const items = await client.items.list({
+    nested: true,
+    filter: {
+      type: itemType,
+      fields: {
+        title: { eq: title },
+      }
+    },
+  });
+  const record = items[0];
+
+  const markdown = documents.map(doc => {
+    return `* [${doc.title}](/en/${documentationSlug}/${doc.slug}/)`;
+  }).join('\n');
+  const structuredText = await markdownToStructuredText(markdown);
+  const textBlockItemType = await client.itemTypes.find('text_block');
+
+  const data = {
+    item_type: { type: 'item_type' as const, id: model.id },
+    title: { en: title },
+    blocks: {
+      en: [
+        {
+          type: 'item',
+          attributes: {
+            text: structuredText,
+          },
+          relationships: {
+            item_type: { 
+              data: { 
+                type: 'item_type', 
+                id: textBlockItemType.id
+              }
+            },
+          }
+        }
+      ],
+    }
+  };
+
+  record
+    ? await client.items.update(record.id, { ...record, ...data })
+    : await client.items.create(data);
+  console.log('✨', record ? 'updated' : 'created', 'page partial:', title);
 }
 
 async function getDocumentationRecord() {
@@ -151,11 +201,13 @@ async function seedDocs() {
   const filenames = await listDocs();
   const model = await client.itemTypes.find(modelType);
   const parent = await getDocumentationRecord();
-
+  const documents: Document[] = [];
   for (const filename of filenames) {
     const document = await readDoc(filename);
+    documents.push(document);
     await upsertRecord({ model, document, parent });
   }
+  await upsertDocumentationPartialRecord(documents);
 }
 
 seedDocs()
