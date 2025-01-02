@@ -25,13 +25,9 @@ async function listDocs() {
 async function readDoc(filename: string) {
   const filepath = path.join(docDirectory, filename);
   const contents = await readFile(filepath, 'utf-8');
-  const title = contents.split('\n')[0].replace(/^# /, '').trim();
-  // naive text cleanup:
-  const text = contents
-    .replace(/^# .*\n/, '') // remove title
-    .replace('](../', '](https://github.com/voorhoede/head-start/tree/main/') // fix relative links
-    .replace(/]\(\.\/([^)]*)\.md/g, (match, p1) => `](../${p1}/`) // remove .md from ](./*.md) links
-    .trim();
+  const titlePattern = /^# .*\n/;
+  const title = contents.match(titlePattern)?.[0].replace(/^# /, '').trim() ?? '';
+  const text = contents.replace(titlePattern, '')?.trim() ?? '';
   const slug = path.basename(filename, docExtension);
   return { slug, title, text };
 }
@@ -99,13 +95,16 @@ async function findRecordBySlug (slug: string) {
   return items[0];
 }
 
+// function resolveLinks () {
+
+// }
+
 async function seedDocs() {
-  const filenames = ['blocks-and-components.md'];
-  // const filenames = await listDocs();
+  const filenames = await listDocs();
   const model = await client.itemTypes.find(modelType);
   const parent = await findRecordBySlug('documentation');
-  console.log({ filenames });
-  console.log('todo, use for all docs', await listDocs());
+
+  // @todo: create Documentation parent page if it doesn't exist
 
   for (const filename of filenames) {
     const document = await readDoc(filename);
