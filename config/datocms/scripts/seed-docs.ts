@@ -21,6 +21,8 @@ const client = buildClient({
 const docExtension = '.md';
 const docDirectory = path.resolve(__dirname,'../../../docs');
 const modelType = 'page';
+const documentationSlug = 'documentation';
+const mainBranchUrl = 'https://github.com/voorhoede/head-start/tree/main/';
 
 async function listDocs() {
   const filenames = await readdir(docDirectory);
@@ -51,7 +53,9 @@ type Page = {
 }
 async function upsertRecord ({ model, document, parent }: { model: Model, document: Document, parent?: Page }) {
   const record = await findRecordBySlug(document.slug);
-  const structuredText = await markdownToStructuredText(document.text);
+  const note = `!Note: this page is auto-generated from [docs/${document.slug}.md](${mainBranchUrl}docs/${document.slug}.md).`;
+  const markdown = `${note}\n\n${document.text}`;
+  const structuredText = await markdownToStructuredText(markdown);
   const textBlockItemType = await client.itemTypes.find('text_block');
 
   const data = {
@@ -100,6 +104,22 @@ async function findRecordBySlug (slug: string) {
   return items[0];
 }
 
+async function getDocumentationRecord() {
+  const page = await findRecordBySlug(documentationSlug);
+  if (page) {
+    console.log('✅ documentation page already exists');
+    return page;
+  }
+
+  console.log('✨ creating new documentation page');
+  const model = await client.itemTypes.find(modelType);
+  return await upsertRecord({ model, document: { 
+    slug: documentationSlug, 
+    title: 'Documentation', 
+    text: ''
+  } });
+}
+
 /**
  * adapted from https://www.datocms.com/docs/structured-text/migrating-content-to-structured-text#migrating-markdown-content
  */
@@ -122,7 +142,7 @@ function resolveLinks (mdast: Root) {
         .replace('./', '../')
         .replace('.md', '/');
     } else if (node.url.startsWith('../')) {
-      node.url = node.url.replace('../', 'https://github.com/voorhoede/head-start/tree/main/');
+      node.url = node.url.replace('../', mainBranchUrl);
     }
   });
 }
@@ -130,9 +150,7 @@ function resolveLinks (mdast: Root) {
 async function seedDocs() {
   const filenames = await listDocs();
   const model = await client.itemTypes.find(modelType);
-  const parent = await findRecordBySlug('documentation');
-
-  // @todo: create Documentation parent page if it doesn't exist
+  const parent = await getDocumentationRecord();
 
   for (const filename of filenames) {
     const document = await readDoc(filename);
