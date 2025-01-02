@@ -1,11 +1,12 @@
 {
   "type": "commonjs",
   "dependencies": {
+    "@datocms/cma-client-node": "^3.4.0",
     "datocms-html-to-structured-text": "^4.0.1",
+    "datocms-structured-text-utils": "^4.0.1",
     "dotenv-safe": "^9.1.0",
+    "mdast-util-from-markdown": "^2.0.2",
     "mdast-util-to-hast": "^13.2.0",
-    "remark-parse": "^11.0.0",
-    "unified": "^11.0.5",
     "unist-util-visit": "^5.0.0"
   }
 }
