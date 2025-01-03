@@ -21,6 +21,7 @@ import PreviewModeProvider from '@components/PreviewMode/PreviewModeProvider.ast
 import StructuredData from '@components/StructuredData/StructuredData.astro';
 import SeoHead from '@components/SeoHead.astro';
 import SkipLink from '@components/SkipLink/SkipLink.astro';
+import { fontFamilyArchivo } from '@assets/fonts';
 import '@assets/a11y.css';
 
 interface Props {
@@ -82,7 +83,7 @@ const mainContentId = 'content';
   </body>
 </html>
 
-<style is:global>
+<style is:global define:vars={{ fontFamilyArchivo }}>
   /* very basic reset */
   *,
   *::before,
@@ -93,7 +94,7 @@ const mainContentId = 'content';
   body {
     margin: 0;
     padding: 0;
-    font-family: sans-serif;
+    font-family: var(--fontFamilyArchivo);
   }
   figure {
     margin: 0;
