@@ -2,10 +2,6 @@
 import archivo400url from '@fontsource/archivo/files/archivo-latin-400-normal.woff2?url';
 import archivo600url from '@fontsource/archivo/files/archivo-latin-600-normal.woff2?url';
 
-// urls above only resolve correctly in production; imports below are for development:
-import '@fontsource/archivo/latin-400.css';
-import '@fontsource/archivo/latin-600.css';
-
 export type Font = {
   family: string;
   weight: number;
@@ -30,7 +26,7 @@ export const fonts: Font[] = [
   },
 ];
 
-export const getFontCss = (font: Font) => {
+export const getFontFaceDeclaration = (font: Font) => {
   return /* css */`
     @font-face {
       font-family: '${font.family}';
