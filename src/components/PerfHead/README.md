@@ -6,7 +6,7 @@
 
 - Pre-connects to origins to speed up following requests.
 - Preloads font files for faster font loading and page rendering.
-- Inlines font declarations as critical CSS.
+- Inlines font declarations.
 
 ## Relevant links
 
