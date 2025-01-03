@@ -64,26 +64,25 @@ flowchart LR
 
 ## Getting started
 
-Follow the step-by-step [getting started instructions](docs/getting-started.md).
+Follow the step-by-step [getting started instructions](./docs/getting-started.md).
 
 ## Documentation
 
-All documentation is located in [`docs/`](docs/):
+All documentation is located in [`./docs/`](docs/):
 
-- [Getting Started](docs/getting-started.md)
-- [Accessibility (a11y)](docs/accessibility.md)
-- [Assets](docs/assets.md)
-- [Blocks and Components](docs/blocks-and-components.md)
-- [CMS Content Modelling](docs/cms-content-modelling.md)
-- [CMS Data Loading](docs/cms-data-loading.md)
-- [Internationalization (i18n)](docs/i18n.md)
-- [Project Structure](docs/project-structure.md)
-- [Preview Mode](docs/preview-mode.md)
-- [Routing](docs/routing.md)
-- [Search](docs/search.md)
-- [Search Engine Optimisation (SEO)](docs/seo.md)
-- [Testing](docs/testing.md)
-- [Upgrading](docs/upgrading.md)
+- [Getting Started](./docs/getting-started.md)
+- [Accessibility (a11y)](./docs/accessibility.md)
+- [Blocks and Components](./docs/blocks-and-components.md)
+- [CMS Content Modelling](./docs/cms-content-modelling.md)
+- [CMS Data Loading](./docs/cms-data-loading.md)
+- [Internationalization (i18n)](./docs/i18n.md)
+- [Project Structure](./docs/project-structure.md)
+- [Preview Mode](./docs/preview-mode.md)
+- [Routing](./docs/routing.md)
+- [Search](./docs/search.md)
+- [Search Engine Optimisation (SEO)](./docs/seo.md)
+- [Testing](./docs/testing.md)
+- [Upgrading](./docs/upgrading.md)
 
 ## Commands
 
