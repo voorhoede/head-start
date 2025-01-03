@@ -35,7 +35,7 @@ See [CMS Data Loading](./cms-data-loading.md) for documentation on the use of Gr
 
 ## Block templates
 
-Head Start uses the same convention for props and types for every Block: the `Props` interface always contains a `block` property containing the type based on the CMS model. This `block` type is automatically generated based on a Block's GraphQL Fragment file (see [CMS Data Loading](cms-data-loading.md#graphql-files)). This means a basic Block template looks like this:
+Head Start uses the same convention for props and types for every Block: the `Props` interface always contains a `block` property containing the type based on the CMS model. This `block` type is automatically generated based on a Block's GraphQL Fragment file (see [CMS Data Loading](./cms-data-loading.md#graphql-files)). This means a basic Block template looks like this:
 
 ```astro
 ---
