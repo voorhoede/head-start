@@ -2,7 +2,7 @@ import { afterEach, describe, test, expect, vi } from 'vitest';
 import robotsParser from 'robots-parser';
 import { robotsTxt, siteName, titleSuffix, titleTag } from '@lib/seo';
 import { getLocale } from '@lib/i18n';
-import aiRobotsTxt from './ai.robots.txt';
+import aiRobotsTxt from './ai.robots.txt?raw';
 
 vi.mock('@lib/i18n', () => ({
   getLocale: vi.fn(),

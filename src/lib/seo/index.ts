@@ -2,7 +2,7 @@ import type { Tag } from '@lib/datocms/types';
 import { getLocale } from '@lib/i18n';
 import type { SiteLocale } from '@lib/i18n/types';
 import { globalSeo } from '@lib/site.json';
-import aiRobotsTxt from './ai.robots.txt';
+import aiRobotsTxt from './ai.robots.txt?raw';
 
 export type PageUrl = {
   locale: SiteLocale,
