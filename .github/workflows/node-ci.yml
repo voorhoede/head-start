@@ -59,8 +59,11 @@ jobs:
         run: npm run lint:eslint -- --max-warnings 0
 
       # astro check finds more errors, but is slower, so run it last
+      # first removing files that cause false positives and are out-of-scope for Astro check
       - name: Lint Astro files
-        run: npm run lint:astro -- --minimumSeverity warning
+        run: |
+          rm -rf config/datocms/scripts/
+          npm run lint:astro -- --minimumSeverity warning
 
   validate-html:
     runs-on: ubuntu-latest
