@@ -96,6 +96,7 @@ All commands are run from the root of the project, from a terminal:
 | `preview`               | Preview your build locally, before deploying
 | `astro ...`             | Run commands like `astro add` (see `astro -- --help`)
 | `create`                | Scaffold new Block, Component, API or Page route
+| `analyze`               | Analyze and visualise both client & server bundles
 | `lint`                  | Check code style and valide HTML output
 | `test`                  | Runs the test suite, individual tests are available using `test:...`
 
