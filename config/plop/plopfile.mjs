@@ -46,6 +46,12 @@ export default function (plop) {
       },
       {
         type: 'confirm',
+        name: 'test',
+        message: 'Add test file (.test.ts)?',
+        default: false,
+      },
+      {
+        type: 'confirm',
         name: 'readme',
         message: 'Add README.md file?',
         default: false,
@@ -61,6 +67,12 @@ export default function (plop) {
         type: 'add',
         path: '../../src/blocks/{{ pascalCase name }}/{{ pascalCase name }}.fragment.graphql',
         templateFile: 'templates/block/Block.fragment.graphql.hbs',
+      },
+      {
+        type: 'add',
+        path: '../../src/blocks/{{ pascalCase name }}/{{ pascalCase name }}.test.ts',
+        templateFile: 'templates/block/Block.test.ts.hbs',
+        skip: (data) => !data.test && 'No test file',
       },
       {
         type: 'add',
@@ -93,6 +105,12 @@ export default function (plop) {
       },
       {
         type: 'confirm',
+        name: 'test',
+        message: 'Add test file (.test.ts)?',
+        default: false,
+      },
+      {
+        type: 'confirm',
         name: 'readme',
         message: 'Add README.md file?',
         default: false,
@@ -109,6 +127,12 @@ export default function (plop) {
         path: '../../src/components/{{ pascalCase name }}/{{ pascalCase name }}.client.ts',
         templateFile: 'templates/component/Component.client.ts.hbs',
         skip: (data) => !data.script && 'No client-side script',
+      },
+      {
+        type: 'add',
+        path: '../../src/components/{{ pascalCase name }}/{{ pascalCase name }}.test.ts',
+        templateFile: 'templates/component/Component.client.ts.hbs',
+        skip: (data) => !data.test && 'No test file',
       },
       {
         type: 'add',
