@@ -62,7 +62,11 @@
     "promise-all-props": "^3.0.0",
     "regexparam": "^3.0.0",
     "rosetta": "^1.1.0",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "workbox-cacheable-response": "^7.3.0",
+    "workbox-expiration": "^7.3.0",
+    "workbox-routing": "^7.3.0",
+    "workbox-strategies": "^7.3.0"
   },
   "devDependencies": {
     "@astrojs/ts-plugin": "^1.10.4",
