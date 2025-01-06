@@ -14,6 +14,7 @@ import SkipLink from '@components/SkipLink/SkipLink.astro';
 import AppHeader from './AppHeader/AppHeader.astro';
 import PerfHead from './PerfHead/PerfHead.astro';
 import SeoHead from './SeoHead/SeoHead.astro';
+import { fontFamilyArchivo } from '@assets/fonts';
 import '@assets/a11y.css';
 
 interface Props {
@@ -65,7 +66,7 @@ const menuItems = data.app?.menuItems ?? [];
   </body>
 </html>
 
-<style is:global>
+<style is:global define:vars={{ fontFamilyArchivo }}>
   /* very basic reset */
   *,
   *::before,
@@ -76,7 +77,7 @@ const menuItems = data.app?.menuItems ?? [];
   body {
     margin: 0;
     padding: 0;
-    font-family: sans-serif;
+    font-family: var(--fontFamilyArchivo);
   }
   figure {
     margin: 0;
