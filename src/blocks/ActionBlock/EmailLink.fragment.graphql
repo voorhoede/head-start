@@ -1,0 +1,9 @@
+fragment EmailLink on EmailLinkRecord {
+  __typename
+  id
+  title
+  emailAddress
+  emailSubject
+  emailBody
+  style
+}
