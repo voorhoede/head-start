@@ -3,7 +3,7 @@ import type { AppMenuFragment } from '@lib/datocms/types';
 import LinkToRecord from '@components/LinkToRecord/LinkToRecord.astro';
 
 export interface Props {
-  item: AppMenuFragment['menuItems'][0];
+  item: AppMenuFragment['menuItems'][number];
 }
 const { item, ...props } = Astro.props;
 ---

@@ -1,4 +1,5 @@
 class AppMenu extends HTMLElement {
+  #closeButton: HTMLButtonElement;
   #menuButton: HTMLButtonElement;
   #dialog: HTMLDialogElement;
   #menuList: HTMLElement;
@@ -6,6 +7,7 @@ class AppMenu extends HTMLElement {
 
   constructor() {
     super();
+    this.#closeButton = this.querySelector('[data-menu-close]') as HTMLButtonElement;
     this.#menuButton = this.querySelector('[data-menu-button]') as HTMLButtonElement;
     this.#dialog = this.querySelector('[data-menu-dialog]') as HTMLDialogElement;
     this.#menuList = this.querySelector('[data-menu-list]') as HTMLElement;
@@ -20,6 +22,18 @@ class AppMenu extends HTMLElement {
     this.#menuButton.focus();
   }
 
+  #onDialogClick(event: MouseEvent) {
+    const rect = this.#dialog.getBoundingClientRect();
+    const isClickOutside = 
+      event.clientY < rect.top ||
+      event.clientY > rect.bottom ||
+      event.clientX < rect.left ||
+      event.clientX > rect.right;
+    if (isClickOutside) {
+      this.close();
+    }
+  }
+
   #onResize() {
     this.classList.remove('is-compact');
     const isFitting = this.#menuList.scrollWidth <= this.#menuList.clientWidth;
@@ -29,14 +43,16 @@ class AppMenu extends HTMLElement {
   connectedCallback() {
     this.#menuButton.removeAttribute('hidden');
     this.#menuButton.addEventListener('click', this.open.bind(this));
-    this.#dialog.addEventListener('click', this.close.bind(this));
+    this.#dialog.addEventListener('click', this.#onDialogClick.bind(this));
+    this.#closeButton.addEventListener('click', this.close.bind(this));
     this.#observer = new ResizeObserver(() => this.#onResize());
     this.#observer.observe(this);
   }
 
   disconnectedCallback() {
     this.#menuButton.removeEventListener('click', this.open.bind(this));
-    this.#dialog.removeEventListener('click', this.close.bind(this));
+    this.#dialog.removeEventListener('click', this.#onDialogClick.bind(this));
+    this.#closeButton.removeEventListener('click', this.close.bind(this));
     this.#observer?.disconnect();
   }
 }
