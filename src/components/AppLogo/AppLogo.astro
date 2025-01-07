@@ -1,0 +1,11 @@
+---
+import { t } from '@lib/i18n';
+import { getHomeHref } from '@lib/routing';
+import { siteName } from '@lib/seo';
+---
+
+<a
+  rel="home"
+  href={getHomeHref()}
+  aria-label={t('go_to_home_page', { siteName: siteName() })}>[Logo]</a
+>
