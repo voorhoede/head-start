@@ -11,7 +11,7 @@ export default async function (client: Client) {
     label: 'Allow AI Bots',
     field_type: 'boolean',
     api_key: 'allow_ai_bots',
-    hint: 'When you don\'t allow AI bots access, we\'ll signal AI platforms (like OpenAI) to not use your content for training their models or using it for AI search queries.',
+    hint: 'When you disallow AI bots access, we signal AI platforms (like OpenAI) not to use your content for training their models or using it for AI search queries. Note that they can choose to ignore this.',
     appearance: { addons: [], editor: 'boolean', parameters: {} },
     default_value: false,
   });
