@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "license": "ISC",
   "scripts": {
+    "analyze": "ANALYZE=true npm run build",
     "astro": "astro",
     "prebuild": "run-s prep",
     "build": "astro build",
@@ -91,6 +92,7 @@
     "nano-staged": "^0.8.0",
     "npm-run-all": "^4.1.5",
     "plop": "^4.0.0",
+    "sonda": "^0.7.1",
     "svg-sprite": "^2.0.2",
     "vitest": "^1.6.0",
     "wrangler": "^3.23.0"
