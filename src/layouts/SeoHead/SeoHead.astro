@@ -1,0 +1,55 @@
+---
+import { getLocale } from '@lib/i18n';
+import { getOpenSearchName, getOpenSearchPathname } from '@lib/search';
+import type { PageUrl } from '@lib/seo';
+import type { Tag } from '@lib/datocms/types';
+import DynamicTag from '@components/DynamicTag.astro';
+
+interface Props {
+  pageUrls: PageUrl[];
+  tags: Tag[];
+}
+
+const { pageUrls, tags } = Astro.props;
+
+const locale = getLocale();
+const metaTags = tags.filter((tag) => tag.tag !== 'title');
+const titleTag = tags.find((tag) => tag.tag === 'title');
+---
+
+{titleTag && <title>{titleTag.content}</title>}
+{
+  metaTags.map((tag) => (
+    // @ts-expect-error
+    <DynamicTag as={tag.tag} {...tag.attributes} />
+  ))
+}
+
+{
+  pageUrls.map((pageUrl: PageUrl) =>
+    pageUrl.locale === locale ? (
+      <>
+        <link rel="canonical" href={new URL(pageUrl.pathname, Astro.site)} />
+        <meta
+          property="og:url"
+          content={new URL(pageUrl.pathname, Astro.site)}
+        />
+      </>
+    ) : (
+      <link
+        rel="alternate"
+        href={new URL(pageUrl.pathname, Astro.site)}
+        hreflang={pageUrl.locale}
+      />
+    )
+  )
+}
+
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+<link
+  rel="search"
+  type="application/opensearchdescription+xml"
+  title={getOpenSearchName(locale)}
+  href={getOpenSearchPathname(locale)}
+/>
