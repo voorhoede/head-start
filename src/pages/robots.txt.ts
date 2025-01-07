@@ -9,9 +9,9 @@ import query from './_robots.query.graphql';
 export const prerender = true;
 
 export const GET: APIRoute = async (context) => {
-  const { /*app, */ site } = await datocmsRequest<RobotsTxtQuery>({ query });
+  const { app, site } = await datocmsRequest<RobotsTxtQuery>({ query });
   const allowAll = !site.noIndex && !context.locals.isPreview;
-  const allowAiBots = allowAll && false; /* app?.allowAiBots; */
+  const allowAiBots = allowAll && Boolean(app?.allowAiBots);
 
   return new Response(robotsTxt({
     allowAiBots,
