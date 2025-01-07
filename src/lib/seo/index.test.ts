@@ -101,7 +101,7 @@ describe('seo', () => {
     expect(robots.isAllowed('/', 'HeadStartExampleBot')).toBe(true);
   });
 
-  test('robots.txt allows all bots when allowAll is false', () => {
+  test('robots.txt disallows any bots when allowAll is false', () => {
     const siteUrl = 'https://example.com';
     const allowAiBots = true; // irrelevant for this test, but required
     const allowAll = false;
