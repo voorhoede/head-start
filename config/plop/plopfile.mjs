@@ -5,6 +5,7 @@
  * @param {import('plop').NodePlopAPI} plop
  */
 export default function (plop) {
+  plop.setHelper('eq', (a, b) => a === b);
   plop.setHelper('hasRouteLocale', (value) => value.includes('[locale]/'));
   plop.setHelper('routeParams', (value) => {
     // return all params in between [] in value:
@@ -14,8 +15,16 @@ export default function (plop) {
       .map((param) => param.slice(1, -1)) // remove brackets
       .filter((param) => param !== 'locale'); // remove locale param
   });
+  plop.setHelper('trailingParam', (value) =>
+    // Return the trailing param in a route
+    // If the last slug is not a param, this is undefined
+    value.split('/').pop()?.match(/\[(.*?)\]/)?.[1]
+  );
   plop.setHelper('trailingSlash', (value) =>
     value.endsWith('/') ? value : `${value}/`
+  );
+  plop.setHelper('toTemplateString', (value) => 
+    `${value.replace(/\[(.*?)\]/g, '${$1}')}`
   );
 
   plop.setGenerator('api', {
@@ -149,12 +158,19 @@ export default function (plop) {
       {
         type: 'input',
         name: 'route',
-        message: 'Page route (e.g. [locale]/search/ )?',
+        message: 'Page route (e.g. `[locale]/search/`)?',
       },
       {
         type: 'input',
         name: 'name',
         message: 'Model name in DatoCMS? (leave empty if none)',
+      },
+      {
+        when: (data) => !!data.name,
+        type: 'confirm',
+        name: 'separateRouting',
+        message: (data) => `Create separate file in routing for \`${plop.getHelper('pascalCase')(data.name)}\`?`,
+        default: false,
       },
     ],
     actions: [
@@ -168,6 +184,18 @@ export default function (plop) {
         path: '../../src/pages/{{ trailingSlash route }}_index.query.graphql',
         templateFile: 'templates/page/route.query.graphql.hbs',
         skip: (data) => !data.name && 'No DatoCMS model',
+      },
+      {
+        type: 'add',
+        path: '../../src/lib/routing/{{ pascalCase name }}Route.fragment.graphql',
+        templateFile: 'templates/page/page.fragment.graphql.hbs',
+        skip: (data) => !data.name && 'No RouteFragment',
+      },
+      {
+        type: 'add',
+        path: '../../src/lib/routing/{{ camelCase name }}.ts',
+        templateFile: 'templates/page/page.ts.hbs',
+        skip: (data) => !data.separateRouting && 'No separate route',
       },
     ],
   });

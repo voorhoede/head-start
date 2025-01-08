@@ -1,0 +1,28 @@
+{{#if (hasRouteLocale route) }}
+import type { {{ pascalCase name }}RouteFragment, SiteLocale } from '@lib/datocms/types';
+import { getLocalizedSlug } from './lib/slug';
+
+export const get{{ pascalCase name }}Path = ({ locale, record }: { locale?: SiteLocale, record: {{ pascalCase name }}RouteFragment }) => {
+  {{#each (routeParams route) }}
+  {{#if (eq (trailingParam ../route) this) }}
+  const {{this}} = getLocalizedSlug({ locale, record: record })
+  {{else}}
+  const {{this}} = getLocalizedSlug({ locale, record: record.{{this}} });
+  {{/if}}
+  {{/each}}
+  return `{{{ toTemplateString route }}}`;
+};
+{{else}}
+import type { {{ pascalCase name }}RouteFragment } from '@lib/datocms/types';
+
+export const get{{ pascalCase name }}Path = (record: {{ pascalCase name }}RouteFragment) => {
+  {{#each (routeParams route) }}
+  {{#if (eq (trailingParam ../route) this) }}
+  const {{this}} = record.slug;
+  {{else}}
+  const {{this}} = record.{{this}}.slug;
+  {{/if}}
+  {{/each}}
+  return `{{{ toTemplateString route }}}`;
+};
+{{/if}}
