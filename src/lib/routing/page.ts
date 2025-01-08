@@ -1,12 +1,10 @@
 import type { PageRouteFragment, SiteLocale } from '@lib/datocms/types';
+import { getLocalizedSlug, getSlugFromPath, type MaybeSlug } from './lib/slug';
 
 export type PageRouteForPath =
   & Pick<PageRouteFragment, '_allSlugLocales' | 'parentPage'>
   & { parentPage?: PageRouteForPath | null };
 
-type MaybeSlug = string | undefined;
-
-const missingSlug = '-';
 
 export function getParentPages(page: PageRouteFragment): PageRouteFragment[] {
   if (page.parentPage) {
@@ -29,11 +27,11 @@ export function getParentPages(page: PageRouteFragment): PageRouteFragment[] {
  * - ['grand-parent', 'parent-slug']  (grand parent and parent page available in given locale)
  * - ['grand-parent', undefined]      (grand parent page available, parent page not available in given locale)
  */
-export const getParentSlugs = ({ page, locale }: { page: PageRouteForPath, locale?: SiteLocale }): MaybeSlug[] => {
+export const getParentSlugs = ({ locale, page }: { locale?: SiteLocale, page: PageRouteForPath }): MaybeSlug[] => {
   if (page.parentPage) {
-    const slug = page.parentPage._allSlugLocales?.find(slug => slug.locale === locale)?.value;
+    const slug = getLocalizedSlug<PageRouteForPath>({ locale, record: page.parentPage });
     return [
-      ...getParentSlugs({ page: page.parentPage, locale }),
+      ...getParentSlugs({ locale, page: page.parentPage }),
       slug
     ];
   }
@@ -53,9 +51,9 @@ export const getParentSlugs = ({ page, locale }: { page: PageRouteForPath, local
  * - -/-/page-slug                        (missing parent and grand parent in given locale)
  * - -                                    (missing page in given locale)
  */
-export const getPagePath = ({ page, locale }: { page: PageRouteForPath, locale?: SiteLocale }) => {
-  const slug = page._allSlugLocales?.find(slug => slug.locale === locale)?.value || missingSlug;
-  const parentSlugs = getParentSlugs({ page, locale }).map(slug => slug || missingSlug);
+export const getPagePath = ({ locale, page }: { locale?: SiteLocale, page: PageRouteForPath }) => {
+  const slug = getLocalizedSlug({ locale, record: page });
+  const parentSlugs = getParentSlugs({ locale, page });
   return [...parentSlugs, slug].join('/');
 };
 
@@ -68,8 +66,5 @@ export const getPagePath = ({ page, locale }: { page: PageRouteForPath, locale?:
  * - /page-1/?foo=bar
  * - /grand-parent/parent-slug/page-1
  */
-export const getPageSlugFromPath = (path: URL['pathname']) => {
-  const url = new URL(path, 'https://www.example.com');
-  const slug = url.pathname.split('/').filter(Boolean).pop() as string;
-  return slug;
-};
+export const getPageSlugFromPath = (path: URL['pathname']) => 
+  getSlugFromPath(path) as string;
