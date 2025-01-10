@@ -61,3 +61,15 @@ Head Start automatically generates an XML sitemap, using the official [`@astro/s
 The [default layout](../src/layouts/Default.astro) and a [`robots.txt`](../src/pages/robots.txt.ts) both link to the generated XML sitemap (`/sitemap-index.xml`), so it's picked up and indexed by search engines.
 
 Note: Head Start does not set `changefreq`, `lastmod` and `priority` values in the XML Sitemap. See [decision log](./decision-log/2023-11-22-use-astro-sitemap.md).
+
+## (Dis)allow AI bots
+
+Editors can toggle if they want to (dis)allow AI bots access to their content via the CMS (under App). When AI bots are disallowed, a snippet is injected into the [`robots.txt`](../src/pages/robots.txt.ts) to `Disallow: /` a list of known AI bots (such as GPTBot and ClaudeBot).
+
+Note: the list of known AI bots is saved to [`lib/seo/ai.robots.txt`](../src/lib/seo/ai.robots.txt) as vendor code. To download a newer version from [`github.com/ai-robots-txt/ai.robots.txt`](https://github.com/ai-robots-txt/ai.robots.txt) you can run:
+
+```shell
+npx jiti scripts/download-ai-robots-txt.ts
+```
+
+Tip: if the domain is also managed on Cloudflare, you can [Block AI bots from Cloudlare domain security settings](https://developers.cloudflare.com/bots/concepts/bot/#ai-bots) (also see [background info](https://blog.cloudflare.com/declaring-your-aindependence-block-ai-bots-scrapers-and-crawlers-with-a-single-click/)). And in addition you can [run an audit for AI bot insights](https://blog.cloudflare.com/cloudflare-ai-audit-control-ai-content-crawlers/) on your domain.

@@ -1,26 +1,19 @@
 ---
-import type {
-  DefaultLayoutQuery,
-  Site,
-  SiteLocale,
-  Tag,
-} from '@lib/datocms/types';
+import type { DefaultLayoutQuery, SiteLocale, Tag } from '@lib/datocms/types';
 import { datocmsRequest } from '@lib/datocms';
-import { defaultLocale, t } from '@lib/i18n';
-import { getHomeHref } from '@lib/routing';
-import { datocmsNoIndex, getSearchPathname } from '@lib/search';
-import { siteName } from '@lib/seo';
+import { defaultLocale } from '@lib/i18n';
+import { datocmsNoIndex } from '@lib/search';
 import type { PageUrl } from '@lib/seo';
 import query from './default.query.graphql';
 import Breadcrumbs from '@components/Breadcrumbs/Breadcrumbs.astro';
 import type { Breadcrumb } from '@components/Breadcrumbs';
 import IconSprite from '@components/Icon/IconSprite.astro';
-import LocaleSelector from '@components/LocaleSelector/LocaleSelector.astro';
-import PerfHead from '@components/PerfHead/PerfHead.astro';
 import PreviewModeProvider from '@components/PreviewMode/PreviewModeProvider.astro';
 import StructuredData from '@components/StructuredData/StructuredData.astro';
-import SeoHead from '@components/SeoHead.astro';
 import SkipLink from '@components/SkipLink/SkipLink.astro';
+import AppHeader from './AppHeader/AppHeader.astro';
+import PerfHead from './PerfHead/PerfHead.astro';
+import SeoHead from './SeoHead/SeoHead.astro';
 import { fontFamilyArchivo } from '@assets/fonts';
 import '@assets/a11y.css';
 
@@ -31,12 +24,13 @@ interface Props {
 }
 
 const { locale = defaultLocale } = Astro.params as { locale?: SiteLocale };
-const data = (await datocmsRequest<DefaultLayoutQuery>({
+const data = await datocmsRequest<DefaultLayoutQuery>({
   query,
   variables: { locale },
-})) as { site: Site };
+});
 const { breadcrumbs = [], pageUrls, seoMetaTags } = Astro.props;
 const mainContentId = 'content';
+const menuItems = data.app?.menuItems ?? [];
 ---
 
 <!doctype html>
@@ -47,27 +41,16 @@ const mainContentId = 'content';
     <PerfHead />
     <SeoHead
       pageUrls={pageUrls}
-      tags={[...data.site.faviconMetaTags, ...seoMetaTags]}
+      tags={[...data.seo.faviconMetaTags, ...seoMetaTags]}
     />
     <StructuredData />
   </head>
   <body>
     <PreviewModeProvider>
       <SkipLink targetId={mainContentId} />
-      <header {...datocmsNoIndex}>
-        {
-          /* accessible home link, inspired by https://www.gov.uk/; with Microformats rel */
-        }
-        <a
-          rel="home"
-          href={getHomeHref()}
-          aria-label={t('go_to_home_page', { siteName: siteName() })}>[Logo]</a
-        >
-        <div>
-          <LocaleSelector pageUrls={pageUrls} />
-          <a rel="search" href={getSearchPathname(locale)}>{t('search')}</a>
-        </div>
-      </header>
+      <div {...datocmsNoIndex}>
+        <AppHeader {menuItems} {pageUrls} />
+      </div>
       {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
       {
         /* main element requires tabindex to be focusable, see SkipLink/README.md */
@@ -112,15 +95,6 @@ const mainContentId = 'content';
   }
 
   /* Basic layout: header, main, footer */
-  header {
-    display: flex;
-    justify-content: space-between;
-    padding: 1rem;
-    border-bottom: 2px solid black;
-  }
-  header div {
-    display: flex;
-  }
   main {
     margin: auto;
     padding: 1rem;

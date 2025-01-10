@@ -1,0 +1,21 @@
+---
+import type { AppMenuFragment } from '@lib/datocms/types';
+import LinkToRecord from '@components/LinkToRecord/LinkToRecord.astro';
+
+export interface Props {
+  item: AppMenuFragment['menuItems'][number];
+}
+const { item, ...props } = Astro.props;
+---
+
+<li {...props}>
+  {
+    item.__typename === 'MenuItemInternalRecord' ? (
+      <LinkToRecord record={item.link}>
+        {item.title || item.link.title}
+      </LinkToRecord>
+    ) : (
+      item.title
+    )
+  }
+</li>
