@@ -2,8 +2,8 @@ import type { APIRoute, AstroIntegration } from 'astro';
 import { fileURLToPath } from 'node:url';
 import * as esbuild from 'esbuild';
 
-const serviceWorkerSrc = fileURLToPath(new URL('../src/assets/service-worker.ts', import.meta.url));
-const serviceWorkerDist = fileURLToPath(new URL('../dist/service-worker.js', import.meta.url));
+const serviceWorkerSrc = fileURLToPath(new URL('../../src/assets/service-worker.ts', import.meta.url));
+const serviceWorkerDist = fileURLToPath(new URL('../../dist/service-worker.js', import.meta.url));
 
 export default function serviceWorkerIntegration(): AstroIntegration {
   return {
@@ -37,6 +37,7 @@ export default function serviceWorkerIntegration(): AstroIntegration {
         } catch (e) {
           console.error('Failed to build service worker');
           console.error(e);
+          process.exit(1);
         }
       },
     },
