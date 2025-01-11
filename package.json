@@ -44,7 +44,12 @@
     "post": "run-s post:* --print-label",
     "post:remove-public-dir-readme": "rm dist/README.md",
     "postinstall": "npx husky install",
-    "seed:docs": "npm run seed:docs --workspace=config/datocms"
+    "seed:docs": "npm run seed:docs --workspace=config/datocms",
+    "cms:environments:create": "jiti scripts/cms-create-environment.ts",
+    "cms:environments:destroy": "jiti scripts/cms-destroy-environment.ts",
+    "cms:environments:promote": "jiti scripts/cms-promote-environment.ts",
+    "cms:migrations:generate": "jiti scripts/cms-generate-migration.ts",
+    "cms:migrations:run": "jiti scripts/cms-run-migrations.ts"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
