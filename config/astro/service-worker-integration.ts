@@ -1,9 +1,11 @@
 import type { APIRoute, AstroIntegration } from 'astro';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as esbuild from 'esbuild';
 
-const serviceWorkerSrc = fileURLToPath(new URL('../../src/assets/service-worker.ts', import.meta.url));
-const serviceWorkerDist = fileURLToPath(new URL('../../dist/service-worker.js', import.meta.url));
+const filenamePath = (filename: string) => fileURLToPath(new URL(join('../../', filename), import.meta.url));
+const srcFilename = filenamePath('src/assets/service-worker.ts');
+const outFilename = filenamePath('dist/service-worker.js');
 
 export default function serviceWorkerIntegration(): AstroIntegration {
   return {
@@ -16,7 +18,7 @@ export default function serviceWorkerIntegration(): AstroIntegration {
       }) => {
         const isDevelopment = command === 'dev';
         if (isDevelopment) {
-          addWatchFile(serviceWorkerSrc);
+          addWatchFile(srcFilename);
           injectRoute({
             pattern: '/service-worker.js',
             entrypoint: import.meta.url,
@@ -26,8 +28,8 @@ export default function serviceWorkerIntegration(): AstroIntegration {
       'astro:build:done': async () => {
         try {
           await esbuild.build({
-            entryPoints: [serviceWorkerSrc],
-            outfile: serviceWorkerDist,
+            entryPoints: [srcFilename],
+            outfile: outFilename,
             target: ['es2020'],
             bundle: true,
             minify: true,
@@ -46,8 +48,8 @@ export default function serviceWorkerIntegration(): AstroIntegration {
 
 export const GET: APIRoute = async () => {
   const output =  await esbuild.build({
-    entryPoints: [serviceWorkerSrc],
-    outdir: serviceWorkerDist,
+    entryPoints: [srcFilename],
+    outdir: outFilename,
     target: ['es2020'],
     bundle: true,
     minify: false,
