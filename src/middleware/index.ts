@@ -5,7 +5,6 @@ import { i18n } from './i18n';
 import { preview } from './preview';
 import { redirects } from './redirects';
 
-
 export const onRequest = sequence(
   datocms,
   i18n,
