@@ -1,0 +1,8 @@
+fragment ExternalLink on ExternalLinkRecord {
+  __typename
+  id
+  title
+  url
+  openInNewTab
+  style
+}

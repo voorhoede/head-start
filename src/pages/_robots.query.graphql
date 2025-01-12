@@ -1,0 +1,8 @@
+query RobotsTxt {
+  site: _site {
+    noIndex
+  }
+  app {
+    allowAiBots
+  }
+}

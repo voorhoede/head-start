@@ -2,7 +2,7 @@
  * A custom HTML element that enhances an `<img>` element with additional behavior.
  * Automatically removes the inline `background-image` style once the image is fully loaded.
  */
-class ImageBlock extends HTMLElement {
+class ImageComponent extends HTMLElement {
   imgElement: HTMLImageElement;
 
   handleImageLoad = (): void => {
@@ -28,4 +28,4 @@ class ImageBlock extends HTMLElement {
   }
 }
 
-customElements.define('image-block', ImageBlock);
+customElements.define('image-component', ImageComponent);
