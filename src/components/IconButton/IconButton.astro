@@ -1,0 +1,16 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import type { IconName } from '@components/Icon';
+import Icon from '@components/Icon';
+
+export interface Props extends HTMLAttributes<'button'> {
+  icon: IconName;
+  label: string;
+}
+const { icon, label, ...props } = Astro.props;
+---
+
+<button type="button" {...props}>
+  <Icon name={icon} />
+  <span class="a11y-sr-only">{label}</span>
+</button>

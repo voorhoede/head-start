@@ -72,11 +72,11 @@ All documentation is located in [`./docs/`](docs/):
 
 - [Getting Started](./docs/getting-started.md)
 - [Accessibility (a11y)](./docs/accessibility.md)
+- [Assets](./docs/assets.md)
 - [Blocks and Components](./docs/blocks-and-components.md)
 - [CMS Content Modelling](./docs/cms-content-modelling.md)
 - [CMS Data Loading](./docs/cms-data-loading.md)
 - [Internationalization (i18n)](./docs/i18n.md)
-- [Performance](./docs/performance.md)
 - [Project Structure](./docs/project-structure.md)
 - [Preview Mode](./docs/preview-mode.md)
 - [Routing](./docs/routing.md)
