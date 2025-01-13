@@ -56,6 +56,7 @@ export default defineConfig({
     serviceWorker()
   ],
   output: isPreview ? 'server' : 'static',
+  prefetch: true,
   server: { port: localhostPort },
   site: siteUrl,
   vite: {
