@@ -26,6 +26,10 @@ class VideoBlock extends HTMLElement {
    * @see https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
    */
   #useDataSaveMode = (() => {
+    if (!('connection' in navigator)) {
+      return false;
+    }
+    
     type NetworkInformation = { saveData: boolean; }
     const connection = (navigator as unknown as { connection: NetworkInformation }).connection;
     return connection.saveData === true;
