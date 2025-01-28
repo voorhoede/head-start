@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { previewCookieName } from '../../../middleware';
+import { previewCookieName } from '@middleware/preview';
 import { cookiePath } from './enter';
 
 export const prerender = false;

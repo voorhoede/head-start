@@ -2,6 +2,10 @@
 
 **Head Start leverages [Astro file-based routing](https://docs.astro.build/en/core-concepts/routing/#_top) combined with Cloudflare features for redirects and page not found behaviour. The setup is enhanced with i18n routing, API routing, nested page routing and helpers to resolve routes.**
 
+## Routing middleware
+
+Head Start leverages [Astro middleware](https://docs.astro.build/en/guides/middleware/) to add checks, data and error handling to routes. See [`src/middleware/` directory for details](../src/middleware/).
+
 ## I18n routes
 
 Head Start supports multi-language websites with localised routing (`/:locale/page/to/page/`). See [i18n configuration and routing](./i18n.md).
