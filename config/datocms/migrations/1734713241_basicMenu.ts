@@ -2,7 +2,9 @@ import { Client } from '@datocms/cli/lib/cma-client-node';
 
 export default async function (client: Client) {
   console.log('Create new models/block models');
-
+  const home = await client.itemTypes.find('home_page');
+  const page = await client.itemTypes.find('page');
+  
   console.log('Create model "\uD83D\uDDA5\uFE0F Website" (`app`)');
   await client.itemTypes.create(
     {
@@ -88,7 +90,7 @@ export default async function (client: Client) {
         on_publish_with_unpublished_references_strategy: 'fail',
         on_reference_unpublish_strategy: 'delete_references',
         on_reference_delete_strategy: 'delete_references',
-        item_types: ['LjXdkuCdQxCFT4hv8_ayew', 'X_tZn3TxQY28ltSyjZUGHQ'],
+        item_types: [page.id, home.id],
       },
       required: {},
     },
