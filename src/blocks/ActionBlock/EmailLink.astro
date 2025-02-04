@@ -11,8 +11,11 @@ const { emailAddress, emailSubject, emailBody, ...props } = Astro.props;
 
 const getHref = ({ emailAddress, emailSubject, emailBody }: EmailLinkProps) => {
   const url = new URL(`mailto:${emailAddress}`);
-  if (emailSubject) url.searchParams.set('subject', emailSubject);
-  if (emailBody) url.searchParams.set('body', emailBody);
+  const params = [
+    ...emailSubject ? [`subject=${encodeURIComponent(emailSubject)}`] : [],
+    ...emailBody ? [`body=${encodeURIComponent(emailBody)}`] : [],
+  ];
+  if (params.length) url.search = params.join('&');
   return url.href;
 };
 
