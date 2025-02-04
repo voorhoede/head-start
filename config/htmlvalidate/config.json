@@ -6,6 +6,7 @@
   ],
 
   "rules": {
-    "require-sri": ["off"]
+    "require-sri": ["off"],
+    "unique-landmark": ["warn"]
   }
 }
