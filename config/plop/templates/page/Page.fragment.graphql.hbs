@@ -1,0 +1,29 @@
+fragment {{ pascalCase name }}Route on {{ pascalCase name }}Record {
+  __typename
+  id
+  title
+  {{#each (routeParams route)}}
+  {{#if (eq (trailingParam ../route) this)}}
+  slug
+  {{#if (hasRouteLocale ../route)}}
+  _allSlugLocales {
+    locale
+    value
+  }
+  {{/if}}
+  {{else}}
+  {{this}} {
+    __typename
+    id
+    title
+    slug
+    {{#if (hasRouteLocale ../route)}}
+    _allSlugLocales {
+      locale
+      value
+    }
+    {{/if}}
+  }
+  {{/if}}
+  {{/each}}
+}
