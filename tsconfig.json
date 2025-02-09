@@ -8,6 +8,7 @@
       "@components/*": ["src/components/*"],
       "@layouts/*": ["src/layouts/*"],
       "@lib/*": ["src/lib/*"],
+      "@middleware/*": ["src/middleware/*"],
       "@pages/*": ["src/pages/*"],
       "@root/*": ["./*"],
       "@src/*": ["src/*"]

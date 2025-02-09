@@ -17,12 +17,12 @@ type QueryVariables = { query: Query; variables?: Variables };
 class PreviewMode extends HTMLElement {
   barElement: PreviewModeBar;
   subscriptionElements: PreviewModeSubscription[];
-  #datocmsToken: string = '';
-  #datocmsEnvironment: string = '';
   $connections = map<Connection>({});
   $connectionError = atom<boolean>(false);
   $connectionStatus = atom<ConnectionStatus>('closed');
   $updateCounts = map<{ [key: string]: number }>({});
+  #datocmsToken: string = '';
+  #datocmsEnvironment: string = '';
 
   constructor() { 
     super();
@@ -139,7 +139,7 @@ class PreviewModeSubscription extends HTMLElement {
       return { query, variables };
     } catch (error) {
       console.warn('PreviewModeSubscription: script element does not contain valid JSON', script.innerText);
-      return;
+      return void error;
     }
   }
 }

@@ -1,0 +1,22 @@
+---
+import { datocmsAssetsOrigin, datocmsGraphqlOrigin } from '@lib/datocms';
+import { fonts, getFontFaceDeclaration } from '@assets/fonts';
+
+const preConnectOrigins = [datocmsAssetsOrigin, datocmsGraphqlOrigin];
+const woff2urls = fonts.map((font) => font.woff2Url);
+const fontFaceDeclaration = fonts.map((font) => getFontFaceDeclaration(font)).join('\n');
+---
+
+{preConnectOrigins.map((origin) => <link rel="preconnect" href={origin} />)}
+{
+  woff2urls.map((url) => (
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href={url}
+      crossorigin="anonymous"
+    />
+  ))
+}
+<style set:html={fontFaceDeclaration}></style>

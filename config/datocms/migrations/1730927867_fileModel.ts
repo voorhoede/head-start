@@ -2,6 +2,8 @@ import { Client } from '@datocms/cli/lib/cma-client-node';
 
 export default async function (client: Client) {
   console.log('Manage upload filters');
+  const home = await client.itemTypes.find('home_page');
+  const page = await client.itemTypes.find('page');
 
   console.log('Install plugin "Computed Fields"');
   await client.plugins.create({
@@ -113,8 +115,8 @@ export default async function (client: Client) {
         on_reference_delete_strategy: 'delete_references',
         item_types: [
           'GjWw8t-hTFaYYWyc53FeIg',
-          'LjXdkuCdQxCFT4hv8_ayew',
-          'X_tZn3TxQY28ltSyjZUGHQ',
+          page.id,
+          home.id
         ],
       },
     },
@@ -140,8 +142,8 @@ export default async function (client: Client) {
         on_reference_delete_strategy: 'delete_references',
         item_types: [
           'GjWw8t-hTFaYYWyc53FeIg',
-          'LjXdkuCdQxCFT4hv8_ayew',
-          'X_tZn3TxQY28ltSyjZUGHQ',
+          page.id,
+          home.id
         ],
       },
     },

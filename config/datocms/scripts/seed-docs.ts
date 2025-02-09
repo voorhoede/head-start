@@ -148,9 +148,11 @@ async function upsertDocumentationPartialRecord(documents: Document[]) {
     }
   };
 
-  record
-    ? await client.items.update(record.id, { ...record, ...data })
-    : await client.items.create(data);
+  if (record) {
+    await client.items.update(record.id, { ...record, ...data });
+  } else {
+    await client.items.create(data);
+  }
   console.log('✨', record ? 'updated' : 'created', 'page partial:', title);
 }
 

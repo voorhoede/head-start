@@ -2,6 +2,8 @@ import { Client } from '@datocms/cli/lib/cma-client-node';
 
 export default async function (client: Client) {
   console.log('Update existing fields/fieldsets');
+  const home = await client.itemTypes.find('home_page');
+  const page = await client.itemTypes.find('page');
 
   console.log(
     'Update Structured text field "Text" (`text`) in block model "\uD83D\uDCDD \uD83D\uDDBC\uFE0F Text Image Block" (`text_image_block`)'
@@ -20,7 +22,7 @@ export default async function (client: Client) {
         on_publish_with_unpublished_references_strategy: 'fail',
         on_reference_unpublish_strategy: 'delete_references',
         on_reference_delete_strategy: 'delete_references',
-        item_types: ['LjXdkuCdQxCFT4hv8_ayew', 'X_tZn3TxQY28ltSyjZUGHQ'],
+        item_types: [page.id, home.id],
       },
     },
   });
@@ -28,7 +30,8 @@ export default async function (client: Client) {
   console.log(
     'Update Slug field "Slug" (`slug`) in model "\uD83D\uDCD1 Page" (`page`)'
   );
-  await client.fields.update('SFfpl7xiQaGe5-jy6tlPfg', { position: 2 });
+  const slug = await client.fields.find('page::slug');
+  await client.fields.update(slug.id, { position: 2 });
 
   console.log(
     'Update Structured text field "Text" (`text`) in block model "\uD83D\uDCDD Text Block" (`text_block`)'
@@ -48,7 +51,7 @@ export default async function (client: Client) {
         on_publish_with_unpublished_references_strategy: 'fail',
         on_reference_unpublish_strategy: 'delete_references',
         on_reference_delete_strategy: 'delete_references',
-        item_types: ['LjXdkuCdQxCFT4hv8_ayew', 'X_tZn3TxQY28ltSyjZUGHQ'],
+        item_types: [page.id, home.id],
       },
     },
   });
@@ -77,7 +80,8 @@ export default async function (client: Client) {
   console.log(
     'Update model "\u2934\uFE0F Schema migration" (`schema_migration`)'
   );
-  await client.itemTypes.update('EkWwcYfPQSGXskAZKO_tTg', {
+  const schemaMigrationItemType = await client.itemTypes.find('schema_migration');
+  await client.itemTypes.update(schemaMigrationItemType.id, {
     name: '\u2934\uFE0F Schema migration',
   });
 
@@ -101,22 +105,50 @@ export default async function (client: Client) {
   console.log('Manage menu items');
 
   console.log('Delete menu item "Schema migration"');
-  await client.menuItems.destroy('Pl3NAPTcQVmC0ben2g6V8Q');
+  const menuItems = await client.menuItems.list();
+  const schemaMigrationMenuItem = menuItems.find(item => item.label === 'Schema migration'),
+    translationMenuItem = menuItems.find(item => item.label === '\uD83C\uDF10 Translation'),
+    pagesMenuItem = menuItems.find(item => item.label === '\uD83D\uDCD1 Pages'),
+    homeMenuItem = menuItems.find(item => item.label === '\uD83C\uDFE0 Home'),
+    notFoundMenuItem = menuItems.find(item => item.label === '\uD83E\uDD37 404 Page');
+
+  if (
+    !schemaMigrationMenuItem ||
+    !translationMenuItem ||
+    !pagesMenuItem ||
+    !homeMenuItem ||
+    !notFoundMenuItem
+  )
+    throw new Error(`Expected menu items to consist of: [
+    "Schema Migration", 
+    "Translation", 
+    "Pages", 
+    "Home", 
+    "404 Page", 
+    "Redirect Rules", 
+    "Image Block", 
+    "Table Block", and 
+    "Video Embed Block",
+    ] but received: [
+    ${menuItems.map(item => `    "${item.label}"`).join(',\n')}
+    ]`);
+
+  await client.menuItems.destroy(schemaMigrationMenuItem.id);
 
   console.log('Update menu item "\uD83C\uDF10 Translations"');
-  await client.menuItems.update('Rl4MJgiIR2akoRpTSmqHHg', {
+  await client.menuItems.update(translationMenuItem.id, {
     label: '\uD83C\uDF10 Translations',
     position: 5,
   });
 
   console.log('Update menu item "\uD83D\uDCD1 Pages"');
-  await client.menuItems.update('B_78LT8CQ12Cyj27FKLw-Q', { position: 3 });
+  await client.menuItems.update(pagesMenuItem.id, { position: 3 });
 
   console.log('Update menu item "\uD83C\uDFE0 Home"');
-  await client.menuItems.update('C2TTNIPgSZapZlrQpxEdSQ', { position: 2 });
+  await client.menuItems.update(homeMenuItem.id, { position: 2 });
 
   console.log('Update menu item "\uD83E\uDD37 404 Page"');
-  await client.menuItems.update('LNNzMSjXQ5CDv1JmXT0XOg', { position: 4 });
+  await client.menuItems.update(notFoundMenuItem.id, { position: 4 });
 
   console.log('Manage schema menu items');
 
