@@ -10,7 +10,11 @@ import { validate } from 'datocms-structured-text-utils';
 import { visit } from 'unist-util-visit';
 import { datocmsEnvironment } from '../../../datocms-environment';
 
+const rootDir = path.resolve(__dirname, '../../../');
+
 dotenv.config({
+  path: path.resolve(rootDir, '.env'),
+  sample: path.resolve(rootDir, '.env.example'),
   allowEmptyValues: Boolean(process.env.CI),
 });
 
@@ -19,7 +23,7 @@ const client = buildClient({
   environment: datocmsEnvironment,
 });
 const docExtension = '.md';
-const docDirectory = path.resolve(__dirname,'../../../docs');
+const docDirectory = path.resolve(rootDir,'docs/');
 const modelType = 'page';
 const documentationSlug = 'documentation';
 const mainBranchUrl = 'https://github.com/voorhoede/head-start/tree/main/';
