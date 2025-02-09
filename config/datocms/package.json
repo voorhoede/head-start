@@ -1,5 +1,8 @@
 {
   "type": "commonjs",
+  "scripts": {
+    "seed:docs": "jiti ./scripts/seed-docs.ts"
+  },
   "dependencies": {
     "@datocms/cma-client-node": "^3.4.0",
     "datocms-html-to-structured-text": "^4.0.1",
