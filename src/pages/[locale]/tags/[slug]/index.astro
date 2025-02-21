@@ -1,0 +1,63 @@
+---
+import { getCollection } from 'astro:content';
+import type { SiteLocale, TagRouteFragment, TagQuery } from '@lib/datocms/types';
+import { datocmsCollection, datocmsRequest } from '@lib/datocms';
+import { locales } from '@lib/i18n';
+import { getTagHref } from '@lib/routing';
+import Layout from '@layouts/Default.astro';
+import query from './_index.query.graphql';
+
+export async function getStaticPaths() {
+  const tags = await datocmsCollection<TagRouteFragment>({
+    collection: 'Tags',
+    fragment: '_allSlugLocales { locale, value }',
+  });
+  return tags.flatMap((tag) => {
+    return tag._allSlugLocales?.map((slug) => ({ 
+      params: { locale: slug.locale, slug: slug.value }
+    }));
+  });
+}
+
+export type Params = {
+  locale: SiteLocale;
+  slug: string;
+};
+const { locale, slug } = Astro.params as Params;
+
+const { allTags, tag } = await datocmsRequest<TagQuery>({ query, variables: { locale, slug } }) as {
+  allTags: TagQuery['allTags'];
+  tag: NonNullable<TagQuery['tag']>; // Only NonNullable when statically generated. Handle as a 404 when this is a server route!
+};
+
+const pages = await getCollection('pages', ({ data: page }) => {
+  const isLocaleMatch = page._meta.locale === locale;
+  const isTagMatch = page.tags.some((t) => t.slug === slug);
+  return isLocaleMatch && isTagMatch;
+});
+const otherTags = allTags.filter((t) => t.slug !== slug);
+
+const pageUrls = locales.map((locale) => ({ locale, pathname: getTagHref({ locale, record: tag }) }));
+---
+
+<Layout pageUrls={pageUrls} seoMetaTags={[]}>
+  <h1>🏷️ { tag.title }</h1>
+  <ul>
+    {otherTags.map((otherTag) => (
+      <li>
+        <a href={ `${Astro.request.url}filter/?tags[]=${otherTag.slug}` }>+ { otherTag.title }</a>
+      </li>
+    ))}
+  </ul>
+
+  <section>
+    <h2>Pages</h2>
+    <ul>
+      {pages.map(({ data: page }) => (
+        <li>
+          <a href={page._meta.href}>{page.title}</a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Layout>

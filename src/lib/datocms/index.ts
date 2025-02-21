@@ -75,15 +75,26 @@ type CollectionMeta = {
  */
 export const datocmsCollection = async <CollectionType>({
   collection,
-  fragment
+  filter,
+  fragment,
+  locale,
 }: {
   collection: string,
-  fragment: string
+  fragment: string,
+  locale?: SiteLocale,
+  filter?: string,
 }) => {
+  const localeValue = locale ?? 'null';
+  const filterValue = filter ?? '{}';
   const { meta } = await datocmsRequest({
     query: parse(/* graphql */`
       query ${collection}Meta {
-        meta: _all${collection}Meta { count }
+        meta: _all${collection}Meta(
+          locale: ${localeValue},
+          filter: ${filterValue},
+        ) { 
+          count
+        }
       }
    `)
   }) as { meta: CollectionMeta };
@@ -97,8 +108,10 @@ export const datocmsCollection = async <CollectionType>({
       query: parse(/* graphql */`
         query All${collection} {
           ${collection}: all${collection} (
-             first: ${recordsPerPage},
-             skip: ${page * recordsPerPage}
+            locale: ${localeValue},
+            filter: ${filterValue},
+            first: ${recordsPerPage},
+            skip: ${page * recordsPerPage},
           ) {
             ${fragment}
           }
@@ -108,6 +121,8 @@ export const datocmsCollection = async <CollectionType>({
 
     records.push(...data[collection]);
   }
+
+  console.log(`Fetched ${records.length} records from DatoCMS collection '${collection}'`);
 
   return records;
 };

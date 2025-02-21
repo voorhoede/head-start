@@ -1,0 +1,63 @@
+---
+import { getCollection } from 'astro:content';
+import type { SiteLocale, TagQuery } from '@lib/datocms/types';
+import { datocmsRequest } from '@lib/datocms';
+import { locales } from '@lib/i18n';
+import { getTagHref } from '@lib/routing';
+import Layout from '@layouts/Default.astro';
+import query from './_index.query.graphql';
+
+export const prerender = false;
+
+export type Params = {
+  locale: SiteLocale;
+  slug: string;
+};
+const { locale, slug } = Astro.params as Params;
+
+const { allTags, tag } = await datocmsRequest<TagQuery>({ query, variables: { locale, slug } }) as {
+  allTags: TagQuery['allTags'];
+  tag: NonNullable<TagQuery['tag']>; // Only NonNullable when statically generated. Handle as a 404 when this is a server route!
+};
+
+const { searchParams } = new URL(Astro.request.url);
+const searchTagSlugs = searchParams.getAll('tags[]');
+
+const activeTags = allTags.filter((t) => t.slug === slug || searchTagSlugs.includes(t.slug));
+
+const pages = await getCollection('pages', ({ data: page }) => {
+  const isLocaleMatch = page._meta.locale === locale;
+  const isTagMatch = page.tags.some((t) => {
+    return activeTags.some((at) => at.slug === t.slug);
+  });
+  return isLocaleMatch && isTagMatch;
+});
+
+const pageUrls = locales.map((locale) => ({ locale, pathname: getTagHref({ locale, record: tag }) }));
+---
+
+<Layout pageUrls={pageUrls} seoMetaTags={[]}>
+  <h1>🏷️ { activeTags.map(t => t.title).join(', ') }</h1>
+  <h2>Pages with any of these tags</h2>
+  <ul>
+    {pages.map(({ data: page }) => (
+      <li>
+        <a href={page._meta.href}>{page.title}</a>
+        <ul class="tags">
+          {page.tags.map((pageTag) => (
+            <li>{pageTag.title}</li>
+          ))}
+        </ul>
+      </li>
+    ))}
+  </ul>
+</Layout>
+
+<style>
+  .tags {
+    display: flex;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+  }
+</style>

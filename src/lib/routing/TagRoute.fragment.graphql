@@ -1,0 +1,10 @@
+fragment TagRoute on TagRecord {
+  __typename
+  id
+  title
+  slug
+  _allSlugLocales {
+    locale
+    value
+  }
+}

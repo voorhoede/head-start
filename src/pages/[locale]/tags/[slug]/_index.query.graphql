@@ -1,0 +1,14 @@
+#import '@lib/routing/PageRoute.fragment.graphql'
+#import '@lib/routing/TagRoute.fragment.graphql'
+
+query Tag($locale: SiteLocale!, $slug: String!) {
+  allTags(locale: $locale) {
+    ...TagRoute
+  }
+  tag(locale: $locale, filter: { slug: { eq: $slug } }) {
+    ...TagRoute
+    pages: _allReferencingPages {
+      ...PageRoute
+    }
+  }
+}

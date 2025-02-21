@@ -1,0 +1,5 @@
+# fragment PagesCollection on PageRecord {
+#   id
+#   title
+#   slug
+# }

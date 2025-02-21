@@ -1,0 +1,47 @@
+---
+import { getCollection } from 'astro:content';
+import { locales } from '@lib/i18n';
+import Layout from '@layouts/Default.astro';
+
+export async function getStaticPaths() {
+  return locales.map((locale) => ({ params: { locale } }));
+}
+
+const locale = Astro.params.locale;
+const pages = (await getCollection('pages', ({ data }) => data._meta.locale === locale))
+  .sort((a, b) => a.data.title.localeCompare(b.data.title));
+const pageUrls = locales.map((locale) => ({ locale, pathname: `/${locale}/index/pages/` }));
+---
+
+<Layout pageUrls={pageUrls} seoMetaTags={[]}>
+  <h1>Index for Pages ({ locale.toUpperCase() })</h1>
+  <ul>
+    {pages.map(({ data: page }) => (
+      <li>
+        <a href={page._meta.href}>{page.title}</a>
+        <ul class="tags">
+          {page.tags.map((tag) => (
+            <li>
+              <a href={`/${locale}/tags/${tag.slug}/`}>{tag.title}</a>
+            </li>
+          ))}
+        </ul>
+      </li>
+    ))}
+  </ul>
+</Layout>
+
+<style>
+  .tags {
+    display: flex;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+  }
+  .tags a {
+    text-decoration: none;
+    padding: 3px;
+    border: 1px solid black;
+    border-radius: 3px;
+  }
+</style>
