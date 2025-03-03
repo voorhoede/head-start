@@ -25,6 +25,7 @@
     "prep:clean-astro-env": "rm -rf node_modules/.astro",
     "prep:cloudflare-env": "touch .dev.vars",
     "prep:datocms-types": "graphql-codegen --config .graphqlrc.ts",
+    "prep:download-file-proxy-map": "jiti scripts/download-file-proxy-map.ts",
     "prep:download-redirects": "jiti scripts/download-redirects.ts",
     "prep:download-site-data": "jiti scripts/download-site-data.ts",
     "prep:download-translations": "jiti scripts/download-translations.ts",
