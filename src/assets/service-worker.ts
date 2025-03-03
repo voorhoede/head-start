@@ -7,6 +7,11 @@ import { NetworkFirst } from 'workbox-strategies';
 import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 import { ExpirationPlugin } from 'workbox-expiration';
 
+const STATUS_CODES = {
+  Opaque: 0,
+  OK: 200,
+} as const;
+
 self.addEventListener('install', () => {
   self.skipWaiting();
 });
@@ -22,7 +27,7 @@ registerRoute(
     cacheName: 'pages',
     plugins: [
       new CacheableResponsePlugin({
-        statuses: [0, 200],
+        statuses: [STATUS_CODES.Opaque, STATUS_CODES.OK],
       }),
       new ExpirationPlugin({
         maxEntries: 30,
