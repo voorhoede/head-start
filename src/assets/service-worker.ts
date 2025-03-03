@@ -2,15 +2,24 @@
 declare const self: ServiceWorkerGlobalScope;
 export default null;
 
-import { registerRoute } from 'workbox-routing';
-import { NetworkFirst } from 'workbox-strategies';
 import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 import { ExpirationPlugin } from 'workbox-expiration';
+import { NetworkFirst } from 'workbox-strategies';
+import { registerRoute } from 'workbox-routing';
+import { setCacheNameDetails } from 'workbox-core';
+
+// be careful not to import the whole package.json, as it will be included in the final bundle
+import { name } from '@root/package.json';
 
 const STATUS_CODES = {
   Opaque: 0,
   OK: 200,
 } as const;
+
+setCacheNameDetails({
+  prefix: name,
+  suffix: 'v1',
+});
 
 self.addEventListener('install', () => {
   self.skipWaiting();
