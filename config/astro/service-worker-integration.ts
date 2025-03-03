@@ -7,6 +7,16 @@ const filenamePath = (filename: string) => fileURLToPath(new URL(join('../../', 
 const srcFilename = filenamePath('src/assets/service-worker.ts');
 const outFilename = filenamePath('dist/service-worker.js');
 
+const buildConfig = {
+  entryPoints: [srcFilename],
+  outfile: outFilename,
+  target: ['es2020'],
+  bundle: true,
+  minify: true,
+  allowOverwrite: true,
+  sourcemap: true,
+};
+
 export default function serviceWorkerIntegration(): AstroIntegration {
   return {
     name: 'service-worker',
@@ -28,13 +38,8 @@ export default function serviceWorkerIntegration(): AstroIntegration {
       'astro:build:done': async () => {
         try {
           await esbuild.build({
-            entryPoints: [srcFilename],
-            outfile: outFilename,
-            target: ['es2020'],
-            bundle: true,
-            minify: true,
-            allowOverwrite: true,
-            sourcemap: true,
+            ...buildConfig,
+            write: true,
           });
         } catch (e) {
           console.error('Failed to build service worker');
@@ -48,13 +53,9 @@ export default function serviceWorkerIntegration(): AstroIntegration {
 
 export const GET: APIRoute = async () => {
   const output =  await esbuild.build({
-    entryPoints: [srcFilename],
-    outdir: outFilename,
-    target: ['es2020'],
-    bundle: true,
-    minify: false,
+    ...buildConfig,
     write: false,
-    allowOverwrite: true,
+    minify: false,
     sourcemap: false,
   });
 
