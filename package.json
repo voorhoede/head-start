@@ -2,6 +2,9 @@
   "name": "head-start",
   "type": "module",
   "version": "0.0.1",
+  "workspaces": [
+    "config/datocms"
+  ],
   "license": "ISC",
   "scripts": {
     "analyze": "ANALYZE=true npm run build",
