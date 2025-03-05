@@ -1,6 +1,5 @@
-import { parse } from 'graphql';
+import { Kind, parse, type DocumentNode, type FragmentDefinitionNode } from 'graphql';
 import { print } from 'graphql/language/printer';
-import type { DocumentNode } from 'graphql';
 import type { SiteLocale } from '@lib/i18n/types';
 import { titleSuffix } from '@lib/seo';
 import { datocmsBuildTriggerId, datocmsEnvironment } from '../../../datocms-environment';
@@ -61,8 +60,9 @@ interface CollectionData<CollectionType> {
   [key: string]: CollectionType[];
 }
 
-type CollectionMeta = {
-  count: number;
+export type CollectionInfo = {
+  meta: { count: number };
+  records: [] | [{ __typename: string }];
 };
 
 /**
@@ -72,35 +72,55 @@ type CollectionMeta = {
  * DatoCMS GraphQL API has a limit of 100 records per request.
  * This function uses pagination to get all records.
  * @see https://www.datocms.com/docs/content-delivery-api/pagination
+ * 
+ * @param {string} params.collection 
+ * - The name of the DatoCMS collection. For example, `"Pages"`
+ * @param {DocumentNode|string} params.fragment 
+ * - The GraphQL fragment to include for each record, For example `pageRouteFragment`.
  */
 export const datocmsCollection = async <CollectionType>({
   collection,
   fragment
 }: {
-  collection: string,
-  fragment: string
+  collection: string;
+  fragment: string | DocumentNode;
 }) => {
-  const { meta } = await datocmsRequest({
+  const {
+    meta,
+    records: [
+      { __typename: type } = { __typename: '' } // Collection might be empty
+    ]
+  } = await datocmsRequest<CollectionInfo>({
     query: parse(/* graphql */`
       query ${collection}Meta {
+        records: all${collection}(first: 1) { __typename }
         meta: _all${collection}Meta { count }
       }
    `)
-  }) as { meta: CollectionMeta };
-
+  });
   const recordsPerPage = 100; // DatoCMS GraphQL API has a limit of 100 records per request
   const totalPages = Math.ceil(meta.count / recordsPerPage);
   const records: CollectionType[] = [];
+  const fragmentDocument = typeof fragment === 'string'
+    ? parse(`fragment InlineFragment on ${type} { ${fragment} }`)
+    : fragment;
+  const { definitions } = fragmentDocument;
+  const fragmentDefinition = definitions
+    .find((definition): definition is FragmentDefinitionNode =>
+      definition.kind === Kind.FRAGMENT_DEFINITION
+    );
 
   for (let page = 0; page < totalPages; page++) {
     const data = await datocmsRequest({
       query: parse(/* graphql */`
+        ${print(fragmentDocument)}
+        
         query All${collection} {
           ${collection}: all${collection} (
              first: ${recordsPerPage},
              skip: ${page * recordsPerPage}
           ) {
-            ${fragment}
+            ...${fragmentDefinition?.name?.value}
           }
         }
       `),
@@ -151,7 +171,7 @@ export const formatSearchResults = ({ query, results }: { query: string, results
     }));
     const { pathname } = new URL(url);
     // use Text Fragment for deeplinking: https://developer.mozilla.org/en-US/docs/Web/Text_fragments
-    const textFragmentUrl = `${url}#:~:${ matches.map(({ matchingTerm }) => `text=${encodeURIComponent(matchingTerm)}`).join('&')}`;
+    const textFragmentUrl = `${url}#:~:${matches.map(({ matchingTerm }) => `text=${encodeURIComponent(matchingTerm)}`).join('&')}`;
 
     return {
       title: title.replace(new RegExp(`${titleSuffix()}$`), '').trim(),
@@ -164,11 +184,11 @@ export const formatSearchResults = ({ query, results }: { query: string, results
   });
 };
 
-export const datocmsSearch = async({ locale, query, fuzzy = true }: { locale: SiteLocale, query: string, fuzzy?: boolean }) => {
+export const datocmsSearch = async ({ locale, query, fuzzy = true }: { locale: SiteLocale, query: string, fuzzy?: boolean }) => {
   const url = new URL('https://site-api.datocms.com/search-results');
   url.searchParams.set('locale', locale);
   url.searchParams.set('q', query); // DatoCMS docs say this should be 'query', but that results in a 422 error
-  if (fuzzy){
+  if (fuzzy) {
     url.searchParams.set('fuzzy', 'true');
   }
   url.searchParams.set('build_trigger_id', datocmsBuildTriggerId);

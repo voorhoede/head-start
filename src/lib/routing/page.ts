@@ -1,11 +1,6 @@
 import type { PageRouteFragment, SiteLocale } from '@lib/datocms/types';
 import { getLocalizedSlug, getSlugFromPath, type MaybeSlug } from './lib/slug';
 
-export type PageRouteForPath =
-  & Pick<PageRouteFragment, '_allSlugLocales' | 'parentPage'>
-  & { parentPage?: PageRouteForPath | null };
-
-
 export function getParentPages(page: PageRouteFragment): PageRouteFragment[] {
   if (page.parentPage) {
     return [
@@ -27,9 +22,9 @@ export function getParentPages(page: PageRouteFragment): PageRouteFragment[] {
  * - ['grand-parent', 'parent-slug']  (grand parent and parent page available in given locale)
  * - ['grand-parent', undefined]      (grand parent page available, parent page not available in given locale)
  */
-export const getParentSlugs = ({ locale, page }: { locale?: SiteLocale, page: PageRouteForPath }): MaybeSlug[] => {
+export const getParentSlugs = ({ locale, page }: { locale?: SiteLocale, page: PageRouteFragment }): MaybeSlug[] => {
   if (page.parentPage) {
-    const slug = getLocalizedSlug<PageRouteForPath>({ locale, record: page.parentPage });
+    const slug = getLocalizedSlug<PageRouteFragment>({ locale, record: page.parentPage });
     return [
       ...getParentSlugs({ locale, page: page.parentPage }),
       slug
@@ -51,7 +46,7 @@ export const getParentSlugs = ({ locale, page }: { locale?: SiteLocale, page: Pa
  * - -/-/page-slug                        (missing parent and grand parent in given locale)
  * - -                                    (missing page in given locale)
  */
-export const getPagePath = ({ locale, page }: { locale?: SiteLocale, page: PageRouteForPath }) => {
+export const getPagePath = ({ locale, page }: { locale?: SiteLocale, page: PageRouteFragment }) => {
   const slug = getLocalizedSlug({ locale, record: page });
   const parentSlugs = getParentSlugs({ locale, page });
   return [...parentSlugs, slug].join('/');
