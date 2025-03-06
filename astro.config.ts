@@ -2,10 +2,13 @@ import { defineConfig, envField, passthroughImageService } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import graphql from '@rollup/plugin-graphql';
 import sitemap from '@astrojs/sitemap';
+import Sonda from 'sonda/astro';
 import type { PluginOption } from 'vite';
 import { isPreview } from './config/preview';
 import pkg from './package.json';
+import serviceWorker from './config/astro/service-worker-integration.ts';
 
+const isAnalyseMode = process.env.ANALYZE === 'true';
 const productionUrl = `https://${ pkg.name }.pages.dev`; // overwrite if you have a custom domain
 const localhostPort = 4323; // 4323 is "head" in T9
 export const siteUrl = process.env.CF_PAGES
@@ -50,11 +53,22 @@ export default defineConfig({
     // @see https://docs.astro.build/en/guides/images/#configure-no-op-passthrough-service
     service: passthroughImageService()
   },
-  integrations: [sitemap()],
+  integrations: [
+    serviceWorker(),
+    sitemap(),
+    Sonda({
+      enabled: isAnalyseMode,
+      filename: 'reports/sonda-report-[env].html',
+      server: true,
+    }),
+  ],
   output: isPreview ? 'server' : 'static',
   server: { port: localhostPort },
   site: siteUrl,
   vite: {
+    build: {
+      sourcemap: isAnalyseMode,
+    },
     plugins: [
       graphql() as PluginOption,
     ],

@@ -10,5 +10,6 @@ fragment FileRoute on FileRecord {
     url
   }
   locale
+  path
   title
 }

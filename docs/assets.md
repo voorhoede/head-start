@@ -40,3 +40,9 @@ import Icon from '@components/Icon/';
   }
 </style>
 ```
+
+## Service Worker
+
+Head Start provides a fully customisable service worker in [`src/assets/service-worker.ts`](../src/assets/service-worker.ts) that's automatically bundle and served as `/service-worker.js` (in both development and production) and registered in each web page (using inline script in `src/layouts/PerfHead`). The service worker uses the low-level [Workbox modules](https://developer.chrome.com/docs/workbox/modules) for fine-grained control.
+
+For more background see [decision log on service worker](./decision-log/2025-01-11-service-worker.md).
