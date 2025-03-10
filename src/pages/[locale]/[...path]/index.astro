@@ -41,7 +41,7 @@ type Params = {
 
 const { locale, path } = Astro.params as Params;
 const variables = { locale, slug: getPageSlugFromPath(path) };
-const { page } = await datocmsRequest<PageQuery>({ query, variables });
+const { page } = await datocmsRequest<PageQuery /*, typeof prerender */>({ query, variables });
 const breadcrumbs = [...getParentPages(page), page].map((page) =>
   formatBreadcrumb({
     text: page.title,

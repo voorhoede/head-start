@@ -4,13 +4,15 @@ import graphql from '@rollup/plugin-graphql';
 import sitemap from '@astrojs/sitemap';
 import Sonda from 'sonda/astro';
 import type { PluginOption } from 'vite';
-import { isPreview } from './config/preview';
 import pkg from './package.json';
+import { isPreview } from './config/preview';
+import { output } from './config/output';
 import serviceWorker from './config/astro/service-worker-integration.ts';
 
 const isAnalyseMode = process.env.ANALYZE === 'true';
-const productionUrl = `https://${ pkg.name }.pages.dev`; // overwrite if you have a custom domain
+const productionUrl = `https://${pkg.name}.pages.dev`; // overwrite if you have a custom domain
 const localhostPort = 4323; // 4323 is "head" in T9
+
 export const siteUrl = process.env.CF_PAGES
   ? (process.env.CF_PAGES_BRANCH === 'main')
     ? productionUrl
@@ -62,7 +64,7 @@ export default defineConfig({
       server: true,
     }),
   ],
-  output: isPreview ? 'server' : 'static',
+  output: isPreview ? 'server' : output, // @see `/config/output.ts``
   server: { port: localhostPort },
   site: siteUrl,
   vite: {

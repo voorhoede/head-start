@@ -17,7 +17,8 @@ type Params = {
 
 const { locale } = Astro.params as Params;
 const variables = { locale };
-const { page } = await datocmsRequest<NotFoundPageQuery>({ query, variables });
+// While this page is not prerendered, we still want to treat it as a regular page with the default prerender strategy.
+const { page } = await datocmsRequest<NotFoundPageQuery, true>({ query, variables });
 ---
 
 <Layout pageUrls={[]} seoMetaTags={[noIndexTag, titleTag(page.title)]}>
