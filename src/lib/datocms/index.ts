@@ -15,12 +15,17 @@ type DatocmsRequest = {
   variables?: { [key: string]: string };
   retryCount?: number;
 };
+
+type Assert<Query> = Required<{ [key in keyof Query]: NonNullable<Query[key]> }>;
+
 /**
  * Makes a request to the DatoCMS GraphQL API using the provided query and variables.
  * It has authorization, environment and drafts (preview) pre-configured.
  * It has a retry mechanism in case of rate-limiting, based on DatoCMS API utils. @see https://github.com/datocms/js-rest-api-clients/blob/f4e820d/packages/rest-client-utils/src/request.ts#L239C13-L255
  */
-export const datocmsRequest = async <T>({ query, variables = {}, retryCount = 1 }: DatocmsRequest): Promise<T> => {
+export const datocmsRequest = async <Query>(
+  { query, variables = {}, retryCount = 1 }: DatocmsRequest,
+): Promise<Assert<Query>> => {
   const headers = new Headers({
     Authorization: DATOCMS_READONLY_API_TOKEN,
     'Content-Type': 'application/json',

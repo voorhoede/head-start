@@ -15,10 +15,7 @@ export async function getStaticPaths() {
 
 const { locale } = Astro.params;
 const variables = { locale };
-const { page } = (await datocmsRequest<HomePageQuery>({
-  query,
-  variables,
-})) as { page: NonNullable<HomePageQuery['page']> };
+const { page } = await datocmsRequest<HomePageQuery>({ query, variables });
 const pageUrls = locales.map((locale) => ({
   locale,
   pathname: getHomeHref({ locale }),

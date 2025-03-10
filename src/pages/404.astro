@@ -11,11 +11,13 @@ export const prerender = false;
 
 Astro.response.status = 404;
 
-const { locale } = Astro.params as { locale: SiteLocale };
-const { page } = (await datocmsRequest<NotFoundPageQuery>({
-  query,
-  variables: { locale },
-})) as { page: NonNullable<NotFoundPageQuery['page']> };
+type Params = {
+  locale: SiteLocale;
+};
+
+const { locale } = Astro.params as Params;
+const variables = { locale };
+const { page } = await datocmsRequest<NotFoundPageQuery>({ query, variables });
 ---
 
 <Layout pageUrls={[]} seoMetaTags={[noIndexTag, titleTag(page.title)]}>
