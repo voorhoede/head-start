@@ -43,7 +43,8 @@
     "test:unit": "vitest run",
     "post": "run-s post:* --print-label",
     "post:remove-public-dir-readme": "rm dist/README.md",
-    "postinstall": "npx husky install"
+    "postinstall": "npx husky install",
+    "seed:docs": "npm run seed:docs --workspace=config/datocms"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
