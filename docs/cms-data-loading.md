@@ -4,7 +4,7 @@
 
 ## Configuration
 
-Head Start supports the use of [primary and sandbox environments in DatoCMS](https://www.datocms.com/docs/scripting-migrations/introduction). This enables feature branches to use a different environment than the main branch. You need to set the DatoCMS environment where content should be fetched from in [`/datocms-environment.ts`](/datocms-environment.ts):
+Head Start supports the use of [primary and sandbox environments in DatoCMS](https://www.datocms.com/docs/scripting-migrations/introduction). This enables feature branches to use a different environment than the main branch. You need to set the DatoCMS environment where content should be fetched from in [`/datocms-environment.ts`](../datocms-environment.ts):
 
 ```ts
 export const datocmsEnvironment = 'your-environment-name';

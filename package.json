@@ -2,6 +2,9 @@
   "name": "head-start",
   "type": "module",
   "version": "0.0.1",
+  "workspaces": [
+    "config/datocms"
+  ],
   "license": "ISC",
   "scripts": {
     "analyze": "ANALYZE=true npm run build",
@@ -40,7 +43,8 @@
     "test:unit": "vitest run",
     "post": "run-s post:* --print-label",
     "post:remove-public-dir-readme": "rm dist/README.md",
-    "postinstall": "npx husky install"
+    "postinstall": "npx husky install",
+    "seed:docs": "npm run seed:docs --workspace=config/datocms"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
@@ -73,7 +77,7 @@
   "devDependencies": {
     "@astrojs/ts-plugin": "^1.10.4",
     "@datocms/cli": "^2.0.5",
-    "@datocms/cma-client-node": "^2.0.0",
+    "@datocms/cma-client-node": "^3.4.0",
     "@graphql-codegen/cli": "^5.0.0",
     "@graphql-codegen/introspection": "^4.0.0",
     "@graphql-codegen/typescript": "^4.0.1",
