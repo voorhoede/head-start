@@ -1,0 +1,9 @@
+---
+import type { GroupingItemBlockFragment } from '@lib/datocms/types';
+
+export interface Props {
+    block: GroupingItemBlockFragment
+}
+const { block } = Astro.props;
+---
+<pre><code>GroupingItemBlock: {JSON.stringify(block, null, 2)}</code></pre>

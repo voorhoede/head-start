@@ -1,0 +1,12 @@
+#import 'src/blocks/GroupingItem/GroupingItemBlock/GroupingItemBlock.fragment.graphql'
+
+fragment GroupingBlock on GroupingBlockRecord {
+  id
+  layout
+  items {
+    __typename
+    ... on GroupingItemBlockRecord {
+      ...GroupingItemBlock
+    }
+  }
+}
