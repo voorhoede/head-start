@@ -1,0 +1,36 @@
+#import '@blocks/ActionBlock/ActionBlock.fragment.graphql'
+#import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
+#import '@blocks/TableBlock/TableBlock.fragment.graphql'
+#import '@blocks/TextBlock/TextBlock.fragment.graphql'
+#import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
+#import '@blocks/VideoBlock/VideoBlock.fragment.graphql'
+#import '@blocks/ActionBlock/ActionBlock.fragment.graphql'
+
+fragment GroupingItemBlock on GroupingItemBlockRecord {
+  id
+  title
+  blocks {
+    __typename
+    ... on ActionBlockRecord {
+      ...ActionBlock
+    }
+    ... on ImageBlockRecord {
+      ...ImageBlock
+    }
+    ... on TableBlockRecord {
+      ...TableBlock
+    }
+    ... on TextBlockRecord {
+      ...TextBlock
+    }
+    ... on VideoBlockRecord {
+      ...VideoBlock
+    }
+    ... on ActionBlockRecord {
+      ...ActionBlock
+    }
+    ... on VideoEmbedBlockRecord {
+      ...VideoEmbedBlock
+    }
+  }
+}
