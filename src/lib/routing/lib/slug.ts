@@ -3,7 +3,7 @@ import type { SiteLocale } from '@lib/datocms/types';
 export const missingSlug = '-';
 export type MaybeSlug = string | undefined;
 
-type LocalizedSlugs = {
+export type LocalizedSlugs = {
   _allSlugLocales?:
     | {
         locale?: SiteLocale | null;
