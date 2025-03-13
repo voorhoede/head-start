@@ -16,7 +16,7 @@ export function getLocalizedSlug<T extends LocalizedSlugs>({
   locale,
   record,
 }: {
-  locale?: SiteLocale;
+  locale?: SiteLocale | null;
   record: T;
 }) {
   return record._allSlugLocales?.find((slug) => slug.locale === locale)?.value || missingSlug;
