@@ -1,4 +1,4 @@
-#import 'src/blocks/GroupingBlock/GroupingItemBlock.fragment.graphql'
+#import './GroupingItemBlock.fragment.graphql'
 
 fragment GroupingBlock on GroupingBlockRecord {
   id

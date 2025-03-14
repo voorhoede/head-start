@@ -7,7 +7,6 @@
 #import '@blocks/ActionBlock/ActionBlock.fragment.graphql'
 
 fragment GroupingItemBlock on GroupingItemBlockRecord {
-  id
   title
   blocks {
     __typename
