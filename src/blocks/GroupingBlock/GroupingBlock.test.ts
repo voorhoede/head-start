@@ -13,7 +13,6 @@ describe('GroupingBlock', () => {
           items: [
             {
               __typename: 'GroupingItemBlockRecord',
-              id: 'ay-D0Z1ZTqWVszeV9ZqfJAb',
               title: 'Partial A',
               blocks: [
                 {
@@ -62,7 +61,6 @@ describe('GroupingBlock', () => {
           items: [
             {
               __typename: 'GroupingItemBlockRecord',
-              id: 'ay-D0Z1ZTqWVszeV9ZqfJAb',
               title: 'Partial A',
               blocks: [
                 {
@@ -112,7 +110,6 @@ describe('GroupingBlock', () => {
           items: [
             {
               __typename: 'GroupingItemBlockRecord',
-              id: 'ay-D0Z1ZTqWVszeV9ZqfJAb',
               title: 'Partial A',
               blocks: [
                 {
@@ -160,7 +157,6 @@ describe('GroupingBlock', () => {
           items: [
             {
               __typename: 'GroupingItemBlockRecord',
-              id: 'ay-D0Z1ZTqWVszeV9ZqfJAb',
               title: 'Partial A',
               blocks: [
                 {
@@ -207,7 +203,6 @@ describe('GroupingBlock', () => {
           items: [
             {
               __typename: 'GroupingItemBlockRecord',
-              id: 'ay-D0Z1ZTqWVszeV9ZqfJAb',
               title: 'Partial A',
               blocks: [
                 {
