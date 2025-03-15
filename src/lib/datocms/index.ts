@@ -82,7 +82,7 @@ export async function datocmsRequest<
   return data;
 }
 
-interface CollectionData<CollectionType> {
+type CollectionData<CollectionType> = {
   [key: string]: CollectionType[];
 }
 
@@ -139,7 +139,7 @@ export async function datocmsCollection<CollectionType>({
     );
 
   for (let page = 0; page < totalPages; page++) {
-    const data = await datocmsRequest({
+    const data = await datocmsRequest<CollectionData<CollectionType>>({
       query: parse(/* graphql */`
         # Insert fragment definition from fragmentDocument, 
         # which is either the fragment passed from an import from @lib/datocms/types.ts 
@@ -155,7 +155,7 @@ export async function datocmsCollection<CollectionType>({
           }
         }
       `),
-    }) as CollectionData<CollectionType>;
+    });
 
     records.push(...data[collection]);
   }
