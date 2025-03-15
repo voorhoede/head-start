@@ -83,7 +83,7 @@ export async function datocmsRequest<
   return data;
 }
 
-interface CollectionData<CollectionType> {
+type CollectionData<CollectionType> = {
   [key: string]: CollectionType[];
 }
 
@@ -106,20 +106,20 @@ export async function datocmsCollection<CollectionType>({
   collection: string,
   fragment: string
 }) {
-  const { meta } = await datocmsRequest({
+  const { meta } = await datocmsRequest<{ meta: CollectionMeta }>({
     query: parse(/* graphql */`
       query ${collection}Meta {
         meta: _all${collection}Meta { count }
       }
    `)
-  }) as { meta: CollectionMeta };
+  });
 
   const recordsPerPage = 100; // DatoCMS GraphQL API has a limit of 100 records per request
   const totalPages = Math.ceil(meta.count / recordsPerPage);
   const records: CollectionType[] = [];
 
   for (let page = 0; page < totalPages; page++) {
-    const data = await datocmsRequest({
+    const data = await datocmsRequest<CollectionData<CollectionType>>({
       query: parse(/* graphql */`
         query All${collection} {
           ${collection}: all${collection} (
@@ -130,7 +130,7 @@ export async function datocmsCollection<CollectionType>({
           }
         }
       `),
-    }) as CollectionData<CollectionType>;
+    });
 
     records.push(...data[collection]);
   }
