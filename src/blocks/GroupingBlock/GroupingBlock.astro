@@ -1,20 +1,17 @@
 ---
-import type { GroupingBlockFragment, GroupingItemBlockFragment } from '@lib/datocms/types';
+import type { GroupingBlockFragment } from '@lib/datocms/types';
 import Blocks from '@blocks/Blocks.astro';
 import { Accordion, AccordionItem } from '@components/Accordion';
 import { Tabs, TabsTab, TabsPanel } from '@components/Tabs';
-import type { AnyBlock } from '@blocks/Blocks';
 
 export interface Props {
-    block: GroupingBlockFragment
+  block: GroupingBlockFragment;
 }
-export type GroupingItem = GroupingItemBlockFragment & {
-    blocks: AnyBlock[];
-};
+
 const isLayout = (layout: GroupingBlockFragment['layout']) => block.layout === layout;
 
 const { block } = Astro.props;
-const items = block.items as GroupingItem[];
+const items = block.items;
 ---
 { isLayout('stack-titled') && (
   items.map(item => (
