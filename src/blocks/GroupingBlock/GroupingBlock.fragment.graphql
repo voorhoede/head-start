@@ -11,13 +11,13 @@ fragment GroupingBlock on GroupingBlockRecord {
   layout
   items {
     __typename
-    ... on GroupingItemBlockRecord {
-      ...GroupingItemBlock
+    ... on GroupingItemRecord {
+      ...GroupingItem
     }
   }
 }
 
-fragment GroupingItemBlock on GroupingItemBlockRecord {
+fragment GroupingItem on GroupingItemRecord {
   title
   blocks {
     __typename

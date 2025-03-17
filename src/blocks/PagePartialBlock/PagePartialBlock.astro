@@ -9,13 +9,13 @@ export interface Props {
 const { block } = Astro.props;
 
 ---
-<!-- Temporary solution to prevent breaking changes for ecsisting Page Partial Blocks-->
+{/* Temporary solution to prevent breaking changes for existing Page Partial Blocks */}
 <GroupingBlock block={{
   ...block,
   __typename: 'GroupingBlockRecord',
   items: block.items.map(item => ({
     title: item.title,
     blocks: item.blocks as GroupingBlockFragment['items'][number]['blocks'],
-    __typename: 'GroupingItemBlockRecord'
+    __typename: 'GroupingItemRecord'
   }))
 }}/>
