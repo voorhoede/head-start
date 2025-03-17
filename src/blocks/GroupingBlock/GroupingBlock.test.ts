@@ -12,7 +12,7 @@ describe('GroupingBlock', () => {
           layout: 'stack-untitled',
           items: [
             {
-              __typename: 'GroupingItemBlockRecord',
+              __typename: 'GroupingItemRecord',
               title: 'Partial A',
               blocks: [
                 {
@@ -60,7 +60,7 @@ describe('GroupingBlock', () => {
           layout: 'stack-titled',
           items: [
             {
-              __typename: 'GroupingItemBlockRecord',
+              __typename: 'GroupingItemRecord',
               title: 'Partial A',
               blocks: [
                 {
@@ -109,7 +109,7 @@ describe('GroupingBlock', () => {
           layout: 'accordion-closed',
           items: [
             {
-              __typename: 'GroupingItemBlockRecord',
+              __typename: 'GroupingItemRecord',
               title: 'Partial A',
               blocks: [
                 {
@@ -156,7 +156,7 @@ describe('GroupingBlock', () => {
           layout: 'accordion-open',
           items: [
             {
-              __typename: 'GroupingItemBlockRecord',
+              __typename: 'GroupingItemRecord',
               title: 'Partial A',
               blocks: [
                 {
@@ -202,7 +202,7 @@ describe('GroupingBlock', () => {
           layout: 'tabs',
           items: [
             {
-              __typename: 'GroupingItemBlockRecord',
+              __typename: 'GroupingItemRecord',
               title: 'Partial A',
               blocks: [
                 {

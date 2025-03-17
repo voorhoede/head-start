@@ -22,13 +22,13 @@ export default async function (client: Client) {
   );
 
   console.log(
-    'Create block model "\uD83D\uDDC2\uFE0F Grouping Item Block" (`grouping_item_block`)',
+    'Create block model "\uD83D\uDDC2\uFE0F Grouping Item" (`grouping_item`)',
   );
   await client.itemTypes.create(
     {
       id: 'BeM4dW2OQYWKc9iBZUyMeg',
-      name: '\uD83D\uDDC2\uFE0F Grouping Item Block',
-      api_key: 'grouping_item_block',
+      name: '\uD83D\uDDC2\uFE0F Grouping Item',
+      api_key: 'grouping_item',
       modular_block: true,
       draft_saving_active: false,
       inverse_relationships_enabled: false,
@@ -90,7 +90,7 @@ export default async function (client: Client) {
   });
 
   console.log(
-    'Create Single-line string field "Title" (`title`) in block model "\uD83D\uDDC2\uFE0F Grouping Item Block" (`grouping_item_block`)',
+    'Create Single-line string field "Title" (`title`) in block model "\uD83D\uDDC2\uFE0F Grouping Item" (`grouping_item`)',
   );
   await client.fields.create('BeM4dW2OQYWKc9iBZUyMeg', {
     id: 'SKH6LSKZS12ZmF10nklCXg',
@@ -107,7 +107,7 @@ export default async function (client: Client) {
   });
 
   console.log(
-    'Create Modular Content (Multiple blocks) field "Body" (`blocks`) in block model "\uD83D\uDDC2\uFE0F Grouping Item Block" (`grouping_item_block`)',
+    'Create Modular Content (Multiple blocks) field "Body" (`blocks`) in block model "\uD83D\uDDC2\uFE0F Grouping Item" (`grouping_item`)',
   );
   await client.fields.create('BeM4dW2OQYWKc9iBZUyMeg', {
     id: 'NTDc3vtCRzO5mEsE3gfmOQ',
@@ -211,7 +211,7 @@ export default async function (client: Client) {
   });
 
   console.log(
-    'Update block model "\uD83D\uDDC2\uFE0F Grouping Item Block" (`grouping_item_block`)',
+    'Update block model "\uD83D\uDDC2\uFE0F Grouping Item" (`grouping_item`)',
   );
   await client.itemTypes.update('BeM4dW2OQYWKc9iBZUyMeg', {
     presentation_title_field: { id: 'SKH6LSKZS12ZmF10nklCXg', type: 'field' },
