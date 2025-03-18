@@ -93,6 +93,7 @@ export const datocmsCollection = async <CollectionType>({
   } = await datocmsRequest<CollectionInfo>({
     query: parse(/* graphql */`
       query ${collection}Meta {
+        # Fetch first record to get the __typename to be used for the fragment created from a string
         records: all${collection}(first: 1) { __typename }
         meta: _all${collection}Meta { count }
       }
@@ -101,6 +102,7 @@ export const datocmsCollection = async <CollectionType>({
   const recordsPerPage = 100; // DatoCMS GraphQL API has a limit of 100 records per request
   const totalPages = Math.ceil(meta.count / recordsPerPage);
   const records: CollectionType[] = [];
+  // Create new fragment to maintain support for passing a string to argument fragment
   const fragmentDocument = typeof fragment === 'string'
     ? parse(`fragment InlineFragment on ${type} { ${fragment} }`)
     : fragment;
@@ -113,6 +115,9 @@ export const datocmsCollection = async <CollectionType>({
   for (let page = 0; page < totalPages; page++) {
     const data = await datocmsRequest({
       query: parse(/* graphql */`
+        # Insert fragment definition from fragmentDocument, 
+        # which is either the fragment passed from an import from @lib/datocms/types.ts 
+        # or the one created from a string;
         ${print(fragmentDocument)}
         
         query All${collection} {

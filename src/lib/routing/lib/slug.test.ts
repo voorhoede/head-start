@@ -6,7 +6,7 @@ const mockLocales = ['en', 'nl'] as SiteLocale[];
 const pageSlugs = {
   en: 'example-page',
   nl: 'voorbeeld-pagina'
-} as Record<string, string> as Record<SiteLocale, string>;
+} as Record<string, string> as Record<SiteLocale, string>; // type assertion so test locales can be different from project locales.
 
 const record: PageRouteFragment = {
   __typename: 'PageRecord',
