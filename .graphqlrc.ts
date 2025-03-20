@@ -48,24 +48,9 @@ module.exports = {
               MetaTagAttributes: 'Record<string, string>',
               UploadId: 'string',
             },
-            // namingConvention: {
-            //   enumValues: './pascalCaseWithUnderscores',
-            // },
           },
-        // 'src/lib/datocms.schema.json': {
-        //   plugins: [
-        //     'introspection',
-        //   ],
-        //   config: {
-        //     dedupeFragments: true,
-        //     pureMagicComment: true,
-        //     exportFragmentSpreadSubTypes: true,
-        //     namingConvention: 'keep',
-        //   },
-        // },
         },
       },
     },
   },
 };
-
