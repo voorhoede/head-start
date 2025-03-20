@@ -1,6 +1,6 @@
 ---
 import { datocmsRequest } from '@lib/datocms';
-import type { HomePageQuery, HomePageRecord } from '@lib/datocms/types';
+import type { HomePageQuery } from '@lib/datocms/types';
 import type { PageUrl } from '@lib/seo';
 import { locales } from '@lib/i18n';
 import { getHomeHref } from '@lib/routing';
@@ -19,7 +19,7 @@ const variables = { locale };
 const { page } = (await datocmsRequest<HomePageQuery>({
   query,
   variables,
-})) as { page: HomePageRecord };
+})) as { page: NonNullable<HomePageQuery['page']> };
 const pageUrls = locales.map((locale) => ({
   locale,
   pathname: getHomeHref({ locale }),
