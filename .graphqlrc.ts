@@ -24,6 +24,11 @@ module.exports = {
       overwrite: true,
       generates: {
         [outputFilename]: {
+          hooks: { 
+            afterOneFileWrite: [
+              'prettier --ignore-path --write', // format the generated file, ignoring .gitignore
+            ],
+          },
           plugins: [
             'typescript',
             'typescript-operations',
