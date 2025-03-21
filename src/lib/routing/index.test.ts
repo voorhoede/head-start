@@ -15,6 +15,8 @@ const fileRecord: FileRouteFragment = {
   __typename: 'FileRecord',
   id: '123',
   title: 'example.pdf',
+  locale: null,
+  path: null,
   file: { 
     basename: 'example.pdf',
     filename: 'example.pdf',
@@ -36,6 +38,7 @@ const pageRecord: PageRouteFragment = {
   title: 'Example Page',
   slug: 'example-page',
   _allSlugLocales: [{ locale: 'en' as SiteLocale, value: 'example-page' }],
+  parentPage: null,
 };
 
 describe('getFileHref', () => {
@@ -82,6 +85,7 @@ describe('getPageHref', () => {
       title: 'Parent Page',
       slug: 'parent-page',
       _allSlugLocales: [{ locale, value: 'parent-page' }],
+      parentPage: null,
     },
   };
 
