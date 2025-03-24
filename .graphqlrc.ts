@@ -35,6 +35,7 @@ module.exports = {
           */
           config: {
             strictScalars: true,
+            enumsAsConst: true,
             scalars: {
               BooleanType: 'boolean',
               CustomData: 'Record<string, unknown>',
