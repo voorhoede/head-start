@@ -1,17 +1,18 @@
 import { renderToFragment } from '@lib/renderer';
 import { describe, expect, test } from 'vitest';
-import PagePartialBlock, { type Props } from './PagePartialBlock.astro';
+import GroupingBlock, { type Props } from './GroupingBlock.astro';
 
-describe('PagePartialBlock', () => {
+describe('GroupingBlock', () => {
   test('renders a stack layout without a title when layout is "stack-untitled"', async () => {
-    const fragment = await renderToFragment<Props>(PagePartialBlock, {
+    const fragment = await renderToFragment<Props>(GroupingBlock, {
       props: {
         block: {
-          __typename: 'PagePartialBlockRecord',
+          __typename: 'GroupingBlockRecord',
           id: 'ay-D0Z1ZTqWVszeV9ZqfJA',
           layout: 'stack-untitled',
           items: [
             {
+              __typename: 'GroupingItemBlockRecord',
               title: 'Partial A',
               blocks: [
                 {
@@ -29,20 +30,20 @@ describe('PagePartialBlock', () => {
                             children: [
                               {
                                 type: 'span',
-                                value: 'This is a test'
+                                value: 'This is a test',
                               },
-                            ]
-                          }
-                        ]
-                      }
-                    }
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      }
+                            ],
+                          },
+                        ],
+                      },
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      },
     });
 
     expect(fragment.querySelector('h2')).toBeFalsy();
@@ -51,14 +52,15 @@ describe('PagePartialBlock', () => {
   });
 
   test('renders a stack layout with a title when layout is "stack-titled"', async () => {
-    const fragment = await renderToFragment<Props>(PagePartialBlock, {
+    const fragment = await renderToFragment<Props>(GroupingBlock, {
       props: {
         block: {
-          __typename: 'PagePartialBlockRecord',
+          __typename: 'GroupingBlockRecord',
           id: 'ay-D0Z1ZTqWVszeV9ZqfJA',
           layout: 'stack-titled',
           items: [
             {
+              __typename: 'GroupingItemBlockRecord',
               title: 'Partial A',
               blocks: [
                 {
@@ -76,20 +78,20 @@ describe('PagePartialBlock', () => {
                             children: [
                               {
                                 type: 'span',
-                                value: 'This is a test'
+                                value: 'This is a test',
                               },
-                            ]
-                          }
-                        ]
-                      }
-                    }
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      }
+                            ],
+                          },
+                        ],
+                      },
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      },
     });
 
     expect(fragment.querySelector('h2')).toBeTruthy();
@@ -99,14 +101,15 @@ describe('PagePartialBlock', () => {
   });
 
   test('renders a closed accordion layout when layout is "accordion-closed"', async () => {
-    const fragment = await renderToFragment<Props>(PagePartialBlock, {
+    const fragment = await renderToFragment<Props>(GroupingBlock, {
       props: {
         block: {
-          __typename: 'PagePartialBlockRecord',
+          __typename: 'GroupingBlockRecord',
           id: 'ay-D0Z1ZTqWVszeV9ZqfJA',
           layout: 'accordion-closed',
           items: [
             {
+              __typename: 'GroupingItemBlockRecord',
               title: 'Partial A',
               blocks: [
                 {
@@ -124,20 +127,20 @@ describe('PagePartialBlock', () => {
                             children: [
                               {
                                 type: 'span',
-                                value: 'This is a test'
+                                value: 'This is a test',
                               },
-                            ]
-                          }
-                        ]
-                      }
-                    }
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      }
+                            ],
+                          },
+                        ],
+                      },
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      },
     });
 
     expect(fragment.querySelector('details')).toBeTruthy();
@@ -145,14 +148,15 @@ describe('PagePartialBlock', () => {
   });
 
   test('renders an open accordion layout when layout is "accordion-open"', async () => {
-    const fragment = await renderToFragment<Props>(PagePartialBlock, {
+    const fragment = await renderToFragment<Props>(GroupingBlock, {
       props: {
         block: {
-          __typename: 'PagePartialBlockRecord',
+          __typename: 'GroupingBlockRecord',
           id: 'ay-D0Z1ZTqWVszeV9ZqfJA',
           layout: 'accordion-open',
           items: [
             {
+              __typename: 'GroupingItemBlockRecord',
               title: 'Partial A',
               blocks: [
                 {
@@ -170,34 +174,35 @@ describe('PagePartialBlock', () => {
                             children: [
                               {
                                 type: 'span',
-                                value: 'This is a test'
+                                value: 'This is a test',
                               },
-                            ]
-                          }
-                        ]
-                      }
-                    }
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      }
+                            ],
+                          },
+                        ],
+                      },
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      },
     });
 
     expect(fragment.querySelector('details[open]')).toBeTruthy();
   });
 
   test('renders a tabs layout with the correct structure and content when layout is "tabs"', async () => {
-    const fragment = await renderToFragment<Props>(PagePartialBlock, {
+    const fragment = await renderToFragment<Props>(GroupingBlock, {
       props: {
         block: {
-          __typename: 'PagePartialBlockRecord',
+          __typename: 'GroupingBlockRecord',
           id: 'ay-D0Z1ZTqWVszeV9ZqfJA',
           layout: 'tabs',
           items: [
             {
+              __typename: 'GroupingItemBlockRecord',
               title: 'Partial A',
               blocks: [
                 {
@@ -215,24 +220,28 @@ describe('PagePartialBlock', () => {
                             children: [
                               {
                                 type: 'span',
-                                value: 'This is a test'
+                                value: 'This is a test',
                               },
-                            ]
-                          }
-                        ]
-                      }
-                    }
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      }
+                            ],
+                          },
+                        ],
+                      },
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      },
     });
 
     expect(fragment.querySelector('tabs-component')).toBeTruthy();
-    expect(fragment.querySelector('tabs-tab[role="heading"]')?.textContent).toContain('Partial A');
-    expect(fragment.querySelector('tabs-panel[role="region"] p')?.textContent).toContain('This is a test');
+    expect(
+      fragment.querySelector('tabs-tab[role="heading"]')?.textContent,
+    ).toContain('Partial A');
+    expect(
+      fragment.querySelector('tabs-panel[role="region"] p')?.textContent,
+    ).toContain('This is a test');
   });
 });

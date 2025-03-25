@@ -8,6 +8,7 @@ import type {
   TextImageBlockFragment,
   VideoBlockFragment,
   VideoEmbedBlockFragment,
+  GroupingBlockFragment,
 } from '@lib/datocms/types';
 
 export type AnyBlock =
@@ -19,4 +20,5 @@ export type AnyBlock =
   | TextBlockFragment
   | TextImageBlockFragment
   | VideoBlockFragment
-  | VideoEmbedBlockFragment;
+  | VideoEmbedBlockFragment
+  | GroupingBlockFragment;
