@@ -15,3 +15,9 @@ declare module '*.query.graphql' {
   const value: DocumentNode;
   export = value;
 }
+
+declare module '*.fragment.graphql' {
+  import { DocumentNode } from 'graphql';
+  const value: DocumentNode;
+  export default value;
+}
