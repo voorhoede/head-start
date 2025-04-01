@@ -1,12 +1,20 @@
 import { Client } from '@datocms/cli/lib/cma-client-node';
 
 export default async function (client: Client) {
+  
+  //@ts-expect-error rich_text_blocks is only available on Modular Content fields
+  const homeBodyBlocks = (await client.fields.find('home_page::body_blocks')).validators.rich_text_blocks?.item_types;
+  //@ts-expect-error rich_text_blocks is only available on Modular Content fields
+  const pageBodyBlocks = (await client.fields.find('page::body_blocks')).validators.rich_text_blocks?.item_types;
+  //@ts-expect-error rich_text_blocks is only available on Modular Content fields
+  const pagePartialBlocks = (await client.fields.find('page_partial::blocks')).validators.rich_text_blocks?.item_types;
+  
   console.log('Create new models/block models');
 
   console.log(
     'Create block model "\uD83D\uDDC3\uFE0F Grouping Block" (`grouping_block`)',
   );
-  await client.itemTypes.create(
+  const groupingBlock = await client.itemTypes.create(
     {
       id: 'TBuD6qQOSDy6i9dM3T_XEA',
       name: '\uD83D\uDDC3\uFE0F Grouping Block',
@@ -24,7 +32,7 @@ export default async function (client: Client) {
   console.log(
     'Create block model "\uD83D\uDDC2\uFE0F Grouping Item" (`grouping_item`)',
   );
-  await client.itemTypes.create(
+  const groupingItem = await client.itemTypes.create(
     {
       id: 'BeM4dW2OQYWKc9iBZUyMeg',
       name: '\uD83D\uDDC2\uFE0F Grouping Item',
@@ -44,7 +52,7 @@ export default async function (client: Client) {
   console.log(
     'Create Single-line string field "Layout" (`layout`) in block model "\uD83D\uDDC3\uFE0F Grouping Block" (`grouping_block`)',
   );
-  await client.fields.create('TBuD6qQOSDy6i9dM3T_XEA', {
+  await client.fields.create(groupingBlock.id, {
     id: 'Wj5FlZbpRb23MFWVegBEoA',
     label: 'Layout',
     field_type: 'string',
@@ -105,13 +113,13 @@ export default async function (client: Client) {
   console.log(
     'Create Modular Content (Multiple blocks) field "Items" (`items`) in block model "\uD83D\uDDC3\uFE0F Grouping Block" (`grouping_block`)',
   );
-  await client.fields.create('TBuD6qQOSDy6i9dM3T_XEA', {
+  await client.fields.create(groupingBlock.id, {
     id: 'ZEgzOa7HRnqDBc-FgI0RFQ',
     label: 'Items',
     field_type: 'rich_text',
     api_key: 'items',
     validators: {
-      rich_text_blocks: { item_types: ['BeM4dW2OQYWKc9iBZUyMeg'] },
+      rich_text_blocks: { item_types: [ groupingItem.id ] },
       size: { min: 1 },
     },
     appearance: {
@@ -125,7 +133,7 @@ export default async function (client: Client) {
   console.log(
     'Create Single-line string field "Title" (`title`) in block model "\uD83D\uDDC2\uFE0F Grouping Item" (`grouping_item`)',
   );
-  await client.fields.create('BeM4dW2OQYWKc9iBZUyMeg', {
+  await client.fields.create(groupingItem.id, {
     id: 'SKH6LSKZS12ZmF10nklCXg',
     label: 'Title',
     field_type: 'string',
@@ -142,7 +150,7 @@ export default async function (client: Client) {
   console.log(
     'Create Modular Content (Multiple blocks) field "Body" (`blocks`) in block model "\uD83D\uDDC2\uFE0F Grouping Item" (`grouping_item`)',
   );
-  await client.fields.create('BeM4dW2OQYWKc9iBZUyMeg', {
+  await client.fields.create(groupingItem.id, {
     id: 'NTDc3vtCRzO5mEsE3gfmOQ',
     label: 'Body',
     field_type: 'rich_text',
@@ -150,13 +158,8 @@ export default async function (client: Client) {
     validators: {
       rich_text_blocks: {
         item_types: [
-          'BRbU6VwTRgmG5SbwUs0rBg',
-          'F60ZY1wFSW2qbvh99poj3g',
-          'PAk40zGjQJCcDXXPgygUrA',
-          'QYfZyBzIRWKxA1MinIR0aQ',
-          'ZdBokLsWRgKKjHrKeJzdpw',
-          'gezG9nO7SfaiWcWnp-HNqw',
-          '0SxYNS2CR1it_5LHYWuEQg',
+          ...pagePartialBlocks, // add all the blocks from the page partial
+          'QYfZyBzIRWKxA1MinIR0aQ', // add VideoBlock missing from Page Partial
         ],
       },
       size: { min: 1 },
@@ -178,13 +181,9 @@ export default async function (client: Client) {
     validators: {
       rich_text_blocks: {
         item_types: [
-          'BRbU6VwTRgmG5SbwUs0rBg',
-          'F60ZY1wFSW2qbvh99poj3g',
-          'PAk40zGjQJCcDXXPgygUrA',
-          'TBuD6qQOSDy6i9dM3T_XEA',
-          'ZdBokLsWRgKKjHrKeJzdpw',
-          'gezG9nO7SfaiWcWnp-HNqw',
-          '0SxYNS2CR1it_5LHYWuEQg',
+          ...pagePartialBlocks, // leave all the blocks from the page partial
+          'QYfZyBzIRWKxA1MinIR0aQ', // add missing VideoBlock
+          groupingBlock.id,
         ],
       },
     },
@@ -197,16 +196,8 @@ export default async function (client: Client) {
     validators: {
       rich_text_blocks: {
         item_types: [
-          'BRbU6VwTRgmG5SbwUs0rBg',
-          'F60ZY1wFSW2qbvh99poj3g',
-          'PAk40zGjQJCcDXXPgygUrA',
-          'QYfZyBzIRWKxA1MinIR0aQ',
-          'TBuD6qQOSDy6i9dM3T_XEA',
-          'VZvVfu52RZK81WG0Dxp-FQ',
-          'V80liDVtRC-UYgd3Sm-dXg',
-          'ZdBokLsWRgKKjHrKeJzdpw',
-          'gezG9nO7SfaiWcWnp-HNqw',
-          '0SxYNS2CR1it_5LHYWuEQg',
+          ...pageBodyBlocks, // leave all the blocks from the page
+          groupingBlock.id,
         ],
       },
     },
@@ -219,16 +210,8 @@ export default async function (client: Client) {
     validators: {
       rich_text_blocks: {
         item_types: [
-          'BRbU6VwTRgmG5SbwUs0rBg',
-          'F60ZY1wFSW2qbvh99poj3g',
-          'PAk40zGjQJCcDXXPgygUrA',
-          'QYfZyBzIRWKxA1MinIR0aQ',
-          'TBuD6qQOSDy6i9dM3T_XEA',
-          'VZvVfu52RZK81WG0Dxp-FQ',
-          'V80liDVtRC-UYgd3Sm-dXg',
-          'ZdBokLsWRgKKjHrKeJzdpw',
-          'gezG9nO7SfaiWcWnp-HNqw',
-          '0SxYNS2CR1it_5LHYWuEQg',
+          ...homeBodyBlocks, // leave all the blocks from the home page
+          groupingBlock.id,
         ],
       },
     },
@@ -239,14 +222,14 @@ export default async function (client: Client) {
   console.log(
     'Update block model "\uD83D\uDDC3\uFE0F Grouping Block" (`grouping_block`)',
   );
-  await client.itemTypes.update('TBuD6qQOSDy6i9dM3T_XEA', {
+  await client.itemTypes.update(groupingBlock.id, {
     presentation_title_field: { id: 'Wj5FlZbpRb23MFWVegBEoA', type: 'field' },
   });
 
   console.log(
     'Update block model "\uD83D\uDDC2\uFE0F Grouping Item" (`grouping_item`)',
   );
-  await client.itemTypes.update('BeM4dW2OQYWKc9iBZUyMeg', {
+  await client.itemTypes.update(groupingItem.id, {
     presentation_title_field: { id: 'SKH6LSKZS12ZmF10nklCXg', type: 'field' },
   });
 
