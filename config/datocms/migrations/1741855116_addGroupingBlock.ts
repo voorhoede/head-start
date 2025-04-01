@@ -42,11 +42,11 @@ export default async function (client: Client) {
   console.log('Creating new fields/fieldsets');
 
   console.log(
-    'Create Single-line string field "layout" (`layout`) in block model "\uD83D\uDDC3\uFE0F Grouping Block" (`grouping_block`)',
+    'Create Single-line string field "Layout" (`layout`) in block model "\uD83D\uDDC3\uFE0F Grouping Block" (`grouping_block`)',
   );
   await client.fields.create('TBuD6qQOSDy6i9dM3T_XEA', {
     id: 'Wj5FlZbpRb23MFWVegBEoA',
-    label: 'layout',
+    label: 'Layout',
     field_type: 'string',
     api_key: 'layout',
     validators: {
@@ -63,10 +63,43 @@ export default async function (client: Client) {
     },
     appearance: {
       addons: [],
-      editor: 'single_line',
-      parameters: { heading: false, placeholder: null },
+      editor: 'string_radio_group',
+      parameters: {
+        radios: [
+          {
+            hint:
+              'Show items, one after the other, without displaying their title.',
+            label: 'Stack, untitled',
+            value: 'stack-untitled',
+          },
+          {
+            hint:
+              'Show items, one after the other, with their title preceding their blocks content.',
+            label: 'Stack, titled',
+            value: 'stack-titled',
+          },
+          {
+            hint:
+              'Show items as accordion, with all items collapsed, showing only their titles.',
+            label: 'Accordion, closed',
+            value: 'accordion-closed',
+          },
+          {
+            hint:
+              'Show items as accordion, with the first item expanded, showing both its title and blocks content.',
+            label: 'Accordion, open',
+            value: 'accordion-open',
+          },
+          {
+            hint:
+              'Show items as tabbed interface, with their titles as tab labels and their blocks content in tab panels.',
+            label: 'Tabs',
+            value: 'tabs',
+          },
+        ],
+      },
     },
-    default_value: null,
+    default_value: 'stack-untitled',
   });
 
   console.log(
