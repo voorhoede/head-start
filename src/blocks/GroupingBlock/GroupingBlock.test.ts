@@ -2,6 +2,40 @@ import { renderToFragment } from '@lib/renderer';
 import { describe, expect, test } from 'vitest';
 import GroupingBlock, { type Props } from './GroupingBlock.astro';
 
+const TEXT_BLOCK_RECORD = 'TextBlockRecord' as const;
+const GROUPING_ITEM_RECORD = 'GroupingItemRecord' as const;
+
+export const items = [
+  {
+    __typename: GROUPING_ITEM_RECORD,
+    title: 'Partial A',
+    blocks: [{
+      __typename: TEXT_BLOCK_RECORD,
+      text: {
+        blocks: [],
+        links: [],
+        value: {
+          schema: 'dast',
+          document: {
+            type: 'root',
+            children: [
+              {
+                type: 'paragraph',
+                children: [
+                  {
+                    type: 'span',
+                    value: 'This is a test',
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      },
+    }],
+  },
+];
+
 describe('GroupingBlock', () => {
   test('renders a stack layout without a title when layout is "stack-untitled"', async () => {
     const fragment = await renderToFragment<Props>(GroupingBlock, {
@@ -10,38 +44,7 @@ describe('GroupingBlock', () => {
           __typename: 'GroupingBlockRecord',
           id: 'ay-D0Z1ZTqWVszeV9ZqfJA',
           layout: 'stack-untitled',
-          items: [
-            {
-              __typename: 'GroupingItemRecord',
-              title: 'Partial A',
-              blocks: [
-                {
-                  __typename: 'TextBlockRecord',
-                  text: {
-                    blocks: [],
-                    links: [],
-                    value: {
-                      schema: 'dast',
-                      document: {
-                        type: 'root',
-                        children: [
-                          {
-                            type: 'paragraph',
-                            children: [
-                              {
-                                type: 'span',
-                                value: 'This is a test',
-                              },
-                            ],
-                          },
-                        ],
-                      },
-                    },
-                  },
-                },
-              ],
-            },
-          ],
+          items,
         },
       },
     });
@@ -58,38 +61,7 @@ describe('GroupingBlock', () => {
           __typename: 'GroupingBlockRecord',
           id: 'ay-D0Z1ZTqWVszeV9ZqfJA',
           layout: 'stack-titled',
-          items: [
-            {
-              __typename: 'GroupingItemRecord',
-              title: 'Partial A',
-              blocks: [
-                {
-                  __typename: 'TextBlockRecord',
-                  text: {
-                    blocks: [],
-                    links: [],
-                    value: {
-                      schema: 'dast',
-                      document: {
-                        type: 'root',
-                        children: [
-                          {
-                            type: 'paragraph',
-                            children: [
-                              {
-                                type: 'span',
-                                value: 'This is a test',
-                              },
-                            ],
-                          },
-                        ],
-                      },
-                    },
-                  },
-                },
-              ],
-            },
-          ],
+          items,
         },
       },
     });
@@ -107,38 +79,7 @@ describe('GroupingBlock', () => {
           __typename: 'GroupingBlockRecord',
           id: 'ay-D0Z1ZTqWVszeV9ZqfJA',
           layout: 'accordion-closed',
-          items: [
-            {
-              __typename: 'GroupingItemRecord',
-              title: 'Partial A',
-              blocks: [
-                {
-                  __typename: 'TextBlockRecord',
-                  text: {
-                    blocks: [],
-                    links: [],
-                    value: {
-                      schema: 'dast',
-                      document: {
-                        type: 'root',
-                        children: [
-                          {
-                            type: 'paragraph',
-                            children: [
-                              {
-                                type: 'span',
-                                value: 'This is a test',
-                              },
-                            ],
-                          },
-                        ],
-                      },
-                    },
-                  },
-                },
-              ],
-            },
-          ],
+          items,
         },
       },
     });
@@ -154,38 +95,7 @@ describe('GroupingBlock', () => {
           __typename: 'GroupingBlockRecord',
           id: 'ay-D0Z1ZTqWVszeV9ZqfJA',
           layout: 'accordion-open',
-          items: [
-            {
-              __typename: 'GroupingItemRecord',
-              title: 'Partial A',
-              blocks: [
-                {
-                  __typename: 'TextBlockRecord',
-                  text: {
-                    blocks: [],
-                    links: [],
-                    value: {
-                      schema: 'dast',
-                      document: {
-                        type: 'root',
-                        children: [
-                          {
-                            type: 'paragraph',
-                            children: [
-                              {
-                                type: 'span',
-                                value: 'This is a test',
-                              },
-                            ],
-                          },
-                        ],
-                      },
-                    },
-                  },
-                },
-              ],
-            },
-          ],
+          items,
         },
       },
     });
@@ -200,38 +110,7 @@ describe('GroupingBlock', () => {
           __typename: 'GroupingBlockRecord',
           id: 'ay-D0Z1ZTqWVszeV9ZqfJA',
           layout: 'tabs',
-          items: [
-            {
-              __typename: 'GroupingItemRecord',
-              title: 'Partial A',
-              blocks: [
-                {
-                  __typename: 'TextBlockRecord',
-                  text: {
-                    blocks: [],
-                    links: [],
-                    value: {
-                      schema: 'dast',
-                      document: {
-                        type: 'root',
-                        children: [
-                          {
-                            type: 'paragraph',
-                            children: [
-                              {
-                                type: 'span',
-                                value: 'This is a test',
-                              },
-                            ],
-                          },
-                        ],
-                      },
-                    },
-                  },
-                },
-              ],
-            },
-          ],
+          items,
         },
       },
     });
