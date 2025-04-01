@@ -9,19 +9,19 @@ export type PageUrl = {
   pathname: string,
 };
 
-export const siteName = () => {
+/** 
+  * `globalSeo` _should_ have a key per available locale. When there is only one
+  * locale configured in Dato, that key is missing. Therefore we fallback to the
+  * `globalSeo` object 
+  */
+const localeSeo = () => {
   const locale = getLocale();
-  const localeSeo = globalSeo[locale as keyof typeof globalSeo];
-
-  return localeSeo.siteName;
+  const localeSeoData = globalSeo[locale as keyof typeof globalSeo];
+  return localeSeoData || globalSeo;
 };
 
-export const titleSuffix = () => {
-  const locale = getLocale();
-  const localeSeo = globalSeo[locale as keyof typeof globalSeo];
-
-  return localeSeo.titleSuffix;
-};
+export const siteName: () => string = () => localeSeo().siteName;
+export const titleSuffix: () => string = () => localeSeo().titleSuffix;
 
 export const noIndexTag: Tag = {
   attributes: { name: 'robots' },
