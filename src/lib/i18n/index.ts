@@ -29,8 +29,12 @@ export function getLocale() {
   return i18n.locale();
 }
 
-export function setLocale(locale?: SiteLocale) {
-  if (locale && locales.includes(locale)) {
+export function isLocale<T extends typeof locales>(locale: unknown): locale is T[number] {
+  return Boolean(locale) && (locales as unknown[]).includes(locale);
+}
+
+export function setLocale(locale?: string) {
+  if (isLocale(locale)) {
     return i18n.locale(locale);
   }
   return i18n.locale();
