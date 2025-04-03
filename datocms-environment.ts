@@ -4,4 +4,4 @@
  * @see docs/decision-log/2023-10-24-datocms-env-file.md on why file is preferred over env vars
  */
 export const datocmsEnvironment = 'custom-file-paths';
-export const datocmsBuildTriggerId = '30535';
+export const datocmsBuildTriggerId = '34548';
