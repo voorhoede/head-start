@@ -1,15 +1,8 @@
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  describe,
-  expect,
-  test,
-  vi,
-} from 'vitest';
+import { afterAll, afterEach, beforeAll, describe, expect, test, vi, } from 'vitest';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import { datocmsSearch } from '@lib/datocms';
+import type { SiteLocale } from '@lib/datocms/types.ts';
 
 vi.mock('../../../../datocms-environment', () => ({
   datocmsBuildTriggerId: 'mock-build-trigger-id',
@@ -32,6 +25,8 @@ const mockedSearchResults = [
     },
   }
 ];
+
+const mockLocales = ['en', 'nl'] as SiteLocale[];
 
 const server = setupServer();
 
@@ -92,17 +87,13 @@ describe('datocmsSearch:', () => {
       })
     );
 
-    await datocmsSearch({ locale: 'en', query: 'test' });
-    expect(requestUrl).toBeDefined();
-    expect(requestUrl!.searchParams.get('locale')).toBe('en');
-    expect(requestUrl!.searchParams.get('q')).toBe('test');
-    expect(requestUrl!.searchParams.get('build_trigger_id')).toBe('mock-build-trigger-id');
-
-    await datocmsSearch({ locale: 'nl', query: 'my mock query' });
-    expect(requestUrl).toBeDefined();
-    expect(requestUrl!.searchParams.get('locale')).toBe('nl');
-    expect(requestUrl!.searchParams.get('q')).toBe('my mock query');
-    expect(requestUrl!.searchParams.get('build_trigger_id')).toBe('mock-build-trigger-id');
+    for (const locale of mockLocales) {
+      await datocmsSearch({ locale, query: 'test' });
+      expect(requestUrl).toBeDefined();
+      expect(requestUrl!.searchParams.get('locale')).toBe(locale);
+      expect(requestUrl!.searchParams.get('q')).toBe('test');
+      expect(requestUrl!.searchParams.get('build_trigger_id')).toBe('mock-build-trigger-id');
+    }
   });
 
   test('should handle fuzzy search correctly', async () => {
