@@ -41,6 +41,13 @@ DATOCMS_READONLY_API_TOKEN=copy-read-only-token
 DATOCMS_API_TOKEN=copy-full-access-token
 ```
 
+- (optional) If you have a DeepL API key, you can add it to your `.env` file as well.
+
+```dotenv
+# .env
+DEEPL_API_KEY=copy-deepl-api-key
+```
+
 - Add all models and settings in to your new CMS by running our [migrations](../config/datocms/migrations/) in a new [environment](https://www.datocms.com/docs/scripting-migrations/introduction) called `start` using the DatoCMS CLI: `npx datocms migrations:run --destination=start --fast-fork`.
 - Promote the new `start` environment to primary environment: `npx datocms environments:promote start` Alternatively you can go to Project Settings > Environments (`/project_settings/environments`) and 'Promote' the `start` environment to primary.
 - In your CMS, you can now safely remove the original environment via Project Settings > Environments (`/project_settings/environments`).
