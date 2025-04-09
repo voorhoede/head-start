@@ -1,0 +1,46 @@
+---
+import { getLocale } from '@lib/i18n';
+import { formatNumber } from './Counter';
+
+export type Props = {
+  value: number;
+};
+const { value } = Astro.props as Props;
+const locale = getLocale();
+---
+
+<counter-component data-value={ value }>
+  <span class="value value--default" data-placeholder>{ formatNumber(value, locale) }</span>
+  <span class="value value--animated" data-output></span>
+</counter-component>
+
+<script src="./Counter.client.ts"></script>
+
+<style>
+/* functional styles */
+counter-component {
+  display: inline-block;
+  position: relative;
+}
+.value {
+  font-variant-numeric: tabular-nums; /* so all numbers are same width, prevents unwanted text jumping. */
+}
+.value--animated {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  counter-component:defined .value--default {
+    opacity: 0;
+    pointer-events: none;
+    user-select: none;
+  }
+  counter-component:defined .value--animated {
+    display: inline;
+    position: absolute;
+    right: 0;
+    width: 100%;
+    text-align: right;
+  }
+}
+</style>
