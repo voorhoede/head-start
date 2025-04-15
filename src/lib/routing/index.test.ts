@@ -27,6 +27,7 @@ const fileRecord: FileRouteFragment = {
 
 const homeRecord: HomeRouteFragment = { 
   __typename: 'HomePageRecord',
+  id: 'home',
   title: 'Home'
 };
 

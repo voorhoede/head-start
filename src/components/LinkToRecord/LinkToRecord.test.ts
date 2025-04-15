@@ -4,8 +4,9 @@ import type { RecordRoute } from '@lib/routing';
 import LinkToRecord, { type Props as LinkToRecordProps } from './LinkToRecord.astro';
 
 const record = {
-  title: 'Homepage',
   __typename: 'HomePageRecord',
+  id: 'home',
+  title: 'Homepage',
 } satisfies RecordRoute;
 
 const props = {
