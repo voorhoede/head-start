@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { defaultLocale, t, getLocale, getLocaleName, setLocale } from '@lib/i18n';
+import { defaultLocale, getLocale, getLocaleName, setLocale, t } from '@lib/i18n';
 
 // these imports will resolve to their mocked counterparts
 import { locales } from '@lib/site.json';
@@ -64,7 +64,6 @@ describe('i18n:', () => {
       // expect 'nl' because the locale was most recently set to 'nl'
       expect(setLocale()).toBe('nl');
 
-      // @ts-expect-error we know that 'unsupported_locale' is not a supported locale
       expect(setLocale('unsupported_locale')).not.toBe('unsupported_locale');
     });
   });

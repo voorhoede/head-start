@@ -1,0 +1,56 @@
+---
+import type { GroupingBlockFragment } from '@lib/datocms/types';
+import Blocks from '@blocks/Blocks.astro';
+import { Accordion, AccordionItem } from '@components/Accordion';
+import { Tabs, TabsTab, TabsPanel } from '@components/Tabs';
+
+export interface Props {
+  block: GroupingBlockFragment;
+}
+
+const isLayout = (layout: GroupingBlockFragment['layout']) => block.layout === layout;
+
+const { block } = Astro.props;
+const items = block.items;
+---
+{ isLayout('stack-titled') && (
+  items.map(item => (
+    <section>
+      <h2>{ item.title }</h2>
+      <Blocks blocks={ item.blocks } />
+    </section>
+  ))
+)}
+
+{ isLayout('stack-untitled') && (
+  items.map(item => (
+    <Blocks blocks={ item.blocks } />
+  ))
+)}
+
+{ (isLayout('accordion-open') || isLayout('accordion-closed')) && (
+  <Accordion>
+    { items.map(item => (
+      <AccordionItem
+        name={ `block-${block.id}` }
+        open={ isLayout('accordion-open') }
+      >
+        <Fragment slot="heading">{ item.title }</Fragment>
+        <Fragment slot="body">
+          <Blocks blocks={ item.blocks }/>
+        </Fragment>
+      </AccordionItem>
+    ))}
+  </Accordion>
+)}
+
+{ isLayout('tabs') && (
+  <Tabs>
+    { items.map(item => (<>
+      <TabsTab>{ item.title }</TabsTab>
+      <TabsPanel>
+        <Blocks blocks={ item.blocks }/>
+      </TabsPanel>
+    </>))}
+  </Tabs>
+)}
