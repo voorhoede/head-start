@@ -64,25 +64,26 @@ flowchart LR
 
 ## Getting started
 
-Follow the step-by-step [getting started instructions](docs/getting-started.md).
+Follow the step-by-step [getting started instructions](./docs/getting-started.md).
 
 ## Documentation
 
-All documentation is located in [`docs/`](docs/):
+All documentation is located in [`./docs/`](docs/):
 
-- [Getting Started](docs/getting-started.md)
-- [Accessibility (a11y)](docs/accessibility.md)
-- [Blocks and Components](docs/blocks-and-components.md)
-- [CMS Content Modelling](docs/cms-content-modelling.md)
-- [CMS Data Loading](docs/cms-data-loading.md)
-- [Internationalization (i18n)](docs/i18n.md)
-- [Project Structure](docs/project-structure.md)
-- [Preview Mode](docs/preview-mode.md)
-- [Routing](docs/routing.md)
-- [Search](docs/search.md)
-- [Search Engine Optimisation (SEO)](docs/seo.md)
-- [Testing](docs/testing.md)
-- [Upgrading](docs/upgrading.md)
+- [Getting Started](./docs/getting-started.md)
+- [Accessibility (a11y)](./docs/accessibility.md)
+- [Blocks and Components](./docs/blocks-and-components.md)
+- [CMS Content Modelling](./docs/cms-content-modelling.md)
+- [CMS Data Loading](./docs/cms-data-loading.md)
+- [Internationalization (i18n)](./docs/i18n.md)
+- [Performance](./docs/performance.md)
+- [Project Structure](./docs/project-structure.md)
+- [Preview Mode](./docs/preview-mode.md)
+- [Routing](./docs/routing.md)
+- [Search](./docs/search.md)
+- [Search Engine Optimisation (SEO)](./docs/seo.md)
+- [Testing](./docs/testing.md)
+- [Upgrading](./docs/upgrading.md)
 
 ## Commands
 
@@ -95,6 +96,7 @@ All commands are run from the root of the project, from a terminal:
 | `preview`               | Preview your build locally, before deploying
 | `astro ...`             | Run commands like `astro add` (see `astro -- --help`)
 | `create`                | Scaffold new Block, Component, API or Page route
+| `analyze`               | Analyze and visualise both client & server bundles
 | `lint`                  | Check code style and valide HTML output
 | `test`                  | Runs the test suite, individual tests are available using `test:...`
 

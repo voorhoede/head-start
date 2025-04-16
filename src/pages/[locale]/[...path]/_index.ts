@@ -1,26 +1,12 @@
 import { datocmsCollection } from '@lib/datocms';
-import { type PageRouteForPath, getPagePath } from '@lib/routing/page';
+import { getPagePath } from '@lib/routing/page';
+import { PageRoute as fragment, type PageRouteFragment } from '@lib/datocms/types';
 
 export async function getStaticPaths() {
-  const pages = await datocmsCollection<PageRouteForPath>({
+  const pages = await datocmsCollection<PageRouteFragment>({
     collection: 'Pages',
-    fragment: `
-      _allSlugLocales { locale, value }
-      parentPage {
-        _allSlugLocales { locale, value }
-        parentPage {
-          _allSlugLocales { locale, value }
-          parentPage {
-            _allSlugLocales { locale, value }
-            parentPage {
-              _allSlugLocales { locale, value }
-            }
-          }
-        }
-      }
-    `,
+    fragment,
   });
-
   return pages.flatMap((page) => {
     const locales = page._allSlugLocales
       ?.map((slug) => slug.locale)

@@ -1,24 +1,58 @@
 ---
 import type { ActionBlockFragment } from '@lib/datocms/types';
+import Link from '@components/Link/Link.astro';
 import LinkToRecord from '@components/LinkToRecord/LinkToRecord.astro';
+import EmailLink from './EmailLink.astro';
+import PhoneLink from './PhoneLink.astro';
 
 export interface Props {
   block: ActionBlockFragment;
 }
 const { block } = Astro.props;
 const { items } = block;
+const actionClassList = (style: string) => ['action', `action--${style}`];
 ---
 
 <div class="action-block">
   {
-    items.map((item) => (
-      <LinkToRecord
-        record={item.link}
-        class:list={['action', `action--${item.style}`]}
-      >
-        {item.title}
-      </LinkToRecord>
-    ))
+    items.map((item) =>
+      item.__typename === 'InternalLinkRecord' ? (
+        <LinkToRecord
+          record={item.link}
+          class:list={actionClassList(item.style)}
+        >
+          {item.title}
+        </LinkToRecord>
+      ) : item.__typename === 'ExternalLinkRecord' ? (
+        <Link
+          href={item.url}
+          openInNewTab={item.openInNewTab}
+          class:list={actionClassList(item.style)}
+        >
+          {item.title}
+        </Link>
+      ) : item.__typename === 'EmailLinkRecord' ? (
+        <EmailLink
+          emailAddress={item.emailAddress}
+          emailSubject={item.emailSubject}
+          emailBody={item.emailBody}
+          class:list={actionClassList(item.style)}
+        >
+          {item.title}
+        </EmailLink>
+      ) : item.__typename === 'PhoneLinkRecord' ? (
+        <PhoneLink
+          action={item.action}
+          phoneNumber={item.phoneNumber}
+          text={item.text}
+          class:list={actionClassList(item.style)}
+        >
+          {item.title}
+        </PhoneLink>
+      ) : (
+        <Fragment />
+      )
+    )
   }
 </div>
 

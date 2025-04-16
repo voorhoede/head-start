@@ -8,6 +8,7 @@
 #import '@blocks/TextImageBlock/TextImageBlock.fragment.graphql'
 #import '@blocks/VideoBlock/VideoBlock.fragment.graphql'
 #import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
+#import '@blocks/GroupingBlock/GroupingBlock.fragment.graphql'
 
 query Page($locale: SiteLocale!, $slug: String!) {
   page(locale: $locale, filter: { slug: { eq: $slug } }) {
@@ -45,6 +46,9 @@ query Page($locale: SiteLocale!, $slug: String!) {
       }
       ... on VideoEmbedBlockRecord {
         ...VideoEmbedBlock
+      }
+      ... on GroupingBlockRecord {
+        ...GroupingBlock
       }
     }
   }

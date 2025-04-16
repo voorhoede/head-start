@@ -1,0 +1,8 @@
+---
+import { t } from '@lib/i18n';
+import { getSearchPathname, queryParamName } from '@lib/search';
+
+const searchUrl = `${getSearchPathname()}#${queryParamName}`;
+---
+
+<a rel="search" href={searchUrl}>{t('search')}</a>

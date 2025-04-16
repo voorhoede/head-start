@@ -15,10 +15,12 @@ node_modules/
 .env.production
 
 # generated files
+reports/
 src/assets/icon-sprite.svg
 src/assets/icon-sprite.ts
 src/lib/datocms/types.ts
 src/lib/i18n/messages.json
 src/lib/i18n/types.ts
 src/lib/site.json
+src/lib/routing/file-proxy-map.json
 src/lib/routing/redirects.json
