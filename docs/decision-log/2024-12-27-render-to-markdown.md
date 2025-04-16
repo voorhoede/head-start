@@ -8,11 +8,11 @@
 
 ## Decision
 
-Making our HTML pages available as Markdown is of interest to some people and especially suitable for software such as LLM's. Using `Astro.slots.render` seems to be the only solution that works both during build- and run-time.
+Making our HTML pages available as Markdown is of interest to some people and especially suitable for software such as LLMs. Using `Astro.slots.render` seems to be the only solution that works both during build- and run-time.
 
 ### Solution
 
-A componanion `.md.astro` route with a `ToMarkdown` component that leverages `Astro.slots.render` to get a usable HTML string, which can be used to transform to Markdown (and other formats):
+A companion `.md.astro` route with a `ToMarkdown` component that leverages `Astro.slots.render` to get a usable HTML string, which can be used to transform to Markdown (and other formats):
 
 ```astro
 ---
@@ -22,7 +22,7 @@ const md = /* transform html to md any way you want */
 <Fragment set:text={md} />
 ```
 
-### Alternatives considerd
+### Alternatives considered
 
 These alternatives were explored and rejected:
 

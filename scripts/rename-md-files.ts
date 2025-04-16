@@ -14,7 +14,7 @@ const renameMdFiles = async () => {
     const dirName = path.dirname(filename);
     await fs.rm(dirName, { recursive: true });
     const newFilename = filename.replace(/\.md\/index\.html$/, '.md');
-    fs.writeFile(newFilename, file);
+    await fs.writeFile(newFilename, file);
   }
 
   return filenames.length;
