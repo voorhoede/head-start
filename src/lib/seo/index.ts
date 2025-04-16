@@ -34,6 +34,15 @@ export const titleTag = (title: string): Tag => ({
   content: `${title} ${titleSuffix()}`,
 });
 
+export const markdownLinkTag = (href: string): Tag => ({
+  tag: 'link',
+  attributes: {
+    rel: 'alternate',
+    type: 'text/markdown',
+    href,
+  },
+});
+
 export type RobotsTxtProps = {
   allowAiBots: boolean,
   allowAll: boolean,
