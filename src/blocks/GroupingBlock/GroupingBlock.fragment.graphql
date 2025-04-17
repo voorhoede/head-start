@@ -1,4 +1,5 @@
 #import '@blocks/ActionBlock/ActionBlock.fragment.graphql'
+#import '@blocks/HeadingBlock/HeadingBlock.fragment.graphql'
 #import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
 #import '@blocks/TableBlock/TableBlock.fragment.graphql'
 #import '@blocks/TextBlock/TextBlock.fragment.graphql'
@@ -23,6 +24,9 @@ fragment GroupingItem on GroupingItemRecord {
     __typename
     ... on ActionBlockRecord {
       ...ActionBlock
+    }
+    ... on HeadingBlockRecord {
+      ...HeadingBlock
     }
     ... on ImageBlockRecord {
       ...ImageBlock
