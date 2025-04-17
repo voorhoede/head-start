@@ -1,5 +1,6 @@
 #import '@blocks/ActionBlock/ActionBlock.fragment.graphql'
 #import '@blocks/EmbedBlock/EmbedBlock.fragment.graphql'
+#import '@blocks/GroupingBlock/GroupingBlock.fragment.graphql'
 #import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
 #import '@blocks/PagePartialBlock/PagePartialBlock.fragment.graphql'
 #import '@blocks/TableBlock/TableBlock.fragment.graphql'
@@ -7,7 +8,6 @@
 #import '@blocks/TextImageBlock/TextImageBlock.fragment.graphql'
 #import '@blocks/VideoBlock/VideoBlock.fragment.graphql'
 #import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
-#import '@blocks/GroupingBlock/GroupingBlock.fragment.graphql'
 
 query HomePage($locale: SiteLocale!) {
   page: homePage(locale: $locale) {
@@ -24,6 +24,9 @@ query HomePage($locale: SiteLocale!) {
       }
       ... on EmbedBlockRecord {
         ...EmbedBlock
+      }
+      ... on GroupingBlockRecord {
+        ...GroupingBlock
       }
       ... on ImageBlockRecord {
         ...ImageBlock
@@ -45,9 +48,6 @@ query HomePage($locale: SiteLocale!) {
       }
       ... on VideoEmbedBlockRecord {
         ...VideoEmbedBlock
-      }
-      ... on GroupingBlockRecord {
-        ...GroupingBlock
       }
     }
   }
