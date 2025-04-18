@@ -1,6 +1,8 @@
 fragment HeadingBlock on HeadingBlockRecord {
   id
-  blockTitle: title
+  text {
+    value
+  } 
   subtitle 
   level
 }
