@@ -1,4 +1,5 @@
 #import '@blocks/ActionBlock/ActionBlock.fragment.graphql'
+#import '@blocks/HeadingBlock/HeadingBlock.fragment.graphql'
 #import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
 #import '@blocks/TableBlock/TableBlock.fragment.graphql'
 #import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
@@ -12,6 +13,9 @@ fragment TextImageBlock on TextImageBlockRecord {
       __typename
       ... on ActionBlockRecord {
         ...ActionBlock
+      }
+      ... on HeadingBlockRecord {
+        ...HeadingBlock
       }
       ... on ImageBlockRecord {
         ...ImageBlock
