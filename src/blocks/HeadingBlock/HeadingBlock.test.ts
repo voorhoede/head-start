@@ -8,7 +8,25 @@ describe('HeadingBlock', () => {
       props: {
         block: {
           id: '123',
-          heading: 'test',
+          text: {
+            'value': {
+              'schema': 'dast',
+              'document': {
+                'type': 'root',
+                'children': [
+                  {
+                    'type': 'paragraph',
+                    'children': [
+                      {
+                        'type': 'span',
+                        'value': 'test'
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
         }
       }
     });
@@ -22,7 +40,25 @@ describe('HeadingBlock', () => {
       props: {
         block: {
           id: '123',
-          heading: 'test',
+          text: {
+            'value': {
+              'schema': 'dast',
+              'document': {
+                'type': 'root',
+                'children': [
+                  {
+                    'type': 'paragraph',
+                    'children': [
+                      {
+                        'type': 'span',
+                        'value': 'test'
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          },
           level: 3,
         }
       }
@@ -37,13 +73,31 @@ describe('HeadingBlock', () => {
       props: {
         block: {
           id: '123',
-          heading: 'test',
-          subHeading: 'subheading'
+          text: {
+            'value': {
+              'schema': 'dast',
+              'document': {
+                'type': 'root',
+                'children': [
+                  {
+                    'type': 'paragraph',
+                    'children': [
+                      {
+                        'type': 'span',
+                        'value': 'test'
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          subtitle: 'subheading'
         }
       }
     });
 
-    expect(fragment.querySelector('h2 small')).toBeTruthy();
-    expect(fragment.querySelector('h2 small')?.textContent).toBe('subheading');
+    expect(fragment.querySelector('hgroup h2 + small')).toBeTruthy();
+    expect(fragment.querySelector('hgroup h2 + small')?.textContent).toBe('subheading');
   });
 });
