@@ -7,17 +7,17 @@ export interface Props {
 
 const { block } = Astro.props;
 
-const Element = `h${block.level || 2}`;
+const Tag = `h${block.level || 2}`;
 const hasSubHeading = Boolean(block.subHeading);
 ---
 
 {hasSubHeading === false &&
-  <Element>{block.heading}</Element>
+  <Tag>{block.heading}</Tag>
 }
 
 {hasSubHeading === true &&
-  <Element>
+  <Tag>
     {block.heading}<br />
     <small>{block.subHeading}</small>
-  </Element>
+  </Tag>
 }
