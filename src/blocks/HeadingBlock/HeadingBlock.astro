@@ -1,20 +1,29 @@
 ---
 import type { HeadingBlockFragment } from '@lib/datocms/types';
+import type { Heading, StructuredText as StructuredTextData } from 'datocms-structured-text-utils';
+import { hasChildren, isDocument } from 'datocms-structured-text-utils';
+import StructuredText from '@components/StructuredText/StructuredText.astro';
 
 export interface Props {
   block: HeadingBlockFragment
 }
 
 const { block } = Astro.props;
-const { blockTitle, subtitle, level } = block;
+const { text, subtitle, level } = block;
 
-const Tag = `h${level || 2}`;
+const clonedText = structuredClone(text);
+if (isDocument(clonedText.value) && hasChildren(clonedText.value.document)) {
+  const firstChild = clonedText.value.document.children[0] as Heading;
+  firstChild.type = 'heading';
+  firstChild.level = level as 2 | 3 | 4 | 5 | 6;
+}
+
 ---
 
 {!subtitle 
-  ? <Tag>{blockTitle}</Tag> 
-  : <Tag>
-    {blockTitle}<br />
+  ? <StructuredText data={clonedText as StructuredTextData} />
+  : <hgroup role="group" aria-roledescription="Heading group">
+    <StructuredText data={clonedText as StructuredTextData} />
     <small>{subtitle}</small>
-  </Tag>
+  </hgroup>
 }
