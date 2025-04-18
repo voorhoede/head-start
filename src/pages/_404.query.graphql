@@ -1,5 +1,6 @@
 #import '@blocks/ActionBlock/ActionBlock.fragment.graphql'
 #import '@blocks/EmbedBlock/EmbedBlock.fragment.graphql'
+#import '@blocks/HeadingBlock/HeadingBlock.fragment.graphql'
 #import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
 #import '@blocks/PagePartialBlock/PagePartialBlock.fragment.graphql'
 #import '@blocks/TableBlock/TableBlock.fragment.graphql'
@@ -18,6 +19,9 @@ query NotFoundPage($locale: SiteLocale!) {
       }
       ... on EmbedBlockRecord {
         ...EmbedBlock
+      }
+      ... on HeadingBlockRecord {
+        ...HeadingBlock
       }
       ... on ImageBlockRecord {
         ...ImageBlock
