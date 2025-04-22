@@ -3,6 +3,5 @@ fragment HeadingBlock on HeadingBlockRecord {
   text {
     value
   } 
-  subtitle 
   level
 }
