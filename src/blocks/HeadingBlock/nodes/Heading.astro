@@ -1,0 +1,19 @@
+---
+import type { Heading } from 'datocms-structured-text-utils';
+
+interface Props {
+  node: Heading;
+}
+
+const { node } = Astro.props;
+
+const className = `title h${node.level}`;
+
+---
+<span class={className}><slot /></span>
+
+<style>
+  .title {
+    display: block;
+  } 
+</style>
