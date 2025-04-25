@@ -16,4 +16,18 @@ export default async function (client: Client) {
   await client.plugins.create({
     package_name: 'datocms-plugin-oembed',
   });
+
+  console.log('Install plugin "Translate"');
+  const translatePlugin = await client.plugins.create({
+    package_name: 'datocms-plugin-translate-fields',
+  });
+  if (process.env.DEEPL_API_KEY) {
+    await client.plugins.update(translatePlugin.id, {
+      parameters: {
+        autoApply: true,
+        deeplApiKey: process.env.DEEPL_API_KEY,
+        translationService: { label: 'DeepL API Pro', value: 'deepl' }
+      },
+    });
+  }
 }
