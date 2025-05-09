@@ -1,8 +1,24 @@
 ---
 import { t } from '@lib/i18n';
 
-const defaultSizes = [1280, 960, 640, 320];
+interface ImageProps {
+  alt?: string | null,
+  title?: string | null,
+  width?: number | null,
+  height?: number | null,
+  url: string,
+  responsiveImage?: { 
+    __typename?: 'ResponsiveImage', 
+    base64?: string | null 
+  } | null;
+}
 
+export interface Props {
+  image: ImageProps;
+  loading?: 'lazy' | 'eager';
+}
+
+const defaultSizes = [1280, 960, 640, 320];
 const getImageSrc = (url: string, params: Record<string, number|string> = {}) => {
   const defaults: Record<string, number|string> = {
     auto: 'format,compress',
