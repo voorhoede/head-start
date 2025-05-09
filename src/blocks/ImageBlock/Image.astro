@@ -19,7 +19,9 @@ export interface Props extends HTMLAttributes<'figure'> {
   image: ImageProps;
   loading?: HTMLAttributes<'img'>['loading'];
   fetchpriority?: HTMLAttributes<'img'>['fetchpriority'];
+  aspectRatio?: number;
   sizes?: HTMLAttributes<'img'>['sizes'];
+  fit?: ImgixParamsFit;
   widths?: number[];
 }
 
@@ -31,16 +33,26 @@ const {
   fetchpriority = 'auto',
   sizes,
   widths = defaultWidths,
+  fit = ImgixParamsFit.Max,
   ...props
 } = Astro.props;
 const altText = image.alt ? image.alt : ''; // default to empty string for accessibility
 const imageUnavailableMessage = t('image_unavailable');
+
+const aspectRatio = props.aspectRatio || (
+  (image?.width && image?.height) 
+    ? (image?.width / image?.height)
+    : null
+);
 
 const getImgixQueryString = (params: ImgixParams) => {
   const w = params.w || Math.max(...widths);
   const stringifiedParams = Object.entries({
     ...params,
     w,
+    ...aspectRatio
+      ? { h: Math.round(w / aspectRatio) }
+      : {}
   }).map(([key, value]) => [key, `${value}`]);
   return new URLSearchParams(stringifiedParams).toString();
 };
@@ -60,7 +72,7 @@ const getImageSrc = (url: string, params: Record<string, number|string> = {}) =>
 
 const getImageSrcSet = (url: string, widths: number[], params = {}) => {
   return widths.map((w) => {
-    const src = getImageSrc(url, { ...params, w, fit: ImgixParamsFit.Max });
+    const src = getImageSrc(url, { ...params, w, fit });
     return `${src} ${w}w`;
   }).join(', ');
 };
