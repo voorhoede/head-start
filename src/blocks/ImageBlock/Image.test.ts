@@ -31,6 +31,20 @@ describe('ImageBlock > Image', () => {
     expect(img?.width).toBe(300);
     expect(img?.height).toBe(150);
   });
+  
+  test('renders with overridden loading attribute', async () => {
+    const fragment = await renderToFragment<Props>(Image, {
+      props: { 
+        image: {
+          ...image,
+        },
+        loading: 'eager',
+      },
+    });
+
+    const img = fragment.querySelector('img');
+    expect(img?.getAttribute('loading')).toBe('eager');
+  });
 
   test('renders with a figcaption when title is provided', async () => {
     const fragment = await renderToFragment<Props>(Image, {
