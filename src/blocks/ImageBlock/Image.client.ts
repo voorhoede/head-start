@@ -3,28 +3,34 @@
  * Automatically removes the inline `background-image` style once the image is fully loaded.
  */
 class ImageComponent extends HTMLElement {
-  imgElement: HTMLImageElement;
-
-  handleImageLoad = (): void => {
-    this.imgElement.style.removeProperty('background-image');
-    this.imgElement.removeEventListener('load', this.handleImageLoad);
-  };
-
+  #element: HTMLImageElement;
+  
   constructor() {
     super();
-    this.imgElement = this.querySelector<HTMLImageElement>('img')!;
+    this.#element = this.querySelector<HTMLImageElement>('img')!;
+  }
+
+  #removeBackground(): void {
+    this.#element.style.removeProperty('background-image');
+    this.#element.removeEventListener('load', this);
+  }
+
+  handleEvent(event: Event): void {
+    if (event.type === 'load') {
+      this.#removeBackground();
+    }
   }
 
   connectedCallback(): void {
-    if (this.imgElement.complete) {
-      this.handleImageLoad();
+    if (this.#element.complete) {
+      this.#removeBackground();
     } else {
-      this.imgElement.addEventListener('load', this.handleImageLoad);
+      this.#element.addEventListener('load', this);
     }
   }
 
   disconnectedCallback(): void {
-    this.imgElement.removeEventListener('load', this.handleImageLoad);
+    this.#element.removeEventListener('load', this);
   }
 }
 
