@@ -10,7 +10,7 @@ const image = {
 };
 
 describe('ImageBlock > Image', () => {
-  test('renders the image with the correct source, alt text, and loading attribute', async () => {
+  test('renders the image with the correct source, alt text, loading, and fetchpriority attribute', async () => {
     const fragment = await renderToFragment<Props>(Image, {
       props: { image },
     });
@@ -20,6 +20,7 @@ describe('ImageBlock > Image', () => {
     expect(img?.src).toBe('https://example.com/test.jpg');
     expect(img?.alt).toBe('A test image');
     expect(img?.getAttribute('loading')).toBe('lazy');
+    expect(img?.getAttribute('fetchpriority')).toBe('auto');
   });
 
   test('renders the correct width and height', async () => {
@@ -44,6 +45,20 @@ describe('ImageBlock > Image', () => {
 
     const img = fragment.querySelector('img');
     expect(img?.getAttribute('loading')).toBe('eager');
+  });
+  
+  test('renders with overridden fetchpriority attribute', async () => {
+    const fragment = await renderToFragment<Props>(Image, {
+      props: { 
+        image: {
+          ...image,
+        },
+        fetchpriority: 'high',
+      },
+    });
+
+    const img = fragment.querySelector('img');
+    expect(img?.getAttribute('fetchpriority')).toBe('high');
   });
 
   test('renders with a figcaption when title is provided', async () => {
