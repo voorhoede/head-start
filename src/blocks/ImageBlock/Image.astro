@@ -1,4 +1,5 @@
 ---
+import type { HTMLAttributes } from 'astro/types';
 import { t } from '@lib/i18n';
 
 interface ImageProps {
@@ -13,7 +14,7 @@ interface ImageProps {
   } | null;
 }
 
-export interface Props {
+export interface Props extends HTMLAttributes<'figure'> {
   image: ImageProps;
   loading?: 'lazy' | 'eager';
 }
@@ -39,12 +40,16 @@ const getImageSrcSet = (url: string, sizes = defaultSizes, params = {}) => {
   }).join(', ');
 };
 
-const { image, loading = 'lazy' } = Astro.props;
+const {
+  image,
+  loading = 'lazy',
+  ...props
+} = Astro.props;
 const altText = image.alt ? image.alt : ''; // default to empty string for accessibility
 const imageUnavailableMessage = t('image_unavailable');
 ---
 <image-component>
-  <figure>
+  <figure {...props}>
     {
       image.responsiveImage
         ? // bitmap images have Imgix generated props (responsiveImage.*):

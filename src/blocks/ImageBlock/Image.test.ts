@@ -85,4 +85,23 @@ describe('ImageBlock > Image', () => {
     expect(img?.height).toBe(150);
     expect(img?.style.backgroundImage).toContain('base64');
   });
+  
+  test('renders figure with additional attributes passed through', async () => {
+    const name = 'data-test-attribute';
+    const attribute = { [name]: 'test-value' };
+    const fragment = await renderToFragment<Props>(Image, {
+      props: {
+        ...attribute,
+        image: {
+          ...image,
+          responsiveImage: {
+            base64: 'data:image/jpeg;base64,/...',
+          }
+        },
+      },
+    });
+
+    const figure = fragment.querySelector('figure');
+    expect(figure?.getAttribute(name)).toBe(attribute[name]);
+  });
 });
