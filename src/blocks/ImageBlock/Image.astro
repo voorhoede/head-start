@@ -19,6 +19,7 @@ export interface Props extends HTMLAttributes<'figure'> {
   image: ImageProps;
   loading?: HTMLAttributes<'img'>['loading'];
   fetchpriority?: HTMLAttributes<'img'>['fetchpriority'];
+  sizes?: HTMLAttributes<'img'>['sizes'];
 }
 
 const defaultSizes = [1280, 960, 640, 320];
@@ -49,6 +50,7 @@ const {
   image,
   loading = 'lazy',
   fetchpriority = 'auto',
+  sizes,
   ...props
 } = Astro.props;
 const altText = image.alt ? image.alt : ''; // default to empty string for accessibility
@@ -63,6 +65,7 @@ const imageUnavailableMessage = t('image_unavailable');
           alt={ altText }
           loading={ loading }
           fetchpriority={ fetchpriority }
+          sizes={ sizes }
           srcset={ getImageSrcSet(image.url) }
           src={ getImageSrc(image.url) }
           width={ image.width }

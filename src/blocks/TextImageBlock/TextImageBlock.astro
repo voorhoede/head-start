@@ -16,7 +16,7 @@ const { block } = Astro.props;
       <Text data={ block.text as StructuredText } />
     </div>
     <div class="layout__item">
-      <Image image={ block.image } />
+      <Image image={ block.image } sizes="(min-width: 760px) 50vw, 100vw" />
     </div>
   </div>
 </div>
