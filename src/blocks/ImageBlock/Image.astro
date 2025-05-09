@@ -1,7 +1,7 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
 import { t } from '@lib/i18n';
-import { ImgixParamsAuto, ImgixParamsFit } from '@lib/datocms/types';
+import { ImgixParamsAuto, ImgixParamsFit, type ImgixParams } from '@lib/datocms/types';
 
 interface ImageProps {
   alt?: string | null,
@@ -36,6 +36,15 @@ const {
 const altText = image.alt ? image.alt : ''; // default to empty string for accessibility
 const imageUnavailableMessage = t('image_unavailable');
 
+const getImgixQueryString = (params: ImgixParams) => {
+  const w = params.w || Math.max(...widths);
+  const stringifiedParams = Object.entries({
+    ...params,
+    w,
+  }).map(([key, value]) => [key, `${value}`]);
+  return new URLSearchParams(stringifiedParams).toString();
+};
+
 const getImageSrc = (url: string, params: Record<string, number|string> = {}) => {
   const defaults: Record<string, number|string> = {
     auto: [
@@ -45,11 +54,8 @@ const getImageSrc = (url: string, params: Record<string, number|string> = {}) =>
     q: 80,
     w: Math.max(...widths),
   };
-  const stringifyObjectValues = (obj: Record<string, number|string>) => {
-    return Object.entries(obj).reduce((acc, [key, value]) => ({ ...acc, [key]: value.toString() }), {});
-  };
-  const queryString = new URLSearchParams(stringifyObjectValues({ ...defaults, ...params })).toString();
-  return new URL(`${url}?${queryString}`).toString();
+
+  return new URL(`${url}?${getImgixQueryString({ ...defaults, ...params })}`).toString();
 };
 
 const getImageSrcSet = (url: string, widths: number[], params = {}) => {
