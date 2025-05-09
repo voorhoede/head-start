@@ -10,8 +10,12 @@ interface ImageProps {
   height?: number | null,
   url: string,
   responsiveImage?: { 
-    __typename?: 'ResponsiveImage', 
-    base64?: string | null 
+    __typename?: 'ResponsiveImage',
+    base64?: string | null
+  } | null;
+  focalPoint?: {
+    x: number;
+    y: number;
   } | null;
 }
 
@@ -65,6 +69,9 @@ const getImageSrc = (url: string, params: Record<string, number|string> = {}) =>
     ].join(','),
     q: 80,
     w: Math.max(...widths),
+    ...image.focalPoint
+      ? { 'fp-x': image.focalPoint.x, 'fp-y': image.focalPoint.y }
+      : {},
   };
 
   return new URL(`${url}?${getImgixQueryString({ ...defaults, ...params })}`).toString();
