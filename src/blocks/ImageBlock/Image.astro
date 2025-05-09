@@ -20,9 +20,22 @@ export interface Props extends HTMLAttributes<'figure'> {
   loading?: HTMLAttributes<'img'>['loading'];
   fetchpriority?: HTMLAttributes<'img'>['fetchpriority'];
   sizes?: HTMLAttributes<'img'>['sizes'];
+  widths?: number[];
 }
 
-const defaultSizes = [1280, 960, 640, 320];
+const defaultWidths = [1280, 960, 640, 320];
+
+const {
+  image,
+  loading = 'lazy',
+  fetchpriority = 'auto',
+  sizes,
+  widths = defaultWidths,
+  ...props
+} = Astro.props;
+const altText = image.alt ? image.alt : ''; // default to empty string for accessibility
+const imageUnavailableMessage = t('image_unavailable');
+
 const getImageSrc = (url: string, params: Record<string, number|string> = {}) => {
   const defaults: Record<string, number|string> = {
     auto: [
@@ -30,7 +43,7 @@ const getImageSrc = (url: string, params: Record<string, number|string> = {}) =>
       ImgixParamsAuto.Format
     ].join(','),
     q: 80,
-    w: Math.max(...defaultSizes),
+    w: Math.max(...widths),
   };
   const stringifyObjectValues = (obj: Record<string, number|string>) => {
     return Object.entries(obj).reduce((acc, [key, value]) => ({ ...acc, [key]: value.toString() }), {});
@@ -39,22 +52,12 @@ const getImageSrc = (url: string, params: Record<string, number|string> = {}) =>
   return new URL(`${url}?${queryString}`).toString();
 };
 
-const getImageSrcSet = (url: string, sizes = defaultSizes, params = {}) => {
-  return sizes.map((size) => {
-    const src = getImageSrc(url, { ...params, w: size, fit: ImgixParamsFit.Max });
-    return `${src} ${size}w`;
+const getImageSrcSet = (url: string, widths: number[], params = {}) => {
+  return widths.map((w) => {
+    const src = getImageSrc(url, { ...params, w, fit: ImgixParamsFit.Max });
+    return `${src} ${w}w`;
   }).join(', ');
 };
-
-const {
-  image,
-  loading = 'lazy',
-  fetchpriority = 'auto',
-  sizes,
-  ...props
-} = Astro.props;
-const altText = image.alt ? image.alt : ''; // default to empty string for accessibility
-const imageUnavailableMessage = t('image_unavailable');
 ---
 <image-component>
   <figure {...props}>
@@ -66,7 +69,7 @@ const imageUnavailableMessage = t('image_unavailable');
           loading={ loading }
           fetchpriority={ fetchpriority }
           sizes={ sizes }
-          srcset={ getImageSrcSet(image.url) }
+          srcset={ getImageSrcSet(image.url, widths) }
           src={ getImageSrc(image.url) }
           width={ image.width }
           height={ image.height }
