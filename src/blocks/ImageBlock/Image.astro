@@ -52,11 +52,11 @@ const aspectRatio = props.aspectRatio || (
 const getImgixQueryString = (params: ImgixParams) => {
   const w = params.w || Math.max(...widths);
   const stringifiedParams = Object.entries({
-    ...params,
     w,
     ...aspectRatio
       ? { h: Math.round(w / aspectRatio) }
-      : {}
+      : {},
+    ...params,
   }).map(([key, value]) => [key, `${value}`]);
   return new URLSearchParams(stringifiedParams).toString();
 };
@@ -79,7 +79,7 @@ const getImageSrc = (url: string, params: Record<string, number|string> = {}) =>
 
 const getImageSrcSet = (url: string, widths: number[], params = {}) => {
   return widths.map((w) => {
-    const src = getImageSrc(url, { ...params, w, fit });
+    const src = getImageSrc(url, { w, fit, ...params });
     return `${src} ${w}w`;
   }).join(', ');
 };
