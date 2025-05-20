@@ -33,21 +33,16 @@ const defaultWidths = [1280, 960, 640, 320];
 
 const {
   image,
+  aspectRatio = (image.width && image.height) ? image.width / image.height : undefined,
+  fit = ImgixParamsFit.Max,
   loading = 'lazy',
   fetchpriority = 'auto',
   sizes,
   widths = defaultWidths,
-  fit = ImgixParamsFit.Max,
   ...props
 } = Astro.props;
 const altText = image.alt ? image.alt : ''; // default to empty string for accessibility
 const imageUnavailableMessage = t('image_unavailable');
-
-const aspectRatio = props.aspectRatio || (
-  (image?.width && image?.height) 
-    ? (image?.width / image?.height)
-    : null
-);
 
 const getImgixQueryString = (params: ImgixParams) => {
   const w = params.w || Math.max(...widths);
@@ -122,7 +117,7 @@ const getImageSrcSet = (url: string, widths: number[], params = {}) => {
 
 <script src="./Image.client.ts"></script>
 
-<style>
+<style define:vars={{ 'aspect-ratio': aspectRatio || 'auto' }}>
 /* functional styling */
 
 img {
@@ -130,6 +125,7 @@ img {
   max-width: 100%;
   height: auto;
   background-size: cover;
+  aspect-ratio: var(--aspect-ratio);
 }
 
 /**
