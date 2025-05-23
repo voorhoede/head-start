@@ -1,5 +1,6 @@
 import { buildClient } from '@datocms/cma-client-node';
 import dotenv from 'dotenv-safe';
+import { stripIndents } from 'proper-tags';
 import { execCommand } from './lib/exec-command';
 import { datocmsEnvironment } from '../datocms-environment';
 
@@ -15,7 +16,13 @@ const getPrimaryEnvironment = async () => {
 
 async function run() {
   const sourceEnv = await getPrimaryEnvironment();
-  execCommand(`npx datocms environments:fork ${sourceEnv} ${datocmsEnvironment} --fast`);
+  const confirmationMessage = stripIndents`
+    Create a new environment from primary environment "${sourceEnv}" with the name
+    "${datocmsEnvironment}" (specified in 'datnocms-environment.ts')`;
+  execCommand(
+    `npx datocms environments:fork ${sourceEnv} ${datocmsEnvironment} --fast`,
+    confirmationMessage,
+  );
 }
 
 run();
