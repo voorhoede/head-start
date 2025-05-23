@@ -1,4 +1,9 @@
 import { execCommand } from './lib/exec-command';
 import { datocmsEnvironment } from '../datocms-environment';
 
-execCommand(`npx datocms environments:promote ${datocmsEnvironment}`);
+const confirmationMessage = `Promote the environment '${datocmsEnvironment}' to the primary environment`;
+
+execCommand(
+  `npx datocms environments:promote ${datocmsEnvironment}`,
+  confirmationMessage,
+);
