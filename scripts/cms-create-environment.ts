@@ -15,7 +15,11 @@ const getPrimaryEnvironment = async () => {
 
 async function run() {
   const sourceEnv = await getPrimaryEnvironment();
-  execCommand(`npx datocms environments:fork ${sourceEnv} ${datocmsEnvironment} --fast`);
+  const confirmationMessage = `create a new environment with the name '${datocmsEnvironment}'* and fork the primary environment '${sourceEnv}'. *You can adjust the new environment name in 'datocms-environment.ts'`;
+  execCommand(
+    `npx datocms environments:fork ${sourceEnv} ${datocmsEnvironment} --fast`,
+    confirmationMessage,
+  );
 }
 
 run();
