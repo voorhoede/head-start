@@ -3,6 +3,8 @@ import { PUBLIC_IS_PRODUCTION } from 'astro:env/server';
 import type { AnyBlock } from './Blocks';
 import ActionBlock from './ActionBlock/ActionBlock.astro';
 import EmbedBlock from './EmbedBlock/EmbedBlock.astro';
+import GroupingBlock from './GroupingBlock/GroupingBlock.astro';
+import HeadingBlock from './HeadingBlock/HeadingBlock.astro';
 import ImageBlock from './ImageBlock/ImageBlock.astro';
 import PagePartialBlock from './PagePartialBlock/PagePartialBlock.astro';
 import TableBlock from './TableBlock/TableBlock.astro';
@@ -10,11 +12,12 @@ import TextBlock from './TextBlock/TextBlock.astro';
 import TextImageBlock from './TextImageBlock/TextImageBlock.astro';
 import VideoBlock from './VideoBlock/VideoBlock.astro';
 import VideoEmbedBlock from './VideoEmbedBlock/VideoEmbedBlock.astro';
-import GroupingBlock from './GroupingBlock/GroupingBlock.astro';
 
 const blocksByTypename = {
   ActionBlockRecord: ActionBlock,
   EmbedBlockRecord: EmbedBlock,
+  GroupingBlockRecord: GroupingBlock,
+  HeadingBlockRecord: HeadingBlock,
   ImageBlockRecord: ImageBlock,
   PagePartialBlockRecord: PagePartialBlock,
   TableBlockRecord: TableBlock,
@@ -22,7 +25,6 @@ const blocksByTypename = {
   TextImageBlockRecord: TextImageBlock,
   VideoBlockRecord: VideoBlock,
   VideoEmbedBlockRecord: VideoEmbedBlock,
-  GroupingBlockRecord: GroupingBlock,
 };
 
 interface Props {
