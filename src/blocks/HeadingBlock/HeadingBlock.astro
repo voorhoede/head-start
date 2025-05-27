@@ -16,7 +16,7 @@ let level = block.level;
 
 // If a level is not provided, take the lowest level within the structured text.
 if (
-  !level 
+  !level
   && isDocument(block.text.value) 
   && hasChildren(block.text.value.document)
 ) {
@@ -45,4 +45,3 @@ const attributes = {
     ]}
   />
 </Tag>
-
