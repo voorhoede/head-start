@@ -6,7 +6,7 @@ interface Props {
 }
 
 const { node } = Astro.props;
-const { level = 2 } = node;
-const Tag = `h${level}`;
+const { style, level = 2 } = node;
+const Tag = `h${level}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 ---
-<Tag><slot /></Tag>
+<Tag class={style}><slot /></Tag>
