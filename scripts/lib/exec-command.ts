@@ -4,22 +4,29 @@ import inquirer from 'inquirer';
 
 // npx datocms environments:fork grouping-block test-migration --fast
 
-export const execCommand = async (
-  command: string,
-  confirmationMessage: string,
-) => {
-  const isConfirmed: { confirm: boolean } = await inquirer.prompt([
+const confirm = async (confirmationMessage?: string) => {
+  if (!confirmationMessage) {
+    return true;
+  }
+
+  const confirmationFromUser: { confirm: boolean } = await inquirer.prompt([
     {
       type: 'confirm',
       name: 'confirm',
       message: `⚠️  ${confirmationMessage}\n\nAre you sure you want to continue?`,
       default: false,
-      theme: {
-        prefix: 'This command will: \n',
-      },
     },
   ]);
-  if (isConfirmed.confirm) {
+  return confirmationFromUser.confirm;
+};
+
+export const execCommand = async (
+  command: string,
+  confirmationMessage?: string,
+) => {
+  const isConfirmed = await confirm(confirmationMessage);
+
+  if (isConfirmed) {
     const execAsync = promisify(exec);
 
     try {
