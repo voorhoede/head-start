@@ -44,7 +44,12 @@
     "post": "run-s post:* --print-label",
     "post:remove-public-dir-readme": "rm dist/README.md",
     "postinstall": "npx husky install",
-    "seed:docs": "npm run seed:docs --workspace=config/datocms"
+    "seed:docs": "npm run seed:docs --workspace=config/datocms",
+    "cms:environments:create": "jiti scripts/cms-create-environment.ts",
+    "cms:environments:destroy": "jiti scripts/cms-destroy-environment.ts",
+    "cms:environments:promote": "jiti scripts/cms-promote-environment.ts",
+    "cms:migrations:generate": "jiti scripts/cms-generate-migration.ts",
+    "cms:migrations:run": "jiti scripts/cms-run-migrations.ts"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
@@ -96,11 +101,13 @@
     "eslint-plugin-astro": "^1.3.1",
     "eventsource": "^2.0.2",
     "husky": "^8.0.3",
+    "inquirer": "^12.6.1",
     "jsdom": "^25.0.0",
     "msw": "^2.4.2",
     "nano-staged": "^0.8.0",
     "npm-run-all": "^4.1.5",
     "plop": "^4.0.0",
+    "proper-tags": "^2.0.2",
     "robots-parser": "^3.0.1",
     "sonda": "^0.7.1",
     "svg-sprite": "^2.0.2",
