@@ -16,3 +16,9 @@ const level = Math.max(minimumLevel, (nodeLevel || defaultLevel));
 const Tag = `h${level}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 ---
 <Tag class={style}><slot /></Tag>
+
+<style>
+  .centered {
+    text-align: center;
+  }
+</style>
