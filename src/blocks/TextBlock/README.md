@@ -11,3 +11,4 @@
 - Renders nested blocks using [`<Blocks />`](../Blocks.astro), so it supports any Block.
 - Renders internal links using [`<LinkToRecord />`](../../components/LinkToRecord/LinkToRecord.astro).
 - Renders headings with a custom component to avoid having multiple H1's on the page.
+- Passes [Custom Text Styles](https://github.com/voorhoede/datocms-plugin-custom-text-styles) defined in DatoCMS to the appropriate nodes so they can be styled with CSS.

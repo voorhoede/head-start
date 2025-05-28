@@ -7,11 +7,18 @@ interface Props {
 
 const { node } = Astro.props;
 
+const { style, level: nodeLevel } = node;
 // H1 is reserved for the page title, so we start at H2
 const minimumLevel = 2;
 const defaultLevel = 2;
-const level = Math.max(minimumLevel, (node.level || defaultLevel));
+const level = Math.max(minimumLevel, (nodeLevel || defaultLevel));
 
-const Tag = `h${level}`;
+const Tag = `h${level}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 ---
-<Tag><slot /></Tag>
+<Tag class={style}><slot /></Tag>
+
+<style>
+  .centered {
+    text-align: center;
+  }
+</style>
