@@ -65,7 +65,11 @@ const getImageSrc = (url: string, params: Record<string, number|string> = {}) =>
     q: 80,
     w: Math.max(...widths),
     ...image.focalPoint
-      ? { 'fp-x': image.focalPoint.x, 'fp-y': image.focalPoint.y }
+      ? {
+        'fp-x': image.focalPoint.x,
+        'fp-y': image.focalPoint.y,
+        ...(fit === ImgixParamsFit.Crop ? { crop: 'focalpoint' } : {})
+      }
       : {},
   };
 
