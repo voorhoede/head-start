@@ -1,30 +1,19 @@
 import { exec } from 'node:child_process';
 import { promisify } from 'node:util';
-import inquirer from 'inquirer';
-
-const confirm = async (confirmationMessage?: string) => {
-  if (!confirmationMessage) {
-    return true;
-  }
-
-  const confirmationFromUser: { confirm: boolean } = await inquirer.prompt([
-    {
-      type: 'confirm',
-      name: 'confirm',
-      message: `⚠️ ${confirmationMessage}\n\nAre you sure you want to continue?`,
-      default: false,
-    },
-  ]);
-  return confirmationFromUser.confirm;
-};
+import confirm from '@inquirer/confirm';
 
 export const execCommand = async (
   command: string,
   confirmationMessage?: string,
 ) => {
-  const isConfirmed = await confirm(confirmationMessage);
+  const allow = confirmationMessage
+    ? await confirm({
+      message: `⚠️ ${confirmationMessage}\n\nAre you sure you want to continue?`,
+      default: false,
+    })
+    : true; // default to true if no confirmation message is provided
 
-  if (isConfirmed) {
+  if (allow) {
     const execAsync = promisify(exec);
 
     try {
