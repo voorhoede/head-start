@@ -9,7 +9,7 @@ const config = ts.config([
   ts.configs.recommended,
   astro.configs['flat/recommended'],
   astro.configs['flat/jsx-a11y-strict'],  
-  // @ts-expect-error - depend plugin heeft geen correcte flat config types
+  // @ts-expect-error - depend plugin does not have correct flat config types
   depend.configs['flat/recommended'],
   {
     languageOptions: {
