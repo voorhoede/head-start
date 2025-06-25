@@ -1,5 +1,0 @@
-dist
-node_modules
-
-src/lib/datocms/types.ts
-!**/.graphqlrc.ts
