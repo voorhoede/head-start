@@ -1,6 +1,6 @@
 ---
+import type { HTMLTag } from 'astro/types';
 import DynamicTag from './DynamicTag.astro';
-import type { Tag } from '@lib/datocms/types';
 
 type SearchResult = {
   title: string
@@ -13,7 +13,7 @@ type SearchResult = {
 }
 interface Props {
   item: SearchResult;
-  tag?: Tag;
+  tag?: HTMLTag;
 }
 const { item, tag = 'li' } = Astro.props;
 ---
