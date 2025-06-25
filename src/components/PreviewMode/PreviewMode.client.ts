@@ -108,7 +108,7 @@ class PreviewMode extends HTMLElement {
 
 class PreviewModeBar extends HTMLElement {
   #statusElement: HTMLElement;
-  #statusMessages: { [key in ConnectionStatus]: string } = {
+  #statusMessages: Record<ConnectionStatus, string> = {
     closed: 'CMS disconnected (refresh for updates)',
     connecting: 'CMS connecting ...',
     connected: 'CMS connected, receiving live updates',

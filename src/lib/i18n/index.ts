@@ -15,7 +15,7 @@ if (typeof document !== 'undefined') {
   i18n.locale(defaultLocale);
 }
 
-export type T = typeof i18n.t & ((key: TranslationKey) => string);
+export type T = typeof i18n.t & ((_key: TranslationKey) => string);
 // we use the 'any' type since this is used in the rosetta source-code
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const t: T = (key: TranslationKey, params?: any[] | Record<string, any>, lang?: string) => {
