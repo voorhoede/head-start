@@ -11,3 +11,14 @@
   but passes the heading level set in the WYSIWYG editor the as a class.
   Use globally defined heading classes to style the headings.
 - `level` field for numbers between 2 and 6
+
+## Consistent styling
+
+In order to ensure consistent styling across the site, reset the standard heading tag styling and create a global CSS class for each heading level. For example:
+
+```css
+.h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+```

@@ -5,15 +5,16 @@ interface Props {
   node: Heading;
 }
 
-const { node } = Astro.props;
-
-const className = `heading h${node.level}`;
+const { node: { level, style } } = Astro.props;
 
 ---
-<span class={className}><slot /></span>
+<span class:list={['heading', `h${level}`, style]}><slot /></span>
 
 <style>
   .heading {
     display: block;
+  }
+  .centered {
+    text-align: center;
   }
 </style>
