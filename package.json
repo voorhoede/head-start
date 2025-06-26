@@ -45,6 +45,7 @@
     "post:remove-public-dir-readme": "rm dist/README.md",
     "postinstall": "npx husky install",
     "seed:docs": "npm run seed:docs --workspace=config/datocms",
+    "cms:helper": "jiti scripts/cms-helper.ts",
     "cms:environments:create": "jiti scripts/cms-create-environment.ts",
     "cms:environments:destroy": "jiti scripts/cms-destroy-environment.ts",
     "cms:environments:promote": "jiti scripts/cms-promote-environment.ts",
