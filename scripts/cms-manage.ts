@@ -2,7 +2,7 @@ import { select } from '@inquirer/prompts';
 
 async function run() {
   const answer = await select({
-    message: 'What do you want to do?',
+    message: 'What do you want to achieve in your DatoCMS project?',
     choices: [
       {
         name: '🆕 start development in a new sandbox environment',
