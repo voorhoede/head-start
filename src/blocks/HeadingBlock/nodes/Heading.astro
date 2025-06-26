@@ -7,13 +7,13 @@ interface Props {
 
 const { node } = Astro.props;
 
-const className = `title h${node.level}`;
+const className = `heading h${node.level}`;
 
 ---
 <span class={className}><slot /></span>
 
 <style>
-  .title {
+  .heading {
     display: block;
   } 
 </style>
