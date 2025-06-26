@@ -31,8 +31,11 @@ describe('HeadingBlock', () => {
       }
     });
 
-    expect(fragment.querySelector('h2')).toBeTruthy();
-    expect(fragment.querySelector('h2')?.textContent).toBe('test');
+    const heading = fragment.querySelector('h2');
+    expect(heading).toBeTruthy();
+    expect(heading?.textContent?.trim()).toBe('test');
+    expect(heading?.querySelector('.paragraph')).toBeTruthy();
+    
   });
 
   test('renders a heading level 3 when that level is provided', async () => {
@@ -47,7 +50,7 @@ describe('HeadingBlock', () => {
                 'type': 'root',
                 'children': [
                   {
-                    'type': 'paragraph',
+                    'type': 'heading',
                     'children': [
                       {
                         'type': 'span',
@@ -64,11 +67,12 @@ describe('HeadingBlock', () => {
       }
     });
 
-    expect(fragment.querySelector('h3')).toBeTruthy();
-    expect(fragment.querySelector('h3')?.textContent).toBe('test');
+    const heading = fragment.querySelector('h3');
+    expect(heading).toBeTruthy();
+    expect(heading?.textContent?.trim()).toBe('test');
   });
-
-  test('renders a subheading', async () => {
+  
+  test('renders WYSIWYG heading level as a class of each containing element', async () => {
     const fragment = await renderToFragment<Props>(HeadingBlock, {
       props: {
         block: {
@@ -80,11 +84,22 @@ describe('HeadingBlock', () => {
                 'type': 'root',
                 'children': [
                   {
-                    'type': 'paragraph',
+                    'type': 'heading',
+                    'level': 2,
                     'children': [
                       {
                         'type': 'span',
-                        'value': 'test'
+                        'value': 'subtitle'
+                      }
+                    ]
+                  },
+                  {
+                    'type': 'heading',
+                    'level': 1,
+                    'children': [
+                      {
+                        'type': 'span',
+                        'value': 'title'
                       }
                     ]
                   }
@@ -92,12 +107,18 @@ describe('HeadingBlock', () => {
               }
             }
           },
-          subtitle: 'subheading'
+          level: 6,
         }
       }
     });
 
-    expect(fragment.querySelector('hgroup h2 + small')).toBeTruthy();
-    expect(fragment.querySelector('hgroup h2 + small')?.textContent).toBe('subheading');
+    const heading = fragment.querySelector('h6');
+    expect(heading).toBeTruthy();
+    const title = fragment.querySelector('.h1');
+    const subtitle = fragment.querySelector('.h2');
+    expect(title).toBeTruthy();
+    expect(subtitle).toBeTruthy();
+    expect(title?.textContent?.trim()).toBe('title');
+    expect(subtitle?.textContent?.trim()).toBe('subtitle');
   });
 });
