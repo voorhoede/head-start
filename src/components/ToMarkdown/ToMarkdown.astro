@@ -1,0 +1,23 @@
+---
+import { fromHtml } from 'hast-util-from-html';
+import { toMdast } from 'hast-util-to-mdast';
+import { select } from 'hast-util-select';
+import { toMarkdown } from 'mdast-util-to-markdown';
+import { gfmToMarkdown } from 'mdast-util-gfm';
+import { gfmTableToMarkdown } from 'mdast-util-gfm-table';
+
+export interface Props {
+  selector?: string;
+}
+const { selector = 'body' } = Astro.props;
+
+const html = await Astro.slots.render('default');
+const hast = fromHtml(html, { fragment: true });
+const matchingHast = select(selector, hast) ?? hast;
+const mdast = toMdast(matchingHast);
+const markdown = toMarkdown(mdast, {
+  extensions: [gfmToMarkdown(), gfmTableToMarkdown()],
+});
+---
+
+<Fragment set:text={markdown} />
