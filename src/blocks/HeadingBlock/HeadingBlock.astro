@@ -1,0 +1,47 @@
+---
+import { isParagraph, isHeading, isDocument, hasChildren } from 'datocms-structured-text-utils';
+import type { HeadingBlockFragment } from '@lib/datocms/types';
+import StructuredText from '@components/StructuredText/StructuredText.astro';
+import Heading from './nodes/Heading.astro';
+import Paragraph from './nodes/Paragraph.astro';
+
+export interface Props {
+  block: HeadingBlockFragment
+}
+
+const { block } = Astro.props;
+
+const text = block.text;
+let level = block.level;
+
+// If a level is not provided, take the lowest level within the structured text.
+if (
+  !level
+  && isDocument(block.text.value) 
+  && hasChildren(block.text.value.document)
+) {
+  const levels = block.text.value.document.children
+    .filter(child => child.type === 'heading')
+    .map(heading => heading.level);
+
+  level = levels.length 
+    ? Math.max(Math.min(...levels), 2) // Find lowest level but not lower than 2
+    : 2;
+}
+
+const Tag = `h${level}`;
+const attributes = {
+  class: 'heading-block'
+};
+
+---
+
+<Tag {...attributes}>
+  <StructuredText 
+    data={text} 
+    components={[
+      [isHeading, Heading],
+      [isParagraph, Paragraph]
+    ]}
+  />
+</Tag>

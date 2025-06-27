@@ -1,0 +1,19 @@
+---
+import type { Paragraph } from 'datocms-structured-text-utils';
+
+interface Props {
+  node: Paragraph;
+}
+
+const { node: { style } } = Astro.props;
+---
+<span class:list={['paragraph', style]}><slot /></span>
+
+<style>
+  .paragraph {
+    display: block;
+  }
+  .centered {
+    text-align: center;
+  }
+</style>

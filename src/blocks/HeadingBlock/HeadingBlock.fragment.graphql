@@ -1,0 +1,7 @@
+fragment HeadingBlock on HeadingBlockRecord {
+  id
+  text {
+    value
+  } 
+  level
+}

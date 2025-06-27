@@ -1,5 +1,6 @@
 #import '@blocks/ActionBlock/ActionBlock.fragment.graphql'
 #import '@blocks/GroupingBlock/GroupingBlock.fragment.graphql'
+#import '@blocks/HeadingBlock/HeadingBlock.fragment.graphql'
 #import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
 #import '@blocks/TableBlock/TableBlock.fragment.graphql'
 #import '@blocks/TextBlock/TextBlock.fragment.graphql'
@@ -18,6 +19,9 @@ fragment PagePartialBlock on PagePartialBlockRecord {
       }
       ... on GroupingBlockRecord {
         ...GroupingBlock
+      }
+      ... on HeadingBlockRecord {
+        ...HeadingBlock
       }
       ... on ImageBlockRecord {
         ...ImageBlock

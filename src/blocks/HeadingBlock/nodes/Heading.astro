@@ -1,0 +1,20 @@
+---
+import type { Heading } from 'datocms-structured-text-utils';
+
+interface Props {
+  node: Heading;
+}
+
+const { node: { level, style } } = Astro.props;
+
+---
+<span class:list={['heading', `h${level}`, style]}><slot /></span>
+
+<style>
+  .heading {
+    display: block;
+  }
+  .centered {
+    text-align: center;
+  }
+</style>
