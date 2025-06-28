@@ -1,0 +1,55 @@
+#import '@lib/routing/PageRoute.fragment.graphql'
+#import '@blocks/ActionBlock/ActionBlock.fragment.graphql'
+#import '@blocks/EmbedBlock/EmbedBlock.fragment.graphql'
+#import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
+#import '@blocks/PagePartialBlock/PagePartialBlock.fragment.graphql'
+#import '@blocks/TableBlock/TableBlock.fragment.graphql'
+#import '@blocks/TextBlock/TextBlock.fragment.graphql'
+#import '@blocks/TextImageBlock/TextImageBlock.fragment.graphql'
+#import '@blocks/VideoBlock/VideoBlock.fragment.graphql'
+#import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
+#import '@blocks/GroupingBlock/GroupingBlock.fragment.graphql'
+
+query Page($locale: SiteLocale!, $slug: String!) {
+  page(locale: $locale, filter: { slug: { eq: $slug } }) {
+    ...PageRoute
+    _seoMetaTags {
+      attributes
+      content
+      tag
+    }
+    bodyBlocks {
+      __typename
+      ... on ActionBlockRecord {
+        ...ActionBlock
+      }
+      ... on EmbedBlockRecord {
+        ...EmbedBlock
+      }
+      ... on ImageBlockRecord {
+        ...ImageBlock
+      }
+      ... on PagePartialBlockRecord {
+        ...PagePartialBlock
+      }
+      ... on TableBlockRecord {
+        ...TableBlock
+      }
+      ... on TextBlockRecord {
+        ...TextBlock
+      }
+      ... on TextImageBlockRecord {
+        ...TextImageBlock
+      }
+      ... on VideoBlockRecord {
+        ...VideoBlock
+      }
+      ... on VideoEmbedBlockRecord {
+        ...VideoEmbedBlock
+      }
+      ... on GroupingBlockRecord {
+        ...GroupingBlock
+      }
+    }
+  }
+}
