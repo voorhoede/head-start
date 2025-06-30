@@ -84,6 +84,6 @@ export const updateLocalEnvironment = async (environmentName: string) => {
   );
   fs.writeFileSync('datocms-environment.ts', updatedDatocmsEnvironmentFile);
   console.log(
-    `✅ datocms-environment.ts has been updated to ${color.blue(environmentName)}`,
+    `✅ ${color.yellow('datocms-environment.ts')} has been updated with ${color.blue(environmentName)}`,
   );
 };

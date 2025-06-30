@@ -33,7 +33,6 @@ export const execCommandSafe = async (
       console.error(error);
     }
   } else {
-    console.log('🚫 here');
     await cancelByUser();
   }
   return hasSucceeded;

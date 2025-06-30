@@ -48,9 +48,9 @@
     "cms:manage": "jiti scripts/cms-manage.ts",
     "cms:environments:create": "jiti scripts/cms-create-environment.ts",
     "cms:environments:destroy": "jiti scripts/cms-destroy-environment.ts",
+    "cms:environments:sync": "jiti scripts/cms-sync-environment.ts",
     "cms:environments:promote": "jiti scripts/cms-promote-environment.ts",
-    "cms:migrations:generate": "jiti scripts/cms-generate-migration.ts",
-    "cms:migrations:run": "jiti scripts/cms-run-migrations.ts"
+    "cms:migrations:generate": "jiti scripts/cms-generate-migration.ts"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",

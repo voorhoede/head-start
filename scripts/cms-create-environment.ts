@@ -27,7 +27,7 @@ const getConfirmationMessage = ({
   projectName,
   isRunAllMigrations,
 }: EnvironmentDetails) => stripIndents`
-    ✨ Create a new sandbox environment based on primary environment ${color.blue(sourceEnv)} with the name ${color.blue(targetEnvironment)} for project ${color.yellow(projectName)}.
+    Create a new sandbox environment based on primary environment ${color.blue(sourceEnv)} with the name ${color.blue(targetEnvironment)} for project ${color.yellow(projectName)}.
     ${isRunAllMigrations ? color.green('  New migration files will be run in chronological order') : color.red('  New migration files will not be run')}.
   `;
 
@@ -71,6 +71,9 @@ export default async function run() {
   if (result) {
     await updateLocalEnvironment(targetEnvironment);
   }
+  console.log(
+    `✨ ${color.green('Creation successful!')} New sandbox environment ${color.blue(targetEnvironment)} has been created.`,
+  );
 }
 
 // Only run if this file is executed directly

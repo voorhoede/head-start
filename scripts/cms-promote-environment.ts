@@ -15,7 +15,7 @@ import { getDeleteConfirmationMessage } from './cms-destroy-environment';
 // ============================================================================
 
 const turnOnMaintenanceMode = async (projectName: string) => {
-  const logMessage = `🔧 Putting project ${projectName} in maintenance mode`;
+  const logMessage = `🔧 Turning on maintenance mode for project ${color.yellow(projectName)}`;
   await execCommandStrict(
     `npx datocms maintenance:on --api-token=${process.env.DATOCMS_API_TOKEN}`,
     logMessage,
@@ -23,7 +23,7 @@ const turnOnMaintenanceMode = async (projectName: string) => {
 };
 
 const turnOffMaintenanceMode = async (projectName: string) => {
-  const logMessage = `🔧✅ Turning off maintenance mode for project ${projectName}`;
+  const logMessage = `🔧 Turning off maintenance mode for project ${color.yellow(projectName)}`;
   await execCommandStrict(
     `npx datocms maintenance:off --api-token=${process.env.DATOCMS_API_TOKEN}`,
     logMessage,
@@ -35,7 +35,7 @@ const turnOffMaintenanceMode = async (projectName: string) => {
 // ============================================================================
 
 const promoteEnvironment = async (targetEnvironment: string) => {
-  const logMessage = `🚀 Promoting environment '${targetEnvironment}' to primary`;
+  const logMessage = `🚀 Promoting environment ${color.blue(targetEnvironment)} to primary`;
   await execCommandStrict(
     `npx datocms environments:promote ${targetEnvironment} --api-token=${process.env.DATOCMS_API_TOKEN}`,
     logMessage,
@@ -53,7 +53,7 @@ const createNewEnvironment = async (targetEnvironment: string) => {
 };
 
 const deleteEnvironment = async (environmentName: string) => {
-  const logMessage = `🗑️ Deleting environment '${color.blue(environmentName)}'`;
+  const logMessage = `🗑️  Deleting environment '${color.blue(environmentName)}'`;
   await execCommandStrict(
     `npx datocms environments:destroy ${environmentName} --api-token=${process.env.DATOCMS_API_TOKEN}`,
     logMessage,
@@ -84,7 +84,7 @@ const askForNewEnvironment = async (targetEnvironment: string) => {
   });
   
   if (isCreateEnv) {
-    console.log(`Creating new environment ${targetEnvironment}`);
+    console.log(`Creating new environment ${color.blue(targetEnvironment)}`);
     await createNewEnvironment(targetEnvironment);
     await updateLocalEnvironment(targetEnvironment);
   }
@@ -92,10 +92,9 @@ const askForNewEnvironment = async (targetEnvironment: string) => {
 
 const askForDeleteOldEnvironment = async (
   formerPrimaryEnvironment: string,
-  projectName: string,
 ) => {
   const isDeleteOldEnv = await confirm({
-    message: `Do you want to delete the old primary environment ${color.blue(formerPrimaryEnvironment)} of project ${color.yellow(projectName)}?`,
+    message: 'Do you want to delete the old primary environment ?',
     default: false,
   });
   
@@ -157,7 +156,7 @@ export default async function run() {
     await turnOffMaintenanceMode(projectName);
 
     // Step 5: Optionally delete old environment
-    await askForDeleteOldEnvironment(formerPrimaryEnvironment, projectName);
+    await askForDeleteOldEnvironment(formerPrimaryEnvironment);
 
     // Step 6: Success message
     console.log(
