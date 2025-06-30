@@ -8,6 +8,7 @@ Use migrations when you're making changes to the DatoCMS schema, such as adding 
 
 **If you are ever unsure about what to do, try using the Datocms Manage command**
 This will give you a terminal interface that will guide you trough the process of interacting with DatoCMS. Based on your goal, it will help you with the appropriate steps.
+All custom commands provided by HeadStart regarding DatoCMS can be accessed via this tool.
 
 ```shell
     npm run cms:manage
