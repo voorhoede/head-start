@@ -1,28 +1,79 @@
-import { buildClient } from '@datocms/cma-client-node';
 import dotenv from 'dotenv-safe';
 import { stripIndents } from 'proper-tags';
-import { execCommand } from './lib/exec-command';
-import { datocmsEnvironment } from '../datocms-environment';
+import { execCommandSafe } from './lib/exec-command';
+import {
+  getPrimaryEnvironment,
+  getTargetSandBoxEnvironment,
+  updateLocalEnvironment,
+} from './lib/environments';
+import { getProjectName } from './lib/projects';
+import { color } from './lib/color';
+import confirm from '@inquirer/confirm';
 
 dotenv.config({
   allowEmptyValues: Boolean(process.env.CI),
 });
 
-const getPrimaryEnvironment = async () => {
-  const client = buildClient({ apiToken: process.env.DATOCMS_API_TOKEN });
-  const environments = await client.environments.list();
-  return environments.find(env => env.meta.primary)?.id;
+type EnvironmentDetails = {
+  sourceEnv: string;
+  isRunAllMigrations: boolean;
+  projectName: string;
+  targetEnvironment: string;
 };
 
-async function run() {
-  const sourceEnv = await getPrimaryEnvironment();
-  const confirmationMessage = stripIndents`
-    Create a new environment from primary environment "${sourceEnv}" with the name
-    "${datocmsEnvironment}" (specified in 'datnocms-environment.ts')`;
-  execCommand(
-    `npx datocms environments:fork ${sourceEnv} ${datocmsEnvironment} --fast`,
-    confirmationMessage,
+const getConfirmationMessage = ({
+  sourceEnv,
+  targetEnvironment,
+  projectName,
+  isRunAllMigrations,
+}: EnvironmentDetails) => stripIndents`
+    ✨ Create a new sandbox environment based on primary environment ${color.blue(sourceEnv)} with the name ${color.blue(targetEnvironment)} for project ${color.yellow(projectName)}.
+    ${isRunAllMigrations ? color.green('  New migration files will be run in chronological order') : color.red('  New migration files will not be run')}.
+  `;
+
+const runAllMigrations = async (environmentDetails: EnvironmentDetails) => {
+  return await execCommandSafe(
+    ` npx datocms migrations:run --destination=${environmentDetails.targetEnvironment}`,
+    getConfirmationMessage(environmentDetails),
   );
+};
+
+export const runCreateEnvironment = async (
+  environmentDetails: EnvironmentDetails,
+) => {
+  return await execCommandSafe(
+    `npx datocms environments:fork ${environmentDetails.sourceEnv} ${environmentDetails.targetEnvironment} --fast`,
+    getConfirmationMessage(environmentDetails),
+  );
+};
+
+export default async function run() {
+  const targetEnvironment = await getTargetSandBoxEnvironment();
+  const isRunAllMigrations = await confirm({
+    message: 'Do you want to run all new migration files?',
+    default: true,
+  });
+  const sourceEnv = await getPrimaryEnvironment();
+  const projectName = await getProjectName();
+  const environmentDetails: EnvironmentDetails = {
+    sourceEnv,
+    targetEnvironment,
+    projectName,
+    isRunAllMigrations,
+  };
+
+  let result = false;
+  if (isRunAllMigrations) {
+    result = await runAllMigrations(environmentDetails);
+  } else {
+    result = await runCreateEnvironment(environmentDetails);
+  }
+  if (result) {
+    await updateLocalEnvironment(targetEnvironment);
+  }
 }
 
-run();
+// Only run if this file is executed directly
+if (import.meta.url === `file://${process.argv[1]}`) {
+  run();
+}
