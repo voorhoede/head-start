@@ -7,15 +7,45 @@ interface Props {
 
 const { node } = Astro.props;
 
-const elementByMark: Record<DefaultMark, string> = {
+type Tag = 'span' | 'strong' | 'em' | 'del' | 'mark' | 'code' | 'u';
+
+const elementByMark: Record<string | DefaultMark, Tag> = {
   strong: 'strong',
   code: 'code',
   emphasis: 'em',
   underline: 'u',
   strikethrough: 'del',
   highlight: 'mark',
+
+  // Add custom marks set in custom-text-styles plugin
+  spoiler: 'span',
+  shout: 'strong',
 };
 
-const Tags = (node.marks as DefaultMark[])?.map(mark => elementByMark[mark] || 'span') || [];
+const Tags: { Tag: Tag; mark: string }[] =
+  node.marks?.map((mark) => {
+    const Tag = elementByMark[mark] || 'span';
+    return { Tag: Tag, mark };
+  }) || [];
 ---
-{Tags.reduce((children, Tag) => <Tag>{children}</Tag>, node.value)}
+
+{
+  Tags.reduce(
+    (children, { Tag, mark }) => <Tag class={mark}>{children}</Tag>,
+    node.value
+  )
+}
+
+<style>
+  .spoiler {
+    transition: color 0.3s ease-in-out;
+    color: black;
+    background-color: black;
+  }
+  .spoiler:hover {
+    color: white;
+  }
+  .shout {
+    text-transform: uppercase;
+  }
+</style>
