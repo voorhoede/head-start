@@ -90,4 +90,50 @@ describe('TextBlock Component', () => {
     expect(fragment.querySelector('h3')?.textContent).toBe('This is a test heading');
     expect(fragment.querySelector('p')?.textContent).toBe('This is a test paragraph');
   });
+  
+  test('renders custom style as a class name', async () => {
+    const fragment = await renderToFragment<Props>(TextBlock, {
+      props: {
+        block: {
+          __typename: 'TextBlockRecord',
+          text: {
+            blocks: [],
+            links: [],
+            value: {
+              schema: 'dast',
+              document: {
+                type: 'root',
+                children: [
+                  {
+                    type: 'heading',
+                    style: 'centered',
+                    level: 3,
+                    children: [
+                      {
+                        type: 'span',
+                        value: 'This is a test heading'
+                      }
+                    ]
+                  },
+                  {
+                    type: 'paragraph',
+                    style: 'centered',
+                    children: [
+                      {
+                        type: 'span',
+                        value: 'This is a test paragraph'
+                      },
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    });
+
+    expect(fragment.querySelector('h3')?.classList).toContain('centered');
+    expect(fragment.querySelector('p')?.classList).toContain('centered');
+  });
 });
