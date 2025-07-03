@@ -4,8 +4,7 @@ export default async function (client: Client) {
   console.log('Manage upload filters');
 
   console.log('Install plugin "Phone Number"');
-  await client.plugins.create({
-    id: 'CAQilGMyRlGtygeH_obytw',
+  const plugin = await client.plugins.create({
     package_name: 'datocms-plugin-phone-number',
   });
 
@@ -14,11 +13,11 @@ export default async function (client: Client) {
   console.log(
     'Update Single-line string field "Phone number" (`phone_number`) in block model "\uD83D\uDCDE Phone Link" (`phone_link`)',
   );
-  await client.fields.update('bfnOOp5cSM-x8S5RKEpKsw', {
+  const field = await client.fields.find('phone_link::phone_number');
+  await client.fields.update(field.id, {
     appearance: {
-      addons: [],
-      editor: 'CAQilGMyRlGtygeH_obytw',
-      parameters: { excludeCountries: [], includeCountries: [] },
+      ...field.appearance,
+      editor: plugin.id,
       field_extension: 'phoneNumber',
     },
   });
