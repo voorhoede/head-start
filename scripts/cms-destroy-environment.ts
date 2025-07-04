@@ -1,54 +1,70 @@
-import { cancelByUser, execCommandSafe } from './lib/exec-command';
+import { cancelByUser, execCommandSafe, execCommandStrict, getExecConfirmationMessage } from './lib/exec-command';
 import {
-  checkSandboxEnvironment,
+  getPrimaryEnvironment,
   getTargetSandBoxEnvironment,
+  updateLocalEnvironment,
 } from './lib/environments';
 import confirm from '@inquirer/confirm';
 import { getProjectName } from './lib/projects';
 import { color } from './lib/color';
 import { stripIndents } from 'proper-tags';
 
-const destroyEnvironment = async (environmentName: string) => {
-  console.log(`🗑️ Destroying sandbox environment '${environmentName}'`);
-  execCommandSafe(`npx datocms environments:destroy ${environmentName}`);
+const printSuccessMessage = (environmentName: string) => {
+  console.log(stripIndents`
+    🗑️  ${color.green('Deletion successful!')} Environment ${color.blue(environmentName)} has been deleted.
+  `);
 };
 
-export const getDeleteConfirmationMessage = async (
-  targetEnvironment: string,
-) => {
+const execDeleteSandboxEnvironment = async (environmentName: string, isStrict: boolean) => {
+  const deleteCommand = `npx datocms environments:destroy ${environmentName}`;
+  const logMessage = `🗑️  Destroying sandbox environment '${color.blue(environmentName)}'`;
+  if (isStrict) {
+    await execCommandStrict(deleteCommand, logMessage);
+  } else {
+    await execCommandSafe(deleteCommand);
+  }
+};
+
+const isConfirmedDeleteSandboxEnvironment = async (targetEnvironment: string) => {
   const projectName = await getProjectName();
 
-  return stripIndents`
+  const message = stripIndents`
     Destroy the environment ${color.blue(targetEnvironment)} of project ${color.yellow(projectName)}`;
+  return await confirm(getExecConfirmationMessage(message));
+};
+
+const askForSettingLocalEnvironmentToPrimary = async (
+  primaryEnvironment: string,
+) => {
+  const allow = await confirm({
+    message: `📝 Do you want to update the local environment in ${color.yellow('datocms-environment.ts')} to the primary environment ${color.blue(primaryEnvironment)}?`,
+    default: false,
+  });
+  return allow;
+};
+
+export const deleteSandboxEnvironment = async (environmentName: string, isStrict: boolean) => {
+  const allow = await isConfirmedDeleteSandboxEnvironment(environmentName);
+  if(allow) {
+    await execDeleteSandboxEnvironment(environmentName, isStrict);
+    printSuccessMessage(environmentName);
+  }
+  else if(!isStrict) {
+    await cancelByUser();
+  }
 };
 
 export default async function run() {
-  let targetEnvironment = await getTargetSandBoxEnvironment();
-  let isEnvironmentValid = await checkSandboxEnvironment(targetEnvironment);
-  while (!isEnvironmentValid) {
-    console.warn(
-      `${color.yellow('Please provide a valid environment name or create a new environment.')}`,
-    );
-    targetEnvironment = await getTargetSandBoxEnvironment();
-    isEnvironmentValid = await checkSandboxEnvironment(targetEnvironment);
+  const targetEnvironment = await getTargetSandBoxEnvironment();
+  await deleteSandboxEnvironment(targetEnvironment, false);
+
+  // Ask for updating the local environment to the primary environment
+  const primaryEnvironment = await getPrimaryEnvironment();
+  const isUpdateLocalEnvironment: boolean =
+    await askForSettingLocalEnvironmentToPrimary(primaryEnvironment);
+  if (isUpdateLocalEnvironment) {
+    await updateLocalEnvironment(primaryEnvironment);
   }
-
-  const confirmationMessage =
-    await getDeleteConfirmationMessage(targetEnvironment);
-
-  const allow = await confirm({
-    message: `⚠️ ${confirmationMessage}\n\nAre you sure you want to continue?`,
-    default: false,
-  });
-
-  if (allow) {
-    await destroyEnvironment(targetEnvironment);
-  } else {
-    await cancelByUser();
-  }
-  console.log(
-    `🗑️ ${color.green('Deletion successful!')} Environment ${color.blue(targetEnvironment)} has been deleted.`,
-  );
 }
 
 // Only run if this file is executed directly
