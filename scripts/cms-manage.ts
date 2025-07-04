@@ -5,6 +5,7 @@ import cmsGenerateMigration from './cms-generate-migration';
 import cmsPromoteEnvironment from './cms-promote-environment';
 import cmsSyncEnvironment from './cms-sync-environment';
 import { color } from './lib/color';
+import { catchError } from './lib/exec-command';
 
 const commandMap = new Map<string, () => Promise<void>>([
   ['env:create', cmsCreateEnvironment],
@@ -60,9 +61,8 @@ async function run() {
   if (command) {
     await command();
   } else {
-    console.error(`${color.red(`❌ Unknown command: ${answer}`)}`);
-    process.exit(1);
+    throw new Error(`Unknown command: ${answer}`);
   }
 }
 
-run();
+run().catch(catchError);

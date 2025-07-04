@@ -1,6 +1,6 @@
 import dotenv from 'dotenv-safe';
 import { stripIndents } from 'proper-tags';
-import { execCommandSafe } from './lib/exec-command';
+import { catchError, execCommandSafe } from './lib/exec-command';
 import {
   getNewSandboxEnvironment,
   getPrimaryEnvironment,
@@ -78,5 +78,5 @@ export default async function run() {
 
 // Only run if this file is executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  run();
+  run().catch(catchError);
 }

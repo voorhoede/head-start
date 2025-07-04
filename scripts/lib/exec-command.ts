@@ -50,3 +50,12 @@ export const cancelByUser = async () => {
   console.log('🚫 Operation cancelled by user');
   process.exit(1);
 };
+
+export const catchError = (error: unknown) => {
+  if ((error as Error)?.name === 'ExitPromptError') {
+    cancelByUser();
+  } else {
+    console.error(error);
+    process.exit(1);
+  }
+};

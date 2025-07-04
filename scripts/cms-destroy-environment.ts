@@ -1,4 +1,4 @@
-import { cancelByUser, execCommandSafe, execCommandStrict, getExecConfirmationMessage } from './lib/exec-command';
+import { cancelByUser, catchError, execCommandSafe, execCommandStrict, getExecConfirmationMessage } from './lib/exec-command';
 import {
   getPrimaryEnvironment,
   getTargetSandBoxEnvironment,
@@ -69,5 +69,5 @@ export default async function run() {
 
 // Only run if this file is executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  run();
+  run().catch(catchError);
 }
