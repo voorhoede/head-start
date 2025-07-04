@@ -10,7 +10,7 @@ import {
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import { datocmsSearch } from '@lib/datocms';
-import type { SiteLocale } from '@lib/datocms/types.ts';
+import type { SiteLocale } from '@lib/datocms/types';
 
 vi.mock('../../../../datocms-environment', () => ({
   datocmsBuildTriggerId: 'mock-build-trigger-id',
