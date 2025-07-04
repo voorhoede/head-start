@@ -2,8 +2,7 @@
 import type { PagePartialBlockFragment } from '@lib/datocms/types';
 import GroupingBlock from '@blocks/GroupingBlock/GroupingBlock.astro';
 import type { GroupingBlockFragment } from '@lib/datocms/types';
-import { getEntry } from 'astro:content';
-import { getLocale } from '@lib/i18n';
+import { getEntry } from '@lib/content';
 
 export interface Props {
   block: PagePartialBlockFragment
@@ -13,7 +12,7 @@ const { block } = Astro.props;
 // TODO: only allow one page partial per block
 const pagePartials = await Promise.all(
   block.items.map(async (item) => {
-    const pagePartial = await getEntry('PagePartials', `${getLocale()}/${item.id}`);
+    const pagePartial = await getEntry('PagePartials', item.id);
     return pagePartial?.data;
   })
 ).then(items => items.filter(pagePartial => pagePartial !== undefined && pagePartial !== null));

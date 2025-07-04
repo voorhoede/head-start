@@ -12,7 +12,7 @@ const layouts = [
   'tabs',
 ] as const;
 
-vi.mock('astro:content', () => ({
+vi.mock('../../lib/content', () => ({
   // fetch content from grouping block tests via mocked getEntry
   getEntry: (_: string, id: string, __: string) => {
     const index = Number(id.split('index-').pop()) || 0;

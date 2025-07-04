@@ -5,6 +5,7 @@ import {
   type SiteLocale
 } from '@lib/datocms/types';
 import { datocmsCollection, datocmsRequest } from '@lib/datocms';
+import { combine } from '@lib/content';
 
 export type PagePartialCollectionEntry = PagePartialCollectionEntryQuery['entry'] & {
   recordId: string,
@@ -22,7 +23,7 @@ const loadEntry = async (id: string, locale?: SiteLocale | null) => {
   return {
     ...entry,
     recordId: entry.id,
-    id: `${locale}/${entry.id}`,
+    id: combine({ id: entry.id, locale }),
     locale,
   } satisfies PagePartialCollectionEntry;
 };
