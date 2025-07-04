@@ -36,12 +36,14 @@ const videoAttributes = {
       As a JS check is needed for the first video to appear, it's wrapped in a div to reserve space for it.
       */ }
     <div style={{ aspectRatio }}>
+      {/* eslint-disable-next-line astro/jsx-a11y/media-has-caption */}
       <video { ...videoAttributes } data-video>
         <source src={video.streamingUrl} type='application/vnd.apple.mpegurl' />
         <VideoTextTracks tracks={ block.tracks as VideoTextTrackRecord[] } />
         <VideoFallback alt={ alt } title={ title } video={ video } />
       </video>
       <noscript>
+        {/* eslint-disable-next-line astro/jsx-a11y/media-has-caption */}
         <video { ...videoAttributes }>
           <source src={video.streamingUrl} type='application/vnd.apple.mpegurl' />
           <source src={video.streamingUrl} type='application/x-mpegURL' />

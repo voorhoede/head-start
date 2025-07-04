@@ -20,7 +20,7 @@ const titleTag = tags.find((tag) => tag.tag === 'title');
 {titleTag && <title>{titleTag.content}</title>}
 {
   metaTags.map((tag) => (
-    // @ts-expect-error
+    // @ts-expect-error DynamicTag component expects specific tag types but we're passing dynamic tag names from CMS
     <DynamicTag as={tag.tag} {...tag.attributes} />
   ))
 }
