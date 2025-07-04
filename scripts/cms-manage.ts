@@ -43,10 +43,9 @@ async function run() {
           'Create a new sandbox environment. Ensure that you select YES when asked to run all new migration files in the new environment.',
       },
       {
-        name: '🔄 Generate new migration files',
+        name: '📝 Generate new migration files',
         value: 'migration:generate',
-        description:
-          `Generate migration files. This will create a new migration file in the ${color.yellow('migrations')} directory that has all schema changes between the primary environment and the target sandbox environment.`,
+        description: `Generate migration files. This will create a new migration file in the ${color.yellow('migrations')} directory that has all schema changes between the primary environment and the target sandbox environment.`,
       },
       {
         name: '🚀 Promote sandbox environment to production',

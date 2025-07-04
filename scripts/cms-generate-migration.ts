@@ -6,7 +6,7 @@ import { color } from './lib/color';
 const getConfirmationMessage = async (targetEnvironment: string, sourceEnvironment: string) => {
 
   return stripIndents`
-    🔄 Create a new migration in ${color.yellow('config/datocms/migrations')} based on the 
+    📝 Create a new migration in ${color.yellow('config/datocms/migrations')} based on the 
     differences between the primary environment ${color.blue(sourceEnvironment)} and environment ${color.blue(targetEnvironment)}`;
 };
 
@@ -20,7 +20,7 @@ export default async function run() {
     confirmationMessage,
   );
   console.log(
-    `🔄  ${color.green('Migration generation successful!')} New migration file has been created in ${color.yellow('config/datocms/migrations')}.`,
+    `📝 ${color.green('Migration generation successful!')} New migration file has been created in ${color.yellow('config/datocms/migrations')}.`,
   );
 }
 

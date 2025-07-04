@@ -2,8 +2,8 @@ import dotenv from 'dotenv-safe';
 import { stripIndents } from 'proper-tags';
 import { execCommandSafe } from './lib/exec-command';
 import {
+  getNewSandboxEnvironment,
   getPrimaryEnvironment,
-  getTargetSandBoxEnvironment,
   updateLocalEnvironment,
 } from './lib/environments';
 import { getProjectName } from './lib/projects';
@@ -48,7 +48,7 @@ export const runCreateEnvironment = async (
 };
 
 export default async function run() {
-  const targetEnvironment = await getTargetSandBoxEnvironment();
+  const targetEnvironment = await getNewSandboxEnvironment();
   const isRunAllMigrations = await confirm({
     message: 'Do you want to run all new migration files?',
     default: true,
@@ -70,10 +70,10 @@ export default async function run() {
   }
   if (result) {
     await updateLocalEnvironment(targetEnvironment);
+    console.log(
+      `✨ ${color.green('Creation successful!')} New sandbox environment ${color.blue(targetEnvironment)} has been created.`,
+    );
   }
-  console.log(
-    `✨ ${color.green('Creation successful!')} New sandbox environment ${color.blue(targetEnvironment)} has been created.`,
-  );
 }
 
 // Only run if this file is executed directly

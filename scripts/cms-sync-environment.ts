@@ -7,13 +7,19 @@ const confirmationMessage = `Apply all migrations in chronological order to the 
 
 export default async function run() {
   const targetEnvironment = await getTargetSandBoxEnvironment();
-  await execCommandSafe(
+  const isSynced = await execCommandSafe(
     `npx datocms migrations:run --source=${targetEnvironment} --in-place`,
     confirmationMessage,
   );
-  console.log(
-    `🔄  ${color.green('Sync successful!')} Environment ${color.blue(targetEnvironment)} has been synced.`,
-  );
+  if (isSynced) {
+    console.log(
+      `🔄  ${color.green('Sync successful!')} Environment ${color.blue(targetEnvironment)} has been synced.`,
+    );
+  } else {
+    console.log(
+      `🔄  ${color.red('Sync failed!')} Environment ${color.blue(targetEnvironment)} has not been synced.`,
+    );
+  }
 }
 
 
