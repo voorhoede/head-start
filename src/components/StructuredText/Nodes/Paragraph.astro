@@ -1,1 +1,18 @@
-<p><slot /></p>
+---
+import type { Paragraph } from 'datocms-structured-text-utils';
+
+interface Props {
+  node: Paragraph;
+}
+
+const { node } = Astro.props;
+const { style } = node;
+---
+
+<p class={style}><slot /></p>
+
+<style>
+  .centered {
+    text-align: center;
+  }
+</style>
