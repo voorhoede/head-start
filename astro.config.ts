@@ -22,7 +22,12 @@ export const siteUrl = process.env.CF_PAGES
 // https://astro.build/config
 export default defineConfig({
   experimental: {
-    csp: true,
+    csp: {
+      directives: [
+        // "default-src 'self'",
+        'img-src \'self\' data: https://img.youtube.com'
+      ],
+    },
   },
   adapter: cloudflare({
     platformProxy: {
