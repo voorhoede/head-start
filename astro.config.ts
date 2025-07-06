@@ -21,6 +21,9 @@ export const siteUrl = process.env.CF_PAGES
 
 // https://astro.build/config
 export default defineConfig({
+  experimental: {
+    csp: true,
+  },
   adapter: cloudflare({
     platformProxy: {
       enabled: true,
