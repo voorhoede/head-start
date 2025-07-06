@@ -9,13 +9,15 @@ import Blocks from '@blocks/Blocks.astro';
 import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
 import query from './_index.query.graphql';
 
+export const prerender = true;
+
 export async function getStaticPaths() {
   return locales.map((locale) => ({ params: { locale } }));
 }
 
 const { locale } = Astro.params;
 const variables = { locale };
-const { page } = await datocmsRequest<HomePageQuery /*, typeof prerender */>({ query, variables });
+const { page } = await datocmsRequest<HomePageQuery , typeof prerender>({ query, variables });
 const pageUrls = locales.map((locale) => ({
   locale,
   pathname: getHomeHref({ locale }),
