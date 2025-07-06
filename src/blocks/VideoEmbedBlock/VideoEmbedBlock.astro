@@ -96,6 +96,7 @@ function getVideoUrl({
 
 <figure>
   <video-embed
+    class="fixed-ratio"
     data-autoplay={autoplay ? 'true' : undefined}
     data-provider={video.provider}
     data-video-url={getVideoUrl({
@@ -103,7 +104,6 @@ function getVideoUrl({
       mute: Boolean(mute),
       video,
     })}
-    style={{ aspectRatio }}
   >
     <PlayButton href={video.url}>
       <img
@@ -111,7 +111,7 @@ function getVideoUrl({
         loading="lazy"
         src={getImageUrl({ video })}
         srcset={getImageSrcSet({ video })}
-        style={{ aspectRatio }}
+        class="fixed-ratio"
       />
     </PlayButton>
 
@@ -140,7 +140,7 @@ function getVideoUrl({
       allowfullscreen
       allow="autoplay"
       title={title}
-      style={{ aspectRatio }}></iframe>
+      class="fixed-ratio"></iframe>
   </video-embed>
   <figcaption>
     <a href={video.url} target="_blank" rel="noopener noreferrer">
@@ -152,6 +152,12 @@ function getVideoUrl({
 </figure>
 
 <script src="./VideoEmbedBlock.client.ts"></script>
+
+<style define:vars={{ aspectRatio }}>
+  .fixed-ratio {
+    aspect-ratio: var(--aspectRatio);
+  }
+</style>
 
 <style>
   /* functional styling */
