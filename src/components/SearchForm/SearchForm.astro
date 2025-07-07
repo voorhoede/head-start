@@ -6,6 +6,7 @@ interface Props {
   query: string;
 }
 const { query } = Astro.props;
+// const instanceId = Math.random().toString(36).substring(2); // @todo: fix multiple instances while supporting deep linking?
 const inputId = queryParamName;
 const hintId = `${ queryParamName }-hint`;
 ---

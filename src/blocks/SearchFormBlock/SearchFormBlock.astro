@@ -1,0 +1,19 @@
+---
+// import type { SearchFormBlockFragment } from '@lib/datocms/types';
+import SearchForm from '@components/SearchForm/SearchForm.astro';
+
+type SearchFormBlockFragment = { // @todo: replace with actual fragment from DatoCMS
+  query: string;
+};
+
+export interface Props {
+  block: SearchFormBlockFragment;
+}
+const { block } = Astro.props as Props;
+---
+
+<search-form-block>
+  <SearchForm query={ block.query ?? '' } />
+</search-form-block>
+
+<script src="./SearchFormBlock.client.ts"></script>
