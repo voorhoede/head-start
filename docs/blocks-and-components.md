@@ -16,7 +16,7 @@ src/
 │       ├── SomeContentBlock.fragment.graphql
 │       ├── SomeContentBlock.client.ts
 │       └── SomeContentBlock.test.ts
-│       
+│
 └── components/
     └── SomeUiComponent/
         ├── SomeUiComponent.astro
@@ -32,6 +32,22 @@ src/
 > You can use `npm run create:block` and `npm run create:component` to quickly scaffold a new block or component with their associated files.
 
 See [CMS Data Loading](./cms-data-loading.md) for documentation on the use of GraphQL Fragment files.
+
+## Creating a new Block
+
+Before setting the front end code in HeadStart for your new block, first create the Block in your DatoCMS project. [Check here for more information](https://www.datocms.com/docs/content-modelling/blocks)
+
+1. Go to Schema > Blocks (`environments/ENVIRONMENT_NAME/schema/blocks_library`)
+2. Create a new block
+
+- The `Model ID` of the block should be the snakecase version of your Block name in the frontend.
+
+For example, if you want to create a `TestBlock`, you need to set your DatoCMS Block to the following:
+
+```bash
+Name: Test Block
+'Model ID': test_block
+```
 
 ## Block templates
 
@@ -114,6 +130,43 @@ export type AnyBlock =
   | TextBlockFragment;
 ```
 
+## Using Blocks in Pages
+
+If you want to use a new block in your pages, you will have to update the Page Model.
+
+1.  In your DatoCMS project, go to Schema > Models > Page `/environments/ENVIRONMENT_NAME/schema/item_types`
+2.  Edit the `Body` field. Validations > Specifiy the allowed blocks for this field. Add your new block.
+3.  Update your frontend code `Page` query in `src/pages/[locale]/[...path]/_index.query.graphql`
+
+- import your new Block fragment
+- add your new block record in `bodyBlocks`
+
+```graphql
+#  Be sure to import your new block fragment
+#import '@blocks/TestBlock/TestBlock.fragment.graphql'
+
+page(locale: $locale, filter: { slug: { eq: $slug } }) {
+   ...PageRoute
+   _seoMetaTags {
+     attributes
+     content
+     tag
+   }
+   bodyBlocks {
+     __typename
+     ... on ActionBlockRecord {
+       ...ActionBlock
+     }
+     # add your new block
+     ... on TestBlockRecord {
+       ...TestBlock
+     }
+   }
+```
+4. Test your new block by adding content. In your DatoCMS project, go to Content > Pages.
+- Create a new record and confirm that you can add your new block to the `Body`
+- If you run your frontend code with `npm run dev`, you will 
+
 ## Client-side scripts
 
 Astro supports [client-side scripts inside components](https://docs.astro.build/en/guides/client-side-scripts/#client-side-scripts). Head Start uses the convention to include these as external scripts for better TypeScript intellisense and linting. To distinguish server-side files (most in Astro) from client-side scripts we use a `.client.ts` extension. So blocks and components can include these as `<script src="./SomeComponent.client.ts"></script>`.
@@ -134,7 +187,9 @@ describe('Some Component', () => {
   });
 
   test('uses some prop as attribute', () => {
-    const value = fragment.querySelector('.someSelector')?.getAttribute('some-attribute');
+    const value = fragment
+      .querySelector('.someSelector')
+      ?.getAttribute('some-attribute');
     expect(value).toBe('some value');
   });
 
