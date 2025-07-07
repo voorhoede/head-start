@@ -1,23 +1,9 @@
 ---
-import { datocmsCollection, datocmsRequest } from '@lib/datocms';
-import { getPageHref, isServerRoute } from '@lib/routing/';
-import {
-  getPagePath,
-  getPageSlugFromPath,
-  getParentPages,
-} from '@lib/routing/page';
-import { 
-  PageRoute as fragment, 
-  type PageQuery, 
-  type PageRouteFragment, 
-  type SiteLocale 
-} from '@lib/datocms/types';
-import type { PageUrl } from '@lib/seo';
-import Layout from '@layouts/Default.astro';
-import Blocks from '@blocks/Blocks.astro';
-import { formatBreadcrumb } from '@components/Breadcrumbs';
-import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
-import query from './_index.query.graphql';
+import { datocmsCollection } from '@lib/datocms';
+import { isServerRoute } from '@lib/routing/';
+import { getPagePath } from '@lib/routing/page';
+import { PageRoute as fragment, type PageRouteFragment, type SiteLocale } from '@lib/datocms/types';
+import Page from '@views/Page/Page.astro';
 
 export const prerender = false;
 
@@ -42,36 +28,9 @@ type Params = {
   locale: SiteLocale;
   serverPath: string;
 };
-
-const { locale, serverPath } = Astro.params as Params;
-const variables = { locale, slug: getPageSlugFromPath(serverPath) };
-const { page } = await datocmsRequest<PageQuery, typeof prerender>({ query, variables });
-
-if (!page) {
-  return new Response(null, {
-    status: 404,
-    statusText: 'Not found'
-  });
-}
-
-const breadcrumbs = [...getParentPages(page), page].map((page) =>
-  formatBreadcrumb({
-    text: page.title,
-    href: getPageHref({ locale, record: page }),
-  })
-);
-const pageUrls = (page._allSlugLocales || []).map(({ locale }) => ({
-  locale: locale as SiteLocale,
-  pathname: getPageHref({ locale: locale as SiteLocale, record: page }),
-})) as PageUrl[];
+const { locale, serverPath: path } = Astro.params as Params;
 ---
 
-<Layout
-  breadcrumbs={breadcrumbs}
-  pageUrls={pageUrls}
-  seoMetaTags={page._seoMetaTags}
->
-  <PreviewModeSubscription query={query} variables={variables} />
-  <h1><mark>Server rendered ({new Date().toLocaleTimeString()})</mark> {page.title}</h1>
-  <Blocks blocks={page.bodyBlocks} />
-</Layout>
+<Page {locale} {path}>
+  <mark slot="mark">Server rendered ({new Date().toLocaleTimeString()})</mark>
+</Page>

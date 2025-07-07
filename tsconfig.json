@@ -11,7 +11,8 @@
       "@middleware/*": ["src/middleware/*"],
       "@pages/*": ["src/pages/*"],
       "@root/*": ["./*"],
-      "@src/*": ["src/*"]
+      "@src/*": ["src/*"],
+      "@views/*": ["src/views/*"],
     },
     "verbatimModuleSyntax": true,
     "plugins": [
