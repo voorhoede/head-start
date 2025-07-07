@@ -53,20 +53,15 @@ DATOCMS_READONLY_API_TOKEN=your-readonly-token
 DATOCMS_API_TOKEN=your-full-access-token
 ```
 
-- Add all models and settings in to your new CMS by running our [migrations](../config/datocms/migrations/) in a new [environment](https://www.datocms.com/docs/scripting-migrations/introduction) called `start` using the DatoCMS CLI: `npx datocms migrations:run --destination=start --fast-fork`.
-- Promote the new `start` environment to primary environment: `npx datocms environments:promote start` Alternatively you can go to Project Settings > Environments (`/project_settings/environments`) and 'Promote' the `start` environment to primary.
-- In your CMS, you can now safely remove the original environment via Project Settings > Environments (`/project_settings/environments`).
+- Add all models and settings in to your new CMS by running our [migrations](../config/datocms/migrations/) in a new [environment](https://www.datocms.com/docs/scripting-migrations/introduction) `npm run cms:environments:create`.
+  - When asked if you want to run all migrations, select 'Yes'.
+- Once created, promote your new environment to primary `npm run cms:environments:promote`. 
+  - You can safely delete the old primary environment when prompted
+  - Alternatively you can go to Project Settings > Environments (`/project_settings/environments`) and 'Promote' your new environment to primary.
 
 ```shell
-npx datocms migrations:run --destination=start --fast-fork
-npx datocms environments:promote start
-```
-
-- Update `datocms-environment` to the new environment:
-
-```ts
-// datocms-environment.ts:
-export const datocmsEnvironment = 'start';
+npm run cms:environments:create
+npm run cms:environments:promote
 ```
 
 > [!WARNING]
