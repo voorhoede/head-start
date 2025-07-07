@@ -132,26 +132,25 @@ export type AnyBlock =
 
 ## Using Blocks in Pages
 
-If you want to use a new block in your pages, you will have to update the Page Model.
+You probably want to use your block on certain pages. Depending on the block you might want to add it to a number of models such as Page, Home, 404, et cetera.
 
-1.  In your DatoCMS project, go to Schema > Models > Page `/environments/ENVIRONMENT_NAME/schema/item_types`
+1.  In your DatoCMS project, go to Schema > Models `/environments/ENVIRONMENT_NAME/schema/item_types`.
+2.  Click on the page model of your choice.
 2.  Edit the `Body` field. Validations > Specifiy the allowed blocks for this field. Add your new block.
-3.  Update your frontend code `Page` query in `src/pages/[locale]/[...path]/_index.query.graphql`
-
+3.  Update your frontend code `page` graphql query. The path of this file will depend on your model of choice.
 - import your new Block fragment
 - add your new block record in `bodyBlocks`
 
 ```graphql
+#src/pages/[locale]/[...path]/_index.query.graphql
+
+#  Update the above file for the Page model
 #  Be sure to import your new block fragment
+
 #import '@blocks/TestBlock/TestBlock.fragment.graphql'
 
 page(locale: $locale, filter: { slug: { eq: $slug } }) {
-   ...PageRoute
-   _seoMetaTags {
-     attributes
-     content
-     tag
-   }
+  # redacted content
    bodyBlocks {
      __typename
      ... on ActionBlockRecord {
