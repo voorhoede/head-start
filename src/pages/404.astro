@@ -5,6 +5,7 @@ import Layout from '~/layouts/Default.astro';
 import { datocmsRequest } from '~/lib/datocms';
 import type { NotFoundPageQuery, SiteLocale } from '~/lib/datocms/types';
 import { noIndexTag, titleTag } from '~/lib/seo';
+import SearchFormBlock from '~/blocks/SearchFormBlock/SearchFormBlock.astro';
 import query from './_404.query.graphql';
 
 export const prerender = false;
@@ -23,4 +24,16 @@ const { page } = await datocmsRequest<NotFoundPageQuery, true>({ query, variable
   <PreviewModeSubscription query={query} variables={variables} record={{ type: page.__typename, id: page.id }} />
   <h1>{page.title}</h1>
   <Blocks blocks={page.bodyBlocks} />
+
+  <h2>Search Form block: default (no query)</h2>
+  <SearchFormBlock block={{ query: '' }} />
+
+  <h2>Search Form block: query from CMS</h2>
+  <SearchFormBlock block={{ query: 'text' }} />
+
+  <h2>Search Form block: query from URL</h2>
+  <SearchFormBlock block={{ query: '' }} />
+
+  <h2>Search Form block: query from path</h2>
+  <SearchFormBlock block={{ query: '' }} />
 </Layout>
