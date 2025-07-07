@@ -164,8 +164,8 @@ page(locale: $locale, filter: { slug: { eq: $slug } }) {
    }
 ```
 4. Test your new block by adding content. In your DatoCMS project, go to Content > Pages.
-- Create a new record and confirm that you can add your new block to the `Body`
-- If you run your frontend code with `npm run dev`, you will 
+- Create a new record and confirm that you can add your new block to the `Body`.
+- If you run your frontend code with `npm run dev`, you will be able to access your newly created page.
 
 ## Client-side scripts
 
