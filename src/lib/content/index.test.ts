@@ -41,6 +41,11 @@ vi.mock('astro:content', async (original) => {
   };
 });
 
+vi.mock('astro:env/server', () => ({
+  HEAD_START_PREVIEW: false,
+  PUBLIC_IS_PRODUCTION: true,
+}));
+
 vi.mock('../i18n/index.ts', async (original) => {
   const actual = original();
   return {
