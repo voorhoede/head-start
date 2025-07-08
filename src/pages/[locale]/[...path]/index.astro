@@ -1,5 +1,6 @@
 ---
-import { datocmsCollection, datocmsRequest } from '@lib/datocms';
+import { getCollection } from '@lib/collections';
+import { datocmsRequest } from '@lib/datocms';
 import { getPageHref } from '@lib/routing/';
 import {
   getPagePath,
@@ -7,9 +8,7 @@ import {
   getParentPages,
 } from '@lib/routing/page';
 import { 
-  PageRoute as fragment, 
-  type PageQuery, 
-  type PageRouteFragment, 
+  type PageQuery,
   type SiteLocale 
 } from '@lib/datocms/types';
 import type { PageUrl } from '@lib/seo';
@@ -20,17 +19,10 @@ import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscrip
 import query from './_index.query.graphql';
 
 export async function getStaticPaths() {
-  const pages = await datocmsCollection<PageRouteFragment>({
-    collection: 'Pages',
-    fragment,
-  });
-  return pages.flatMap((page) => {
-    const locales = page._allSlugLocales
-      ?.map((slug) => slug.locale)
-      .filter((locale) => !!locale);
-    return locales?.map((locale) => {
-      return { params: { locale, path: getPagePath({ page, locale }) } };
-    });
+  const pages = await getCollection('Pages');
+  return pages.map(({ data: page }) => {
+    const { locale } = page;
+    return { params: { locale, path: getPagePath({ page, locale }) } };
   });
 }
 
