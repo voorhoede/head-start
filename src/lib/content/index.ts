@@ -1,4 +1,5 @@
 import { getCollection as getAstroCollection, getEntry as getAstroCollectionEntry } from 'astro:content';
+import { HEAD_START_PREVIEW, PUBLIC_IS_PRODUCTION } from 'astro:env/server';
 import { getLocale, isLocale } from '@lib/i18n';
 import { SiteLocale } from '@lib/datocms/types';
 import { collectionMap } from '@content/config';
@@ -11,6 +12,7 @@ export type CollectionEntry<Key extends CollectionName> = NormalizedEntry<
   Awaited<ReturnType<typeof collectionMap[Key]['loadCollection']>>[number]
 >;
 
+const useLiveData = !PUBLIC_IS_PRODUCTION || HEAD_START_PREVIEW;
 /**
  * Fetches entries from a collection.
  *
@@ -50,14 +52,45 @@ export async function getEntry<Key extends CollectionName>(
   collection: Key,
   id: string,
   locale: SiteLocale | null = getLocale(),
-) {
-  const entry = await getAstroCollectionEntry(collection, combine({ id, locale }));
+): Promise<CollectionEntry<Key> | undefined> {
+  let entry: CollectionEntry<Key> | undefined = undefined;
   
-  // If the entry is not found, try to fetch it without locale
+  if (useLiveData) {
+    const liveEntry = await collectionMap[collection].loadEntry(id, locale);
+    if (liveEntry) {
+      entry = normalizeEntry(liveEntry, collection);
+    }
+  } else {
+    entry = await getAstroCollectionEntry(collection, combine({ id, locale }));
+  }
+  
   return (locale)
-    ? entry || await getAstroCollectionEntry(collection, id)
+    ? entry || await getEntry(collection, id, null) // Retry once to the entry without locale if not found
     : entry;
 }
+
+type Entry = { id: string; };
+type NormalizedEntry<T extends Entry> = {
+  id: string;
+  collection: string;
+  data: T;
+};
+
+/**
+ * Wrap an entry from loadCollection in a format that corresponds to Astro's 
+ * getCollection return type.
+ */
+function normalizeEntry<T extends Entry>(entry: T, collection: string): NormalizedEntry<T> {
+  return {
+    id: entry.id,
+    collection: collection,
+    data: entry as T,
+  };
+}
+
+// function normalizeEntries<T extends Entry>(entries: T[], collection: string): NormalizedEntry<T>[] {
+//   return entries.map(entry => normalizeEntry<T>(entry, collection));
+// }
 
 export function combine({ id, locale }: { id: string, locale?: SiteLocale | null }) {
   return locale ? `${locale}/${id}` : id;
