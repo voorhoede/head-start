@@ -29,12 +29,13 @@ module.exports = {
             'typescript-operations',
             '@graphql-codegen/typescript-document-nodes',
           ],
-          /**
-          * scalar config borrowed from DatoCMS team:
-          * @see https://github.com/Tonel/typescript-type-generation-graphql-example/blob/2d43584b1d75c9086c4ddd594a6b2401a29b0055/graphql.config.yml#L11-L23
-          */
           config: {
+            enumsAsConst: true,
             strictScalars: true,
+            /**
+            * scalar config borrowed from DatoCMS team:
+            * @see https://github.com/Tonel/typescript-type-generation-graphql-example/blob/2d43584b1d75c9086c4ddd594a6b2401a29b0055/graphql.config.yml#L11-L23
+            */
             scalars: {
               BooleanType: 'boolean',
               CustomData: 'Record<string, unknown>',

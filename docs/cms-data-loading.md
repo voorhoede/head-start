@@ -2,6 +2,8 @@
 
 **Head Starts provides loaders and helpers to fetch content from DatoCMS.**
 
+In most cases you want to fetch content per page via GraphQL queries, as is described below. In some cases however, you might want to use Astro's Content Collections. See the [documentation on Content Collections](./content-collections.md) to learn how it is implemented in Head Start.
+
 ## Configuration
 
 Head Start supports the use of [primary and sandbox environments in DatoCMS](https://www.datocms.com/docs/scripting-migrations/introduction). This enables feature branches to use a different environment than the main branch. You need to set the DatoCMS environment where content should be fetched from in [`/datocms-environment.ts`](../datocms-environment.ts):
