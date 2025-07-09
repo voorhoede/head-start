@@ -1,0 +1,36 @@
+---
+import { datocmsCollection } from '@lib/datocms';
+import { isStaticRoute } from '@lib/routing/';
+import { getPagePath } from '@lib/routing/page';
+import { PageRoute as fragment, type PageRouteFragment, type SiteLocale } from '@lib/datocms/types';
+import Page from '@views/Page/Page.astro';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const pages = await datocmsCollection<PageRouteFragment>({
+    collection: 'Pages',
+    fragment,
+  });
+  return pages
+    .filter(isStaticRoute)
+    .flatMap((page) => {
+      const locales = page._allSlugLocales
+        ?.map((slug) => slug.locale)
+        .filter((locale) => !!locale);
+      return locales?.map((locale) => {
+        return { params: { locale, staticPath: getPagePath({ page, locale }) } };
+      });
+    });
+}
+
+type Params = {
+  locale: SiteLocale;
+  staticPath: string;
+};
+const { locale, staticPath: path } = Astro.params as Params;
+---
+
+<Page {locale} {path}>
+  <mark slot="mark">Pre rendered ({new Date().toLocaleTimeString()})</mark>
+</Page>

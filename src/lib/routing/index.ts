@@ -10,6 +10,17 @@ export type RecordRoute =
 
 export { getFileHref } from './file';
 
+export const isStaticRoute = (record: RecordRoute) => {
+  // POC implementation to show the idea,
+  // actual implementation ought to be based on a either a setting per page or the existence of ceertain blocks?
+  // @ts-expect-error _allSlugLocales might not exist on all records
+  return !record._allSlugLocales?.some((slug: unknown) => slug.value === ('demos'));
+};
+
+export const isServerRoute = (record: RecordRoute) => {
+  return !isStaticRoute(record);
+};
+
 export const getHomeHref = ({ locale = getLocale() } = {}) => {
   return `/${locale}/`;
 };
