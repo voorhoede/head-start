@@ -1,12 +1,24 @@
-import { Kind, parse, type DocumentNode, type FragmentDefinitionNode } from 'graphql';
+import {
+  Kind,
+  parse,
+  type DocumentNode,
+  type FragmentDefinitionNode,
+} from 'graphql';
 import { print } from 'graphql/language/printer';
 import type { SiteLocale } from '@lib/datocms/types';
 import { titleSuffix } from '@lib/seo';
-import { datocmsBuildTriggerId, datocmsEnvironment } from '@root/datocms-environment';
+import {
+  datocmsBuildTriggerId,
+  datocmsEnvironment,
+} from '@root/datocms-environment';
 import { output } from '@root/config/output';
-import { DATOCMS_READONLY_API_TOKEN, HEAD_START_PREVIEW } from 'astro:env/server';
+import {
+  DATOCMS_READONLY_API_TOKEN,
+  HEAD_START_PREVIEW,
+} from 'astro:env/server';
 
-const wait = (milliSeconds: number) => new Promise((resolve) => setTimeout(resolve, milliSeconds));
+const wait = (milliSeconds: number) =>
+  new Promise((resolve) => setTimeout(resolve, milliSeconds));
 
 export const datocmsAssetsOrigin = 'https://www.datocms-assets.com/';
 export const datocmsGraphqlOrigin = 'https://graphql.datocms.com/';
@@ -20,33 +32,56 @@ type DatocmsRequest = {
 /**
  * Expect return value of specified Query to be available, i.e. non-nullable.
  */
-type Assert<Query> = Required<{ [key in keyof Query]: NonNullable<Query[key]> }>;
+type Assert<Query> = Required<{
+  [key in keyof Query]: NonNullable<Query[key]>;
+}>;
 
 /**
  * Makes a request to the DatoCMS GraphQL API using the provided query and variables.
  * It has authorization, environment and drafts (preview) pre-configured.
  * It has a retry mechanism in case of rate-limiting, based on DatoCMS API utils. @see https://github.com/datocms/js-rest-api-clients/blob/f4e820d/packages/rest-client-utils/src/request.ts#L239C13-L255
- * 
+ *
  * @template {Object} Query - The expected response data structure
  * @template {boolean} AssertReturnValue - Whether to assert non-nullability of the return value, defaults to true for static output
- * 
+ *
  * @param options - Request options
  * @param options.query - The GraphQL query document
  * @param options.variables - Variables to pass to the GraphQL query
  * @param options.retryCount - Number of retry attempts in case of rate limiting
- * 
+ *
  * @returns A promise resolving to the query result, with optional type assertion
  */
+// Overload for single query
 export async function datocmsRequest<
   Query,
-  AssertReturnValue extends boolean = typeof output extends 'static' ? true : false
+  AssertReturnValue extends boolean = typeof output extends 'static'
+    ? true
+    : false,
 >(
-  {
-    query,
-    variables = {},
-    retryCount = 1,
-  }: DatocmsRequest,
-): Promise<AssertReturnValue extends true ? Assert<Query> : Query> {
+  options: DatocmsRequest,
+): Promise<AssertReturnValue extends true ? Assert<Query> : Query>;
+// Overload for multiple queries
+export async function datocmsRequest<
+  Query,
+  AssertReturnValue extends boolean = typeof output extends 'static'
+    ? true
+    : false,
+>(options: {
+  queries: DatocmsRequest[];
+}): Promise<Array<AssertReturnValue extends true ? Assert<Query> : Query>>;
+// Implementation
+export async function datocmsRequest<
+  Query,
+  AssertReturnValue extends boolean = typeof output extends 'static'
+    ? true
+    : false,
+>(
+  options: DatocmsRequest | { queries: DatocmsRequest[] },
+): Promise<
+  AssertReturnValue extends true
+    ? Assert<Query>
+    : Query | Array<AssertReturnValue extends true ? Assert<Query> : Query>
+> {
   const headers = new Headers({
     Authorization: DATOCMS_READONLY_API_TOKEN,
     'Content-Type': 'application/json',
@@ -56,6 +91,43 @@ export async function datocmsRequest<
   if (HEAD_START_PREVIEW) {
     headers.append('X-Include-Drafts', 'true');
   }
+
+  if ('queries' in options) {
+    // Handle multiple queries using GraphQL batch querying
+    const queries = options.queries.map(({ query, variables }) => ({
+      query: print(query),
+      variables,
+    }));
+
+    const response = await fetch(datocmsGraphqlOrigin, {
+      method: 'post',
+      headers,
+      body: JSON.stringify(queries),
+    });
+
+    if (!response.ok) {
+      throw Error(
+        `DatoCMS batch request failed with status ${response.status}`,
+      );
+    }
+
+    const results = await response.json();
+
+    // Check for errors in any of the batch results
+    for (const result of results) {
+      if (result.errors) {
+        throw Error(JSON.stringify(result.errors, null, 4));
+      }
+    }
+
+    const data = results.map((result: { data: Query }) => result.data);
+
+    return data as AssertReturnValue extends true
+      ? Assert<Query>
+      : Query | Array<AssertReturnValue extends true ? Assert<Query> : Query>;
+  }
+
+  const { query, variables, retryCount = 1 } = options;
 
   const response = await fetch(datocmsGraphqlOrigin, {
     method: 'post',
@@ -69,8 +141,13 @@ export async function datocmsRequest<
       ? parseInt(response.headers.get('X-RateLimit-Reset')!, 10)
       : retryCount;
     await wait(waitTimeInSeconds * 1000);
-    if (retryCount >= retryLimit) throw Error('DatoCMS request failed. Too many retries.');
-    return datocmsRequest<Query, AssertReturnValue>({ query, variables, retryCount: retryCount + 1 });
+    if (retryCount >= retryLimit)
+      throw Error('DatoCMS request failed. Too many retries.');
+    return datocmsRequest<Query, AssertReturnValue>({
+      query,
+      variables,
+      retryCount: retryCount + 1,
+    });
   }
 
   if (!response.ok) {
@@ -84,7 +161,7 @@ export async function datocmsRequest<
 
 type CollectionData<CollectionType> = {
   [key: string]: CollectionType[];
-}
+};
 
 export type CollectionInfo = {
   meta: { count: number };
@@ -98,15 +175,15 @@ export type CollectionInfo = {
  * DatoCMS GraphQL API has a limit of 100 records per request.
  * This function uses pagination to get all records.
  * @see https://www.datocms.com/docs/content-delivery-api/pagination
- * 
- * @param {string} params.collection 
+ *
+ * @param {string} params.collection
  * - The name of the DatoCMS collection. For example, `"Pages"`
- * @param {DocumentNode|string} params.fragment 
+ * @param {DocumentNode|string} params.fragment
  * - The GraphQL fragment to include for each record, For example `pageRouteFragment`.
  */
 export async function datocmsCollection<CollectionType>({
   collection,
-  fragment
+  fragment,
 }: {
   collection: string;
   fragment: string | DocumentNode;
@@ -114,33 +191,34 @@ export async function datocmsCollection<CollectionType>({
   const {
     meta,
     records: [
-      { __typename: type } = { __typename: '' } // Collection might be empty
-    ]
+      { __typename: type } = { __typename: '' }, // Collection might be empty
+    ],
   } = await datocmsRequest<CollectionInfo>({
-    query: parse(/* graphql */`
+    query: parse(/* graphql */ `
       query ${collection}Meta {
         # Fetch first record to get the __typename to be used for the fragment created from a string
         records: all${collection}(first: 1) { __typename }
         meta: _all${collection}Meta { count }
       }
-   `)
+   `),
   });
   const recordsPerPage = 100; // DatoCMS GraphQL API has a limit of 100 records per request
   const totalPages = Math.ceil(meta.count / recordsPerPage);
   const records: CollectionType[] = [];
   // Create new fragment to maintain support for passing a string to argument fragment
-  const fragmentDocument = typeof fragment === 'string'
-    ? parse(`fragment InlineFragment on ${type} { ${fragment} }`)
-    : fragment;
+  const fragmentDocument =
+    typeof fragment === 'string'
+      ? parse(`fragment InlineFragment on ${type} { ${fragment} }`)
+      : fragment;
   const { definitions } = fragmentDocument;
-  const fragmentDefinition = definitions
-    .find((definition): definition is FragmentDefinitionNode =>
-      definition.kind === Kind.FRAGMENT_DEFINITION
-    );
+  const fragmentDefinition = definitions.find(
+    (definition): definition is FragmentDefinitionNode =>
+      definition.kind === Kind.FRAGMENT_DEFINITION,
+  );
 
   for (let page = 0; page < totalPages; page++) {
     const data = await datocmsRequest<CollectionData<CollectionType>>({
-      query: parse(/* graphql */`
+      query: parse(/* graphql */ `
         # Insert fragment definition from fragmentDocument, 
         # which is either the fragment passed from an import from @lib/datocms/types.ts 
         # or the one created from a string;
@@ -186,7 +264,13 @@ type SearchResponse = {
   };
 };
 
-export const formatSearchResults = ({ query, results }: { query: string, results: RawSearchResult[] }) => {
+export const formatSearchResults = ({
+  query,
+  results,
+}: {
+  query: string;
+  results: RawSearchResult[];
+}) => {
   return results.map((result) => {
     const { title, body_excerpt, highlight, score, url } = result.attributes;
     const defaultMatch = {
@@ -194,11 +278,14 @@ export const formatSearchResults = ({ query, results }: { query: string, results
       markedText: body_excerpt.replace(/</g, '&lt;'), // escape HTML tags
     };
     const markedTextPattern = /\[h\](.+?)\[\/h\]/g;
-    const matches = (highlight.body || []).map(bodyText => ({
+    const matches = (highlight.body || []).map((bodyText) => ({
       matchingTerm: markedTextPattern.exec(bodyText)?.[1] || query,
       markedText: bodyText
         .replace(/</g, '&lt;') // escape HTML tags
-        .replace(markedTextPattern, (_: string, text: string) => `<mark>${text}</mark>`),
+        .replace(
+          markedTextPattern,
+          (_: string, text: string) => `<mark>${text}</mark>`,
+        ),
     }));
     const { pathname } = new URL(url);
     // use Text Fragment for deeplinking: https://developer.mozilla.org/en-US/docs/Web/Text_fragments
@@ -210,12 +297,20 @@ export const formatSearchResults = ({ query, results }: { query: string, results
       score,
       pathname,
       textFragmentUrl,
-      url
+      url,
     };
   });
 };
 
-export const datocmsSearch = async ({ locale, query, fuzzy = true }: { locale: SiteLocale, query: string, fuzzy?: boolean }) => {
+export const datocmsSearch = async ({
+  locale,
+  query,
+  fuzzy = true,
+}: {
+  locale: SiteLocale;
+  query: string;
+  fuzzy?: boolean;
+}) => {
   const url = new URL('https://site-api.datocms.com/search-results');
   url.searchParams.set('locale', locale);
   url.searchParams.set('q', query); // DatoCMS docs say this should be 'query', but that results in a 422 error
@@ -226,17 +321,19 @@ export const datocmsSearch = async ({ locale, query, fuzzy = true }: { locale: S
 
   const response = await fetch(url.toString(), {
     headers: {
-      'Authorization': `Bearer ${DATOCMS_READONLY_API_TOKEN}`,
-      'Accept': 'application/json',
+      Authorization: `Bearer ${DATOCMS_READONLY_API_TOKEN}`,
+      Accept: 'application/json',
       'X-Api-Version': '3',
     },
   });
 
   if (!response.ok) {
-    throw new Error(`DatoCMS search API returned ${response.status} ${response.statusText}`);
+    throw new Error(
+      `DatoCMS search API returned ${response.status} ${response.statusText}`,
+    );
   }
 
-  const { data, meta } = await response.json() as SearchResponse;
+  const { data, meta } = (await response.json()) as SearchResponse;
   const results = formatSearchResults({ query, results: data });
 
   return { meta, results };
