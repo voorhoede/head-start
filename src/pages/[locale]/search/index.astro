@@ -3,11 +3,11 @@ import { locales, t } from '@lib/i18n';
 import { noIndexTag, siteName, titleTag } from '@lib/seo';
 import { datocmsSearch } from '@lib/datocms';
 import type { SiteLocale } from '@lib/datocms/types';
+import type { Breadcrumb } from '@lib/routing';
 import { hasValidQuery, getSearchPathname, queryParamName } from '@lib/search';
 import Layout from '@layouts/Default.astro';
 import SearchForm from '@components/SearchForm.astro';
 import SearchResult from '@components/SearchResult.astro';
-import type { Breadcrumb } from '@components/Breadcrumbs';
 export const prerender = false;
 
 const { locale } = Astro.params as { locale: SiteLocale };

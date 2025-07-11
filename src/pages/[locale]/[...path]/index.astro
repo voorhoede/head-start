@@ -1,6 +1,6 @@
 ---
 import { datocmsCollection, datocmsRequest } from '@lib/datocms';
-import { getPageHref } from '@lib/routing/';
+import { getPageHref, formatBreadcrumb } from '@lib/routing';
 import {
   getPagePath,
   getPageSlugFromPath,
@@ -15,7 +15,6 @@ import {
 import type { PageUrl } from '@lib/seo';
 import Layout from '@layouts/Default.astro';
 import Blocks from '@blocks/Blocks.astro';
-import { formatBreadcrumb } from '@components/Breadcrumbs';
 import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
 import query from './_index.query.graphql';
 
