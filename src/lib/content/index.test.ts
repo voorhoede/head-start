@@ -6,7 +6,7 @@ function mockEntry(id: string, locale?: string) {
   const meta = locale ? { locale } : {};
   return {
     id: locale ? `${locale}/${id}` : id,
-    data: meta,
+    data: { meta },
   };
 }
 
@@ -74,7 +74,7 @@ describe('getCollection', async () => {
     const length = (await collectionMap[collection].loadCollection()).length;
     const filteredLength = length / locales.length; // Assuming each id has an entry for each locale
     expect(entries).toHaveLength(filteredLength);
-    expect(entries.map(({ data: { locale } }) => ({ locale })))
+    expect(entries.map(({ data: { meta: { locale } } }) => ({ locale })))
       .toEqual([
         { locale },
         { locale },
@@ -104,7 +104,7 @@ describe('getEntry', async () => {
     const locale = getLocale();
     expect(entry).toBeDefined();
     expect(entry?.id).toBe(`${locale}/${id}`);
-    expect(entry?.data.locale).toBe(locale);
+    expect(entry?.data.meta.locale).toBe(locale);
   });
   test('does not filter if entries do not have a locale', async () => {
     const collection = 'NonLocalizedItems' as keyof typeof collectionMap;
