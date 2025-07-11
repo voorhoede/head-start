@@ -9,6 +9,7 @@ export type RecordRoute =
   | PageRouteFragment;
 
 export { getFileHref } from './file';
+export { getSlugFromPath } from './lib/slug';
 
 export const getHomeHref = ({ locale = getLocale() } = {}) => {
   return `/${locale}/`;
