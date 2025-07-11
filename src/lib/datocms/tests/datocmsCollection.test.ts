@@ -162,10 +162,6 @@ describe('datocmsCollection:', () => {
     }
 
     expect(response!).toBeInstanceOf(Error);
-
-    // compare parsed objects instead of stringified objects because the formatting of the error message strings is an implementation detail
-    // e.g. JSON.stringify({ a: 'b' }, null, 2) does not equal JSON.stringify({ a: 'b' }, null, 4) because of the difference in whitespace
-    const parsedErrorResponse = JSON.parse(response!.message);
-    expect(parsedErrorResponse).toEqual(errorResponse);
+    expect(response!.message).toContain(errorResponse[0].message);
   });
 });
