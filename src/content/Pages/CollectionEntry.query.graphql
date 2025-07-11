@@ -10,8 +10,8 @@
 #import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
 #import '@blocks/GroupingBlock/GroupingBlock.fragment.graphql'
 
-query Page($locale: SiteLocale!, $slug: String!) {
-  page(locale: $locale, filter: { slug: { eq: $slug } }) {
+query PageCollectionEntry($locale: SiteLocale!, $slug: String!) {
+  entry: page(locale: $locale, filter: { slug: { eq: $slug } }) {
     ...PageRoute
     _seoMetaTags {
       attributes
