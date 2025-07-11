@@ -2,12 +2,7 @@ import { execSync } from 'node:child_process';
 
 export const previewBranches = [
   'preview',
-  'feat/preview-mode',
-  'fix/function-size',
-  'fix/preview-mode-routing',
-  'preview-throws-500-due-to-Astro-bug-in-server-mode',
-  'fix/previews-not-working',
-  'fix-preview-mode',
+  'feat/pages-content-collection',
 ];
 
 function getGitBranch() {

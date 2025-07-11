@@ -5,12 +5,20 @@ import { SiteLocale } from '@lib/datocms/types';
 import { collectionMap } from '@content/config';
 
 export type CollectionName = keyof typeof collectionMap;
+
+type BareCollectionEntry<K extends CollectionName> = NormalizedEntry<
+  Awaited<ReturnType<typeof collectionMap[K]['loadCollection']>>[number]
+>
+type CollectionSubscription<K extends CollectionName> = {
+  query: typeof collectionMap[K]['subscription']['query']; // The GraphQL query for the subscription
+  variables: CollectionEntry<K>['data']['subscription']['variables']; // Variables for the subscription
+}
 /**
  * CollectionEntry is a type that represents a single entry in a collection.
  */ 
-export type CollectionEntry<K extends CollectionName> = NormalizedEntry<
-  Awaited<ReturnType<typeof collectionMap[K]['loadCollection']>>[number]
->;
+export type CollectionEntry<K extends CollectionName> = BareCollectionEntry<K> & { 
+  subscription: CollectionSubscription<K> 
+};
 
 const useLiveData = !PUBLIC_IS_PRODUCTION || HEAD_START_PREVIEW;
 /**
@@ -22,12 +30,12 @@ const useLiveData = !PUBLIC_IS_PRODUCTION || HEAD_START_PREVIEW;
  */
 export async function getCollection<K extends CollectionName>(
   collection: K,
-  filter?: ((entry: CollectionEntry<K>) => boolean),
+  filter?: ((entry: BareCollectionEntry<K>) => boolean),
   locale: SiteLocale | null = getLocale(),
 ): Promise<CollectionEntry<K>[]> {
   const entries = (!filter && !locale) 
     ? await getAstroCollection(collection)
-    : await getAstroCollection(collection, (entry: CollectionEntry<K>) => {
+    : await getAstroCollection(collection, (entry: BareCollectionEntry<K>) => {
       const entryLocale = split(entry.id).locale;
       return [
         // Check if the entry's locale is set and matches the requested locale
@@ -37,7 +45,7 @@ export async function getCollection<K extends CollectionName>(
       ].every(Boolean);
     });
   
-  return entries;
+  return entries.map(entry => addSubscription(entry, collection));
 }
 
 /**
@@ -53,7 +61,7 @@ export async function getEntry<K extends CollectionName>(
   id: string,
   locale: SiteLocale | null = getLocale(),
 ): Promise<CollectionEntry<K> | undefined> {
-  let entry: CollectionEntry<K> | undefined = undefined;
+  let entry: BareCollectionEntry<K> | undefined = undefined;
   
   if (useLiveData) {
     const liveEntry = await collectionMap[collection].loadEntry(id, locale);
@@ -64,13 +72,22 @@ export async function getEntry<K extends CollectionName>(
     entry = await getAstroCollectionEntry(collection, combine({ id, locale }));
   }
   
-  return (locale)
-    ? entry || await getEntry(collection, id, null) // Retry once to the entry without locale if not found
-    : entry;
+  if (!entry) {
+    return (locale) 
+      ? await getEntry(collection, id, null) // Retry once to the entry without locale if not found
+      : undefined; // If no locale is provided, return undefined if the entry is not found
+  }
+  
+  return addSubscription(entry, collection);
 }
 
-type Entry = { id: string; };
-type NormalizedEntry<T extends Entry> = {
+export type BaseEntry = { 
+  id: string;
+  subscription: {
+    variables: Record<string, string>; // Variables for the subscription
+  };
+};
+export type NormalizedEntry<T extends BaseEntry = BaseEntry> = {
   id: string;
   collection: string;
   data: T;
@@ -80,11 +97,23 @@ type NormalizedEntry<T extends Entry> = {
  * Wrap an entry from loadCollection in a format that corresponds to Astro's 
  * getCollection return type.
  */
-function normalizeEntry<T extends Entry>(entry: T, collection: string): NormalizedEntry<T> {
+function normalizeEntry<T extends BaseEntry>(entry: T, collection: CollectionName): NormalizedEntry<T> {
   return {
     id: entry.id,
-    collection: collection,
+    collection,
     data: entry as T,
+  };
+}
+
+function addSubscription<T extends BareCollectionEntry<K>, K extends CollectionName>(
+  entry: T,
+  collection: K,
+): CollectionEntry<K> {
+  const { query } = collectionMap[collection].subscription;
+  const { variables } = entry.data.subscription;
+  return {
+    ...entry,
+    subscription: { query, variables },
   };
 }
 
