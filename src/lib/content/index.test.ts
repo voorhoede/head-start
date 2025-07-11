@@ -4,9 +4,13 @@ import type { collectionMap } from '@content/config';
 
 function mockEntry(id: string, locale?: string) {
   const meta = locale ? { locale } : {};
+  const variables = { id, locale: locale || '' };
   return {
     id: locale ? `${locale}/${id}` : id,
-    data: { meta },
+    data: {
+      meta,
+      subscription: { variables },
+    },
   };
 }
 
@@ -29,9 +33,15 @@ vi.mock('@content/config', async () => {
   const collectionMap = {
     LocalizedItems: {
       loadCollection: async () => Promise.resolve(localizedItems),
+      subscription: {
+        query: '',
+      },
     },
     NonLocalizedItems: {
       loadCollection: async () => Promise.resolve(nonLocalizedItems),
+      subscription: {
+        query: '',
+      },
     },
   };
 
@@ -93,6 +103,15 @@ describe('getCollection', async () => {
     const length = (await collectionMap[collection].loadCollection()).length;
     expect(entries).toHaveLength(length);
   });
+  test('adds top-level subscription property to each entry', async () => {
+    const collection = 'LocalizedItems' as keyof typeof collectionMap;
+    const entries = await getCollection(collection);
+    entries.map(({ subscription }) => {
+      expect(subscription).toBeDefined();
+      expect(subscription?.variables).toBeDefined();
+      expect(subscription?.query).toBeDefined();
+    });
+  });
 });
 
 describe('getEntry', async () => {
@@ -111,6 +130,15 @@ describe('getEntry', async () => {
     const id = 'a';
     const entry = await getEntry(collection, id);
     expect(entry).toBeDefined();
+  });
+  test('adds top-level subscription property to return value', async () => {
+    const collection = 'LocalizedItems' as keyof typeof collectionMap;
+    const id = 'a';
+    const entry = await getEntry(collection, id);
+    const subscription = entry?.subscription;
+    expect(subscription).toBeDefined();
+    expect(subscription?.variables).toBeDefined();
+    expect(subscription?.query).toBeDefined();
   });
 });
 
