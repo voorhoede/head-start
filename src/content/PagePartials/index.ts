@@ -7,10 +7,14 @@ import {
 import { datocmsCollection, datocmsRequest } from '@lib/datocms';
 import { combine } from '@lib/content';
 
+type Meta = {
+  locale: SiteLocale;
+  recordId: string;
+};
+
 export type PagePartialCollectionEntry = PagePartialCollectionEntryQuery['entry'] & {
-  recordId: string,
-  id: string,
-  locale: SiteLocale,
+  id: string;
+  meta: Meta;
 };
 
 const name = 'PagePartials' as const;
@@ -22,9 +26,11 @@ const loadEntry = async (id: string, locale?: SiteLocale | null) => {
   const { entry } = await datocmsRequest<PagePartialCollectionEntryQuery>({ query, variables: { id, locale } });
   return {
     ...entry,
-    recordId: entry.id,
     id: combine({ id: entry.id, locale }),
-    locale,
+    meta: {
+      recordId: entry.id,  
+      locale,
+    }
   } satisfies PagePartialCollectionEntry;
 };
 
