@@ -1,9 +1,11 @@
 // Astro expects a content/config.ts file, therefore we export the collections here.
 import PagePartialCollection from './PagePartials';
+import PageCollection from './Pages';
 
 export const collectionMap = {
   // Add your collections here
   ...PagePartialCollection,
+  ...PageCollection,
 } as const;
 
 // Astro needs a value for collections that is an object whose keys are collection names

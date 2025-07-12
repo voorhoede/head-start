@@ -1,42 +1,70 @@
 import { describe, expect, test, vi } from 'vitest';
 import { getCollection, getEntry, combine, split } from './index';
-import { getLocale } from '@lib/i18n';
+import type { collectionMap } from '@content/config';
 
-const locales = ['en', 'nl'] as const;
-const collections = {
-  'LocalizedItems': [
-    { id: `${locales[0]}/a`, data: { locale: locales[0], title: 'First Item' } },
-    { id: `${locales[0]}/b`, data: { locale: locales[0], title: 'Second Item' } },
-    { id: `${locales[0]}/c`, data: { locale: locales[0], title: 'Third Item' } },
-    { id: `${locales[1]}/a`, data: { locale: locales[1], title: 'Eerste onderdeel' } },
-    { id: `${locales[1]}/b`, data: { locale: locales[1], title: 'Tweede onderdeel' } },
-    { id: `${locales[1]}/c`, data: { locale: locales[1], title: 'Derde onderdeel' } },
-  ],
-  'NonLocalizedItems': [
-    { id: 'a', data: { title: 'First Item' } },
-    { id: 'b', data: { title: 'Second Item' } },
-    { id: 'c', data: { title: 'Third Item' } },
-  ]
-} as const;
-  
-// Mocking the Astro content module to simulate collections,
-vi.mock('astro:content', async (original) => {
-  const actual = await original();
+function mockEntry(id: string, locale?: string) {
+  const meta = locale ? { locale } : {};
+  const variables = { id, locale: locale || '' };
   return {
-    ...actual || {},
-    // getAstroCollection
-    getCollection: (
-      collection: keyof typeof collections, 
+    id: locale ? `${locale}/${id}` : id,
+    data: {
+      meta,
+      subscription: { variables },
+    },
+  };
+}
+
+vi.mock('@lib/i18n', () => {
+  const locales = ['en', 'nl'] as const;
+  return {
+    locales,
+    getLocale: () => locales[1],
+    isLocale: (l: string) => (locales as readonly string[]).includes(l),
+  };
+});
+
+vi.mock('@content/config', async () => {
+  const { locales } = await import('@lib/i18n');
+  const localizedItems = ['a', 'b', 'c'].flatMap(id =>
+    locales.map(locale => mockEntry(id, locale))
+  );
+  const nonLocalizedItems = ['a', 'b', 'c'].map(id => mockEntry(id));
+
+  const collectionMap = {
+    LocalizedItems: {
+      loadCollection: async () => Promise.resolve(localizedItems),
+      subscription: {
+        query: '',
+      },
+    },
+    NonLocalizedItems: {
+      loadCollection: async () => Promise.resolve(nonLocalizedItems),
+      subscription: {
+        query: '',
+      },
+    },
+  };
+
+  return { collectionMap };
+});
+
+// Mocking the Astro content module to simulate collections,
+vi.mock('astro:content', async () => {
+  const { collectionMap } = await import('@content/config');
+
+  return {
+    getCollection: async (
+      collection: keyof typeof collectionMap,
       filter: (entry: unknown) => unknown
     ) => {
+      const entries = await collectionMap[collection].loadCollection();
       return filter
-        ? collections[collection].filter(filter)
-        : collections[collection];
+        ? entries.filter(filter)
+        : entries;
     },
-    // getAstroCollectionEntry
-    getEntry: (collection: keyof typeof collections, id: string) => {
-      const entry = collections[collection].find(e => e.id === id);
-      return entry ? { ...entry, data: { ...entry.data } } : undefined;
+    getEntry: async (collection: keyof typeof collectionMap, id: string) => {
+      const entries = await collectionMap[collection].loadCollection();
+      return entries.find(e => e.id === id);
     },
   };
 });
@@ -46,62 +74,77 @@ vi.mock('astro:env/server', () => ({
   PUBLIC_IS_PRODUCTION: true,
 }));
 
-vi.mock('../i18n/index.ts', async (original) => {
-  const actual = original();
-  return {
-    ...actual || {},
-    getLocale: () => locales[1],
-    isLocale: (l: string) => (locales as readonly string[]).includes(l),
-  };
-});
-
-describe('getCollection', () => {
+describe('getCollection', async () => {
+  const { collectionMap } = await import('@content/config');
+  const { locales, getLocale } = await import('@lib/i18n');
   test('filters by locale by default', async () => {
-    const collection = 'LocalizedItems';
-    const entries = await getCollection(collection as 'PagePartials');
+    const collection = 'LocalizedItems' as keyof typeof collectionMap;
+    const entries = await getCollection(collection);
     const locale = getLocale();
-    expect(entries).toHaveLength(3);
-    expect(
-      entries.map(({ data: { locale } }) => ({ locale }))
-    ).toEqual([
-      { locale },
-      { locale },
-      { locale },
-    ]);
+    const length = (await collectionMap[collection].loadCollection()).length;
+    const filteredLength = length / locales.length; // Assuming each id has an entry for each locale
+    expect(entries).toHaveLength(filteredLength);
+    expect(entries.map(({ data: { meta: { locale } } }) => ({ locale })))
+      .toEqual([
+        { locale },
+        { locale },
+        { locale },
+      ]);
   });
   test('does not filter if entries do not have a locale', async () => {
-    const collection = 'NonLocalizedItems';
-    const entries = await getCollection(collection as 'PagePartials');
-    expect(entries).toHaveLength(3);
-    expect(entries).toEqual(collections[collection]);
+    const collection = 'NonLocalizedItems' as keyof typeof collectionMap;
+    const entries = await getCollection(collection);
+    const length = (await collectionMap[collection].loadCollection()).length;
+    expect(entries).toHaveLength(length);
   });
   test('does not filter localized entries when locale is set to null', async () => {
-    const collection = 'LocalizedItems';
-    const entries = await getCollection(collection as 'PagePartials', undefined, null);
-    expect(entries).toHaveLength(6);
+    const collection = 'LocalizedItems' as keyof typeof collectionMap;
+    const entries = await getCollection(collection, undefined, null);
+    const length = (await collectionMap[collection].loadCollection()).length;
+    expect(entries).toHaveLength(length);
+  });
+  test('adds top-level subscription property to each entry', async () => {
+    const collection = 'LocalizedItems' as keyof typeof collectionMap;
+    const entries = await getCollection(collection);
+    entries.map(({ subscription }) => {
+      expect(subscription).toBeDefined();
+      expect(subscription?.variables).toBeDefined();
+      expect(subscription?.query).toBeDefined();
+    });
   });
 });
 
-describe('getEntry', () => {
+describe('getEntry', async () => {
+  const { getLocale } = await import('@lib/i18n');
   test('filters by locale by default', async () => {
-    const collection = 'LocalizedItems';
+    const collection = 'LocalizedItems' as keyof typeof collectionMap;
     const id = 'a';
-    const entry = await getEntry(collection as 'PagePartials', id);
+    const entry = await getEntry(collection, id);
     const locale = getLocale();
     expect(entry).toBeDefined();
     expect(entry?.id).toBe(`${locale}/${id}`);
-    expect(entry?.data.locale).toBe(locale);
+    expect(entry?.data.meta.locale).toBe(locale);
   });
   test('does not filter if entries do not have a locale', async () => {
-    const collection = 'NonLocalizedItems';
+    const collection = 'NonLocalizedItems' as keyof typeof collectionMap;
     const id = 'a';
-    const entry = await getEntry(collection as 'PagePartials', id);
+    const entry = await getEntry(collection, id);
     expect(entry).toBeDefined();
+  });
+  test('adds top-level subscription property to return value', async () => {
+    const collection = 'LocalizedItems' as keyof typeof collectionMap;
+    const id = 'a';
+    const entry = await getEntry(collection, id);
+    const subscription = entry?.subscription;
+    expect(subscription).toBeDefined();
+    expect(subscription?.variables).toBeDefined();
+    expect(subscription?.query).toBeDefined();
   });
 });
 
 describe('combine', () => {
-  test('appends a separator and locale to a given id', () => {
+  test('appends a separator and locale to a given id', async () => {
+    const { locales } = await import('@lib/i18n');
     locales.forEach(locale => {
       const result = combine({ id: 'a/b/c', locale });
       expect(result).toBe(`${locale}/a/b/c`);
@@ -125,16 +168,12 @@ describe('split', () => {
     const result = split('a/b/c');
     expect(result).toStrictEqual({ id: 'a/b/c', locale: null });
   });
-  test('extracts locale added with combine', () => {
+  test('extracts locale added with combine', async () => {
+    const { locales } = await import('@lib/i18n');
     const id = 'a/b/c';
-    const locale = 'en';
-    const result = split(combine({ id, locale }));
-    expect(result).toStrictEqual({ id: 'a/b/c', locale });
-  });
-  test('extracts locale added with combine', () => {
-    const id = 'a/b/c';
-    const locale = 'en';
-    const result = split(combine({ id, locale } ));
-    expect(result).toStrictEqual({ id: 'a/b/c', locale });
+    locales.forEach(locale => {
+      const result = split(combine({ id, locale }));
+      expect(result).toStrictEqual({ id: 'a/b/c', locale });
+    });
   });
 });

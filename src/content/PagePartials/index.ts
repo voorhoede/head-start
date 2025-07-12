@@ -7,10 +7,20 @@ import {
 import { datocmsCollection, datocmsRequest } from '@lib/datocms';
 import { combine } from '@lib/content';
 
+type Meta = {
+  locale: SiteLocale;
+  recordId: string;
+};
+type QueryVariables = {
+  id: string;
+  locale: SiteLocale;
+};
 export type PagePartialCollectionEntry = PagePartialCollectionEntryQuery['entry'] & {
-  recordId: string,
-  id: string,
-  locale: SiteLocale,
+  id: string;
+  meta: Meta;
+  subscription: { 
+    variables: QueryVariables;
+  };
 };
 
 const name = 'PagePartials' as const;
@@ -19,12 +29,16 @@ const loadEntry = async (id: string, locale?: SiteLocale | null) => {
   if (!locale) {
     return;
   }
-  const { entry } = await datocmsRequest<PagePartialCollectionEntryQuery>({ query, variables: { id, locale } });
+  const variables = { id, locale };
+  const { entry } = await datocmsRequest<PagePartialCollectionEntryQuery>({ query, variables });
   return {
     ...entry,
-    recordId: entry.id,
     id: combine({ id: entry.id, locale }),
-    locale,
+    meta: {
+      recordId: entry.id,  
+      locale,
+    },
+    subscription: { variables },
   } satisfies PagePartialCollectionEntry;
 };
 
@@ -71,6 +85,6 @@ export default {
     collection,
     loadCollection,
     loadEntry,
-    query,
+    subscription: { query },
   }
 };

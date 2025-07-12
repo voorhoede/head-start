@@ -1,10 +1,11 @@
-import { Kind, parse, type DocumentNode, type FragmentDefinitionNode } from 'graphql';
+import { Kind, parse, type DocumentNode, type FragmentDefinitionNode, type OperationDefinitionNode } from 'graphql';
 import { print } from 'graphql/language/printer';
 import type { SiteLocale } from '@lib/datocms/types';
 import { titleSuffix } from '@lib/seo';
 import { datocmsBuildTriggerId, datocmsEnvironment } from '@root/datocms-environment';
 import { output } from '@root/config/output';
 import { DATOCMS_READONLY_API_TOKEN, HEAD_START_PREVIEW } from 'astro:env/server';
+import { stripIndents } from 'proper-tags';
 
 const wait = (milliSeconds: number) => new Promise((resolve) => setTimeout(resolve, milliSeconds));
 
@@ -78,7 +79,21 @@ export async function datocmsRequest<
   }
 
   const { data, errors } = await response.json();
-  if (errors) throw Error(JSON.stringify(errors, null, 4));
+  if (errors) {
+    const definition = query.definitions.find(
+      (definition): definition is OperationDefinitionNode => definition.kind === Kind.OPERATION_DEFINITION
+    );
+    const type = definition?.operation;
+    const name = definition?.name?.value;
+    const operation = (type && name)
+      ? `"${type} ${name}"`
+      : 'unknown operation';
+    throw Error(stripIndents`
+      DatoCMS request failed for ${operation}
+      ` +
+      JSON.stringify(errors, null, 4)
+    );
+  }
   return data;
 }
 
