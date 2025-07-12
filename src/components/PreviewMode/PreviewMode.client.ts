@@ -24,6 +24,10 @@ class PreviewMode extends HTMLElement {
   #datocmsToken: string = '';
   #datocmsEnvironment: string = '';
 
+  static subscriptionKey({ query, variables }: QueryVariables) {
+    return JSON.stringify({ query, variables });
+  }
+  
   constructor() { 
     super();
 
@@ -64,10 +68,13 @@ class PreviewMode extends HTMLElement {
     this.$connectionError.listen(() => updateBarStatus());
     this.$updateCounts.listen((updateCounts) => {
       // each subscription directly triggers an update when connected,
-      // so we wait for the second update to reload the page:
-      const counts = Object.values(updateCounts);
-      if (counts.some((count) => count >= 2)) {
-        window.location.reload();
+      // so we wait for the update count to exceed the number of instances:
+      const instances = this.getInstanceCounts();
+      for (const [key, count] of Object.entries(updateCounts)) {
+        const instanceCount = instances[key];
+        if (count > instanceCount) {
+          window.location.reload();
+        }
       }
     });
 
@@ -80,9 +87,21 @@ class PreviewMode extends HTMLElement {
   getSubscriptionConfigs () {
     return this.subscriptionElements.map((element) => element.getConfig() as QueryVariables);
   }
+  
+  getInstanceCounts () {
+    return this.getSubscriptionConfigs()
+      .reduce((acc, { query, variables }: QueryVariables) => {
+        const key = PreviewMode.subscriptionKey({ query, variables });
+        const count = acc?.[key] || 0;
+        return {
+          ...acc,
+          [key]: count + 1,
+        };
+      }, {} as { [key: string]: number });
+  }
 
   async subscribe ({ query, variables }: QueryVariables) {
-    const key = JSON.stringify({ query, variables });
+    const key = PreviewMode.subscriptionKey({ query, variables });
     this.$connections.setKey(key, 'closed');
     this.$updateCounts.setKey(key, 0);
     await subscribeToQuery({
