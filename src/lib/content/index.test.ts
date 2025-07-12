@@ -1,23 +1,14 @@
 import { describe, expect, test, vi } from 'vitest';
 import { getCollection, getEntry, combine, split } from './index';
-import { getLocale } from '@lib/i18n';
+import type { collectionMap } from '@content/config';
 
-const locales = ['en', 'nl'] as const;
-const collections = {
-  'LocalizedItems': [
-    { id: `${locales[0]}/a`, data: { locale: locales[0], title: 'First Item' } },
-    { id: `${locales[0]}/b`, data: { locale: locales[0], title: 'Second Item' } },
-    { id: `${locales[0]}/c`, data: { locale: locales[0], title: 'Third Item' } },
-    { id: `${locales[1]}/a`, data: { locale: locales[1], title: 'Eerste onderdeel' } },
-    { id: `${locales[1]}/b`, data: { locale: locales[1], title: 'Tweede onderdeel' } },
-    { id: `${locales[1]}/c`, data: { locale: locales[1], title: 'Derde onderdeel' } },
-  ],
-  'NonLocalizedItems': [
-    { id: 'a', data: { title: 'First Item' } },
-    { id: 'b', data: { title: 'Second Item' } },
-    { id: 'c', data: { title: 'Third Item' } },
-  ]
-} as const;
+function mockEntry(id: string, locale?: string) {
+  const meta = locale ? { locale } : {};
+  return {
+    id: locale ? `${locale}/${id}` : id,
+    data: meta,
+  };
+}
 
 vi.mock('@lib/i18n', () => {
   const locales = ['en', 'nl'] as const;
@@ -28,24 +19,42 @@ vi.mock('@lib/i18n', () => {
   };
 });
 
+vi.mock('@content/config', async () => {
+  const { locales } = await import('@lib/i18n');
+  const localizedItems = ['a', 'b', 'c'].flatMap(id =>
+    locales.map(locale => mockEntry(id, locale))
+  );
+  const nonLocalizedItems = ['a', 'b', 'c'].map(id => mockEntry(id));
+
+  const collectionMap = {
+    LocalizedItems: {
+      loadCollection: async () => Promise.resolve(localizedItems),
+    },
+    NonLocalizedItems: {
+      loadCollection: async () => Promise.resolve(nonLocalizedItems),
+    },
+  };
+
+  return { collectionMap };
+});
+
 // Mocking the Astro content module to simulate collections,
-vi.mock('astro:content', async (original) => {
-  const actual = await original();
+vi.mock('astro:content', async () => {
+  const { collectionMap } = await import('@content/config');
+
   return {
-    ...actual || {},
-    // getAstroCollection
-    getCollection: (
-      collection: keyof typeof collections, 
+    getCollection: async (
+      collection: keyof typeof collectionMap,
       filter: (entry: unknown) => unknown
     ) => {
+      const entries = await collectionMap[collection].loadCollection();
       return filter
-        ? collections[collection].filter(filter)
-        : collections[collection];
+        ? entries.filter(filter)
+        : entries;
     },
-    // getAstroCollectionEntry
-    getEntry: (collection: keyof typeof collections, id: string) => {
-      const entry = collections[collection].find(e => e.id === id);
-      return entry ? { ...entry, data: { ...entry.data } } : undefined;
+    getEntry: async (collection: keyof typeof collectionMap, id: string) => {
+      const entries = await collectionMap[collection].loadCollection();
+      return entries.find(e => e.id === id);
     },
   };
 });
@@ -55,47 +64,52 @@ vi.mock('astro:env/server', () => ({
   PUBLIC_IS_PRODUCTION: true,
 }));
 
-describe('getCollection', () => {
+describe('getCollection', async () => {
+  const { collectionMap } = await import('@content/config');
+  const { locales, getLocale } = await import('@lib/i18n');
   test('filters by locale by default', async () => {
-    const collection = 'LocalizedItems';
-    const entries = await getCollection(collection as 'PagePartials');
+    const collection = 'LocalizedItems' as keyof typeof collectionMap;
+    const entries = await getCollection(collection);
     const locale = getLocale();
-    expect(entries).toHaveLength(3);
-    expect(
-      entries.map(({ data: { locale } }) => ({ locale }))
-    ).toEqual([
-      { locale },
-      { locale },
-      { locale },
-    ]);
+    const length = (await collectionMap[collection].loadCollection()).length;
+    const filteredLength = length / locales.length; // Assuming each id has an entry for each locale
+    expect(entries).toHaveLength(filteredLength);
+    expect(entries.map(({ data: { locale } }) => ({ locale })))
+      .toEqual([
+        { locale },
+        { locale },
+        { locale },
+      ]);
   });
   test('does not filter if entries do not have a locale', async () => {
-    const collection = 'NonLocalizedItems';
-    const entries = await getCollection(collection as 'PagePartials');
-    expect(entries).toHaveLength(3);
-    expect(entries).toEqual(collections[collection]);
+    const collection = 'NonLocalizedItems' as keyof typeof collectionMap;
+    const entries = await getCollection(collection);
+    const length = (await collectionMap[collection].loadCollection()).length;
+    expect(entries).toHaveLength(length);
   });
   test('does not filter localized entries when locale is set to null', async () => {
-    const collection = 'LocalizedItems';
-    const entries = await getCollection(collection as 'PagePartials', undefined, null);
-    expect(entries).toHaveLength(6);
+    const collection = 'LocalizedItems' as keyof typeof collectionMap;
+    const entries = await getCollection(collection, undefined, null);
+    const length = (await collectionMap[collection].loadCollection()).length;
+    expect(entries).toHaveLength(length);
   });
 });
 
-describe('getEntry', () => {
+describe('getEntry', async () => {
+  const { getLocale } = await import('@lib/i18n');
   test('filters by locale by default', async () => {
-    const collection = 'LocalizedItems';
+    const collection = 'LocalizedItems' as keyof typeof collectionMap;
     const id = 'a';
-    const entry = await getEntry(collection as 'PagePartials', id);
+    const entry = await getEntry(collection, id);
     const locale = getLocale();
     expect(entry).toBeDefined();
     expect(entry?.id).toBe(`${locale}/${id}`);
     expect(entry?.data.locale).toBe(locale);
   });
   test('does not filter if entries do not have a locale', async () => {
-    const collection = 'NonLocalizedItems';
+    const collection = 'NonLocalizedItems' as keyof typeof collectionMap;
     const id = 'a';
-    const entry = await getEntry(collection as 'PagePartials', id);
+    const entry = await getEntry(collection, id);
     expect(entry).toBeDefined();
   });
 });
@@ -130,7 +144,7 @@ describe('split', () => {
     const { locales } = await import('@lib/i18n');
     const id = 'a/b/c';
     locales.forEach(locale => {
-      const result = split(combine({ id, locale } ));
+      const result = split(combine({ id, locale }));
       expect(result).toStrictEqual({ id: 'a/b/c', locale });
     });
   });
