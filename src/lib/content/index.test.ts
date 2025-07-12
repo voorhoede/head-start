@@ -101,7 +101,8 @@ describe('getEntry', () => {
 });
 
 describe('combine', () => {
-  test('appends a separator and locale to a given id', () => {
+  test('appends a separator and locale to a given id', async () => {
+    const { locales } = await import('@lib/i18n');
     locales.forEach(locale => {
       const result = combine({ id: 'a/b/c', locale });
       expect(result).toBe(`${locale}/a/b/c`);
@@ -125,16 +126,12 @@ describe('split', () => {
     const result = split('a/b/c');
     expect(result).toStrictEqual({ id: 'a/b/c', locale: null });
   });
-  test('extracts locale added with combine', () => {
+  test('extracts locale added with combine', async () => {
+    const { locales } = await import('@lib/i18n');
     const id = 'a/b/c';
-    const locale = 'en';
-    const result = split(combine({ id, locale }));
-    expect(result).toStrictEqual({ id: 'a/b/c', locale });
-  });
-  test('extracts locale added with combine', () => {
-    const id = 'a/b/c';
-    const locale = 'en';
-    const result = split(combine({ id, locale } ));
-    expect(result).toStrictEqual({ id: 'a/b/c', locale });
+    locales.forEach(locale => {
+      const result = split(combine({ id, locale } ));
+      expect(result).toStrictEqual({ id: 'a/b/c', locale });
+    });
   });
 });
