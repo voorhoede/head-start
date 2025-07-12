@@ -25,7 +25,8 @@ const useLiveData = !PUBLIC_IS_PRODUCTION || HEAD_START_PREVIEW;
  * Fetches entries from a collection.
  *
  * @param collection - The key of the collection to fetch entries from
- * @param filter - Optional SiteLocale or function to filter the collection entries
+ * @param filter - Optional function to filter the collection entries
+ * @param locale - SiteLocale to filter on, defaults to current locale. Use `null` for all locales.
  * @returns A promise that resolves to an array of normalized collection entries
  */
 export async function getCollection<K extends CollectionName>(
