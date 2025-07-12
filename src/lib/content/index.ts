@@ -53,13 +53,13 @@ export async function getCollection<K extends CollectionName>(
  * Fetches a single entry from a collection by its slug.
  *
  * @param collection - The key of the collection to fetch the entry from
- * @param id - The id of the entry to fetch
+ * @param id - The id of the entry to fetch or undefined for singleton collections
  * @param locale - Optional SiteLocale to find the localized entry.
  * @returns A promise that resolves to the requested collection entry or undefined if not found
  */
 export async function getEntry<K extends CollectionName>(
   collection: K,
-  id: string,
+  id: string = '', // Default to empty string for singleton collections
   locale: SiteLocale | null = getLocale(),
 ): Promise<CollectionEntry<K> | undefined> {
   let entry: BareCollectionEntry<K> | undefined = undefined;
