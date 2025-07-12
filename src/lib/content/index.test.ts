@@ -18,7 +18,16 @@ const collections = {
     { id: 'c', data: { title: 'Third Item' } },
   ]
 } as const;
-  
+
+vi.mock('@lib/i18n', () => {
+  const locales = ['en', 'nl'] as const;
+  return {
+    locales,
+    getLocale: () => locales[1],
+    isLocale: (l: string) => (locales as readonly string[]).includes(l),
+  };
+});
+
 // Mocking the Astro content module to simulate collections,
 vi.mock('astro:content', async (original) => {
   const actual = await original();
@@ -45,15 +54,6 @@ vi.mock('astro:env/server', () => ({
   HEAD_START_PREVIEW: false,
   PUBLIC_IS_PRODUCTION: true,
 }));
-
-vi.mock('../i18n/index.ts', async (original) => {
-  const actual = original();
-  return {
-    ...actual || {},
-    getLocale: () => locales[1],
-    isLocale: (l: string) => (locales as readonly string[]).includes(l),
-  };
-});
 
 describe('getCollection', () => {
   test('filters by locale by default', async () => {
