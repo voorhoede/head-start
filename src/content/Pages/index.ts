@@ -8,13 +8,22 @@ import {
 } from '@lib/datocms/types';
 import { datocmsCollection, datocmsRequest } from '@lib/datocms';
 import { combine } from '@lib/content';
-import { getPagePath } from '@lib/routing/page';
-import { getSlugFromPath } from '@lib/routing';
+import { getPagePath, getParentPages } from '@lib/routing/page';
+import {
+  formatBreadcrumb,
+  getPageHref,
+  getSlugFromPath,
+  type Breadcrumb,
+  type PageUrl,
+} from '@lib/routing';
+import { isLocale } from '@lib/i18n';
 
 type Meta = {
   recordId: string; // The record ID of the entry in DatoCMS
   path: string; // The path of the page, excluding the locale
   locale: SiteLocale;
+  breadcrumbs: Breadcrumb[]; // Breadcrumbs for the page, used for navigation
+  pageUrls: PageUrl[]; // The URL of the page, including the locale
 };
 type QueryVariables = {
   slug: string;
@@ -46,13 +55,33 @@ const loadEntry = async (path: string, locale?: SiteLocale | null) => {
 
   const variables = { slug, locale };
   const { entry } = await datocmsRequest<PageCollectionEntryQuery>({ query, variables });
-  return entry && {
+  
+  if (!entry) {
+    return undefined; // If no entry is found, return undefined
+  }
+  
+  const breadcrumbs = [...getParentPages(entry), entry].map((page) =>
+    formatBreadcrumb({
+      text: page.title,
+      href: getPageHref({ locale, record: page }),
+    })
+  );
+  const pageUrls = (entry._allSlugLocales || [])
+    .map(({ locale }) => isLocale(locale) && ({
+      locale: locale,
+      pathname: getPageHref({ locale: locale, record: entry }),
+    }))
+    .filter(entry => !!entry);
+
+  return {
     ...entry,
     id: combine({ id: path, locale }), // Combine the path and locale to create a unique ID for the entry
     meta: {
       recordId: entry.id,
       path,
       locale,
+      breadcrumbs,
+      pageUrls,
     },
     subscription: {
       variables: { slug, locale },
