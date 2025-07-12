@@ -25,19 +25,19 @@ export async function getCollection<K extends CollectionName>(
   filter?: ((entry: CollectionEntry<K>) => boolean),
   locale: SiteLocale | null = getLocale(),
 ): Promise<CollectionEntry<K>[]> {
-  if (!filter && !locale) {
-    return getAstroCollection(collection);
-  }
+  const entries = (!filter && !locale) 
+    ? await getAstroCollection(collection)
+    : await getAstroCollection(collection, (entry: CollectionEntry<K>) => {
+      const entryLocale = split(entry.id).locale;
+      return [
+        // Check if the entry's locale is set and matches the requested locale
+        !locale || !entryLocale || entryLocale === locale,
+        // If a filter function is provided, apply it to the entry
+        !filter || (typeof filter === 'function' && filter(entry)),
+      ].every(Boolean);
+    });
   
-  return getAstroCollection(collection, (entry: CollectionEntry<K>) => {
-    const entryLocale = split(entry.id).locale;
-    return [
-      // Check if the entry's locale is set and matches the requested locale
-      !locale || !entryLocale || entryLocale === locale,
-      // If a filter function is provided, apply it to the entry
-      !filter || (typeof filter === 'function' && filter(entry)),
-    ].every(Boolean);
-  });
+  return entries;
 }
 
 /**
