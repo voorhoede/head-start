@@ -8,8 +8,8 @@ export type CollectionName = keyof typeof collectionMap;
 /**
  * CollectionEntry is a type that represents a single entry in a collection.
  */ 
-export type CollectionEntry<Key extends CollectionName> = NormalizedEntry<
-  Awaited<ReturnType<typeof collectionMap[Key]['loadCollection']>>[number]
+export type CollectionEntry<K extends CollectionName> = NormalizedEntry<
+  Awaited<ReturnType<typeof collectionMap[K]['loadCollection']>>[number]
 >;
 
 const useLiveData = !PUBLIC_IS_PRODUCTION || HEAD_START_PREVIEW;
@@ -20,16 +20,16 @@ const useLiveData = !PUBLIC_IS_PRODUCTION || HEAD_START_PREVIEW;
  * @param filter - Optional SiteLocale or function to filter the collection entries
  * @returns A promise that resolves to an array of normalized collection entries
  */
-export async function getCollection<Key extends CollectionName>(
-  collection: Key,
-  filter?: ((entry: CollectionEntry<Key>) => boolean),
+export async function getCollection<K extends CollectionName>(
+  collection: K,
+  filter?: ((entry: CollectionEntry<K>) => boolean),
   locale: SiteLocale | null = getLocale(),
-): Promise<CollectionEntry<Key>[]> {
+): Promise<CollectionEntry<K>[]> {
   if (!filter && !locale) {
     return getAstroCollection(collection);
   }
   
-  return getAstroCollection(collection, (entry: CollectionEntry<Key>) => {
+  return getAstroCollection(collection, (entry: CollectionEntry<K>) => {
     const entryLocale = split(entry.id).locale;
     return [
       // Check if the entry's locale is set and matches the requested locale
@@ -48,12 +48,12 @@ export async function getCollection<Key extends CollectionName>(
  * @param locale - Optional SiteLocale to find the localized entry.
  * @returns A promise that resolves to the requested collection entry or undefined if not found
  */
-export async function getEntry<Key extends CollectionName>(
-  collection: Key,
+export async function getEntry<K extends CollectionName>(
+  collection: K,
   id: string,
   locale: SiteLocale | null = getLocale(),
-): Promise<CollectionEntry<Key> | undefined> {
-  let entry: CollectionEntry<Key> | undefined = undefined;
+): Promise<CollectionEntry<K> | undefined> {
+  let entry: CollectionEntry<K> | undefined = undefined;
   
   if (useLiveData) {
     const liveEntry = await collectionMap[collection].loadEntry(id, locale);
