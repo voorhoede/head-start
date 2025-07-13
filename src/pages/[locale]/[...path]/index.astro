@@ -1,6 +1,6 @@
 ---
 import { datocmsCollection, datocmsRequest } from '@lib/datocms';
-import { getPageHref, formatBreadcrumb } from '@lib/routing';
+import { getPageHref, formatBreadcrumb, type PageUrl } from '@lib/routing';
 import {
   getPagePath,
   getPageSlugFromPath,
@@ -12,7 +12,6 @@ import {
   type PageRouteFragment, 
   type SiteLocale 
 } from '@lib/datocms/types';
-import type { PageUrl } from '@lib/seo';
 import Layout from '@layouts/Default.astro';
 import Blocks from '@blocks/Blocks.astro';
 import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';

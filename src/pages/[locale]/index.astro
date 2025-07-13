@@ -1,9 +1,8 @@
 ---
 import { datocmsRequest } from '@lib/datocms';
 import type { HomePageQuery } from '@lib/datocms/types';
-import type { PageUrl } from '@lib/seo';
 import { locales } from '@lib/i18n';
-import { getHomeHref } from '@lib/routing';
+import { getHomeHref, type PageUrl } from '@lib/routing';
 import Layout from '@layouts/Default.astro';
 import Blocks from '@blocks/Blocks.astro';
 import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
