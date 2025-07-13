@@ -2,13 +2,14 @@
 import HomePageCollection from './Home';
 import PageCollection from './Pages';
 import PagePartialCollection from './PagePartials';
+import type { Collection } from './types';
 
 export const collectionMap = {
   // Add your collections here
   ...HomePageCollection,
   ...PageCollection,
   ...PagePartialCollection,
-} as const;
+} as const satisfies Record<Collection['name'], Collection>;
 
 // Astro needs a value for collections that is an object whose keys are collection names
 // and whose values are the output of the `defineCollection function`.
@@ -19,4 +20,4 @@ export const collections = Object.entries(collectionMap).reduce<
 >((acc, [key, { collection }]) => {
   acc[key] = collection;
   return acc;
-}, {});
+}, {}) satisfies Record<Collection['name'], Collection['collection']>;

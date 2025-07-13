@@ -3,6 +3,7 @@ import { HEAD_START_PREVIEW, PUBLIC_IS_PRODUCTION } from 'astro:env/server';
 import { getLocale, isLocale } from '@lib/i18n';
 import { SiteLocale } from '@lib/datocms/types';
 import { collectionMap } from '@content/config';
+import type { BaseEntry } from '@content/types';
 
 export type CollectionName = keyof typeof collectionMap;
 
@@ -82,12 +83,7 @@ export async function getEntry<K extends CollectionName>(
   return addSubscription(entry, collection);
 }
 
-export type BaseEntry = { 
-  id: string;
-  subscription: {
-    variables: Record<string, string>; // Variables for the subscription
-  };
-};
+
 export type NormalizedEntry<T extends BaseEntry = BaseEntry> = {
   id: string;
   collection: string;

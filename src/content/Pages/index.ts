@@ -17,6 +17,7 @@ import {
   type PageUrl,
 } from '@lib/routing';
 import { isLocale } from '@lib/i18n';
+import type { Collection } from '@content/types';
 
 type Meta = {
   recordId: string; // The record ID of the entry in DatoCMS
@@ -127,5 +128,5 @@ export default {
     loadCollection,
     loadEntry,
     subscription: { query },
-  }
+  } satisfies Collection
 };

@@ -8,6 +8,7 @@ import { datocmsRequest } from '@lib/datocms';
 import { combine } from '@lib/content';
 import { locales } from '@lib/i18n';
 import { getHomeHref, type PageUrl } from '@lib/routing';
+import type { Collection } from '@content/types';
 
 type Meta = {
   recordId: string; // The record ID of the entry in DatoCMS
@@ -88,5 +89,5 @@ export default {
     loadCollection,
     loadEntry,
     subscription: { query },
-  }
+  } satisfies Collection
 };

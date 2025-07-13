@@ -6,6 +6,7 @@ import {
 } from '@lib/datocms/types';
 import { datocmsCollection, datocmsRequest } from '@lib/datocms';
 import { combine } from '@lib/content';
+import type { Collection } from '@content/types';
 
 type Meta = {
   locale: SiteLocale;
@@ -86,5 +87,5 @@ export default {
     loadCollection,
     loadEntry,
     subscription: { query },
-  }
+  } satisfies Collection
 };
