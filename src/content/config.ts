@@ -4,11 +4,23 @@ import PageCollection from './Pages';
 import PagePartialCollection from './PagePartials';
 import type { Collection } from './types';
 
-export const collectionMap = {
-  // Add your collections here
+const routeCollectionMap = {
+  // Collections for which every entry should have a route must be added here.
+  // For example, every page in the Pages collection should have a route.
   ...HomePageCollection,
   ...PageCollection,
+} as const;
+
+const nonRouteCollectionMap = {
+  // When collection entries do not have a route, add them here.
+  // For example, the PagePartials collection is used to render page content,
+  // and is not available as a route.
   ...PagePartialCollection,
+} as const;
+
+export const collectionMap = {
+  ...routeCollectionMap,
+  ...nonRouteCollectionMap,
 } as const satisfies Record<Collection['name'], Collection>;
 
 // Astro needs a value for collections that is an object whose keys are collection names
