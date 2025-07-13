@@ -2,6 +2,7 @@
 import HomePageCollection from './Home';
 import PageCollection from './Pages';
 import PagePartialCollection from './PagePartials';
+import { createRouteCollection } from './Routes';
 import type { Collection } from './types';
 
 const routeCollectionMap = {
@@ -21,6 +22,8 @@ const nonRouteCollectionMap = {
 export const collectionMap = {
   ...routeCollectionMap,
   ...nonRouteCollectionMap,
+  // Includes a union of all route-based collections
+  ...createRouteCollection(routeCollectionMap),
 } as const satisfies Record<Collection['name'], Collection>;
 
 // Astro needs a value for collections that is an object whose keys are collection names

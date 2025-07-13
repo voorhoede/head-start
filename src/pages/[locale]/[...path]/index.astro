@@ -6,7 +6,7 @@ import { getCollection, getEntry } from '@lib/content';
 
 export async function getStaticPaths() {
   // Fetch all locales by passing locale `null` and filter `undefined`.
-  const pages = await getCollection('Pages', undefined, null);
+  const pages = await getCollection('Routes', undefined, null);
   return pages.map(({ 
     data: page,
   }) => ({
@@ -17,7 +17,7 @@ export async function getStaticPaths() {
 // Load as an entry so this route can also be a server route in preview mode.
 // @see /docs/preview-mode.md
 const { path } = Astro.params;
-const entry = await getEntry('Pages', path);
+const entry = await getEntry('Routes', path);
 if (!entry) {
   return Astro.redirect('/404', 404);
 }

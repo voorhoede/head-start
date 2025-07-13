@@ -5,7 +5,7 @@ import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscrip
 import { getCollection, getEntry } from '@lib/content';
 
 export async function getStaticPaths() {
-  const entries = await getCollection('Home', undefined, null);
+  const entries = await getCollection('Routes', undefined, null);
   return entries.map(({ data: page }) => ({ 
     params: { locale: page.meta.locale },
   }));
@@ -13,7 +13,7 @@ export async function getStaticPaths() {
 
 // Load as an entry so this route can also be a server route in preview mode.
 // @see /docs/preview-mode.md
-const entry = await getEntry('Home');
+const entry = await getEntry('Routes');
 if (!entry) {
   return Astro.redirect('/404', 404);
 }
