@@ -22,7 +22,7 @@ export function getParentPages(page: PageRouteFragment): PageRouteFragment[] {
  * - ['grand-parent', 'parent-slug']  (grand parent and parent page available in given locale)
  * - ['grand-parent', undefined]      (grand parent page available, parent page not available in given locale)
  */
-export const getParentSlugs = ({ locale, page }: { locale?: SiteLocale, page: PageRouteFragment }): MaybeSlug[] => {
+export const getParentSlugs = ({ locale, page }: { locale?: SiteLocale | null, page: PageRouteFragment }): MaybeSlug[] => {
   if (page.parentPage) {
     const slug = getLocalizedSlug<PageRouteFragment>({ locale, record: page.parentPage });
     return [
@@ -46,7 +46,7 @@ export const getParentSlugs = ({ locale, page }: { locale?: SiteLocale, page: Pa
  * - -/-/page-slug                        (missing parent and grand parent in given locale)
  * - -                                    (missing page in given locale)
  */
-export const getPagePath = ({ locale, page }: { locale?: SiteLocale, page: PageRouteFragment }) => {
+export const getPagePath = ({ locale, page }: { locale?: SiteLocale | null, page: PageRouteFragment }) => {
   const slug = getLocalizedSlug({ locale, record: page });
   const parentSlugs = getParentSlugs({ locale, page });
   return [...parentSlugs, slug].join('/');

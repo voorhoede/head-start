@@ -3,7 +3,7 @@ import type { SiteLocale } from '@lib/datocms/types';
 export const missingSlug = '-';
 export type MaybeSlug = string | undefined;
 
-type LocalizedSlugs = {
+export type LocalizedSlugs = {
   _allSlugLocales?:
     | {
         locale?: SiteLocale | null;
@@ -16,7 +16,7 @@ export function getLocalizedSlug<T extends LocalizedSlugs>({
   locale,
   record,
 }: {
-  locale?: SiteLocale;
+  locale?: SiteLocale | null;
   record: T;
 }) {
   return record._allSlugLocales?.find((slug) => slug.locale === locale)?.value || missingSlug;
