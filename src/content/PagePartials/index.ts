@@ -6,25 +6,40 @@ import {
 } from '@lib/datocms/types';
 import { datocmsCollection, datocmsRequest } from '@lib/datocms';
 import { combine } from '@lib/content';
+import type { Collection } from '@content/types';
 
-export type PagePartialCollectionEntry = PagePartialCollectionEntryQuery['entry'] & {
-  recordId: string,
-  id: string,
-  locale: SiteLocale,
+type Meta = {
+  locale: SiteLocale;
+  recordId: string;
+};
+type QueryVariables = {
+  id: string;
+  locale: SiteLocale;
+};
+export type PagePartialCollectionEntry = PagePartialCollectionEntryQuery['record'] & {
+  id: string;
+  meta: Meta;
+  subscription: {
+    variables: QueryVariables;
+  };
 };
 
 const name = 'PagePartials' as const;
 
-const loadEntry = async (id: string, locale?: SiteLocale | null) => {
+const loadEntry = async (recordId: string, locale?: SiteLocale | null) => {
   if (!locale) {
     return;
   }
-  const { entry } = await datocmsRequest<PagePartialCollectionEntryQuery>({ query, variables: { id, locale } });
+  const variables = { id: recordId, locale };
+  const { record } = await datocmsRequest<PagePartialCollectionEntryQuery>({ query, variables });
   return {
-    ...entry,
-    recordId: entry.id,
-    id: combine({ id: entry.id, locale }),
-    locale,
+    ...record,
+    id: combine({ id: recordId, locale }),
+    meta: {
+      recordId,
+      locale,
+    },
+    subscription: { variables },
   } satisfies PagePartialCollectionEntry;
 };
 
@@ -34,9 +49,9 @@ const loadEntry = async (id: string, locale?: SiteLocale | null) => {
  * @returns A promise that resolves to an array of PagePartialCollectionEntry objects.
  **/
 const loadCollection = async () => {
-  const items = (await datocmsCollection<{ 
-    id: string, 
-    _allBlocksLocales: { locale: SiteLocale }[] 
+  const items = (await datocmsCollection<{
+    id: string,
+    _allBlocksLocales: { locale: SiteLocale }[]
   }>({
     collection: name,
     fragment: /* graphql */`
@@ -48,16 +63,16 @@ const loadCollection = async () => {
       }
     `,
   }))
-    // Flatten the array of entries to get an array of { id, locale } pairs.
+    // Flatten the array of entries to get an array of { recordId, locale } pairs.
     .flatMap(({ id, _allBlocksLocales }) => _allBlocksLocales
-      .map(({ locale }) => ({ id, locale })) 
+      .map(({ locale }) => ({ recordId: id, locale }))
     );
 
-  // For each id/locale pair, load the entry and return it.
+  // For each recordId/locale pair, load the entry and return it.
   // Note that this might be slow if there are many entries, as it makes a
   // separate request for each entry.
-  return await Promise.all(items.map(({ id, locale }) => loadEntry(id, locale)))
-    .then(entries => entries.filter( entry => entry !== undefined));
+  return await Promise.all(items.map(({ recordId, locale }) => loadEntry(recordId, locale)))
+    .then(entries => entries.filter(entry => entry !== undefined));
 };
 
 const collection = defineCollection({
@@ -71,6 +86,6 @@ export default {
     collection,
     loadCollection,
     loadEntry,
-    query,
-  }
+    subscription: { query },
+  } satisfies Collection
 };

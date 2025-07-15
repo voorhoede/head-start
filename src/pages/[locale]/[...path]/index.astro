@@ -1,57 +1,29 @@
 ---
-import { datocmsCollection, datocmsRequest } from '@lib/datocms';
-import { getPageHref } from '@lib/routing/';
-import {
-  getPagePath,
-  getPageSlugFromPath,
-  getParentPages,
-} from '@lib/routing/page';
-import { 
-  PageRoute as fragment, 
-  type PageQuery, 
-  type PageRouteFragment, 
-  type SiteLocale 
-} from '@lib/datocms/types';
-import type { PageUrl } from '@lib/seo';
 import Layout from '@layouts/Default.astro';
 import Blocks from '@blocks/Blocks.astro';
-import { formatBreadcrumb } from '@components/Breadcrumbs';
 import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
-import query from './_index.query.graphql';
+import { getCollection, getEntry } from '@lib/content';
 
 export async function getStaticPaths() {
-  const pages = await datocmsCollection<PageRouteFragment>({
-    collection: 'Pages',
-    fragment,
-  });
-  return pages.flatMap((page) => {
-    const locales = page._allSlugLocales
-      ?.map((slug) => slug.locale)
-      .filter((locale) => !!locale);
-    return locales?.map((locale) => {
-      return { params: { locale, path: getPagePath({ page, locale }) } };
-    });
-  });
+  // Fetch all locales by passing locale `null` and filter `undefined`.
+  const pages = await getCollection('Routes', undefined, null);
+  return pages.map(({ 
+    data: page,
+  }) => ({
+    params: { locale: page.meta.locale, path: page.meta.path },
+  }));
 }
 
-type Params = {
-  locale: SiteLocale;
-  path: string;
-};
+// Load as an entry so this route can also be a server route in preview mode.
+// @see /docs/preview-mode.md
+const { path } = Astro.params;
+const entry = await getEntry('Routes', path);
+if (!entry) {
+  return Astro.redirect('/404', 404);
+}
 
-const { locale, path } = Astro.params as Params;
-const variables = { locale, slug: getPageSlugFromPath(path) };
-const { page } = await datocmsRequest<PageQuery /*, typeof prerender */>({ query, variables });
-const breadcrumbs = [...getParentPages(page), page].map((page) =>
-  formatBreadcrumb({
-    text: page.title,
-    href: getPageHref({ locale, record: page }),
-  })
-);
-const pageUrls = (page._allSlugLocales || []).map(({ locale }) => ({
-  locale: locale as SiteLocale,
-  pathname: getPageHref({ locale: locale as SiteLocale, record: page }),
-})) as PageUrl[];
+const { data: { meta, ...page }, subscription } = entry;
+const { breadcrumbs, pageUrls } = meta;
 ---
 
 <Layout
@@ -59,7 +31,7 @@ const pageUrls = (page._allSlugLocales || []).map(({ locale }) => ({
   pageUrls={pageUrls}
   seoMetaTags={page._seoMetaTags}
 >
-  <PreviewModeSubscription query={query} variables={variables} />
+  <PreviewModeSubscription {...subscription} />
   <h1>{page.title}</h1>
   <Blocks blocks={page.bodyBlocks} />
 </Layout>
