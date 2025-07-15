@@ -48,11 +48,11 @@ describe('datocmsCollection:', () => {
       data: {
         meta: { count: totalRecords },
         records: [{ __typename: 'MyMockRecord' }],
-      } satisfies CollectionInfo,        
+      } satisfies CollectionInfo,
     })));
 
-    server.use(graphql.query('AllMyMockCollection', () => HttpResponse.json({ 
-      data: { MyMockCollection: mockCollection } 
+    server.use(graphql.query('AllMyMockCollection', () => HttpResponse.json({
+      data: { MyMockCollection: mockCollection }
     })));
 
     const records = await datocmsCollection({ collection: 'MyMockCollection', fragment: 'id title' });
@@ -72,11 +72,11 @@ describe('datocmsCollection:', () => {
       data: {
         meta: { count: totalRecords },
         records: [{ __typename: 'MyMockRecord' }],
-      } satisfies CollectionInfo,        
+      } satisfies CollectionInfo,
     })));
 
-    server.use(graphql.query('AllMyMockCollection', () => HttpResponse.json({ 
-      data: { MyMockCollection: mockCollection } 
+    server.use(graphql.query('AllMyMockCollection', () => HttpResponse.json({
+      data: { MyMockCollection: mockCollection }
     })));
 
     const records = await datocmsCollection({ collection: 'MyMockCollection', fragment });
@@ -98,7 +98,7 @@ describe('datocmsCollection:', () => {
       data: {
         meta: { count: totalRecords },
         records: [{ __typename: 'MyMockRecord' }],
-      } satisfies CollectionInfo,        
+      } satisfies CollectionInfo,
     })));
 
 
@@ -126,15 +126,30 @@ describe('datocmsCollection:', () => {
       data: {
         meta: { count: 0 },
         records: [{ __typename: 'MyMockRecord' }],
-      } satisfies CollectionInfo,        
+      } satisfies CollectionInfo,
     })));
 
-
-    server.use(graphql.query('AllMyMockCollection', () => HttpResponse.json({ 
-      data: { MyMockCollection: [] } 
+    server.use(graphql.query('AllMyMockCollection', () => HttpResponse.json({
+      data: { MyMockCollection: [] }
     })));
 
     const records = await datocmsCollection({ collection: 'MyMockCollection', fragment });
+    expect(records).toEqual([]);
+  });
+
+  test('should return an empty array if no records are found when searching with a string fragment', async () => {
+    server.use(graphql.query('MyMockCollectionMeta', () => HttpResponse.json({
+      data: {
+        meta: { count: 0 },
+        records: [{ __typename: 'MyMockRecord' }],
+      } satisfies CollectionInfo,
+    })));
+
+    server.use(graphql.query('AllMyMockCollection', () => HttpResponse.json({
+      data: { MyMockCollection: [] }
+    })));
+
+    const records = await datocmsCollection({ collection: 'MyMockCollection', fragment: 'id title' });
     expect(records).toEqual([]);
   });
 
@@ -145,7 +160,7 @@ describe('datocmsCollection:', () => {
       data: {
         meta: { count: 1 },
         records: [{ __typename: 'MyMockRecord' }],
-      } satisfies CollectionInfo,        
+      } satisfies CollectionInfo,
     })));
 
     server.use(graphql.query('AllMyMockCollection', () => HttpResponse.json(
