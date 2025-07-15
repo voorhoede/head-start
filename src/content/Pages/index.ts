@@ -29,7 +29,7 @@ type QueryVariables = {
   slug: string;
   locale: SiteLocale;
 };
-export type PageCollectionEntry = PageCollectionEntryQuery['entry'] & {
+export type PageCollectionEntry = PageCollectionEntryQuery['record'] & {
   id: string, // A unique ID for the entry in the content collection, combining the path and locale
   meta: Meta,
   subscription: {
@@ -54,30 +54,30 @@ const loadEntry = async (path: string, locale?: SiteLocale | null) => {
   }
 
   const variables = { slug, locale };
-  const { entry } = await datocmsRequest<PageCollectionEntryQuery>({ query, variables });
-  
-  if (!entry) {
+  const { record } = await datocmsRequest<PageCollectionEntryQuery>({ query, variables });
+
+  if (!record) {
     return undefined; // If no entry is found, return undefined
   }
-  
-  const breadcrumbs = [...getParentPages(entry), entry].map((page) =>
+
+  const breadcrumbs = [...getParentPages(record), record].map((page) =>
     formatBreadcrumb({
       text: page.title,
       href: getPageHref({ locale, record: page }),
     })
   );
-  const pageUrls = (entry._allSlugLocales || [])
+  const pageUrls = (record._allSlugLocales || [])
     .map(({ locale }) => isLocale(locale) && ({
-      locale: locale,
-      pathname: getPageHref({ locale: locale, record: entry }),
+      locale,
+      pathname: getPageHref({ locale, record }),
     }))
     .filter(entry => !!entry);
 
   return {
-    ...entry,
+    ...record,
     id: combine({ id: path, locale }), // Combine the path and locale to create a unique ID for the entry
     meta: {
-      recordId: entry.id,
+      recordId: record.id,
       path,
       locale,
       breadcrumbs,
@@ -101,12 +101,11 @@ const loadCollection = async () => {
   }))
     // Flatten the array of entries to get an array of { id, locale } pairs.
     // In this instance, the `id` of the entry is the path of the page
-    .flatMap((entry) => (entry._allSlugLocales || [])
+    .flatMap((record) => (record._allSlugLocales || [])
       .map(({ locale }) => locale && {
-        path: getPagePath({ locale, page: entry }),
-        recordId: entry.id, // The record ID is the same for all locales
+        path: getPagePath({ locale, page: record }),
         locale,
-      }).filter((entry => !!entry))
+      }).filter((record => !!record))
     );
 
   // For each id/locale pair, load the entry and return it.
