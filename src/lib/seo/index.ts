@@ -1,12 +1,7 @@
-import type { Tag, SiteLocale } from '@lib/datocms/types';
+import type { Tag } from '@lib/datocms/types';
 import { getLocale } from '@lib/i18n';
 import { globalSeo } from '@lib/site.json';
 import aiRobotsTxt from './ai.robots.txt?raw';
-
-export type PageUrl = {
-  locale: SiteLocale,
-  pathname: string,
-};
 
 /** 
   * `globalSeo` _should_ have a key per available locale. When there is only one

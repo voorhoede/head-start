@@ -1,3 +1,4 @@
+#import '@lib/routing/HomePageRoute.fragment.graphql'
 #import '@blocks/ActionBlock/ActionBlock.fragment.graphql'
 #import '@blocks/EmbedBlock/EmbedBlock.fragment.graphql'
 #import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
@@ -9,8 +10,9 @@
 #import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
 #import '@blocks/GroupingBlock/GroupingBlock.fragment.graphql'
 
-query HomePage($locale: SiteLocale!) {
-  page: homePage(locale: $locale) {
+query HomePageCollectionEntry($locale: SiteLocale!) {
+  entry: homePage(locale: $locale) {
+    id
     title
     _seoMetaTags {
       attributes

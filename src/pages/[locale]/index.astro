@@ -1,29 +1,29 @@
 ---
-import { datocmsRequest } from '@lib/datocms';
-import type { HomePageQuery } from '@lib/datocms/types';
-import type { PageUrl } from '@lib/seo';
-import { locales } from '@lib/i18n';
-import { getHomeHref } from '@lib/routing';
 import Layout from '@layouts/Default.astro';
 import Blocks from '@blocks/Blocks.astro';
 import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
-import query from './_index.query.graphql';
+import { getCollection, getEntry } from '@lib/content';
 
 export async function getStaticPaths() {
-  return locales.map((locale) => ({ params: { locale } }));
+  const entries = await getCollection('Home', undefined, null);
+  return entries.map(({ data: page }) => ({ 
+    params: { locale: page.meta.locale },
+  }));
 }
 
-const { locale } = Astro.params;
-const variables = { locale };
-const { page } = await datocmsRequest<HomePageQuery /*, typeof prerender */>({ query, variables });
-const pageUrls = locales.map((locale) => ({
-  locale,
-  pathname: getHomeHref({ locale }),
-})) as PageUrl[];
+// Load as an entry so this route can also be a server route in preview mode.
+// @see /docs/preview-mode.md
+const entry = await getEntry('Home');
+if (!entry) {
+  return Astro.redirect('/404', 404);
+}
+
+const { data: { meta, ...page }, subscription } = entry;
+const { pageUrls } = meta;
 ---
 
 <Layout pageUrls={pageUrls} seoMetaTags={page._seoMetaTags}>
-  <PreviewModeSubscription query={query} variables={variables} />
+  <PreviewModeSubscription { ...subscription } />
   <h1>{page.title}</h1>
   <Blocks blocks={page.bodyBlocks} />
 </Layout>
