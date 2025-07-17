@@ -1,8 +1,8 @@
 ---
 import { locales, t } from '@lib/i18n';
-import type { SiteLocale } from '@lib/i18n/types';
 import { noIndexTag, siteName, titleTag } from '@lib/seo';
 import { datocmsSearch } from '@lib/datocms';
+import type { SiteLocale } from '@lib/datocms/types';
 import { hasValidQuery, getSearchPathname, queryParamName } from '@lib/search';
 import Layout from '@layouts/Default.astro';
 import SearchForm from '@components/SearchForm.astro';

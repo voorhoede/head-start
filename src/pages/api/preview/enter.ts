@@ -7,9 +7,11 @@ export const prerender = false;
 export const cookiePath = '/';
 
 export const GET: APIRoute = async ({ cookies, locals, request }) => {
-
   if (!locals.previewSecret) {
-    return new Response('Configure HEAD_START_PREVIEW_SECRET to enable preview mode', { status: 500 });
+    return new Response(
+      'Configure HEAD_START_PREVIEW_SECRET to enable preview mode',
+      { status: 500 },
+    );
   }
 
   const userSecret = new URL(request.url).searchParams.get('secret');
@@ -18,15 +20,15 @@ export const GET: APIRoute = async ({ cookies, locals, request }) => {
       httpOnly: true,
       secure: PUBLIC_IS_PRODUCTION,
       path: cookiePath,
-      sameSite: 'strict',
+      sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 7, // 1 week
     });
   }
 
   // We don't redirect to location as that might lead to open redirect vulnerabilities
   const location = new URL(request.url).searchParams.get('location') || '/';
-  return new Response('',{
+  return new Response('', {
     status: 307,
-    headers: { 'Location': location },
+    headers: { Location: location },
   });
 };

@@ -1,5 +1,5 @@
 import { renderToFragment } from '@lib/renderer';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import PagePartialBlock, { type Props as PagePartialBlockProps } from './PagePartialBlock.astro';
 import GroupingBlock, { type Props as GroupingBlockProps } from '../GroupingBlock/GroupingBlock.astro';
 import { items } from '../GroupingBlock/GroupingBlock.test';
@@ -10,7 +10,18 @@ const layouts = [
   'accordion-closed',
   'accordion-open',
   'tabs',
-];
+] as const;
+
+vi.mock('../../lib/content', () => ({
+  // fetch content from grouping block tests via mocked getEntry
+  getEntry: (_: string, id: string, __: string) => {
+    const index = Number(id.split('index-').pop()) || 0;
+    return { 
+      id,
+      data: items[index],
+    };
+  },
+}));
 
 describe('PagePartialBlock', () => {
   layouts.forEach((layout) => {
@@ -20,8 +31,8 @@ describe('PagePartialBlock', () => {
           block: {
             __typename: 'PagePartialBlockRecord',
             id: 'ay-D0Z1ZTqWVszeV9ZqfJA',
+            items: items.map((_, i) => ({ id: `index-${i}` })),
             layout,
-            items: items.map(({ __typename, ...item }) => item), // Remove __typename since it is not part of the PagePartialBlock definition
           }
         }
       });

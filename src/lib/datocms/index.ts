@@ -1,6 +1,6 @@
 import { Kind, parse, type DocumentNode, type FragmentDefinitionNode } from 'graphql';
 import { print } from 'graphql/language/printer';
-import type { SiteLocale } from '@lib/i18n/types';
+import type { SiteLocale } from '@lib/datocms/types';
 import { titleSuffix } from '@lib/seo';
 import { datocmsBuildTriggerId, datocmsEnvironment } from '@root/datocms-environment';
 import { output } from '@root/config/output';
@@ -114,7 +114,7 @@ export async function datocmsCollection<CollectionType>({
   const {
     meta,
     records: [
-      { __typename: type } = { __typename: '' } // Collection might be empty
+      { __typename: type } = { __typename: null } // Collection might be empty
     ]
   } = await datocmsRequest<CollectionInfo>({
     query: parse(/* graphql */`
@@ -125,9 +125,16 @@ export async function datocmsCollection<CollectionType>({
       }
    `)
   });
+  
+  const records: CollectionType[] = [];
+
+  // The type is used to create a fragment from a string. Without it, that fails.
+  // But the type is null because the collection is empty, so we don't need to fetch any records.
+  if (!type) return records;
+  
   const recordsPerPage = 100; // DatoCMS GraphQL API has a limit of 100 records per request
   const totalPages = Math.ceil(meta.count / recordsPerPage);
-  const records: CollectionType[] = [];
+ 
   // Create new fragment to maintain support for passing a string to argument fragment
   const fragmentDocument = typeof fragment === 'string'
     ? parse(`fragment InlineFragment on ${type} { ${fragment} }`)

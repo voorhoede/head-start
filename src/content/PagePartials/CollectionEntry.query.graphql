@@ -1,0 +1,43 @@
+#import '@blocks/ActionBlock/ActionBlock.fragment.graphql'
+#import '@blocks/GroupingBlock/GroupingBlock.fragment.graphql'
+#import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
+#import '@blocks/TableBlock/TableBlock.fragment.graphql'
+#import '@blocks/TextBlock/TextBlock.fragment.graphql'
+#import '@blocks/TextImageBlock/TextImageBlock.fragment.graphql'
+#import '@blocks/VideoBlock/VideoBlock.fragment.graphql'
+#import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
+
+query PagePartialCollectionEntry($locale: SiteLocale!, $id: ItemId!) {
+  entry: pagePartial(locale: $locale, filter: { id: { eq: $id } }) {
+    __typename
+    id
+    title
+    blocks {
+      __typename
+      ... on ActionBlockRecord {
+        ...ActionBlock
+      }
+      ... on GroupingBlockRecord {
+        ...GroupingBlock
+      }
+      ... on ImageBlockRecord {
+        ...ImageBlock
+      }
+      ... on TableBlockRecord {
+        ...TableBlock
+      }
+      ... on TextBlockRecord {
+        ...TextBlock
+      }
+      ... on TextImageBlockRecord {
+        ...TextImageBlock
+      }
+      ... on VideoBlockRecord {
+        ...VideoBlock
+      }
+      ... on VideoEmbedBlockRecord {
+        ...VideoEmbedBlock
+      }
+    }
+  }
+}
