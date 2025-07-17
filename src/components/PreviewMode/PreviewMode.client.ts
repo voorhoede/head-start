@@ -24,6 +24,20 @@ class PreviewMode extends HTMLElement {
   #datocmsToken: string = '';
   #datocmsEnvironment: string = '';
 
+  /**
+   * Generates a hashed key for the map tracking subscriptions.
+   * This key is based on the query and variables of the subscription.
+   */
+  static subscriptionKey({ query, variables }: QueryVariables) {
+    const string = JSON.stringify({ query, variables });
+    // DJB2 by Daniel J. Bernstein @see http://www.cse.yorku.ca/~oz/hash.html
+    let hash = 5381;
+    for (let i = 0; i < string.length; i++) {
+      hash = (hash >> 5) + hash + string.charCodeAt(i);
+    }
+    return hash.toString(36);
+  }
+  
   constructor() { 
     super();
 
@@ -64,10 +78,13 @@ class PreviewMode extends HTMLElement {
     this.$connectionError.listen(() => updateBarStatus());
     this.$updateCounts.listen((updateCounts) => {
       // each subscription directly triggers an update when connected,
-      // so we wait for the second update to reload the page:
-      const counts = Object.values(updateCounts);
-      if (counts.some((count) => count >= 2)) {
-        window.location.reload();
+      // so we wait for the update count to exceed the number of instances:
+      const instances = this.getInstanceCounts();
+      for (const [key, count] of Object.entries(updateCounts)) {
+        const instanceCount = instances[key];
+        if (count > instanceCount) {
+          window.location.reload();
+        }
       }
     });
 
@@ -80,9 +97,21 @@ class PreviewMode extends HTMLElement {
   getSubscriptionConfigs () {
     return this.subscriptionElements.map((element) => element.getConfig() as QueryVariables);
   }
+  
+  getInstanceCounts () {
+    return this.getSubscriptionConfigs()
+      .reduce((instanceMap, { query, variables }: QueryVariables) => {
+        const key = PreviewMode.subscriptionKey({ query, variables });
+        const count = instanceMap?.[key] || 0;
+        return {
+          ...instanceMap,
+          [key]: count + 1,
+        };
+      }, {} as { [key: string]: number });
+  }
 
   async subscribe ({ query, variables }: QueryVariables) {
-    const key = JSON.stringify({ query, variables });
+    const key = PreviewMode.subscriptionKey({ query, variables });
     this.$connections.setKey(key, 'closed');
     this.$updateCounts.setKey(key, 0);
     await subscribeToQuery({

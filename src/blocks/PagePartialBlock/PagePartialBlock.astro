@@ -3,6 +3,7 @@ import type { PagePartialBlockFragment } from '@lib/datocms/types';
 import GroupingBlock from '@blocks/GroupingBlock/GroupingBlock.astro';
 import type { GroupingBlockFragment } from '@lib/datocms/types';
 import { getEntry } from '@lib/content';
+import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
 
 export interface Props {
   block: PagePartialBlockFragment
@@ -11,17 +12,20 @@ const { block } = Astro.props;
 
 // TODO: only allow one page partial per block
 const pagePartials = await Promise.all(
-  block.items.map(async (item) => {
-    const pagePartial = await getEntry('PagePartials', item.id);
-    return pagePartial?.data;
-  })
+  block.items.map(async (item) => await getEntry('PagePartials', item.id))
 ).then(items => items.filter(pagePartial => pagePartial !== undefined && pagePartial !== null));
+
 ---
+{/* Subscribe to each PagePartial, revisit when only one PagePartial is supported */}
+{ pagePartials.map(({ subscription }) => (
+  <PreviewModeSubscription {...subscription} />
+)) }
+
 {/* Temporary solution to prevent breaking changes for existing Page Partial Blocks */}
 <GroupingBlock block={{
   ...block,
   __typename: 'GroupingBlockRecord',
-  items: pagePartials.map(item => ({
+  items: pagePartials.map(({ data: item }) => ({
     title: item.title,
     blocks: item.blocks as GroupingBlockFragment['items'][number]['blocks'],
     __typename: 'GroupingItemRecord'
