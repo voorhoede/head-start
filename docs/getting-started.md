@@ -4,7 +4,7 @@
 
 ## Prequisites
 
-Head Start requires Node.js to be installed. See [/.nvmrc](../.nvmrc) for the correct version.
+Head Start requires Node.js to be installed. See [.node-version](../.node-version) for the correct version.
 
 ## Create a repository
 
