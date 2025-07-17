@@ -13,7 +13,7 @@ const target = openInNewTab ? '_blank' : null;
 const external = (() => { 
   try {
     return new URL(href).origin !== new URL(Astro.url).origin;
-  } catch (e: unknown) {
+  } catch {
     // If new URL throws, it means the URL is relative, so it's internal.
     return false;
   }
