@@ -1,6 +1,5 @@
 import { defineConfig, globalIgnores } from 'eslint/config';
 import globals from 'globals';
-import parser from 'astro-eslint-parser';
 import tsParser from '@typescript-eslint/parser';
 import { FlatCompat } from '@eslint/eslintrc';
 import js from '@eslint/js';
@@ -21,7 +20,7 @@ export default defineConfig([
         ...globals.node,
         ...globals.browser,
       },
-
+      
       ecmaVersion: 'latest',
       sourceType: 'module',
       parserOptions: {},
@@ -41,20 +40,6 @@ export default defineConfig([
     },
   },
   globalIgnores(['dist/*', 'functions/*', 'node_modules/*']),
-  {
-    files: ['**/*.astro'],
-
-    languageOptions: {
-      parser: parser,
-
-      parserOptions: {
-        parser: '@typescript-eslint/parser',
-        extraFileExtensions: ['.astro'],
-      },
-    },
-
-    rules: {},
-  },
   {
     files: ['**/*.ts'],
 
