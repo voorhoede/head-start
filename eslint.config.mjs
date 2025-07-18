@@ -30,12 +30,7 @@ export default defineConfig([
       indent: ['warn', 2],
       quotes: ['warn', 'single'],
       'object-curly-spacing': ['warn', 'always'],
-      'no-unused-vars': [
-        'warn',
-        {
-          varsIgnorePattern: '^Props$',
-        },
-      ],
+      'no-unused-vars': ['warn'],
       semi: ['warn', 'always'],
     },
   },
