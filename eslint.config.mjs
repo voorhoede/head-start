@@ -6,7 +6,7 @@ import astro from 'eslint-plugin-astro';
 
 export default defineConfig([
   js.configs.recommended,
-  ts.configs.base,
+  ts.configs.recommended,
   astro.configs['flat/recommended'],
   {
     languageOptions: {
@@ -17,13 +17,18 @@ export default defineConfig([
       ecmaVersion: 'latest',
       sourceType: 'module'
     },
-
     rules: {
       indent: ['warn', 2],
       quotes: ['warn', 'single'],
       semi: ['warn', 'always'],
       'object-curly-spacing': ['warn', 'always'],
       'no-unused-vars': ['warn', { 'argsIgnorePattern': '^_', 'varsIgnorePattern': '^_' }],
+    }
+  },
+  {
+    files: ['**/*.ts'],
+    rules: {
+      'no-unused-vars': ['off'],
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', destructuredArrayIgnorePattern: '^_' }],
       '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/triple-slash-reference': 'off',
@@ -31,7 +36,7 @@ export default defineConfig([
   },
   {
     ignores: [
-      '**.astro/**', 
+      '**/*.astro', 
       'dist/*', 
       'functions/*', 
       'src/lib/datocms/types.ts',
