@@ -66,6 +66,7 @@ export default defineConfig([{
     '@typescript-eslint/triple-slash-reference': 'off',
   },
 }, globalIgnores([
+  '_eslint.config.ts',
   '**/dist',
   '**/node_modules',
   '**.astro/**',
