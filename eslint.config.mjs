@@ -1,4 +1,4 @@
-import { defineConfig, globalIgnores } from 'eslint/config';
+import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 import tsParser from '@typescript-eslint/parser';
 import { FlatCompat } from '@eslint/eslintrc';
@@ -34,7 +34,6 @@ export default defineConfig([
       semi: ['warn', 'always'],
     },
   },
-  globalIgnores(['dist/*', 'functions/*', 'node_modules/*']),
   {
     files: ['**/*.ts'],
 
@@ -57,11 +56,13 @@ export default defineConfig([
       '@typescript-eslint/triple-slash-reference': 'off',
     },
   },
-  globalIgnores([
-    '**/dist',
-    '**/node_modules',
-    '**.astro/**',
-    'src/lib/datocms/types.ts',
-    '!**/.graphqlrc.ts',
-  ]),
+  {
+    ignores: [
+      '**.astro/**', 
+      'dist/*', 
+      'functions/*', 
+      'src/lib/datocms/types.ts',
+      '!**/.graphqlrc.ts'
+    ]
+  }
 ]);
