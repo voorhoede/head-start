@@ -18,6 +18,9 @@ query PageCollectionEntry($locale: SiteLocale!, $slug: String!) {
       content
       tag
     }
+    seo {
+      noIndex
+    }
     bodyBlocks {
       __typename
       ... on ActionBlockRecord {

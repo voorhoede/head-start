@@ -24,6 +24,7 @@ type Meta = {
   locale: SiteLocale;
   breadcrumbs: Breadcrumb[]; // Breadcrumbs for the page, used for navigation
   pageUrls: PageUrl[]; // The URL of the page, including the locale
+  noIndex: boolean;
 };
 type QueryVariables = {
   slug: string;
@@ -82,6 +83,7 @@ async function loadEntry(path: string, locale?: SiteLocale | null) {
       locale,
       breadcrumbs,
       pageUrls,
+      noIndex: (record.seo?.noIndex === true) ,
     },
     subscription: {
       variables: { slug, locale },
