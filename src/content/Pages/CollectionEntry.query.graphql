@@ -11,7 +11,7 @@
 #import '@blocks/GroupingBlock/GroupingBlock.fragment.graphql'
 
 query PageCollectionEntry($locale: SiteLocale!, $slug: String!) {
-  app {
+  app(locale: $locale) {
     ...SpecialPages
   }
   record: page(locale: $locale, filter: { slug: { eq: $slug } }) {
