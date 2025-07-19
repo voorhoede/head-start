@@ -3,6 +3,7 @@ import Layout from '@layouts/Default.astro';
 import Blocks from '@blocks/Blocks.astro';
 import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
 import { getCollection, getEntry } from '@lib/content';
+import { noIndexTag, titleTag } from '@lib/seo';
 
 export async function getStaticPaths() {
   // Fetch all locales by passing locale `null` and filter `undefined`.
@@ -23,13 +24,17 @@ if (!entry) {
 }
 
 const { data: { meta, ...page }, subscription } = entry;
-const { breadcrumbs, pageUrls } = meta;
+const { breadcrumbs, pageUrls, noIndex } = meta;
+const seoMetaTags = [
+  ...noIndex ? [noIndexTag, titleTag(page.title)] : [],
+  ...page._seoMetaTags,
+];
 ---
 
 <Layout
   breadcrumbs={breadcrumbs}
   pageUrls={pageUrls}
-  seoMetaTags={page._seoMetaTags}
+  seoMetaTags={seoMetaTags}
 >
   <PreviewModeSubscription {...subscription} />
   <h1>{page.title}</h1>
