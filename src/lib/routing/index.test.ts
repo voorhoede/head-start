@@ -11,6 +11,18 @@ vi.mock('@lib/i18n', () => ({
   getLocale: () => 'en',
 }));
 
+vi.mock('@lib/site.json', async (original) => {
+  const actual = await original() as { app: { homePage: string } };
+  
+  return {
+    ...actual,
+    app: {
+      ...actual.app,
+      homePage: 'abc',
+    }
+  };
+});
+
 const fileRecord: FileRouteFragment = { 
   __typename: 'FileRecord',
   id: '123',
@@ -27,7 +39,7 @@ const fileRecord: FileRouteFragment = {
 
 const homeRecord: PageRouteFragment = { 
   __typename: 'PageRecord',
-  id: '123',
+  id: 'abc',
   title: 'Example Page',
   slug: 'home',
   _allSlugLocales: [{ locale: 'en' as SiteLocale, value: 'home' }],
