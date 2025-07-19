@@ -21,12 +21,16 @@ vi.mock('@lib/routing/page', () => ({
 
 vi.mock('@lib/datocms', () => {
   const homeSlugs = [
-    { locale: 'en', value: 'home' }, 
+    { locale: 'en', value: 'home' },
     { locale: 'nl', value: 'home' },
   ];
   const pageSlugs = [
-    { locale: 'en', value: 'test' }, 
+    { locale: 'en', value: 'test' },
     { locale: 'nl', value: 'validatie' },
+  ];
+  const notFoundSlugs = [
+    { locale: 'en', value: 'not-found' },
+    { locale: 'nl', value: 'niet-gevonden' },
   ];
   const collection = [
     ...homeSlugs.map(({ locale, value: slug }) => ({
@@ -47,13 +51,39 @@ vi.mock('@lib/datocms', () => {
         _allSlugLocales: pageSlugs,
       }
     })),
+    ...notFoundSlugs.map(({ locale, value: slug }) => ({
+      record: {
+        id: '3',
+        title: `Not Found-${locale}`,
+        slug,
+        locale,
+        _allSlugLocales: notFoundSlugs,
+      }
+    })),
   ];
+  const getApp = (locale: string) => ({
+    __typename: 'AppRecord',
+    homePage: {
+      id: '1',
+      slug: homeSlugs.find(slugs => slugs.locale === locale)?.value,
+    },
+    notFoundPage: {
+      id: '3',
+      slug: notFoundSlugs.find(slugs => slugs.locale === locale)?.value,
+    },
+  });
+  
   type Arguments = { variables: { slug: string, locale: string } };
   return {
-    datocmsRequest: ({ variables: { slug, locale } }: Arguments) => 
-      Promise.resolve(collection.find(({ record }) =>
+    datocmsRequest: ({ variables: { slug, locale } }: Arguments) => {
+      const result = collection.find(({ record }) =>
         record.slug === slug && record.locale === locale
-      ) || {}),
+      );
+      return Promise.resolve({
+        app: getApp(locale),
+        record: result ? result.record : null,
+      });
+    },
     datocmsCollection: () => Promise.resolve(collection),
   };
 });
@@ -64,9 +94,10 @@ describe('loadCollection', async () => {
     expect(entries).toBeDefined();
   });
 });
+
 describe('loadEntry', async () => {
   const locales = ['en', 'nl'] as const;
-  const homePageSlug = 'home';
+  const homePageSlug = ''; // Home page slug is empty
   test('loads the home page from the collection', async () => {
     locales.forEach(async (locale) => {
       const entry = await loadEntry(homePageSlug, locale);
@@ -74,7 +105,7 @@ describe('loadEntry', async () => {
       expect(entry?.id).toBe(`${locale}/${homePageSlug}`);
     });
   });
-  
+
   test('home page pageUrls point to locale home', async () => {
     locales.forEach(async (locale) => {
       const entry = await loadEntry(homePageSlug, locale);
@@ -83,7 +114,7 @@ describe('loadEntry', async () => {
       });
     });
   });
-  
+
   test('loads any page from the collection', async () => {
     const localizedSlugs = {
       [locales[0]]: 'test',
@@ -95,7 +126,7 @@ describe('loadEntry', async () => {
       expect(entry?.id).toBe(`${locale}/${localizedSlugs[locale]}`);
     });
   });
-  
+
   test('returns undefined when no entry is found', async () => {
     locales.forEach(async (locale) => {
       const entry = await loadEntry('foo', locale);

@@ -4,7 +4,9 @@ import {
   type PageCollectionEntryQuery,
   PageRoute as fragment,
   type PageRouteFragment,
-  type SiteLocale
+  SpecialPageSettings as specialPageSettingsQuery,
+  type SiteLocale,
+  type SpecialPageSettingsQuery,
 } from '@lib/datocms/types';
 import { datocmsCollection, datocmsRequest } from '@lib/datocms';
 import { combine } from '@lib/content';
@@ -16,7 +18,18 @@ import {
   type Breadcrumb,
   type PageUrl,
 } from '@lib/routing';
-import { isLocale } from '@lib/i18n';
+import { isLocale, locales } from '@lib/i18n';
+
+// Certain pages are used for special purposes, such as the homepage, search page, etc.
+type SpecialPurposePageType = keyof Omit<
+  NonNullable<PageCollectionEntryQuery['app']>,
+  '__typename'
+> | undefined;
+
+// Add pages that should not be indexed by search engines
+const noIndexPages: SpecialPurposePageType[] = [
+  'notFoundPage',
+];
 
 type Meta = {
   recordId: string; // The record ID of the entry in DatoCMS
@@ -24,6 +37,7 @@ type Meta = {
   locale: SiteLocale;
   breadcrumbs: Breadcrumb[]; // Breadcrumbs for the page, used for navigation
   pageUrls: PageUrl[]; // The URL of the page, including the locale
+  purpose?: SpecialPurposePageType;
   noIndex: boolean;
 };
 type QueryVariables = {
@@ -48,20 +62,39 @@ const name = 'Pages' as const;
  * @returns A promise that resolves to a PageCollectionEntry object or undefined if not found.
  */
 export async function loadEntry(path: string, locale?: SiteLocale | null) {
-  const slug = getSlugFromPath(path);
+  if (!locale) return; // Pages have a locale, so no locale means no entry.
+  
+  const isHomePage = !path;
+  let slug = getSlugFromPath(path) || '';
 
-  const isHomePage = path === 'home';
-
-  if (!slug || !locale) {
-    return undefined;
+  // Only the homepage would have no path. If so, fetch the associated slug for the homepage.
+  if (isHomePage) {
+    const { app: { homePage } } = await datocmsRequest<SpecialPageSettingsQuery>({
+      query: specialPageSettingsQuery,
+      variables: { locale }
+    });
+    slug = homePage.slug;
   }
 
   const variables = { slug, locale };
-  const { record } = await datocmsRequest<PageCollectionEntryQuery>({ query, variables });
+  const {
+    app: { __typename, ...app },
+    record
+  } = await datocmsRequest<PageCollectionEntryQuery>({ query, variables });
 
-  if (!record) {
-    return undefined; // If no entry is found, return undefined
-  }
+  if (!record) return; // No need for adding metadata if record was not found
+
+  const specialPurposePages = Object.keys(app) as (keyof typeof app)[];
+  const purpose: SpecialPurposePageType | undefined = specialPurposePages
+    .find(key => app[key].id === record.id);
+
+  // We want to prevent search engines from indexing certain pages.
+  // Since homePage is also available under its own slug, we need add noIndex
+  // for that specific case.
+  const noIndex = (purpose === 'homePage' && !isHomePage) 
+    || noIndexPages.includes(purpose) 
+    || record.seo?.noIndex 
+    || false;
 
   const breadcrumbs = isHomePage
     ? []
@@ -69,7 +102,9 @@ export async function loadEntry(path: string, locale?: SiteLocale | null) {
       formatBreadcrumb({
         text: page.title,
         href: getPageHref({ locale, record: page }),
-      }));
+      })
+    );
+
   const pageUrls = (record._allSlugLocales || [])
     .map(({ locale }) => isLocale(locale) && ({
       locale,
@@ -86,7 +121,8 @@ export async function loadEntry(path: string, locale?: SiteLocale | null) {
       locale,
       breadcrumbs,
       pageUrls,
-      noIndex: (record.seo?.noIndex === true),
+      purpose,
+      noIndex,
     },
     subscription: {
       variables: { slug, locale },
@@ -100,7 +136,7 @@ export async function loadEntry(path: string, locale?: SiteLocale | null) {
  * @returns A promise that resolves to an array of PageCollectionEntry objects.
  **/
 async function loadCollection() {
-  const items = (await datocmsCollection<PageRouteFragment>({
+  const contentPages = (await datocmsCollection<PageRouteFragment>({
     collection: name,
     fragment,
   }))
@@ -110,15 +146,20 @@ async function loadCollection() {
       .map(({ locale }) => locale && {
         path: getPagePath({ locale, page: record }),
         locale,
+        recordId: record.id,
       }).filter((record => !!record))
     );
 
   // For each id/locale pair, load the entry and return it.
   // Note that this might be slow if there are many entries, as it makes a
   // separate request for each entry.
-  return Promise.all(items.map(({ path, locale }) => loadEntry(path, locale)))
-    .then(entries => entries.filter(entry => entry !== undefined));
-}
+  return Promise.all([
+    // Add homepage entries, those do not have a path.
+    ...locales.map(locale => loadEntry('', locale)),
+    // Add regular content pages by their path.
+    ...contentPages.map(({ path, locale }) => loadEntry(path, locale)),
+  ]).then(entries => entries.filter(entry => entry !== undefined));
+};
 
 const collection = defineCollection({
   loader: loadCollection,

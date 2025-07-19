@@ -8,20 +8,25 @@ import { noIndexTag, titleTag } from '@lib/seo';
 export async function getStaticPaths() {
   // Fetch all locales by passing locale `null` and filter `undefined`.
   const pages = await getCollection('Pages', undefined, null);
-  return pages.map(({ 
-    data: page,
-  }) => ({
+  return pages.map(({ data: page }) => ({
     params: { 
       locale: page.meta.locale, 
-      path: page.meta.path === 'home' ? '' : page.meta.path, 
+      path: (page.meta.purpose === 'homePage')   
+        ? '' // Home page has no path
+        : page.meta.path 
     },
   }));
 }
 
+type Params = {
+  locale: string;
+  path: string;
+}
 // Load as an entry so this route can also be a server route in preview mode.
 // @see /docs/preview-mode.md
-const { path = 'home' } = Astro.params;
+const { path = '' }: Params = Astro.params; // Default to empty string for home page
 const entry = await getEntry('Pages', path);
+
 if (!entry) {
   return Astro.redirect('/404', 404);
 }
