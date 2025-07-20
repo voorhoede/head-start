@@ -11,13 +11,16 @@ export async function getStaticPaths() {
   return pages.map(({ 
     data: page,
   }) => ({
-    params: { locale: page.meta.locale, path: page.meta.path },
+    params: { 
+      locale: page.meta.locale, 
+      path: page.meta.path === 'home' ? '' : page.meta.path, 
+    },
   }));
 }
 
 // Load as an entry so this route can also be a server route in preview mode.
 // @see /docs/preview-mode.md
-const { path } = Astro.params;
+const { path = 'home' } = Astro.params;
 const entry = await getEntry('Pages', path);
 if (!entry) {
   return Astro.redirect('/404', 404);
