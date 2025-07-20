@@ -50,6 +50,8 @@ const name = 'Pages' as const;
 async function loadEntry(path: string, locale?: SiteLocale | null) {
   const slug = getSlugFromPath(path);
 
+  const isHomePage = path === 'home';
+
   if (!slug || !locale) {
     return undefined;
   }
@@ -61,16 +63,17 @@ async function loadEntry(path: string, locale?: SiteLocale | null) {
     return undefined; // If no entry is found, return undefined
   }
 
-  const breadcrumbs = [...getParentPages(record), record].map((page) =>
-    formatBreadcrumb({
-      text: page.title,
-      href: getPageHref({ locale, record: page }),
-    })
-  );
+  const breadcrumbs = isHomePage
+    ? []
+    : [...getParentPages(record), record].map((page) =>
+      formatBreadcrumb({
+        text: page.title,
+        href: getPageHref({ locale, record: page }),
+      }));
   const pageUrls = (record._allSlugLocales || [])
     .map(({ locale }) => isLocale(locale) && ({
       locale,
-      pathname: getPageHref({ locale, record }),
+      pathname: isHomePage ? `/${locale}` : getPageHref({ locale, record }),
     }))
     .filter(entry => !!entry);
 
@@ -83,7 +86,7 @@ async function loadEntry(path: string, locale?: SiteLocale | null) {
       locale,
       breadcrumbs,
       pageUrls,
-      noIndex: (record.seo?.noIndex === true) ,
+      noIndex: (record.seo?.noIndex === true),
     },
     subscription: {
       variables: { slug, locale },

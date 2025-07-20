@@ -4,7 +4,6 @@
 #import '@blocks/VideoBlock/VideoBlock.fragment.graphql'
 #import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
 #import '@lib/routing/FileRoute.fragment.graphql'
-#import '@lib/routing/HomeRoute.fragment.graphql'
 #import '@lib/routing/PageRoute.fragment.graphql'
 
 fragment TextBlock on TextBlockRecord {
@@ -31,9 +30,6 @@ fragment TextBlock on TextBlockRecord {
       __typename
       ... on FileRecord {
         ...FileRoute
-      }
-      ... on HomePageRecord {
-        ...HomeRoute
       }
       ... on PageRecord {
         ...PageRoute
