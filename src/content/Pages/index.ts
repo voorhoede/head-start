@@ -46,7 +46,7 @@ const name = 'Pages' as const;
  * @param locale - The locale of the entry to load.
  * @returns A promise that resolves to a PageCollectionEntry object or undefined if not found.
  */
-const loadEntry = async (path: string, locale?: SiteLocale | null) => {
+async function loadEntry(path: string, locale?: SiteLocale | null) {
   const slug = getSlugFromPath(path);
 
   if (!slug || !locale) {
@@ -87,14 +87,14 @@ const loadEntry = async (path: string, locale?: SiteLocale | null) => {
       variables: { slug, locale },
     },
   } satisfies PageCollectionEntry;
-};
+}
 
 /** 
  * Loads all entries from the collection, mapping them to their respective locales.
  * 
  * @returns A promise that resolves to an array of PageCollectionEntry objects.
  **/
-const loadCollection = async () => {
+async function loadCollection() {
   const items = (await datocmsCollection<PageRouteFragment>({
     collection: name,
     fragment,
@@ -113,7 +113,7 @@ const loadCollection = async () => {
   // separate request for each entry.
   return Promise.all(items.map(({ path, locale }) => loadEntry(path, locale)))
     .then(entries => entries.filter(entry => entry !== undefined));
-};
+}
 
 const collection = defineCollection({
   loader: loadCollection,
