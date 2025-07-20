@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import type { FileRouteFragment, HomeRouteFragment, PageRouteFragment, SiteLocale } from '@lib/datocms/types';
+import type { FileRouteFragment, PageRouteFragment, SiteLocale } from '@lib/datocms/types';
 import { datocmsAssetsOrigin } from '@lib/datocms';
 import { getHref, getFileHref, getHomeHref, getPageHref } from './index';
 
@@ -25,10 +25,12 @@ const fileRecord: FileRouteFragment = {
   },
 };
 
-const homeRecord: HomeRouteFragment = { 
-  __typename: 'HomePageRecord',
-  id: 'home',
-  title: 'Home'
+const homeRecord: PageRouteFragment = { 
+  __typename: 'PageRecord',
+  id: '123',
+  title: 'Example Page',
+  slug: 'home',
+  _allSlugLocales: [{ locale: 'en' as SiteLocale, value: 'home' }],
 };
 
 const pageRecord: PageRouteFragment = {
