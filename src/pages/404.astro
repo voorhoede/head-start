@@ -1,26 +1,26 @@
 ---
-import type { NotFoundPageQuery, SiteLocale } from '@lib/datocms/types';
-import { datocmsRequest } from '@lib/datocms';
 import { noIndexTag, titleTag } from '@lib/seo';
+import { getEntry } from '@lib/content';
 import Layout from '@layouts/Default.astro';
 import Blocks from '@blocks/Blocks.astro';
-import query from './_404.query.graphql';
+import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
 
 export const prerender = false;
 
 Astro.response.status = 404;
 
-type Params = {
-  locale: SiteLocale;
+const entry = await getEntry('SpecialPages', 'notFoundPage');
+
+const page = entry?.data || {
+  title: 'Page not found',
+  bodyBlocks: [],
 };
 
-const { locale } = Astro.params as Params;
-const variables = { locale };
-// While this page is not prerendered, we still want to treat it as a regular page with the default prerender strategy.
-const { page } = await datocmsRequest<NotFoundPageQuery, true>({ query, variables });
+const subscription = entry?.subscription;
 ---
 
 <Layout pageUrls={[]} seoMetaTags={[noIndexTag, titleTag(page.title)]}>
+  { subscription && <PreviewModeSubscription {...subscription} /> }
   <h1>{page.title} {Astro.params.locale}</h1>
   <Blocks blocks={page.bodyBlocks} />
 </Layout>

@@ -47,7 +47,7 @@ const name = 'Pages' as const;
  * @param locale - The locale of the entry to load.
  * @returns A promise that resolves to a PageCollectionEntry object or undefined if not found.
  */
-async function loadEntry(path: string, locale?: SiteLocale | null) {
+export async function loadEntry(path: string, locale?: SiteLocale | null) {
   const slug = getSlugFromPath(path);
 
   const isHomePage = path === 'home';
