@@ -33,8 +33,17 @@ async function downloadSiteData() {
     apiToken: process.env.DATOCMS_READONLY_API_TOKEN!,
     environment: datocmsEnvironment,
   });
-  const site = await client.site.find();
-  await writeFile('./src/lib/site.json', JSON.stringify(renameKeys(site), null, 2));
+  const site = await client.site.find();  
+  const app = await client.itemTypes.find('app')
+    .then(async appSettingsModel => {
+      const appSettingsId = appSettingsModel.singleton_item;
+      if (!appSettingsId) return;
+      const { id, item_type, meta, creator, type, ...rest } = await client.items.find(appSettingsId);
+      return rest;
+    });
+  
+  const content = JSON.stringify(renameKeys({ ...site, app }), null, 2);
+  await writeFile('./src/lib/site.json', content);
 }
 
 downloadSiteData()
