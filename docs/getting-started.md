@@ -87,6 +87,7 @@ The next step is creating a Cloudflare Pages application so your project can be 
 
 - Go to your DatoCMS project > Content (`/environments/start/editor/settings`)
 - Add the required items for the `SEO` and `Social Card`.
+- Add a Home Page and Not Found Page to your "\uD83D\uDDA5\uFE0F Website" settings.
 **If the above items are not set, your page will not be able to build**
 
 ## Create a Cloudflare Pages application
