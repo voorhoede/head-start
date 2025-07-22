@@ -1,5 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
 import Collection from './index';
+import type { SiteLocale } from '@lib/datocms/types';
 
 const { loadCollection, loadEntry } = Collection.Pages;
 
@@ -72,7 +73,7 @@ vi.mock('@lib/datocms', () => {
       slug: notFoundSlugs.find(slugs => slugs.locale === locale)?.value,
     },
   });
-  
+
   type Arguments = { variables: { slug: string, locale: string } };
   return {
     datocmsRequest: ({ variables: { slug, locale } }: Arguments) => {
@@ -124,6 +125,47 @@ describe('loadEntry', async () => {
       const entry = await loadEntry(localizedSlugs[locale], locale);
       expect(entry).toBeDefined();
       expect(entry?.id).toBe(`${locale}/${localizedSlugs[locale]}`);
+    });
+  });
+
+  test('special pages have a purpose set', async () => {
+    const specialPages = [
+      { slug: 'home', locale: 'en' },
+      { slug: 'home', locale: 'nl' },
+      { slug: 'not-found', locale: 'en' },
+      { slug: 'niet-gevonden', locale: 'nl' }
+    ] as { slug: string, locale: SiteLocale }[];
+
+    specialPages.forEach(async ({ slug, locale }) => {
+      const entry = await loadEntry(slug, locale);
+      expect(entry).toBeDefined();
+      expect(entry?.meta.purpose).toBeDefined();
+    });
+  });
+
+  test('home page under its slug has noIndex property set', async () => {
+    const homePages = [
+      { slug: 'home', locale: 'en' },
+      { slug: 'home', locale: 'nl' },
+    ] as { slug: string, locale: SiteLocale }[];
+
+    homePages.forEach(async ({ slug, locale }) => {
+      const entry = await loadEntry(slug, locale);
+      expect(entry).toBeDefined();
+      expect(entry?.meta.noIndex).toBe(true);
+    });
+  });
+
+  test('not found page has noIndex property set', async () => {
+    const homePages = [
+      { slug: 'not-found', locale: 'en' },
+      { slug: 'niet-gevonden', locale: 'nl' },
+    ] as { slug: string, locale: SiteLocale }[];
+
+    homePages.forEach(async ({ slug, locale }) => {
+      const entry = await loadEntry(slug, locale);
+      expect(entry).toBeDefined();
+      expect(entry?.meta.noIndex).toBe(true);
     });
   });
 
