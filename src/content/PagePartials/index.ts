@@ -25,7 +25,7 @@ export type PagePartialCollectionEntry = PagePartialCollectionEntryQuery['record
 
 const name = 'PagePartials' as const;
 
-const loadEntry = async (recordId: string, locale?: SiteLocale | null) => {
+async function loadEntry(recordId: string, locale?: SiteLocale | null) {
   if (!locale) {
     return;
   }
@@ -40,14 +40,14 @@ const loadEntry = async (recordId: string, locale?: SiteLocale | null) => {
     },
     subscription: { variables },
   } satisfies PagePartialCollectionEntry;
-};
+}
 
 /** 
  * Loads all entries from the collection, mapping them to their respective locales.
  * 
  * @returns A promise that resolves to an array of PagePartialCollectionEntry objects.
  **/
-const loadCollection = async () => {
+async function loadCollection() {
   const items = (await datocmsCollection<{
     id: string,
     _allBlocksLocales: { locale: SiteLocale }[]
@@ -72,7 +72,7 @@ const loadCollection = async () => {
   // separate request for each entry.
   return await Promise.all(items.map(({ recordId, locale }) => loadEntry(recordId, locale)))
     .then(entries => entries.filter(entry => entry !== undefined));
-};
+}
 
 const collection = defineCollection({
   loader: loadCollection,

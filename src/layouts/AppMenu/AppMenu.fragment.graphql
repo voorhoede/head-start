@@ -1,4 +1,3 @@
-#import '@lib/routing/HomeRoute.fragment.graphql'
 #import '@lib/routing/PageRoute.fragment.graphql'
 
 fragment AppMenu on AppRecord {
@@ -9,9 +8,6 @@ fragment AppMenu on AppRecord {
       title
       link {
         __typename
-        ... on HomePageRecord {
-          ...HomeRoute
-        }
         ... on PageRecord {
           ...PageRoute
         }
