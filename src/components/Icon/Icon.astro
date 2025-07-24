@@ -1,11 +1,12 @@
 ---
+import type { HTMLAttributes } from 'astro/types';
 import type { IconName } from '@assets/icon-sprite';
 export { iconNames } from '@assets/icon-sprite';
 
-interface Props {
+type Props = {
   name: IconName;
-  [x:string]: any;
-}
+} & HTMLAttributes<'svg'>;
+
 const { name, ...props } = Astro.props;
 const ariaLabel = props['aria-label'];
 const attributes = { 
