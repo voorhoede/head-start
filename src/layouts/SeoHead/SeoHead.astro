@@ -1,4 +1,5 @@
 ---
+import type { HTMLTag } from 'astro/types';
 import { getLocale } from '@lib/i18n';
 import { getOpenSearchName, getOpenSearchPathname } from '@lib/search';
 import type { PageUrl } from '@lib/routing';
@@ -19,9 +20,8 @@ const titleTag = tags.find((tag) => tag.tag === 'title');
 
 {titleTag && <title>{titleTag.content}</title>}
 {
-  metaTags.map((tag) => (
-    // @ts-expect-error
-    <DynamicTag as={tag.tag} {...tag.attributes} />
+  metaTags.map(({ tag, attributes }) => (
+    <DynamicTag as={tag as HTMLTag} {...attributes} />
   ))
 }
 

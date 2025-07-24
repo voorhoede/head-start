@@ -1,4 +1,4 @@
-import { defineConfig } from 'eslint/config';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import globals from 'globals';
 import js from '@eslint/js';
 import ts from 'typescript-eslint';
@@ -34,13 +34,11 @@ export default defineConfig([
       '@typescript-eslint/triple-slash-reference': 'off',
     }
   },
-  {
-    ignores: [
-      '**/*.astro', 
-      'dist/*', 
-      'functions/*', 
-      'src/lib/datocms/types.ts',
-      '!**/.graphqlrc.ts'
-    ]
-  }
+  globalIgnores([
+    '**/.astro/**',
+    'dist/*', 
+    'functions/*', 
+    'src/lib/datocms/types.ts',
+    '!**/.graphqlrc.ts'
+  ])
 ]);
