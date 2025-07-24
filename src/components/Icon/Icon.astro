@@ -5,14 +5,22 @@ export { iconNames } from '@assets/icon-sprite';
 
 type Props = {
   name: IconName;
-  title?: string;
 } & HTMLAttributes<'svg'>;
 
-const { name, title, ...props } = Astro.props;
+const { 
+  name,
+  'aria-label': ariaLabel, 
+  ...props 
+} = Astro.props;
 ---
 
-<svg data-icon={name} role={title ? 'img' : 'presentation'} aria-hidden={!title} {...props}>
-  {title && <title>{title}</title>}
+<svg 
+  data-icon={name} 
+  role={ariaLabel ? 'img' : 'presentation'} 
+  aria-hidden={!ariaLabel} 
+  aria-label={ariaLabel} 
+  {...props}
+>
   <use href={`#${name}`} />
 </svg>
 
