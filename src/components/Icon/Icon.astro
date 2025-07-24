@@ -3,9 +3,9 @@ import type { HTMLAttributes } from 'astro/types';
 import type { IconName } from '@assets/icon-sprite';
 export { iconNames } from '@assets/icon-sprite';
 
-type Props = {
+interface Props extends HTMLAttributes<'svg'> {
   name: IconName;
-} & HTMLAttributes<'svg'>;
+};
 
 const { 
   name,
