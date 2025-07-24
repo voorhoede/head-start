@@ -8,6 +8,7 @@ export default defineConfig([
   js.configs.recommended,
   ...ts.configs.recommended,
   ...astro.configs.recommended,
+  ...astro.configs['jsx-a11y-recommended'],
   {
     languageOptions: {
       globals: {
