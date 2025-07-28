@@ -45,7 +45,7 @@ const loadCollection = async () => {
     collection: name,
     fragment: /* graphql */`
       id,
-      locale
+      #locale
     `,
   }));
 
