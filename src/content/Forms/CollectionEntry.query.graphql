@@ -1,0 +1,12 @@
+query FormCollectionEntry($locale: SiteLocale!, $id: ItemId!) {
+  record: form(locale: $locale, filter: { id: { eq: $id } }) {
+    id
+    title
+    key
+    textSuccess {
+      __typename
+      value
+      links
+    }
+  }
+}

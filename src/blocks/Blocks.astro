@@ -3,6 +3,7 @@ import { PUBLIC_IS_PRODUCTION } from 'astro:env/server';
 import type { AnyBlock } from './Blocks';
 import ActionBlock from './ActionBlock/ActionBlock.astro';
 import EmbedBlock from './EmbedBlock/EmbedBlock.astro';
+import FormBlock from './FormBlock/FormBlock.astro';
 import ImageBlock from './ImageBlock/ImageBlock.astro';
 import PagePartialBlock from './PagePartialBlock/PagePartialBlock.astro';
 import TableBlock from './TableBlock/TableBlock.astro';
@@ -15,6 +16,7 @@ import GroupingBlock from './GroupingBlock/GroupingBlock.astro';
 const blocksByTypename = {
   ActionBlockRecord: ActionBlock,
   EmbedBlockRecord: EmbedBlock,
+  FormBlockRecord: FormBlock,
   ImageBlockRecord: ImageBlock,
   PagePartialBlockRecord: PagePartialBlock,
   TableBlockRecord: TableBlock,

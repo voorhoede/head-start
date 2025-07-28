@@ -1,6 +1,7 @@
 #import '@lib/routing/PageRoute.fragment.graphql'
 #import '@blocks/ActionBlock/ActionBlock.fragment.graphql'
 #import '@blocks/EmbedBlock/EmbedBlock.fragment.graphql'
+#import '@blocks/FormBlock/FormBlock.fragment.graphql'
 #import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
 #import '@blocks/PagePartialBlock/PagePartialBlock.fragment.graphql'
 #import '@blocks/TableBlock/TableBlock.fragment.graphql'
@@ -25,6 +26,9 @@ query Page($locale: SiteLocale!, $slug: String!) {
       }
       ... on EmbedBlockRecord {
         ...EmbedBlock
+      }
+      ... on FormBlockRecord {
+        ...FormBlock
       }
       ... on ImageBlockRecord {
         ...ImageBlock

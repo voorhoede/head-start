@@ -1,6 +1,7 @@
 import type {
   ActionBlockFragment,
   EmbedBlockFragment,
+  FormBlockFragment,
   ImageBlockFragment,
   PagePartialBlockFragment,
   TableBlockFragment,
@@ -15,6 +16,7 @@ export type AnyBlock = Omit<
   ( // Add any new Block types here.
     | ActionBlockFragment
     | EmbedBlockFragment
+    | FormBlockFragment
     | GroupingBlockFragment
     | ImageBlockFragment
     | PagePartialBlockFragment

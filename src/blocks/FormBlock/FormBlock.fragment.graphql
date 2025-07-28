@@ -1,0 +1,6 @@
+fragment FormBlock on FormBlockRecord {
+  id
+  form {
+    id
+  }
+}

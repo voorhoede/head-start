@@ -19,6 +19,7 @@ reports/
 src/assets/icon-sprite.svg
 src/assets/icon-sprite.ts
 src/lib/datocms/types.ts
+src/lib/forms/types.ts
 src/lib/i18n/messages.json
 src/lib/i18n/types.ts
 src/lib/site.json

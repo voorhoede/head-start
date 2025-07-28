@@ -1,0 +1,31 @@
+---
+import { getEntry } from '@lib/content';
+import type { SiteLocale } from '@lib/datocms/types';
+
+export const partial = true;
+export const prerender = false;
+
+type Params = {
+  formId: string;
+  locale: SiteLocale;
+};
+const { formId, locale } = Astro.params as Params;
+const referrerPath = new URL(Astro.request.url).searchParams.get('referrer');
+
+if (Astro.request.method !== 'POST') {
+  return Astro.redirect(referrerPath ?? '/', 405); // Method Not Allowed
+}
+
+const entry = await getEntry('Forms', formId);
+const form = entry?.data;
+
+if (!form) {
+  return Astro.redirect(referrerPath ?? '/', 404); // Form Not Found
+}
+
+// if (!referrerPath) {
+//   return Astro.redirect('/', 400); // Bad Request
+// }
+---
+
+<h1>Form: { form.title } ({ locale })</h1>

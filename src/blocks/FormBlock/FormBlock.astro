@@ -1,0 +1,53 @@
+---
+import type { FormBlockFragment } from '@lib/datocms/types';
+import StructuredText from '@components/StructuredText/StructuredText.astro';
+import { getEntry } from '@lib/content';
+import { formReferrerFieldName } from '@lib/forms';
+
+export interface Props {
+    block: FormBlockFragment;
+    status: 'pristine' | 'success' | 'error';
+    errors?: string[];
+}
+
+const { block, status = 'pristine' } = Astro.props;
+const entry = await getEntry('Forms', block.form.id);
+const form = entry?.data;
+---
+
+<form-block id={block.id}>
+  {
+    !form && (
+      <div class="error">Form not found</div>
+    )}
+  { form && (
+    <form method="POST" action={form.path}>
+      <h2>{form.title} (<code>{ form.key }</code>)</h2>
+      <output tabindex="-1" autofocus>
+        { (status === 'success') && (
+          <StructuredText data={form.textSuccess} />
+        )}
+        { (status === 'error') && (
+          <div>Error ...</div>
+        )}
+      </output>
+      <div class="form-fields">
+        <input type="hidden" name={formReferrerFieldName} value={new URL(Astro.request.url).pathname} />
+        <fieldset>
+          <legend>Result?</legend>
+          <label>
+            <input type="radio" name="result" value="success">
+            success
+          </label>
+          <label>
+            <input type="radio" name="result" value="error">
+            error
+          </label>
+        </fieldset>
+      </div>
+      <button type="submit">Submit</button>
+    </form>
+  )}
+</form-block>
+
+<script src="./FormBlock.client.ts"></script>
