@@ -7,18 +7,11 @@ import { execAsync } from './exec-command';
 
 dotenv.config();
 
-// NOTE: I am aware that I could also use the datocms API to get wheter or not an environment is primary
-// but this would involve trimming the output of the command and can be risky if the output format
 export const getEnvironments = async (): Promise<string[]> => {
   try {
     const environments = await execAsync(
-      'npx datocms environments:list --no-header --columns=id',
-    ).then(({ stdout }) =>
-      stdout
-        .split('\n')
-        .map((line) => line.trim())
-        .filter((line) => line.trim()),
-    );
+      'npx datocms environments:list --json',
+    ).then(({ stdout }) => JSON.parse(stdout).map(({ id }: { id: string }) => id));
     return environments;
   } catch (error) {
     throw new Error('Failed to get environments', { cause: error });
