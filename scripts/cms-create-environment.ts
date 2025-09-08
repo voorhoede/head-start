@@ -42,7 +42,7 @@ export const runCreateEnvironment = async (
   environmentDetails: EnvironmentDetails,
 ) => {
   return await execCommandSafe(
-    `npx datocms environments:fork ${environmentDetails.sourceEnv} ${environmentDetails.targetEnvironment} --fast`,
+    `npx datocms environments:fork ${environmentDetails.sourceEnv} ${environmentDetails.targetEnvironment} --fast-fork`,
     getConfirmationMessage(environmentDetails),
   );
 };
