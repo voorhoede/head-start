@@ -3,33 +3,46 @@ import Layout from '@layouts/Default.astro';
 import Blocks from '@blocks/Blocks.astro';
 import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
 import { getCollection, getEntry } from '@lib/content';
+import { noIndexTag, titleTag } from '@lib/seo';
 
 export async function getStaticPaths() {
   // Fetch all locales by passing locale `null` and filter `undefined`.
   const pages = await getCollection('Pages', undefined, null);
-  return pages.map(({ 
-    data: page,
-  }) => ({
-    params: { locale: page.meta.locale, path: page.meta.path },
+  return pages.map(({ data: page }) => ({
+    params: { 
+      locale: page.meta.locale, 
+      path: (page.meta.purpose === 'homePage')   
+        ? '' // Home page has no path
+        : page.meta.path 
+    },
   }));
 }
 
+type Params = {
+  locale: string;
+  path: string;
+}
 // Load as an entry so this route can also be a server route in preview mode.
 // @see /docs/preview-mode.md
-const { path } = Astro.params;
+const { path = '' }: Params = Astro.params; // Default to empty string for home page
 const entry = await getEntry('Pages', path);
+
 if (!entry) {
   return Astro.redirect('/404', 404);
 }
 
 const { data: { meta, ...page }, subscription } = entry;
-const { breadcrumbs, pageUrls } = meta;
+const { breadcrumbs, pageUrls, noIndex } = meta;
+const seoMetaTags = [
+  ...noIndex ? [noIndexTag, titleTag(page.title)] : [],
+  ...page._seoMetaTags,
+];
 ---
 
 <Layout
   breadcrumbs={breadcrumbs}
   pageUrls={pageUrls}
-  seoMetaTags={page._seoMetaTags}
+  seoMetaTags={seoMetaTags}
 >
   <PreviewModeSubscription {...subscription} />
   <h1>{page.title}</h1>

@@ -27,7 +27,7 @@ Head Start uses these standardised model names:
 
 Model name | Model type | Notes
 --- | --- | ---
-`... Page` | regular model | All pages are regular models with a name that ends with `Page` (`Home Page`, `Product Page` and the generic `Page`). These `Page` models are used by routes in `src/pages/`.
+`... Page` | regular model | All pages are regular models with a name that ends with `Page` (`Product Page` and the generic `Page`). These `Page` models are used by routes in `src/pages/`.
 `... Block` | reusable [block](https://www.datocms.com/docs/content-modelling/blocks) | All reusable blocks have a name that ends with `Block` (`Text Block`, `Image Block`, etc). These `Block`s are used by templates and fragments in `src/blocks/`. See [documentation on Blocks and Components](./blocks-and-components.md).
 
 Since a project has multiple pages and multiple blocks, the name should describe the models function. For example a `Newsletter Signup Block`.

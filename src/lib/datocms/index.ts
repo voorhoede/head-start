@@ -86,7 +86,7 @@ export async function datocmsRequest<
     const type = definition?.operation;
     const name = definition?.name?.value;
     const operation = (type && name)
-      ? `"${type} ${name}"`
+      ? `${type} ${name}(${JSON.stringify(variables)})`
       : 'unknown operation';
     throw Error(stripIndents`
       DatoCMS request failed for ${operation}

@@ -41,10 +41,11 @@ export default defineConfig([
     files: ['**/*.ts'],
     rules: {
       'no-unused-vars': ['off'],
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        { argsIgnorePattern: '^_', destructuredArrayIgnorePattern: '^_' },
-      ],
+      '@typescript-eslint/no-unused-vars': ['error', { 
+        argsIgnorePattern: '^_', 
+        destructuredArrayIgnorePattern: '^_',        
+        ignoreRestSiblings: true,
+      }],
       '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/triple-slash-reference': 'off',
     },
