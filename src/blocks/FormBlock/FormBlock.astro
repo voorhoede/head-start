@@ -1,0 +1,19 @@
+---
+import Form from '@components/Form/Form.astro';
+import { getEntry } from '@lib/content';
+import type { FormBlockFragment } from '@lib/datocms/types';
+
+export interface Props {
+  block: FormBlockFragment;
+}
+
+const { block } = Astro.props;
+const form = await getEntry('Forms', block.form.slug);
+if (!form) {
+  throw new Error(`Form with slug "${block.form.slug}" not found.`);
+}
+---
+<Form
+  slug={form.data.slug}
+  formFields={form.data.formFields}
+/>

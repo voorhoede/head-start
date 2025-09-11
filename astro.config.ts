@@ -43,6 +43,16 @@ export default defineConfig({
         access: 'secret',
         default: isPreview
       }),
+      TURNSTILE_SECRET_KEY: envField.string({
+        context: 'server',
+        access: 'secret',
+        default: process.env.TURNSTILE_SECRET_KEY,
+      }),
+      TURNSTILE_SITE_KEY: envField.string({
+        context: 'server',
+        access: 'secret',
+        default: process.env.TURNSTILE_SITE_KEY,
+      }),
       PUBLIC_IS_PRODUCTION: envField.boolean({
         context: 'server',
         access: 'public',

@@ -1,0 +1,5 @@
+fragment FormBlock on FormBlockRecord {
+  form {
+    slug
+  }
+}

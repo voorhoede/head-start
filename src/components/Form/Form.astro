@@ -1,0 +1,43 @@
+---
+import FormField, { isValidFieldType } from '@components/FormField/FormField.astro';
+import type { CollectionEntry } from '@lib/content';
+import Turnstile from './Turnstile.astro';
+
+export interface Props {
+  slug: string;
+  formFields: CollectionEntry<'Forms'>['data']['formFields'];
+  errors?: Record<string, string>;
+  formValues?: Record<string, string>;
+  useTurnStile?: boolean;
+}
+
+const { slug, formFields, errors, formValues, useTurnStile = true } = Astro.props;
+---
+<web-form>
+  <form
+    method="POST"
+    action={`/api/forms/${slug}/`}
+  >
+    <div class="form--fields">
+      {useTurnStile &&
+        <Turnstile error={errors?.['turnstileError']} />}
+      {formFields.map(
+        ({ id, label, name, required, fieldType, placeholder }) => (
+          <FormField
+            id={id}
+            label={label}
+            name={name}
+            required={required}
+            fieldType={isValidFieldType(fieldType) ? fieldType : 'text'}
+            placeholder={placeholder || ''}
+            error={errors?.[name]}
+            value={formValues?.[name]}
+          />
+        )
+      )}
+    </div>
+    <button type="submit">Submit</button>
+  </form>
+</web-form>
+
+<script src="./Form.client.ts"></script>
