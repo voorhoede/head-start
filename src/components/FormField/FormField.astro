@@ -1,0 +1,71 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import Input from './Fields/Input.astro';
+import InputEmail from './Fields/InputEmail.astro';
+import InputTel from './Fields/InputTel.astro';
+import Textarea from './Fields/Textarea.astro';
+
+export const fieldTypes = ['text', 'email', 'tel', 'textarea'] as const;
+export type FieldType = typeof fieldTypes[number];
+
+export interface Props extends HTMLAttributes<'div'> {
+  id: string;
+  label: string;
+  name: string;
+  value?: string;
+  required?: boolean;
+  error?: string;
+  fieldType: FieldType;
+  placeholder?: string;
+}
+
+export function isValidFieldType(fieldType: unknown): fieldType is FieldType {
+  return ([...fieldTypes] as unknown[]).includes(fieldType);
+}
+
+const {
+  class: className,
+  id,
+  label,
+  name,
+  value,
+  required = false,
+  error,
+  fieldType,
+  placeholder = '',
+  ...props
+} = Astro.props;
+
+const componenstByFieldType = {
+  text: Input,
+  email: InputEmail,
+  tel: InputTel,
+  textarea: Textarea,
+} satisfies Record<FieldType, typeof Input | typeof Textarea>;
+
+const Component = componenstByFieldType[fieldType] ?? (() => {
+  throw new Error(`Unsupported field type: ${fieldType}`);
+});
+
+const classList = [
+  'form-field',
+  `form-field--${fieldType}`,
+  ...error ? ['form-field--error'] : [],
+  ...className ? [className] : [],
+];
+---
+
+<div class:list={classList} {...props}>
+  <label for={id} class="form-field__label">
+    {label}{required && <span class="form-field__required" role="presentation">*</span>}
+  </label>
+  <Component
+    {id}
+    {name}
+    {required}
+    {placeholder}
+    {value}
+    class="form-field__input"
+  />
+  {error && <span class="form-field__error">{error}</span>}
+</div>

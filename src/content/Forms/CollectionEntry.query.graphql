@@ -1,0 +1,15 @@
+query FormCollectionEntry($locale: SiteLocale!, $slug: String!) {
+  record: form(locale: $locale, filter: { slug: { eq: $slug } }) {
+    title
+    id
+    slug
+    formFields {
+      id
+      label
+      name
+      fieldType
+      required
+      placeholder
+    }
+  }
+}
