@@ -7,12 +7,17 @@ import {
 import { datocmsCollection, datocmsRequest } from '@lib/datocms';
 import { combine } from '@lib/content';
 
+type Meta = {
+  locale: SiteLocale;
+  recordId: string;
+};
 type QueryVariables = {
   slug: string;
   locale: SiteLocale;
 };
 export type FormCollectionEntry = FormCollectionEntryQuery['record'] & {
   id: string;
+  meta: Meta;
   subscription: {
     variables: QueryVariables;
   };
@@ -32,6 +37,10 @@ const loadEntry = async (slug: string, locale?: SiteLocale | null) => {
   return {
     ...record,
     id: combine({ id: slug, locale }),
+    meta: {
+      recordId: record.id,
+      locale,
+    },
     subscription: { variables },
   } satisfies FormCollectionEntry;
 };
