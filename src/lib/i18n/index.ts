@@ -30,6 +30,21 @@ export function getLocale() {
   return i18n.locale() as SiteLocale;
 }
 
+export function getFallbackLocales(locale: string): SiteLocale[] {
+  // Strip (region) modifier to get general language
+  const language = locale.split(/[-_]/)[0];
+  return [
+    // Return general language if different from locale and a valid locale in itself
+    ...(language !== locale && isLocale(language)) 
+      ? [language] 
+      : [],
+    // Only return default locale when it is different from the requested locale
+    ...(defaultLocale !== locale)
+      ? [defaultLocale]
+      : []
+  ];
+}
+
 export function isLocale<T extends typeof locales>(locale: unknown): locale is T[number] {
   return Boolean(locale) && (locales as unknown[]).includes(locale);
 }

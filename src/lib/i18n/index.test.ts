@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import { defaultLocale, getLocale, getLocaleName, setLocale, t } from '@lib/i18n';
+import { defaultLocale, getFallbackLocales, getLocale, getLocaleName, setLocale, t } from '@lib/i18n';
 import { locales } from '@lib/site.json';
 
 vi.mock('@lib/i18n/messages.json', () => {
@@ -41,8 +41,33 @@ describe('i18n:', () => {
     expect(getLocale()).toBe(defaultLocale);
   });
 
+  describe('getFallbackLocale:', () => {
+    test('should return generic language from locale with region suffix', () => {
+      expect(getFallbackLocales('en_GB')[0]).toBe('en');
+      expect(getFallbackLocales('en-GB')[0]).toBe('en');
+      expect(getFallbackLocales('nl_BE')[0]).toBe('nl');
+      expect(getFallbackLocales('nl-BE')[0]).toBe('nl');
+    });
+    
+    test('should not return generic language not in site locales', () => {
+      expect(getFallbackLocales('fr_FR')[0]).not.toBe('fr');
+      expect(getFallbackLocales('fr-FR')[0]).not.toBe('fr');
+      expect(getFallbackLocales('de_CH')[0]).not.toBe('de');
+      expect(getFallbackLocales('de-CH')[0]).not.toBe('de');
+    });
+
+    test('last fallback should be the default locale', () => {
+      const [final] = getFallbackLocales('unsupported_locale').reverse();
+      expect(final).toBe(defaultLocale);
+    });
+
+    test('return empty list when requested locale is default locale', () => {
+      expect(getFallbackLocales(defaultLocale)).toStrictEqual([]);
+    });
+  });
+
   describe('getLocale:', () => {
-    test('"getLocale" should return the current locale', () => {
+    test('should return the current locale', () => {
       locales.forEach((locale) => {
         setLocale(locale);
         expect(getLocale()).toBe(locale);
