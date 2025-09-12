@@ -6,6 +6,7 @@
 #import '@blocks/TextImageBlock/TextImageBlock.fragment.graphql'
 #import '@blocks/VideoBlock/VideoBlock.fragment.graphql'
 #import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
+#import '@blocks/FormBlock/FormBlock.fragment.graphql'
 
 query PagePartialCollectionEntry($locale: SiteLocale!, $id: ItemId!) {
   record: pagePartial(locale: $locale, filter: { id: { eq: $id } }) {
@@ -37,6 +38,9 @@ query PagePartialCollectionEntry($locale: SiteLocale!, $id: ItemId!) {
       }
       ... on VideoEmbedBlockRecord {
         ...VideoEmbedBlock
+      }
+      ... on FormBlockRecord {
+        ...FormBlock
       }
     }
   }

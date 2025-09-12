@@ -1,0 +1,19 @@
+---
+import { TURNSTILE_SITE_KEY } from 'astro:env/server';
+
+type Props = {
+  error?: string;
+}
+
+const TURNSTILE_ENDPOINT = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+
+const { error } = Astro.props as Props;
+
+const url = error
+  ? `${TURNSTILE_ENDPOINT}?render=explicit`
+  : TURNSTILE_ENDPOINT;
+---
+<script is:inline src={url} async defer />
+<input type="hidden" name="use-turnstile" value="true" />
+<div class="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY}></div>
+{error && <p class="form__error">{error}</p> }

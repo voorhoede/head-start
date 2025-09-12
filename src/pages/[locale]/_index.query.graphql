@@ -8,6 +8,7 @@
 #import '@blocks/VideoBlock/VideoBlock.fragment.graphql'
 #import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
 #import '@blocks/GroupingBlock/GroupingBlock.fragment.graphql'
+#import '@blocks/FormBlock/FormBlock.fragment.graphql'
 
 query HomePage($locale: SiteLocale!) {
   page: homePage(locale: $locale) {
@@ -48,6 +49,9 @@ query HomePage($locale: SiteLocale!) {
       }
       ... on GroupingBlockRecord {
         ...GroupingBlock
+      }
+      ... on FormBlockRecord {
+        ...FormBlock
       }
     }
   }
