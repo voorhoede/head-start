@@ -13,7 +13,12 @@ if (!form) {
   throw new Error(`Form with slug "${block.form.slug}" not found.`);
 }
 ---
-<Form
-  slug={form.data.slug}
-  formFields={form.data.formFields}
-/>
+<web-form>
+  <Form
+    slug={form.data.slug}
+    formFields={form.data.formFields}
+  />
+
+</web-form>
+
+<script src="./Form.client.ts"></script>

@@ -3,7 +3,7 @@ import { type FieldType, isValidFieldType, } from '@components/FormField/FormFie
 import { z } from 'astro:schema';
 import { type CollectionEntry } from '@lib/content';
 import { t } from '@lib/i18n';
-import { turnstileChallenge } from '@lib/forms/turnstile.ts';
+import { turnstileChallenge } from '@lib/forms';
 
 type Form = CollectionEntry<'Forms'>['data'];
 
@@ -31,7 +31,7 @@ const createFieldSchema = (field: Form['formFields'][number]) => {
   return schemas[fieldType] || z.string();
 };
 
-export async function parseFormSubmission<T extends Form>({
+export default async function <T extends Form>({
   form,
   formData,
   requestHeaders,

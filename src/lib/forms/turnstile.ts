@@ -1,6 +1,6 @@
 import { TURNSTILE_SECRET_KEY } from 'astro:env/server';
 
-export async function turnstileChallenge(formData: FormData, requestHeaders: Request['headers']) {
+export default async function (formData: FormData, requestHeaders: Request['headers']) {
   try {
     const token = formData.get('cf-turnstile-response') || '';
     const ip = requestHeaders.get('CF-Connecting-IP') || '';
