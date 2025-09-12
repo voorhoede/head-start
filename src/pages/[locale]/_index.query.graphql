@@ -9,7 +9,10 @@
 #import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
 #import '@blocks/GroupingBlock/GroupingBlock.fragment.graphql'
 
-query HomePage($locale: SiteLocale!) {
+query HomePage(
+  $locale: SiteLocale!, 
+  $fallbackLocales: [SiteLocale!]
+) {
   page: homePage(locale: $locale) {
     title
     _seoMetaTags {

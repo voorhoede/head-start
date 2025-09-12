@@ -1,7 +1,10 @@
 #import './AppMenu/AppMenu.fragment.graphql'
 
-query DefaultLayout($locale: SiteLocale!) {
-  seo: _site(locale: $locale) {
+query DefaultLayout(
+  $locale: SiteLocale!,
+  $fallbackLocales: [SiteLocale!]
+) {
+  seo: _site(locale: $locale, fallbackLocales: $fallbackLocales) {
     faviconMetaTags(variants: [icon, appleTouchIcon, msApplication]) {
       tag
       attributes
