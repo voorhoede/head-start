@@ -10,7 +10,7 @@ import {
 import { HttpResponse, graphql } from 'msw';
 import { setupServer } from 'msw/node';
 import { parse } from 'graphql';
-import { datocmsCollection, type CollectionInfo } from '@lib/datocms';
+import { datocmsCollection, type CollectionInfo } from './collection';
 
 vi.mock('../../../../datocms-environment', () => ({
   datocmsBuildTriggerId: 'mock-build-trigger-id',
