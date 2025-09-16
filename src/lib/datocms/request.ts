@@ -4,15 +4,25 @@ import { datocmsEnvironment } from '@root/datocms-environment';
 import { output } from '@root/config/output';
 import { DATOCMS_READONLY_API_TOKEN, HEAD_START_PREVIEW } from 'astro:env/server';
 import { stripIndents } from 'proper-tags';
+import type { SiteLocale } from './types';
 
 const wait = (milliSeconds: number) => new Promise((resolve) => setTimeout(resolve, milliSeconds));
 
 export const datocmsAssetsOrigin = 'https://www.datocms-assets.com/';
 export const datocmsGraphqlOrigin = 'https://graphql.datocms.com/';
 
+export type LocaleVariables = {
+  locale: SiteLocale;
+  fallbackLocales: SiteLocale[];
+};
+
+export type QueryVariables = Partial<LocaleVariables> & { 
+  [key: string]: unknown; 
+};
+
 export type DatocmsRequest = {
   query: DocumentNode;
-  variables?: { [key: string]: string };
+  variables?: QueryVariables;
   retryCount?: number;
 };
 
