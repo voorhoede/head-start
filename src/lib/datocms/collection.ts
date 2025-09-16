@@ -1,6 +1,7 @@
 import { Kind, parse, type DocumentNode, type FragmentDefinitionNode } from 'graphql';
 import { print } from 'graphql/language/printer';
-import { datocmsRequest } from './request';
+import { datocmsRequest, type LocaleVariables } from './request';
+import { defaultLocale } from '@lib/i18n';
 
 /**
  * Returns all records from a DatoCMS collection (like 'Pages')
@@ -32,16 +33,27 @@ export async function datocmsCollection<CollectionType>({
 
   const { fragmentName, fragmentDocument } = getFragmentNameAndDocument({ fragment, type });
 
+  // When the fragment used in the collection query uses locale variables, w
+  // we want to set them so the query succeeds. Setting the locale to the
+  // default locale, and fallback locales to an empty array, the return value
+  // will be same as when no variables would be used.
+  const variables: LocaleVariables = {
+    locale: defaultLocale,
+    fallbackLocales: []
+  };
+  
+  const queryName = getQueryNameAndVariables({ collection, variables, fragmentDocument });
   const key = 'entries' as const;
   for (let page = 0; page < totalPages; page++) {
     const data = await datocmsRequest<{ [key]: CollectionType[] }>({
+      variables,
       query: parse(/* graphql */`
         # Insert fragment definition from fragmentDocument, 
         # which is either the fragment passed from an import from @lib/datocms/types.ts 
         # or the one created from a string;
         ${fragmentDocument}
         
-        query All${collection} {
+        query ${queryName} {
           ${key}: all${collection} (
              first: ${recordsPerPage},
              skip: ${page * recordsPerPage}
@@ -89,6 +101,38 @@ export function getFragmentNameAndDocument({
   };
 }
 
+/**
+ * Return a formatted query name with variables where applicable, for example: 
+ * `AllPagePartials` or 
+ * `AllPages($locale: SiteLocale!, $fallbackLocales: [SiteLocale!]`
+ */
+export function getQueryNameAndVariables({
+  collection,
+  variables,
+  fragmentDocument
+}: {
+  collection: string,
+  variables: LocaleVariables,
+  fragmentDocument: string
+}): string {
+  const queryParams: string[] = [];
+  const paramTypes: Record<string, string> = {
+    locale: 'SiteLocale!',
+    fallbackLocales: '[SiteLocale!]',
+  } satisfies Record<keyof LocaleVariables, string>;
+
+  for (const key in variables) {
+    // Verify if a variable is being used in the compound fragment.
+    if (new RegExp(`\\$${key}\\b`).test(fragmentDocument)) {
+      queryParams.push(`$${key}: ${paramTypes[key]}`);
+    }
+  }
+  
+  const paramString = queryParams.join(', ');
+  
+  return `All${collection}${paramString ? `(${paramString})` : ''}`;
+}
+
 export type CollectionInfo = {
   meta: { count: number };
   records: [] | [{ __typename: string }];
@@ -118,5 +162,5 @@ export async function getCollectionMetadata(collection: string): Promise<{
     ]
   } = await datocmsRequest<CollectionInfo>({ query });
 
-  return { count, type }
+  return { count, type };
 }

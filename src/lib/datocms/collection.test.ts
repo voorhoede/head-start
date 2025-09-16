@@ -11,7 +11,14 @@ import { HttpResponse, graphql } from 'msw';
 import { setupServer } from 'msw/node';
 import { Kind, parse, type FragmentDefinitionNode } from 'graphql';
 import { print } from 'graphql/language/printer';
-import { datocmsCollection, getFragmentNameAndDocument, inlineFragmentName, type CollectionInfo } from './collection';
+import { 
+  datocmsCollection, 
+  getFragmentNameAndDocument, 
+  getQueryNameAndVariables, 
+  inlineFragmentName, 
+  type CollectionInfo 
+} from './collection';
+import type { LocaleVariables } from './request';
 
 vi.mock('../../../../datocms-environment', () => ({
   datocmsBuildTriggerId: 'mock-build-trigger-id',
@@ -212,5 +219,44 @@ describe('getFragmentNameAndDocument:', () => {
     const { definitions } = parse(fragmentDocument);
     const fragmentDefinition = definitions.find(({ kind }) => kind === Kind.FRAGMENT_DEFINITION) as FragmentDefinitionNode;
     expect(fragmentDefinition.typeCondition.name.value).toBe(type);
+  });
+});
+
+describe('queryNameAndVariables:', () => {
+  const collection = 'Mocks';
+  const variables: LocaleVariables = {
+    locale: 'en',
+    fallbackLocales: []
+  };
+  const fragment = `
+    fragment MyMockRecordFragment on MyMockRecord {
+      id
+      slug
+    }
+  `;
+  
+  const fragmentWithVariables = `
+    fragment MyMockRecordFragment on MyMockRecord {
+      id
+      slug(locale: $locale, fallbackLocales: $fallbackLocales)
+    }
+  `;
+  
+  test('returns just the query name when no variables are used in fragment', () => {
+    const queryName = getQueryNameAndVariables({
+      collection,
+      variables,
+      fragmentDocument: fragment,
+    });
+    expect(queryName).toBe(`All${collection}`);
+  });
+  
+  test('returns just query name and variables when variables are used in fragment', () => {
+    const queryName = getQueryNameAndVariables({
+      collection,
+      variables,
+      fragmentDocument: fragmentWithVariables,
+    });
+    expect(queryName).toBe(`All${collection}($locale: SiteLocale!, $fallbackLocales: [SiteLocale!])`);
   });
 });
