@@ -1,12 +1,18 @@
 import { Client } from '@datocms/cli/lib/cma-client-node';
 
 export default async function (client: Client) {
+  //@ts-expect-error rich_text_blocks is only available on Modular Content fields
+  const homeBodyBlocks = (await client.fields.find('home_page::body_blocks')).validators.rich_text_blocks?.item_types;
+  //@ts-expect-error rich_text_blocks is only available on Modular Content fields
+  const pageBodyBlocks = (await client.fields.find('page::body_blocks')).validators.rich_text_blocks?.item_types;
+  //@ts-expect-error rich_text_blocks is only available on Modular Content fields
+  const pagePartialBlocks = (await client.fields.find('page_partial::blocks')).validators.rich_text_blocks?.item_types;
+ 
   console.log('Create new models/block models');
 
   console.log('Create block model "\uD83D\uDD18 Form Field" (`form_field`)');
-  await client.itemTypes.create(
+  const formFieldBlock = await client.itemTypes.create(
     {
-      id: 'L-xBmok6QCOe6Ck2-IUWsw',
       name: '\uD83D\uDD18 Form Field',
       api_key: 'form_field',
       modular_block: true,
@@ -20,9 +26,8 @@ export default async function (client: Client) {
   );
 
   console.log('Create block model "\uD83D\uDCE9 Form Block" (`form_block`)');
-  await client.itemTypes.create(
+  const formBlock = await client.itemTypes.create(
     {
-      id: 'O0aXohhNR1uQgUsDaOVODg',
       name: '\uD83D\uDCE9 Form Block',
       api_key: 'form_block',
       modular_block: true,
@@ -36,9 +41,8 @@ export default async function (client: Client) {
   );
 
   console.log('Create model "\uD83D\uDCE9 Form" (`form`)');
-  await client.itemTypes.create(
+  const formRecord = await client.itemTypes.create(
     {
-      id: 'cpbyAb0SScmWIX8IThJ4TQ',
       name: '\uD83D\uDCE9 Form',
       api_key: 'form',
       draft_mode_active: true,
@@ -57,7 +61,7 @@ export default async function (client: Client) {
   console.log(
     'Create Single-line string field "Type" (`field_type`) in block model "\uD83D\uDD18 Form Field" (`form_field`)',
   );
-  await client.fields.create('L-xBmok6QCOe6Ck2-IUWsw', {
+  await client.fields.create(formFieldBlock.id, {
     id: 'NiL1ve6-TJWa1Kwg5FCitQ',
     label: 'Type',
     field_type: 'string',
@@ -84,7 +88,7 @@ export default async function (client: Client) {
   console.log(
     'Create Single-line string field "Label" (`label`) in block model "\uD83D\uDD18 Form Field" (`form_field`)',
   );
-  await client.fields.create('L-xBmok6QCOe6Ck2-IUWsw', {
+  await client.fields.create(formFieldBlock.id, {
     id: 'V6VgleMpRDW7Q3hr9xG7Jg',
     label: 'Label',
     field_type: 'string',
@@ -102,7 +106,7 @@ export default async function (client: Client) {
   console.log(
     'Create Boolean field "Required" (`required`) in block model "\uD83D\uDD18 Form Field" (`form_field`)',
   );
-  await client.fields.create('L-xBmok6QCOe6Ck2-IUWsw', {
+  await client.fields.create(formFieldBlock.id, {
     id: 'NUdW32y8RR-RM48tJXwerg',
     label: 'Required',
     field_type: 'boolean',
@@ -114,7 +118,7 @@ export default async function (client: Client) {
   console.log(
     'Create Single-line string field "Placeholder" (`placeholder`) in block model "\uD83D\uDD18 Form Field" (`form_field`)',
   );
-  await client.fields.create('L-xBmok6QCOe6Ck2-IUWsw', {
+  await client.fields.create(formFieldBlock.id, {
     id: 'UmjBZCa1QhqUgWbZujq3Mg',
     label: 'Placeholder',
     field_type: 'string',
@@ -130,7 +134,7 @@ export default async function (client: Client) {
   console.log(
     'Create Slug field "Name" (`name`) in block model "\uD83D\uDD18 Form Field" (`form_field`)',
   );
-  await client.fields.create('L-xBmok6QCOe6Ck2-IUWsw', {
+  await client.fields.create(formFieldBlock.id, {
     id: 'O1l36iTYTcKETj0kNrpdXg',
     label: 'Name',
     field_type: 'slug',
@@ -151,7 +155,7 @@ export default async function (client: Client) {
   console.log(
     'Create Single link field "Form" (`form`) in block model "\uD83D\uDCE9 Form Block" (`form_block`)',
   );
-  await client.fields.create('O0aXohhNR1uQgUsDaOVODg', {
+  await client.fields.create(formBlock.id, {
     id: 'O_QuU43RRumZyZGeRSOkPQ',
     label: 'Form',
     field_type: 'link',
@@ -161,7 +165,7 @@ export default async function (client: Client) {
         on_publish_with_unpublished_references_strategy: 'fail',
         on_reference_unpublish_strategy: 'delete_references',
         on_reference_delete_strategy: 'delete_references',
-        item_types: ['cpbyAb0SScmWIX8IThJ4TQ'],
+        item_types: [formRecord.id],
       },
       required: {},
     },
@@ -172,7 +176,7 @@ export default async function (client: Client) {
   console.log(
     'Create Single-line string field "Title" (`title`) in model "\uD83D\uDCE9 Form" (`form`)',
   );
-  await client.fields.create('cpbyAb0SScmWIX8IThJ4TQ', {
+  await client.fields.create(formRecord.id, {
     id: 'N2wCMNX0T3CXGsgE80x4uA',
     label: 'Title',
     field_type: 'string',
@@ -190,14 +194,14 @@ export default async function (client: Client) {
   console.log(
     'Create Modular Content (Multiple blocks) field "Fields" (`form_fields`) in model "\uD83D\uDCE9 Form" (`form`)',
   );
-  await client.fields.create('cpbyAb0SScmWIX8IThJ4TQ', {
+  await client.fields.create(formRecord.id, {
     id: 'OovxCTP9SWapZ7dsk1XTGw',
     label: 'Fields',
     field_type: 'rich_text',
     api_key: 'form_fields',
     localized: true,
     validators: {
-      rich_text_blocks: { item_types: ['L-xBmok6QCOe6Ck2-IUWsw'] },
+      rich_text_blocks: { item_types: [formFieldBlock.id] },
     },
     appearance: {
       addons: [],
@@ -209,7 +213,7 @@ export default async function (client: Client) {
   console.log(
     'Create Slug field "Slug" (`slug`) in model "\uD83D\uDCE9 Form" (`form`)',
   );
-  await client.fields.create('cpbyAb0SScmWIX8IThJ4TQ', {
+  await client.fields.create(formRecord.id, {
     id: 'KB0B7DyRSbGiZL00-Iegzg',
     label: 'Slug',
     field_type: 'slug',
@@ -237,15 +241,8 @@ export default async function (client: Client) {
     validators: {
       rich_text_blocks: {
         item_types: [
-          'BRbU6VwTRgmG5SbwUs0rBg',
-          'F60ZY1wFSW2qbvh99poj3g',
-          'O0aXohhNR1uQgUsDaOVODg',
-          'PAk40zGjQJCcDXXPgygUrA',
-          'QYfZyBzIRWKxA1MinIR0aQ',
-          'TBuD6qQOSDy6i9dM3T_XEA',
-          'ZdBokLsWRgKKjHrKeJzdpw',
-          'gezG9nO7SfaiWcWnp-HNqw',
-          '0SxYNS2CR1it_5LHYWuEQg',
+          ...pagePartialBlocks,
+          formBlock.id,
         ],
       },
     },
@@ -258,17 +255,8 @@ export default async function (client: Client) {
     validators: {
       rich_text_blocks: {
         item_types: [
-          'BRbU6VwTRgmG5SbwUs0rBg',
-          'F60ZY1wFSW2qbvh99poj3g',
-          'O0aXohhNR1uQgUsDaOVODg',
-          'PAk40zGjQJCcDXXPgygUrA',
-          'QYfZyBzIRWKxA1MinIR0aQ',
-          'TBuD6qQOSDy6i9dM3T_XEA',
-          'VZvVfu52RZK81WG0Dxp-FQ',
-          'V80liDVtRC-UYgd3Sm-dXg',
-          'ZdBokLsWRgKKjHrKeJzdpw',
-          'gezG9nO7SfaiWcWnp-HNqw',
-          '0SxYNS2CR1it_5LHYWuEQg',
+          ...pageBodyBlocks,
+          formBlock.id,
         ],
       },
     },
@@ -281,17 +269,8 @@ export default async function (client: Client) {
     validators: {
       rich_text_blocks: {
         item_types: [
-          'BRbU6VwTRgmG5SbwUs0rBg',
-          'F60ZY1wFSW2qbvh99poj3g',
-          'O0aXohhNR1uQgUsDaOVODg',
-          'PAk40zGjQJCcDXXPgygUrA',
-          'QYfZyBzIRWKxA1MinIR0aQ',
-          'TBuD6qQOSDy6i9dM3T_XEA',
-          'VZvVfu52RZK81WG0Dxp-FQ',
-          'V80liDVtRC-UYgd3Sm-dXg',
-          'ZdBokLsWRgKKjHrKeJzdpw',
-          'gezG9nO7SfaiWcWnp-HNqw',
-          '0SxYNS2CR1it_5LHYWuEQg',
+          ...homeBodyBlocks,
+          formBlock.id
         ],
       },
     },
@@ -300,12 +279,12 @@ export default async function (client: Client) {
   console.log('Finalize models/block models');
 
   console.log('Update block model "\uD83D\uDD18 Form Field" (`form_field`)');
-  await client.itemTypes.update('L-xBmok6QCOe6Ck2-IUWsw', {
+  await client.itemTypes.update(formFieldBlock.id, {
     presentation_title_field: { id: 'NiL1ve6-TJWa1Kwg5FCitQ', type: 'field' },
   });
 
   console.log('Update model "\uD83D\uDCE9 Form" (`form`)');
-  await client.itemTypes.update('cpbyAb0SScmWIX8IThJ4TQ', {
+  await client.itemTypes.update(formRecord.id, {
     presentation_title_field: { id: 'N2wCMNX0T3CXGsgE80x4uA', type: 'field' },
     title_field: { id: 'N2wCMNX0T3CXGsgE80x4uA', type: 'field' },
   });
@@ -316,6 +295,6 @@ export default async function (client: Client) {
   await client.menuItems.create({
     id: 'AW91-cZPTomwWBaroOBNzQ',
     label: '\uD83D\uDCE9 Form',
-    item_type: { id: 'cpbyAb0SScmWIX8IThJ4TQ', type: 'item_type' },
+    item_type: { id: formRecord.id, type: 'item_type' },
   });
 }
