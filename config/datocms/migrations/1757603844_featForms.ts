@@ -190,26 +190,7 @@ export default async function (client: Client) {
       type: 'title',
     },
   });
-
-  console.log(
-    'Create Modular Content (Multiple blocks) field "Fields" (`form_fields`) in model "\uD83D\uDCE9 Form" (`form`)',
-  );
-  await client.fields.create(formRecord.id, {
-    id: 'OovxCTP9SWapZ7dsk1XTGw',
-    label: 'Fields',
-    field_type: 'rich_text',
-    api_key: 'form_fields',
-    localized: true,
-    validators: {
-      rich_text_blocks: { item_types: [formFieldBlock.id] },
-    },
-    appearance: {
-      addons: [],
-      editor: 'rich_text',
-      parameters: { start_collapsed: true },
-    },
-  });
-
+  
   console.log(
     'Create Slug field "Slug" (`slug`) in model "\uD83D\uDCE9 Form" (`form`)',
   );
@@ -230,6 +211,42 @@ export default async function (client: Client) {
       parameters: { url_prefix: null, placeholder: null },
     },
     default_value: null,
+  });
+
+  console.log(
+    'Create Modular Content (Multiple blocks) field "Fields" (`form_fields`) in model "\uD83D\uDCE9 Form" (`form`)',
+  );
+  await client.fields.create(formRecord.id, {
+    id: 'OovxCTP9SWapZ7dsk1XTGw',
+    label: 'Fields',
+    field_type: 'rich_text',
+    api_key: 'form_fields',
+    localized: true,
+    validators: {
+      rich_text_blocks: { item_types: [formFieldBlock.id] },
+    },
+    appearance: {
+      addons: [],
+      editor: 'rich_text',
+      parameters: { start_collapsed: true },
+    },
+  });
+  
+  console.log(
+    'Create Single-line string field "Submit label" (`submit_label`) in model "\uD83D\uDCE9 Form" (`form`)',
+  );
+  await client.fields.create(formRecord.id, {
+    id: 'N2wCMNX0T3CXGsgE80x4uA',
+    label: 'Submit label',
+    field_type: 'string',
+    api_key: 'submit_label',
+    localized: true,
+    validators: {},
+    appearance: {
+      addons: [],
+      editor: 'single_line',
+      parameters: { heading: false, placeholder: null },
+    },
   });
 
   console.log('Update existing fields/fieldsets');
