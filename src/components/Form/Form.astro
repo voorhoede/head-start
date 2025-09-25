@@ -2,16 +2,18 @@
 import FormField, { isValidFieldType } from '@components/FormField/FormField.astro';
 import type { CollectionEntry } from '@lib/content';
 import Turnstile from './Turnstile.astro';
+import { t } from '@lib/i18n';
 
 export interface Props {
-  slug: string;
+  slug: CollectionEntry<'Forms'>['data']['slug'];
   formFields: CollectionEntry<'Forms'>['data']['formFields'];
+  submitLabel: CollectionEntry<'Forms'>['data']['submitLabel'];
   errors?: Record<string, string>;
   formValues?: Record<string, string>;
   useTurnStile?: boolean;
 }
 
-const { slug, formFields, errors, formValues, useTurnStile = true } = Astro.props;
+const { slug, formFields, submitLabel, errors, formValues, useTurnStile = true } = Astro.props;
 ---
 <form
   method="POST"
@@ -33,5 +35,7 @@ const { slug, formFields, errors, formValues, useTurnStile = true } = Astro.prop
       />
     )
   )}
-  <button type="submit">Submit</button>
+  <button type="submit">
+    {submitLabel || t('submit')}
+  </button>
 </form>

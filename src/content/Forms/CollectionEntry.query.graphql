@@ -11,5 +11,6 @@ query FormCollectionEntry($locale: SiteLocale!, $slug: String!) {
       required
       placeholder
     }
+    submitLabel
   }
 }
