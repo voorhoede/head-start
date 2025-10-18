@@ -1,5 +1,11 @@
-import 'dotenv/config';
+import { loadEnv } from 'vite';
 import { datocmsEnvironment } from './datocms-environment';
+
+const { DATOCMS_READONLY_API_TOKEN } = loadEnv(
+  process.env.NODE_ENV!,
+  process.cwd(),
+  ''
+);
 
 const outputFilename = 'src/lib/datocms/types.ts';
 
@@ -12,7 +18,7 @@ module.exports = {
   schema: {
     'https://graphql.datocms.com': {
       headers: {
-        Authorization: process.env.DATOCMS_READONLY_API_TOKEN,
+        Authorization: DATOCMS_READONLY_API_TOKEN,
         'X-Environment': datocmsEnvironment,
         'X-Exclude-Invalid': 'true',
       },
