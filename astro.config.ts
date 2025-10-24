@@ -22,7 +22,7 @@ export const siteUrl = process.env.CF_PAGES
 // https://astro.build/config
 export default defineConfig({
   adapter: cloudflare({
-    imageService: 'passthrough',
+    imageService: 'compile',
     platformProxy: {
       enabled: true,
     },
