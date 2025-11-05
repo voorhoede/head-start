@@ -1,5 +1,6 @@
-import type { FileRouteFragment, HomeRouteFragment, PageRouteFragment, SiteLocale } from '@lib/datocms/types';
+import type { FileRouteFragment, PageRouteFragment, SiteLocale } from '@lib/datocms/types';
 import { getLocale } from '@lib/i18n';
+import { app } from '@lib/site.json';
 import { getPagePath } from './page';
 import { getFileHref } from './file';
 
@@ -10,7 +11,6 @@ export type PageUrl = {
 
 export type RecordRoute =
   | FileRouteFragment
-  | HomeRouteFragment
   | PageRouteFragment;
 
 export { getFileHref } from './file';
@@ -38,7 +38,7 @@ export const getHref = (
   if (record.__typename === 'FileRecord') {
     return getFileHref(record);
   }
-  if (record.__typename === 'HomePageRecord') {
+  if (record.id === app.homePage) {
     return homeUrl;
   }
   if (record.__typename === 'PageRecord') {

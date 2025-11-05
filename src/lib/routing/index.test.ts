@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import type { FileRouteFragment, HomeRouteFragment, PageRouteFragment, SiteLocale } from '@lib/datocms/types';
+import type { FileRouteFragment, PageRouteFragment, SiteLocale } from '@lib/datocms/types';
 import { datocmsAssetsOrigin } from '@lib/datocms';
 import { getHref, getFileHref, getHomeHref, getPageHref } from './index';
 
@@ -10,6 +10,18 @@ vi.mock('@lib/datocms', () => ({
 vi.mock('@lib/i18n', () => ({
   getLocale: () => 'en',
 }));
+
+vi.mock('@lib/site.json', async (original) => {
+  const actual = await original() as { app: { homePage: string } };
+  
+  return {
+    ...actual,
+    app: {
+      ...actual.app,
+      homePage: 'abc',
+    }
+  };
+});
 
 const fileRecord: FileRouteFragment = { 
   __typename: 'FileRecord',
@@ -25,10 +37,12 @@ const fileRecord: FileRouteFragment = {
   },
 };
 
-const homeRecord: HomeRouteFragment = { 
-  __typename: 'HomePageRecord',
-  id: 'home',
-  title: 'Home'
+const homeRecord: PageRouteFragment = { 
+  __typename: 'PageRecord',
+  id: 'abc',
+  title: 'Example Page',
+  slug: 'home',
+  _allSlugLocales: [{ locale: 'en' as SiteLocale, value: 'home' }],
 };
 
 const pageRecord: PageRouteFragment = {
