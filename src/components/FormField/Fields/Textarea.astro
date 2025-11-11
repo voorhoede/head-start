@@ -1,0 +1,18 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = Omit<HTMLAttributes<'textarea'>, 'type'>;
+
+const { value, ...props } = Astro.props;
+---
+
+<textarea {...props} >{value}</textarea>
+
+<style>
+  textarea {
+    width: 100%;
+    resize: vertical;
+    min-height: 6em;
+    padding: 1em;
+  }
+</style>

@@ -9,6 +9,7 @@
 #import '@blocks/VideoBlock/VideoBlock.fragment.graphql'
 #import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
 #import '@blocks/GroupingBlock/GroupingBlock.fragment.graphql'
+#import '@blocks/FormBlock/FormBlock.fragment.graphql'
 
 query PageCollectionEntry($locale: SiteLocale!, $slug: String!) {
   record: page(locale: $locale, filter: { slug: { eq: $slug } }) {
@@ -49,6 +50,9 @@ query PageCollectionEntry($locale: SiteLocale!, $slug: String!) {
       }
       ... on GroupingBlockRecord {
         ...GroupingBlock
+      }
+      ... on FormBlockRecord {
+        ...FormBlock
       }
     }
   }

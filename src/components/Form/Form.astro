@@ -1,0 +1,41 @@
+---
+import FormField, { isValidFieldType } from '@components/FormField/FormField.astro';
+import type { CollectionEntry } from '@lib/content';
+import Turnstile from './Turnstile.astro';
+import { t } from '@lib/i18n';
+
+export interface Props {
+  slug: CollectionEntry<'Forms'>['data']['slug'];
+  formFields: CollectionEntry<'Forms'>['data']['formFields'];
+  submitLabel: CollectionEntry<'Forms'>['data']['submitLabel'];
+  errors?: Record<string, string>;
+  formValues?: Record<string, string>;
+  useTurnStile?: boolean;
+}
+
+const { slug, formFields, submitLabel, errors, formValues, useTurnStile = true } = Astro.props;
+---
+<form
+  method="POST"
+  action={`/api/forms/${slug}/`}
+>
+  {useTurnStile &&
+    <Turnstile error={errors?.['turnstileError']} />}
+  {formFields.map(
+    ({ id, label, name, required, fieldType, placeholder }) => (
+      <FormField
+        id={id}
+        label={label}
+        name={name}
+        required={required}
+        fieldType={isValidFieldType(fieldType) ? fieldType : 'text'}
+        placeholder={placeholder || ''}
+        error={errors?.[name]}
+        value={formValues?.[name]}
+      />
+    )
+  )}
+  <button type="submit">
+    {submitLabel || t('submit')}
+  </button>
+</form>
