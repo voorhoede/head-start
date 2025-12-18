@@ -2,7 +2,9 @@
 # @see docs: https://developers.cloudflare.com/pages/platform/headers/
 
 # Headers for basic security
-# Project can be further secured with a Permissions Policy and Content Security Policy (CSP)
+# ℹ️ Project can be further secured with a Permissions Policy and Content Security Policy (CSP)
+# ⚠️ These headers are only applied to static files, so keep these rules in sync
+#    with their runtime counterparts in src/middleware/security-headers.ts
 /*
   Referrer-Policy: no-referrer-when-downgrade
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload

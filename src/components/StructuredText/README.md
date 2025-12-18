@@ -4,6 +4,7 @@
 
 > [!NOTE]
 > This component is based on the [`StructuredText` component from `@datocms/svelte`](https://github.com/datocms/datocms-svelte/tree/main/src/lib/components/StructuredText) (there currently is no official DatoCMS Astro package available). The documentation and examples below are also borrowed and adapted from the Svelte version.
+Changes have been added to support the [Custom Text Styles plugin](https://github.com/voorhoede/datocms-plugin-custom-text-styles).
 
 ## Setup
 

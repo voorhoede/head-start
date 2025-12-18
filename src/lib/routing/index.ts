@@ -1,16 +1,21 @@
 import type { FileRouteFragment, HomeRouteFragment, PageRouteFragment, SiteLocale } from '@lib/datocms/types';
-import { datocmsAssetsOrigin } from '@lib/datocms';
 import { getLocale } from '@lib/i18n';
 import { getPagePath } from './page';
+import { getFileHref } from './file';
+
+export type PageUrl = {
+  locale: SiteLocale,
+  pathname: string,
+};
 
 export type RecordRoute =
   | FileRouteFragment
   | HomeRouteFragment
   | PageRouteFragment;
 
-export const getFileHref = (record: FileRouteFragment) => {
-  return record.file.url.replace(datocmsAssetsOrigin, '/files/');
-};
+export { getFileHref } from './file';
+export { formatBreadcrumb, type Breadcrumb } from './lib/breadcrumbs';
+export { getSlugFromPath } from './lib/slug';
 
 export const getHomeHref = ({ locale = getLocale() } = {}) => {
   return `/${locale}/`;

@@ -1,0 +1,38 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import type { PhoneLinkFragment } from '@lib/datocms/types';
+
+type PhoneLinkProps = Pick<
+  PhoneLinkFragment,
+  'action' | 'phoneNumber' | 'text'
+>;
+export type Props = HTMLAttributes<'a'> & PhoneLinkProps;
+const { action, phoneNumber, text, ...props } = Astro.props;
+
+const formatPhoneNumber = (phoneNumber: string) => {
+  return phoneNumber.replace(/\s/g, '');
+};
+
+const getHref = ({ action, phoneNumber, text }: PhoneLinkProps) => {
+  if (action === 'call') {
+    return `tel:${formatPhoneNumber(phoneNumber)}`;
+  }
+  if (action === 'sms') {
+    const smsNumber = formatPhoneNumber(phoneNumber);
+    return text
+      ? `sms:${smsNumber}?body=${encodeURIComponent(text)}`
+      : `sms:${smsNumber}`;
+  }
+  if (action === 'whatsapp') {
+    const whatsAppNumber = formatPhoneNumber(phoneNumber).replace('+', '');
+    return text
+      ? `https://wa.me/${whatsAppNumber}?text=${encodeURIComponent(text)}`
+      : `https://wa.me/${whatsAppNumber}`;
+  }
+  return '';
+};
+
+const href = getHref({ action, phoneNumber, text });
+---
+
+<a {href} {...props}><slot /></a>

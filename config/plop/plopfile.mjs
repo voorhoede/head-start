@@ -30,8 +30,8 @@ export default function (plop) {
     actions: [
       {
         type: 'add',
-        path: '../../src/pages/api/{{ route }}.ts.hbs',
-        templateFile: 'templates/api/route.ts',
+        path: '../../src/pages/api/{{ route }}.ts',
+        templateFile: 'templates/api/route.ts.hbs',
       },
     ],
   });

@@ -1,19 +1,26 @@
 ---
 // based on https://github.com/datocms/datocms-svelte/blob/main/src/lib/components/StructuredText/StructuredText.svelte
-import { isStructuredText } from 'datocms-structured-text-utils';
-import type { Document, Node as NodeType, StructuredText } from 'datocms-structured-text-utils';
+import { isDocument, isNode, isStructuredText } from 'datocms-structured-text-utils';
+import type * as STU from 'datocms-structured-text-utils';
 import type { PredicateComponentTuple } from './StructuredText';
 import Node from './Node.astro';
 
 interface Props {
-  data: StructuredText | Document | null;
+  data: STU.StructuredText | STU.Document | null;
   components?: PredicateComponentTuple[];
 }
 
 const { data = null, components = [] } = Astro.props;
-const node = (data != null && (isStructuredText(data) ? data.value : data).document) as NodeType;
+
+const node = (() => {
+  if (!data) return null;
+  if (isStructuredText(data) && isDocument(data.value)) return data.value.document;
+  if (isDocument(data)) return data.document;
+  if (isNode(data)) return data;
+  return null;
+})() satisfies STU.Node | null;
 const blocks = isStructuredText(data) ? data?.blocks : undefined;
 const links =  isStructuredText(data) ? data?.links : undefined;
 ---
 
-<Node {node} {blocks} {links} {components} />
+{node && <Node {node} {blocks} {links} {components} />}

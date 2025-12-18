@@ -1,7 +1,8 @@
 ---
+import { isLocale, defaultLocale } from '@lib/i18n';
 import { getSearchPathname, getOpenSearchName, queryParamName } from '@lib/search';
 
-const { locale } = Astro.params;
+const locale = isLocale(Astro.params.locale) ? Astro.params.locale : defaultLocale;
 
 const url = new URL(getSearchPathname(locale), Astro.site);
 

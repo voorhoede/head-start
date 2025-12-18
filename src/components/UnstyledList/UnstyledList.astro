@@ -1,0 +1,17 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+export type Props = HTMLAttributes<'ul'>;
+
+const { ...props } = Astro.props;
+---
+
+<ul {...props}><slot /></ul>
+
+<style>
+  ul {
+    list-style-type: "";
+    margin: 0;
+    padding: 0;
+  }
+</style>

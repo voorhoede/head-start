@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { locales } from '@lib/i18n';
-import type { SiteLocale } from '@lib/i18n/types';
+import type { SiteLocale } from '@lib/datocms/types';
 import { datocmsSearch } from '@lib/datocms';
 import { minQueryLength, queryParamName } from '@lib/search';
 

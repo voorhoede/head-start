@@ -31,8 +31,7 @@ async function downloadTranslations() {
   const locales = Object.keys(translations);
   const translationKeys = Object.keys(translations[locales[0]]);
   await writeFile('./src/lib/i18n/types.ts',
-    `export type TranslationKey = \n | ${translationKeys.map(key => `'${key}'`).join('\n | ')};\n` +
-    `export type SiteLocale = \n | ${locales.map(locale => `'${locale}'`).join('\n | ')};\n`
+    `export type TranslationKey = \n | ${translationKeys.map(key => `'${key}'`).join('\n | ')};\n`
   );
 }
 

@@ -1,4 +1,5 @@
 fragment HomeRoute on HomePageRecord {
   __typename
+  id
   title
 }

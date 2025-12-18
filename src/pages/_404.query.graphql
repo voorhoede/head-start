@@ -11,6 +11,7 @@
 query NotFoundPage($locale: SiteLocale!) {
   page: notFoundPage(locale: $locale) {
     title
+    preview
     bodyBlocks {
       __typename
       ... on ActionBlockRecord {

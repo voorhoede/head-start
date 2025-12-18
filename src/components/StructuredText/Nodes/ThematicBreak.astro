@@ -6,7 +6,7 @@ interface Props {
 }
 const { node } = Astro.props;
 
-node;
+void node;
 
 // This is a hack: it's important to declare the `node` prop: all the components
 // for rendering node types will receive the node at rendering time. That gives

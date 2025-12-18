@@ -1,5 +1,11 @@
-import 'dotenv/config';
+import { loadEnv } from 'vite';
 import { datocmsEnvironment } from './datocms-environment';
+
+const { DATOCMS_READONLY_API_TOKEN } = loadEnv(
+  process.env.NODE_ENV!,
+  process.cwd(),
+  ''
+);
 
 const outputFilename = 'src/lib/datocms/types.ts';
 
@@ -12,7 +18,7 @@ module.exports = {
   schema: {
     'https://graphql.datocms.com': {
       headers: {
-        Authorization: process.env.DATOCMS_READONLY_API_TOKEN,
+        Authorization: DATOCMS_READONLY_API_TOKEN,
         'X-Environment': datocmsEnvironment,
         'X-Exclude-Invalid': 'true',
       },
@@ -29,13 +35,13 @@ module.exports = {
             'typescript-operations',
             '@graphql-codegen/typescript-document-nodes',
           ],
-          /**
-          * scalar config borrowed from DatoCMS team:
-          * @see https://github.com/Tonel/typescript-type-generation-graphql-example/blob/2d43584b1d75c9086c4ddd594a6b2401a29b0055/graphql.config.yml#L11-L23
-          */
           config: {
-            dedupeFragments: true,
+            enumsAsConst: true,
             strictScalars: true,
+            /**
+            * scalar config borrowed from DatoCMS team:
+            * @see https://github.com/Tonel/typescript-type-generation-graphql-example/blob/2d43584b1d75c9086c4ddd594a6b2401a29b0055/graphql.config.yml#L11-L23
+            */
             scalars: {
               BooleanType: 'boolean',
               CustomData: 'Record<string, unknown>',
@@ -68,4 +74,3 @@ module.exports = {
     },
   },
 };
-
