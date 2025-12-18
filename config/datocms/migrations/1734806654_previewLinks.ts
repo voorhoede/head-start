@@ -28,7 +28,7 @@ export default async function (client: Client) {
     appearance: {
       addons: [],
       editor: 'MKba9NT5QBKZaeI4HcERwA',
-      parameters: { urlPattern: '/{ locale }/{ slug }/' },
+      parameters: { urlPattern: '/api/reroute/page?locale={ locale }&slug={ slug }' },
     },
   });
 
