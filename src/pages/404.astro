@@ -10,17 +10,16 @@ export const prerender = false;
 
 Astro.response.status = 404;
 
-type Params = {
-  locale: SiteLocale;
-};
-
-const { locale } = Astro.params as Params;
+const localeFromPath = Astro.params.locale as SiteLocale;
+const localeFromQuery = Astro.url.searchParams.get('locale') as SiteLocale;
+const locale = localeFromQuery || localeFromPath;
 const variables = { locale };
+
 // While this page is not prerendered, we still want to treat it as a regular page with the default prerender strategy.
 const { page } = await datocmsRequest<NotFoundPageQuery, true>({ query, variables });
 ---
 
 <Layout pageUrls={[]} seoMetaTags={[noIndexTag, titleTag(page.title)]}>
-  <h1>{page.title} {Astro.params.locale}</h1>
+  <h1>{page.title} {locale}</h1>
   <Blocks blocks={page.bodyBlocks} />
 </Layout>
