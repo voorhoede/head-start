@@ -6,9 +6,17 @@ export default async function (client: Client) {
 
   console.log('Install plugin "Model Deployment Links"');
   const previewApiToken = await createPreviewToken(client);
-  const plugin = await client.plugins.create({
-    package_name: 'datocms-plugin-model-deployment-links',
-  });
+  
+  // Check if plugin already exists
+  const existingPlugins = await client.plugins.list();
+  let plugin = existingPlugins.find((p) => p.package_name === 'datocms-plugin-model-deployment-links');
+  
+  if (!plugin) {
+    plugin = await client.plugins.create({
+      package_name: 'datocms-plugin-model-deployment-links',
+    });
+  }
+  
   await client.plugins.update(plugin.id, {
     parameters: { datoApiToken: previewApiToken.token },
   });
