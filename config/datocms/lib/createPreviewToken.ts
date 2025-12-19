@@ -1,6 +1,15 @@
 import type { Client } from '@datocms/cli/lib/cma-client-node';
 
 export const createPreviewToken = async (client: Client) => {
+  // Check if a token named "Preview" already exists
+  const existingTokens = await client.accessTokens.list();
+  const existingPreviewToken = existingTokens.find((token) => token.name === 'Preview');
+  
+  if (existingPreviewToken) {
+    return existingPreviewToken;
+  }
+
+  // Create new token if it doesn't exist
   const roles = await client.roles.list();
   const editorRole = roles.find((role) => role.name === 'Editor');
 
