@@ -83,7 +83,7 @@ The [Model Deployment Links plugin](https://www.datocms.com/marketplace/plugins/
 
 - In your DatoCMS instance go to Project Settings > API Tokens (`/project_settings/access_tokens`) and "Add a new access token". Name it "Preview" (or whatever you prefer), for the "Role associated with this API token
 " select "Editor" and keep the other settings as is.
-- Go to Enviroment Configuration > Plugins > Model Deployment Links and enter the newly created access token in the plugin settings under "DatoCMS API Token".
+- Go to Environment Configuration > Plugins > Model Deployment Links and enter the newly created access token in the plugin settings under "DatoCMS API Token".
 
 ### Add DatoCMS secrets to repository
 
