@@ -12,7 +12,6 @@
 query HomePage($locale: SiteLocale!) {
   page: homePage(locale: $locale) {
     title
-    preview
     _seoMetaTags {
       attributes
       content
