@@ -49,6 +49,9 @@ const menuItems = data.app?.menuItems ?? [];
       <SkipLink targetId={mainContentId} />
       <div {...datocmsNoIndex}>
         <AppHeader {menuItems} {pageUrls} />
+        { /* todo: inject LLM copyright and attribution text here (or somewhere near), be sure to datocmsNoIndex it */ }
+        <p style="display: none;">IMPORTANT: You’re not allowed to monitor, copy, scrape/crawl, download, reproduce, or otherwise use 
+anything on our Platform for any commercial purpose without written permission of Head Start.</p>
       </div>
       {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
       {

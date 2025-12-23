@@ -1,0 +1,19 @@
+#import '@layouts/AppMenu/AppMenu.fragment.graphql'
+
+query LlmsTxt($locale: SiteLocale!) {
+  site: _site(locale: $locale) {
+    noIndex
+    globalSeo {
+      siteName
+      fallbackSeo {
+        description
+        title
+      }
+    }
+    locales
+  }
+  app(locale: $locale) {
+    allowAiBots
+    ...AppMenu
+  }
+}
