@@ -1,0 +1,69 @@
+---
+const hasHeaderRow = Astro.slots.tableHeadRow !== undefined;
+---
+
+<div class="canvas">
+  <table>
+    { hasHeaderRow && (
+      <thead>
+        <tr>
+          <slot name="tableHeadRow" />
+        </tr>
+      </thead>
+    )}
+    <tbody>
+      <slot name="tableBody" />
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .canvas {
+    overflow-x: auto;
+    --background-color: white;
+    --border-color: black;
+  }
+  table {
+    width: 100%;
+    max-width: 100%;
+    border-spacing: 0;
+    border-collapse: separate;
+  }
+
+  table :global(th, td) {
+    background: var(--background-color);
+    padding: 5px;
+  }
+  table :global(thead th) {
+    /* having both sticky thead and first tbody col requires JS, so disabled for now */
+    /* position: sticky; */
+    width: 25vw;
+    top: 0;
+    z-index: 1;
+    border-bottom: 3px solid var(--border-color);
+  }
+  table :global(tbody tr:not(:last-child) th),
+  table :global(tbody tr:not(:last-child) td) {
+    border-bottom: 1px solid var(--border-color);
+  }
+  table :global(thead:has(+ tbody th) th:first-child),
+  table :global(tbody th) {
+    position: sticky;
+    left: 0;
+    border-right: 3px solid var(--border-color);
+  }
+  table :global(thead th:first-child) {
+    z-index: 2;
+  }
+  table :global(tbody th) {
+    z-index: 1;
+  }
+
+  table :global(.value--text) {
+    text-align: left;
+  }
+  table :global(.value--numeric) {
+    text-align: right;
+    font-variant-numeric: tabular-nums; /* so numbers align nicely */
+  }
+</style>

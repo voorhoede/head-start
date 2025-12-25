@@ -1,0 +1,10 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+export type Props = HTMLAttributes<'th'>;
+const props = Astro.props;
+---
+
+<th scope="col" {...props}>
+  <slot />
+</th>

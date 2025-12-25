@@ -1,0 +1,204 @@
+---
+import type { StructuredText } from 'datocms-structured-text-utils';
+import type { ChartBlock } from './';
+import { t } from '@lib/i18n';
+import Icon from '@components/Icon';
+import Text from '@blocks/TextBlock/Text.astro';
+import DownloadLink from '@components/DownloadLink/DownloadLink.astro';
+import { ResponsiveTable, TableHeadCell, TableRowCell } from '@components/ResponsiveTable';
+import PieChart from './charts/PieChart.astro';
+import { getThemeColors, valueFormatter } from './';
+
+export interface Props {
+    block: ChartBlock
+}
+const { block } = Astro.props;
+
+// @todo: this should be moved and made more specific depending on number of series
+const orderData = (data: ChartBlock['data'], orderBy: ChartBlock['orderBy']) => {
+  if (!data || data.columns.length < 2) {
+    return data;
+  }
+  if (orderBy === 'source') {
+    return data;
+  }
+  if (orderBy === 'alphabetical') {
+    const [nameKey] = data.columns;
+    const orderedData = {
+      ...data,
+      data: [...data.data].sort((a, b) => {
+        const aValue = a[nameKey] || '';
+        const bValue = b[nameKey] || '';
+        return aValue.localeCompare(bValue);
+      })
+    };
+    return orderedData;
+  }
+  if (orderBy === 'size') {
+    const [, valueKey] = data.columns;
+    const orderedData = {
+      ...data,
+      data: [...data.data].sort((a, b) => {
+        const aValue = parseFloat(a[valueKey]) || 0;
+        const bValue = parseFloat(b[valueKey]) || 0;
+        return bValue - aValue;
+      })
+    };
+    return orderedData;
+  }
+  return data;
+};
+const data = orderData(block.data, block.orderBy);
+const formatValue = valueFormatter({
+  prefix: block.valuePrefix ?? null,
+  suffix: block.valueSuffix ?? null,
+  precision: block.valuePrecision ?? null,
+});
+
+const fetchFilesize = async (url: string): Promise<number> => {
+  try {
+    const response = await fetch(url, { method: 'HEAD' });
+    const size = response.headers.get('content-length');
+    return size ? parseInt(size, 10) : 0;
+  } catch (error) {
+    console.error(`Error fetching file size for ${url}:`, error);
+    return 0;
+  }
+};
+
+const chartDataUrl = new URL(`/charts/${block.id}.csv`, Astro.site).href;
+const filesize = await fetchFilesize(chartDataUrl);
+const themeColors = getThemeColors(block.theme, data.data.length);
+---
+
+<chart-block>
+  <figure>
+    {/* @todo: aria roles, labelledby, describedby, etc */}
+    { block.chartType === 'pie' && (
+      <PieChart 
+        data={ data }
+        theme={ block.theme }
+        valuePrefix={ block.valuePrefix }
+        valueSuffix={ block.valueSuffix }
+        valuePrecision={ block.valuePrecision }
+      />
+    )}
+    { block.chartType === 'bar' && (
+      <p>TODO: Bar chart</p>
+    )}
+    { block.chartType === 'line' && (
+      <p>TODO: Line chart</p>
+    )}
+
+    <button type="button" hidden class="contrast-button" aria-pressed="false" data-contrast-button>
+      <Icon name="contrast" />
+      {/* @todo: localise and improve texts for toggling high contrast mode */}
+      <span class="a11y-sr-only">high contrast mode</span>
+      <span class="contrast-button--pressed">on</span>
+      <span class="contrast-button--not-pressed">auto</span>
+    </button>
+
+    <figcaption>
+      <details>
+        <summary>
+          {t('chart_figure')} <span class="chart-block-count"></span>{block.title ? `: ${block.title}` : '.'}
+        </summary>
+        <Text data={ block.text as StructuredText } />
+
+        <ResponsiveTable>
+          <Fragment slot="tableHeadRow">
+            {data.columns.map((value: string) => (
+              <TableHeadCell>{value}</TableHeadCell>
+            ))}
+          </Fragment>
+          <Fragment slot="tableBody">
+            {data.data.map((row, rowIndex) => (
+              <tr>
+                {Object.values(row).map((value, index) => (
+                  index === 0 ? (
+                    <TableRowCell isHeader={true}>
+                      <span class="chart-table-legend" style={`--theme-color: ${themeColors[rowIndex]}`}></span>
+                      {value}
+                    </TableRowCell>
+                  ) : (
+                    <TableRowCell valueType="numeric">
+                      {formatValue(Number(value))}
+                    </TableRowCell>
+                  )
+                ))}
+              </tr>
+            ))}
+          </Fragment>
+        </ResponsiveTable>
+
+        <p>
+          <DownloadLink
+            url={chartDataUrl}
+            format="csv"
+            mimeType="text/csv"
+            size={filesize}
+            title={block.title ? block.title.replace(/\s+/g, '-').toLowerCase() : `${block.id}.csv`}
+          >
+            {/* @todo: translate and add title so link explains what's downloaded? */}
+              Download chart data</DownloadLink>
+        </p>
+      </details>
+    </figcaption>
+  </figure>
+</chart-block>
+
+<script src="./ChartBlock.client.ts"></script>
+
+<style>
+  chart-block {
+    position: relative;
+    counter-increment: chart-block;
+  }
+
+  chart-block:defined .contrast-button {
+    visibility: visible;
+  }
+  .contrast-button {
+    position: absolute;
+    top: 20px;
+    right: 10px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px;
+    border: 2px solid currentColor;
+    background: transparent;
+    font-size: .8em;
+    cursor: pointer;
+  }
+  .contrast-button[aria-pressed="true"] .contrast-button--not-pressed {
+    display: none;
+  }
+  .contrast-button[aria-pressed="false"] .contrast-button--pressed {
+    display: none;
+  }
+
+  summary {
+    font-weight: bold;
+  }
+  .chart-block-count::before {
+    content: counter(chart-block);
+  }
+
+  .chart-table-legend {
+    display: inline-block;
+    width: 1.5em;
+    height: 1em;
+    margin-right: 0.5em;
+    vertical-align: text-top;
+    border-radius: 5px;
+    background-color: var(--theme-color);
+  }
+
+  @media print {
+    details::details-content {
+      display: contents;
+    }
+  }
+</style>

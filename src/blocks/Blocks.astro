@@ -2,6 +2,7 @@
 import { PUBLIC_IS_PRODUCTION } from 'astro:env/server';
 import type { AnyBlock } from './Blocks';
 import ActionBlock from './ActionBlock/ActionBlock.astro';
+import ChartBlock from './ChartBlock/ChartBlock.astro';
 import EmbedBlock from './EmbedBlock/EmbedBlock.astro';
 import ImageBlock from './ImageBlock/ImageBlock.astro';
 import PagePartialBlock from './PagePartialBlock/PagePartialBlock.astro';
@@ -14,6 +15,7 @@ import GroupingBlock from './GroupingBlock/GroupingBlock.astro';
 
 const blocksByTypename = {
   ActionBlockRecord: ActionBlock,
+  ChartBlockRecord: ChartBlock,
   EmbedBlockRecord: EmbedBlock,
   ImageBlockRecord: ImageBlock,
   PagePartialBlockRecord: PagePartialBlock,

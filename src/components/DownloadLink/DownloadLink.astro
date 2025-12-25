@@ -1,0 +1,48 @@
+---
+// @todo: replace LinkToFile with this component (move tests and docs here)
+import type { HTMLAttributes } from 'astro/types';
+import prettyBytes from 'pretty-bytes';
+import { getLocale } from '@lib/i18n';
+import Icon from '@components/Icon';
+
+export type Props = HTMLAttributes<'a'> &{
+  url: string;
+  format: string;
+  mimeType: string;
+  size: number;
+  locale?: string;
+  title: string;
+};
+const { url, format, mimeType, size, locale: fileLocale, title, ...props } = Astro.props;
+
+const pageLocale = getLocale();
+const localeText =
+  fileLocale && fileLocale !== pageLocale
+    ? new Intl.DisplayNames([pageLocale], { type: 'language' }).of(fileLocale)
+    : '';
+const sizeText = prettyBytes(size, { locale: pageLocale });
+const metaText = [localeText, format.toUpperCase(), sizeText].filter(Boolean).join(', ');
+---
+
+<a
+  href={url}
+  hreflang={fileLocale}
+  download={title}
+  type={mimeType}
+  {...props}
+>
+  <span class="title"><slot>{title}</slot></span>
+  ({metaText})
+  <Icon name="download" /></a
+>
+
+<style>
+  /* Underline only the title, so the meta data doesn't obscure the link visually, 
+     but is still part of the link content for assistive technology */
+  a {
+    display: contents;
+  }
+  .title {
+    text-decoration: inherit;
+  }
+</style>

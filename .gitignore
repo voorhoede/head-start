@@ -15,6 +15,7 @@ node_modules/
 .env.production
 
 # generated files
+public/charts/
 reports/
 src/assets/icon-sprite.svg
 src/assets/icon-sprite.ts

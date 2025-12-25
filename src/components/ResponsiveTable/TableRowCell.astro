@@ -1,0 +1,21 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import DynamicTag from '@components/DynamicTag.astro';
+
+export type Props = HTMLAttributes<'th'> & {
+  isHeader?: boolean;
+  valueType?: 'text' | 'numeric';
+};
+const { isHeader = false, valueType = 'text', ...props } = Astro.props;
+---
+
+<DynamicTag
+  as={ isHeader ? 'th' : 'td'}
+  scope={ isHeader ? 'row' : undefined }
+  class:list={[
+    `value--${valueType}`
+  ]}
+  {...props}
+>
+  <slot />
+</DynamicTag>

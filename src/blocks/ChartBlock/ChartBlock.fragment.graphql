@@ -1,0 +1,15 @@
+fragment ChartBlock on ChartBlockRecord {
+  id
+  title
+  text {
+    value
+  }
+  data
+  chartType
+  chartOrientation
+  orderBy
+  theme
+  valuePrecision
+  valuePrefix
+  valueSuffix
+}

@@ -64,6 +64,7 @@
     "astro": "^5.13.5",
     "datocms-listen": "^0.1.15",
     "datocms-structured-text-utils": "^4.0.1",
+    "echarts": "^6.0.0",
     "get-video-id": "^3.6.5",
     "globby": "^13.2.2",
     "hls.js": "^1.5.2",

@@ -2,6 +2,7 @@ import { execSync } from 'node:child_process';
 
 export const previewBranches = [
   'preview',
+  'feat/charts',
   'feat/pages-content-collection',
 ];
 
