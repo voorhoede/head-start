@@ -16,27 +16,17 @@ export const preview = defineMiddleware(async ({ cookies, locals }, next) => {
   const isProduction = PUBLIC_IS_PRODUCTION;
   const showPreviewBarLocally = HEAD_START_SHOW_LOCAL_PREVIEW_BAR;
   
-  // Show preview bar in production when in preview mode, or in development when explicitly enabled via env var
-  const showPreviewBar = isProduction 
-    ? isPreview // Production: only show on preview branches
-    : showPreviewBarLocally; // Development: only show if HEAD_START_SHOW_LOCAL_PREVIEW_BAR=true
+  const showPreviewBar = isProduction ? isPreview : showPreviewBarLocally;
+  const shouldFetchDrafts = isProduction ? isPreview : showPreviewBar;
   
-  // In local development with preview bar enabled, also enable preview mode (draft fetching)
-  // This ensures draft content is fetched when preview bar is shown locally
-  const effectiveIsPreview = isProduction 
-    ? isPreview // Production: use actual preview branch status
-    : showPreviewBar; // Development: enable preview mode when preview bar is shown
-  
-  // In development mode with preview bar enabled, auto-authenticate if secret is set
-  // In production, always require valid cookie
   const cookieValue = cookies.get(previewCookieName)?.value;
   const hasValidCookie = Boolean(previewSecret) && cookieValue === await hashSecret(previewSecret);
   const isPreviewAuthOk = isProduction 
-    ? hasValidCookie // In production, require valid cookie
-    : showPreviewBar && Boolean(previewSecret); // In dev, auto-auth if preview bar is enabled and secret is set
+    ? hasValidCookie
+    : showPreviewBar && Boolean(previewSecret);
   
   Object.assign(locals, {
-    isPreview: effectiveIsPreview, // Use effective preview mode (includes local preview bar)
+    isPreview: shouldFetchDrafts,
     showPreviewBar,
     isPreviewAuthOk,
     previewSecret
