@@ -44,6 +44,11 @@ export default defineConfig({
         access: 'secret',
         default: isPreview
       }),
+      HEAD_START_SHOW_LOCAL_PREVIEW_BAR: envField.boolean({
+        context: 'server',
+        access: 'secret',
+        default: process.env.HEAD_START_SHOW_LOCAL_PREVIEW_BAR === 'true'
+      }),
       PUBLIC_IS_PRODUCTION: envField.boolean({
         context: 'server',
         access: 'public',

@@ -5,6 +5,7 @@ declare namespace App {
     datocmsEnvironment: string;
     datocmsToken: string;
     isPreview: boolean;
+    showPreviewBar: boolean;
     isPreviewAuthOk: boolean;
     previewSecret: string;
   }

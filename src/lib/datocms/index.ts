@@ -4,7 +4,7 @@ import type { SiteLocale } from '@lib/datocms/types';
 import { titleSuffix } from '@lib/seo';
 import { datocmsBuildTriggerId, datocmsEnvironment } from '@root/datocms-environment';
 import { output } from '@root/config/output';
-import { DATOCMS_READONLY_API_TOKEN, HEAD_START_PREVIEW } from 'astro:env/server';
+import { DATOCMS_READONLY_API_TOKEN, HEAD_START_PREVIEW, HEAD_START_SHOW_LOCAL_PREVIEW_BAR, PUBLIC_IS_PRODUCTION } from 'astro:env/server';
 import { stripIndents } from 'proper-tags';
 
 const wait = (milliSeconds: number) => new Promise((resolve) => setTimeout(resolve, milliSeconds));
@@ -54,7 +54,9 @@ export async function datocmsRequest<
     'X-Environment': datocmsEnvironment,
     'X-Exclude-Invalid': 'true', // https://www.datocms.com/docs/content-delivery-api/api-endpoints#strict-mode-for-non-nullable-graphql-types
   });
-  if (HEAD_START_PREVIEW) {
+  // Include drafts in preview mode (production) or when local preview bar is enabled (development)
+  const includeDrafts = HEAD_START_PREVIEW || (!PUBLIC_IS_PRODUCTION && HEAD_START_SHOW_LOCAL_PREVIEW_BAR);
+  if (includeDrafts) {
     headers.append('X-Include-Drafts', 'true');
   }
 
