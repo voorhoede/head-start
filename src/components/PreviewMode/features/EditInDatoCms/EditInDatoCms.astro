@@ -1,0 +1,25 @@
+---
+import { getEditorUrlFromRecord } from './lib/getEditorUrlFromRecord';
+import type { DatoCmsRecordIdentity } from '@lib/datocms/recordIdentity';
+
+interface Props {
+  datocmsRecord?: DatoCmsRecordIdentity | null;
+}
+
+const { datocmsRecord } = Astro.props;
+const editorUrl = getEditorUrlFromRecord(datocmsRecord);
+---
+
+{
+  editorUrl && (
+    <a href={editorUrl} target="_blank" rel="noopener noreferrer">
+      edit in DatoCMS
+    </a>
+  )
+}
+
+<style>
+  a {
+    color: currentColor;
+  }
+</style>

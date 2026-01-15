@@ -32,6 +32,8 @@
     "prep:download-redirects": "jiti scripts/download-redirects.ts",
     "prep:download-site-data": "jiti scripts/download-site-data.ts",
     "prep:download-translations": "jiti scripts/download-translations.ts",
+    "prep:download-item-type-ids": "jiti scripts/download-item-type-ids.ts",
+    "prep:generate-model-api-keys": "jiti scripts/generate-model-api-keys.ts",
     "prep:icons": "svg-sprite --svg-doctype=false --symbol --symbol-dest='src/assets' --symbol-sprite=icon-sprite.svg src/assets/icons/*.svg && jiti scripts/icon-types.ts",
     "preview": "wrangler pages dev ./dist",
     "lint": "run-s lint:* --print-label",

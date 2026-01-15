@@ -11,6 +11,8 @@
 
 query HomePage($locale: SiteLocale!) {
   page: homePage(locale: $locale) {
+    __typename
+    id
     title
     _seoMetaTags {
       attributes

@@ -1,25 +1,27 @@
 ---
-import type { DefaultLayoutQuery, SiteLocale, Tag } from '@lib/datocms/types';
-import { datocmsRequest } from '@lib/datocms';
-import { defaultLocale } from '@lib/i18n';
-import { datocmsNoIndex } from '@lib/search';
-import type { Breadcrumb, PageUrl } from '@lib/routing';
-import query from './default.query.graphql';
+import '@assets/a11y.css';
+import { fontFamilyArchivo } from '@assets/fonts';
 import Breadcrumbs from '@components/Breadcrumbs/Breadcrumbs.astro';
 import IconSprite from '@components/Icon/IconSprite.astro';
 import PreviewModeProvider from '@components/PreviewMode/PreviewModeProvider.astro';
-import StructuredData from '@components/StructuredData/StructuredData.astro';
 import SkipLink from '@components/SkipLink/SkipLink.astro';
+import StructuredData from '@components/StructuredData/StructuredData.astro';
+import { datocmsRequest } from '@lib/datocms';
+import type { DatoCmsRecordIdentity } from '@lib/datocms/recordIdentity';
+import type { DefaultLayoutQuery, SiteLocale, Tag } from '@lib/datocms/types';
+import { defaultLocale } from '@lib/i18n';
+import type { Breadcrumb, PageUrl } from '@lib/routing';
+import { datocmsNoIndex } from '@lib/search';
 import AppHeader from './AppHeader/AppHeader.astro';
+import query from './default.query.graphql';
 import PerfHead from './PerfHead/PerfHead.astro';
 import SeoHead from './SeoHead/SeoHead.astro';
-import { fontFamilyArchivo } from '@assets/fonts';
-import '@assets/a11y.css';
 
 interface Props {
   breadcrumbs?: Breadcrumb[];
   pageUrls: PageUrl[];
   seoMetaTags: Tag[];
+  datocmsRecord?: DatoCmsRecordIdentity | null;
 }
 
 const { locale = defaultLocale } = Astro.params as { locale?: SiteLocale };
@@ -27,7 +29,7 @@ const data = await datocmsRequest<DefaultLayoutQuery>({
   query,
   variables: { locale },
 });
-const { breadcrumbs = [], pageUrls, seoMetaTags } = Astro.props;
+const { breadcrumbs = [], pageUrls, seoMetaTags, datocmsRecord } = Astro.props;
 const mainContentId = 'content';
 const menuItems = data.app?.menuItems ?? [];
 ---
@@ -45,7 +47,7 @@ const menuItems = data.app?.menuItems ?? [];
     <StructuredData />
   </head>
   <body>
-    <PreviewModeProvider>
+    <PreviewModeProvider datocmsRecord={datocmsRecord}>
       <SkipLink targetId={mainContentId} />
       <div {...datocmsNoIndex}>
         <AppHeader {menuItems} {pageUrls} />
