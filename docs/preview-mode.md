@@ -65,3 +65,32 @@ const { page } = await datocmsRequest<PageQuery>({ query, variables });
 ## Preview mode bar
 
 When in preview mode a bar in the user interface displays the status of the connection with the CMS, along with a link to exit preview mode. Depending on the layout of your project, you may want to move the preview mode bar to another position, for example if your project has a sticky header.
+
+## Edit in DatoCMS link
+
+When in preview mode, the preview bar can also show an **“edit in DatoCMS”** link for the current record (page, home page, etc). This opens the DatoCMS editor for that record in a new tab.
+
+### Requirements
+
+- Your page/layout must pass a `datocmsRecord` prop containing **at least** `id` and `__typename`.
+- In practice, that means your GraphQL query must select `id` and `__typename` for the record you want to edit.
+
+The shared type is `DatoCmsRecordIdentity` from `@lib/datocms/recordIdentity`.
+
+### How it works (high level)
+
+- `datocmsRecord.__typename` is converted to a DatoCMS model API key via the generated mapping in `modelApiKeys.ts`.
+- That model API key is mapped to an **item type id** using `src/lib/item-type-ids.json`.
+- The editor URL is built using the project name from `@lib/site.json` and the current environment.
+- If the item type id is missing (e.g. mapping out of date), the code falls back to a less-specific editor URL.
+
+### Keeping mappings up to date
+
+When DatoCMS models change, regenerate the mappings:
+
+```bash
+npm run prep:download-item-type-ids
+npm run prep:generate-model-api-keys
+```
+
+In normal dev/build flows this is typically covered by `npm run prep`.
