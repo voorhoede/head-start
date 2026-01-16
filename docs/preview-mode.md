@@ -80,7 +80,7 @@ The shared type is `DatoCmsRecordIdentity` from `@lib/datocms/recordIdentity`.
 ### How it works (high level)
 
 - `datocmsRecord.__typename` is converted to a DatoCMS model API key via the generated mapping in `modelApiKeys.ts`.
-- That model API key is mapped to an **item type id** using `src/lib/item-type-ids.json`.
+- That model API key is mapped to an **item type id** using `src/lib/datocms/item-types.json`.
 - The editor URL is built using the project name from `@lib/site.json` and the current environment.
 - If the item type id is missing (e.g. mapping out of date), the code falls back to a less-specific editor URL.
 
@@ -89,7 +89,7 @@ The shared type is `DatoCmsRecordIdentity` from `@lib/datocms/recordIdentity`.
 When DatoCMS models change, regenerate the mappings:
 
 ```bash
-npm run prep:download-item-type-ids
+npm run prep:download-item-types
 npm run prep:generate-model-api-keys
 ```
 

@@ -1,13 +1,13 @@
 // Build a DatoCMS editor URL for a record (used in preview / editor links).
 
-import itemTypeIdsJson from '@lib/item-type-ids.json';
+import itemTypesJson from '@lib/datocms/item-types.json';
+import { getModelApiKey } from '@lib/datocms/modelApiKeys';
+import type { DatoCmsRecordIdentity } from '@lib/datocms/recordIdentity';
 import { datocmsEnvironment } from '@root/datocms-environment';
 import { DATOCMS_READONLY_API_TOKEN } from 'astro:env/server';
-import type { DatoCmsRecordIdentity } from '@lib/datocms/recordIdentity';
 import { buildEditorUrlFromToken } from './buildEditorUrl';
-import { getModelApiKey } from './modelApiKeys';
 
-const itemTypeIds = itemTypeIdsJson as Record<string, string>;
+const itemTypes = itemTypesJson as Record<string, { id: string }>;
 
 // Note: ensure your GraphQL query includes `id` and `__typename`
 export function getEditorUrlFromRecord(
@@ -19,7 +19,7 @@ export function getEditorUrlFromRecord(
   if (!id) return null;
 
   const modelApiKey = getModelApiKey(record?.__typename);
-  const itemTypeId = modelApiKey ? itemTypeIds[modelApiKey] ?? null : null;
+  const itemTypeId = modelApiKey ? itemTypes[modelApiKey]?.id ?? null : null;
 
   const token = apiToken ?? DATOCMS_READONLY_API_TOKEN;
   const env = environment ?? datocmsEnvironment;

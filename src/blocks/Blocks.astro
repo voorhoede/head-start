@@ -30,6 +30,8 @@ interface Props {
 }
 const { blocks } = Astro.props;
 
+type BlockComponent = (_props: { block: AnyBlock }) => unknown;
+
 const raise = (message: string) => {
   if (!PUBLIC_IS_PRODUCTION) {
     console.error(message);
@@ -42,15 +44,29 @@ const raise = (message: string) => {
   blocks.map((block) => {
     const { __typename, ...rest } = block;
     if (!Object.keys(rest).length) {
-      const message = raise(`No block data found for "${__typename}". Is the associated fragment included in the query?`);
-      return <script define:vars={{ message }} is:inline>console.log(message);</script>;
+      const message = raise(
+        `No block data found for "${__typename}". Is the associated fragment included in the query?`
+      );
+      return (
+        <script define:vars={{ message }} is:inline>
+          console.log(message);
+        </script>
+      );
     }
-    const Block = blocksByTypename[__typename as keyof typeof blocksByTypename];
+    const Block = blocksByTypename[
+      __typename as keyof typeof blocksByTypename
+    ] as unknown as BlockComponent;
     if (!Block) {
-      const message = raise(`No block data found for "${__typename}". Is it included in ${import.meta.filename}?`);
-      return <script define:vars={{ message }} is:inline>console.log(message);</script>;
+      const message = raise(
+        `No block data found for "${__typename}". Is it included in ${import.meta.filename}?`
+      );
+      return (
+        <script define:vars={{ message }} is:inline>
+          console.log(message);
+        </script>
+      );
     }
-    //@ts-expect-error - since block can be any block its type is conflated to `never`.
-    return <Block block={block} />;
+    // Cast needed: `AnyBlock` is a union, `BlockComponent` is untyped for Astro.
+    return <Block block={block as unknown as AnyBlock} />;
   })
 }
