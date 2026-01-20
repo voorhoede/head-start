@@ -24,5 +24,3 @@ src/lib/i18n/types.ts
 src/lib/site.json
 src/lib/routing/file-proxy-map.json
 src/lib/routing/redirects.json
-src/lib/datocms/itemTypes.json
-src/lib/datocms/modelApiKeys.ts
