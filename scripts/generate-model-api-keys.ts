@@ -24,8 +24,21 @@ function toTypename(apiKey: string): string {
  * This ensures the mapping stays in sync with the actual models in DatoCMS.
  */
 async function generateModelApiKeys() {
+  const token = process.env.DATOCMS_API_TOKEN?.trim();
+  if (!token) {
+    if (process.env.CI) {
+      console.log(
+        'DATOCMS_API_TOKEN is missing; skipping model API key generation.',
+      );
+      return;
+    }
+    throw new Error(
+      'DATOCMS_API_TOKEN is required to generate model API keys. Set it and rerun `npm run prep:generate-model-api-keys`.',
+    );
+  }
+
   const client = buildClient({
-    apiToken: process.env.DATOCMS_API_TOKEN!,
+    apiToken: token,
     environment: datocmsEnvironment,
   });
 
@@ -63,10 +76,11 @@ export function getModelApiKey(typename: string | undefined, fallback = 'page'):
   const filePath = './src/lib/datocms/modelApiKeys.ts';
   await mkdir(dirname(filePath), { recursive: true });
   await writeFile(filePath, fileContent);
+
+  console.log('Model API keys generated');
 }
 
 generateModelApiKeys()
-  .then(() => console.log('Model API keys generated'))
   .catch((error) => {
     console.error('Failed to generate model API keys:', error);
     process.exit(1);

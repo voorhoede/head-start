@@ -41,15 +41,30 @@ async function getItemTypesMetadata() {
 }
 
 async function downloadItemTypes() {
+  const token = process.env.DATOCMS_API_TOKEN?.trim();
+  if (!token) {
+    if (process.env.CI) {
+      console.log(
+        'DATOCMS_API_TOKEN is missing; skipping item type download.',
+      );
+      return;
+    }
+    throw new Error(
+      'DATOCMS_API_TOKEN is required to download item types. Set it and rerun `npm run prep:download-item-types`.',
+    );
+  }
+
+  process.env.DATOCMS_API_TOKEN = token;
   const itemTypes = await getItemTypesMetadata();
 
   const itemTypesPath = './src/lib/datocms/itemTypes.json';
   await mkdir(dirname(itemTypesPath), { recursive: true });
   await writeFile(itemTypesPath, JSON.stringify(itemTypes, null, 2));
+
+  console.log('Item types downloaded');
 }
 
 downloadItemTypes()
-  .then(() => console.log('Item types downloaded'))
   .catch((error) => {
     console.error('Failed to download item types:', error);
     process.exit(1);
