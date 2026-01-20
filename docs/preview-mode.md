@@ -96,7 +96,7 @@ When in preview mode, the preview bar can also show an **“edit in DatoCMS”**
 **Auto-generated / downloaded (don’t edit):**
 
 - `src/lib/site.json`: downloaded site config (includes `internalDomain` used to derive the DatoCMS `{project}` subdomain). This file is generated/overwritten by `scripts/download-site-data.ts`.
-- `src/lib/datocms/item-types.json`: downloaded list of model API keys → item type ids.
+- `src/lib/datocms/itemTypes.json`: downloaded list of model API keys → item type ids.
 - `src/lib/datocms/modelApiKeys.ts`: auto-generated `__typename` → model API key map.
 
 When models change, re-run:
@@ -133,7 +133,7 @@ The “open DatoCMS” / “edit in DatoCMS” link is rendered by:
 
 - `getEditorLinkFromRecord()` resolves `itemTypeId` using:
   - `src/lib/datocms/modelApiKeys.ts` (auto-generated `__typename` → model API key)
-  - `src/lib/datocms/item-types.json` (downloaded model API key → item type id)
+  - `src/lib/datocms/itemTypes.json` (downloaded model API key → item type id)
 - `buildEditorLink()` builds the final URL in:
   - `src/components/PreviewMode/features/EditInDatoCms/lib/buildEditorLink.ts`
 

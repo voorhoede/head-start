@@ -15,7 +15,7 @@ type ItemTypesMap = {
 /**
  * Downloads DatoCMS item type metadata from the Management API.
  *
- * Output: `src/lib/datocms/item-types.json`
+ * Output: `src/lib/datocms/itemTypes.json`
  * - key: model API key (e.g. `text_block`)
  * - value: `{ id }`
  */
@@ -43,7 +43,7 @@ async function getItemTypesMetadata() {
 async function downloadItemTypes() {
   const itemTypes = await getItemTypesMetadata();
 
-  const itemTypesPath = './src/lib/datocms/item-types.json';
+  const itemTypesPath = './src/lib/datocms/itemTypes.json';
   await mkdir(dirname(itemTypesPath), { recursive: true });
   await writeFile(itemTypesPath, JSON.stringify(itemTypes, null, 2));
 }

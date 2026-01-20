@@ -1,4 +1,4 @@
-import itemTypesJson from '@lib/datocms/item-types.json';
+import itemTypesJson from '@lib/datocms/itemTypes.json';
 import { getModelApiKey } from '@lib/datocms/modelApiKeys';
 import type { DatoCmsRecordIdentity } from '@lib/datocms/recordIdentity';
 import { datocmsEnvironment } from '@root/datocms-environment';
