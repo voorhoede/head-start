@@ -29,8 +29,8 @@ export function getDatoCmsEditorUrl(
     return `${baseUrl}/item_types/${itemTypeId}/items/${recordId}/edit`;
   }
 
-  // Fallback: may or may not resolve correctly, but better than nothing
-  return `${baseUrl}/items/${recordId}/edit`;
+  // Fallback: just send them to the editor (avoids brittle deep links)
+  return baseUrl;
 }
 
 export function buildEditorUrlFromToken(
@@ -41,7 +41,7 @@ export function buildEditorUrlFromToken(
 ): string | null {
   // Result:
   // - Full:     https://{project}.admin.datocms.com/environments/{environment}/editor/item_types/{itemTypeId}/items/{recordId}/edit
-  // - Fallback: https://{project}.admin.datocms.com/environments/{environment}/editor/items/{recordId}/edit
+  // - Fallback: https://{project}.admin.datocms.com/environments/{environment}/editor
   const projectName = getProjectName();
   if (!projectName) return null;
 
