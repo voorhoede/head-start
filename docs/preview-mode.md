@@ -6,6 +6,14 @@
 
 To enable preview mode for a git branch, you must add it to [`config/preview.ts`](../config/preview.ts). Preview branches will deploy as `output: 'server'` rather than `output: 'hybrid'`, ignoring all `getStaticPaths()` and always rendering the page during run-time. The `preview` branch is configured as one of the preview branches and is automatically kept in sync with the `main` branch, so it can be used as preview equivalent, for example from the CMS.
 
+### Local development
+
+If you want to see the preview mode UI (preview bar, subscriptions) locally:
+
+- Make sure your current git branch is included in [`config/preview.ts`](../config/preview.ts).
+- Set `HEAD_START_PREVIEW_SECRET` and `DATOCMS_READONLY_API_TOKEN` in your local `.env`.
+- Enter preview mode via `/api/preview/enter/?secret=...` (or the preview login form).
+
 To protect a part of the page that must only be available in preview mode, you can wrap it in the `PreviewModeProvider`, as is done in the [`Default.astro` layout](../src/layouts/Default.astro):
 
 ```astro
@@ -74,17 +82,20 @@ When in preview mode, the preview bar can also show an **“edit in DatoCMS”**
 
 - `@lib/site.json` must include `internalDomain` like `head-start.admin.datocms.com` so the `{project}` can be derived.
 - The app must know the current DatoCMS environment (configured in `datocms-environment.ts`).
+- Env vars (preview mode + DatoCMS access):
+  - `HEAD_START_PREVIEW_SECRET`: required to enter/exit preview mode.
+  - `DATOCMS_READONLY_API_TOKEN`: required for DatoCMS data loading in preview mode (also used for the preview bar connection).
 
 ### What’s manual vs auto-generated
 
 **You maintain (manual):**
 
-- `@lib/site.json` → `internalDomain` (used to derive the DatoCMS `{project}` subdomain).
 - `datocms-environment.ts` → `datocmsEnvironment` (which environment the editor link should target).
 - Any GraphQL query that wants an editor link must include **`id`** and **`__typename`** for the record you pass into the component.
 
 **Auto-generated / downloaded (don’t edit):**
 
+- `src/lib/site.json`: downloaded site config (includes `internalDomain` used to derive the DatoCMS `{project}` subdomain). This file is generated/overwritten by `scripts/download-site-data.ts`.
 - `src/lib/datocms/item-types.json`: downloaded list of model API keys → item type ids.
 - `src/lib/datocms/modelApiKeys.ts`: auto-generated `__typename` → model API key map.
 
