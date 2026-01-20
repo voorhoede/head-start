@@ -6,13 +6,11 @@ type SiteData = {
 
 const siteData = siteDataUntyped as SiteData;
 
-// Extracts the project name from something like: "head-start.admin.datocms.com"
 export function getProjectName(): string | null {
   const domain = siteData.internalDomain;
   if (!domain) return null;
 
-  const match = domain.match(/^([^.]+)/);
-  return match?.[1] ?? null;
+  return domain.split('.')[0] || null;
 }
 
 export function getDatoCmsEditorUrl(
@@ -29,19 +27,18 @@ export function getDatoCmsEditorUrl(
     return `${baseUrl}/item_types/${itemTypeId}/items/${recordId}/edit`;
   }
 
-  // Fallback: just send them to the editor (avoids brittle deep links)
+  // Fallback: just send them to the editor
   return baseUrl;
 }
+
 
 export function buildEditorUrlFromToken(
   recordId: string,
   itemTypeId: string | null,
-  _apiToken: string | undefined,
   environment: string,
 ): string | null {
-  // Result:
-  // - Full:     https://{project}.admin.datocms.com/environments/{environment}/editor/item_types/{itemTypeId}/items/{recordId}/edit
-  // - Fallback: https://{project}.admin.datocms.com/environments/{environment}/editor
+  // Builds a DatoCMS editor URL, with a fallback to the base editor
+  // Format:  https://{project}.admin.datocms.com/environments/{environment}/editor/item_types/{itemTypeId}/items/{recordId}/edit
   const projectName = getProjectName();
   if (!projectName) return null;
 
