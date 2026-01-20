@@ -2,7 +2,7 @@ import itemTypesJson from '@lib/datocms/item-types.json';
 import { getModelApiKey } from '@lib/datocms/modelApiKeys';
 import type { DatoCmsRecordIdentity } from '@lib/datocms/recordIdentity';
 import { datocmsEnvironment } from '@root/datocms-environment';
-import { buildEditorLink, type EditorLink } from './buildEditorLink';
+import { buildEditorLink } from './buildEditorLink';
 
 type ItemTypesMap = Record<string, { id: string }>;
 const itemTypes: ItemTypesMap = itemTypesJson;
@@ -10,7 +10,7 @@ const itemTypes: ItemTypesMap = itemTypesJson;
 export function getEditorLinkFromRecord(
   record: DatoCmsRecordIdentity | null | undefined,
   environment?: string,
-): EditorLink | null {
+): string | null {
   const id = record?.id;
   if (!id) return null;
 
@@ -19,12 +19,5 @@ export function getEditorLinkFromRecord(
 
   const env = environment ?? datocmsEnvironment;
   return buildEditorLink(id, itemTypeId, env);
-}
-
-export function getEditorUrlFromRecord(
-  record: DatoCmsRecordIdentity | null | undefined,
-  environment?: string,
-): string | null {
-  return getEditorLinkFromRecord(record, environment)?.url ?? null;
 }
 

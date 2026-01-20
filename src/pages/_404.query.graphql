@@ -10,6 +10,8 @@
 
 query NotFoundPage($locale: SiteLocale!) {
   page: notFoundPage(locale: $locale) {
+    __typename
+    id
     title
     bodyBlocks {
       __typename

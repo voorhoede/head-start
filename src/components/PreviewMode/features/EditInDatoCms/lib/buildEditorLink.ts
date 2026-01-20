@@ -6,8 +6,6 @@ type SiteData = {
 
 const siteData = siteDataUntyped as SiteData;
 
-export type EditorLink = { url: string; isFallback: boolean };
-
 export function getProjectName(): string | null {
   const domain = siteData.internalDomain;
   if (!domain) return null;
@@ -20,19 +18,12 @@ export function getDatoCmsEditorLink(
   itemTypeId: string | null,
   projectName: string | null,
   environment: string,
-): EditorLink | null {
-  if (!projectName || !environment) return null;
+): string | null {
+  if (!recordId || !itemTypeId || !projectName || !environment) return null;
 
   const baseUrl = `https://${projectName}.admin.datocms.com/environments/${environment}/editor`;
 
-  if (recordId && itemTypeId) {
-    return {
-      url: `${baseUrl}/item_types/${itemTypeId}/items/${recordId}/edit`,
-      isFallback: false,
-    };
-  }
-
-  return { url: baseUrl, isFallback: true };
+  return `${baseUrl}/item_types/${itemTypeId}/items/${recordId}/edit`;
 }
 
 
@@ -40,8 +31,7 @@ export function buildEditorLink(
   recordId: string | null,
   itemTypeId: string | null,
   environment: string,
-): EditorLink | null {
-  // Builds a DatoCMS editor link; falls back to the base editor if recordId/itemTypeId is missing.
+): string | null {
   const projectName = getProjectName();
   if (!projectName) return null;
 

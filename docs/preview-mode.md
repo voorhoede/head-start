@@ -66,12 +66,9 @@ const { page } = await datocmsRequest<PageQuery>({ query, variables });
 
 When in preview mode a bar in the user interface displays the status of the connection with the CMS, along with a link to exit preview mode. Depending on the layout of your project, you may want to move the preview mode bar to another position, for example if your project has a sticky header.
 
-## Open DatoCMS link
+## Edit in DatoCMS link
 
-When in preview mode, the preview bar can also show an **“open DatoCMS”** link. This opens DatoCMS in a new tab:
-
-- If we can resolve the record’s model → it deep-links to the **record editor**
-- Otherwise → it opens the **environment editor** root
+When in preview mode, the preview bar can also show an **“edit in DatoCMS”** link. This opens the DatoCMS **record editor** in a new tab.
 
 ### Requirements
 
@@ -86,7 +83,7 @@ When in preview mode, the preview bar can also show an **“open DatoCMS”** li
 - `datocms-environment.ts` → `datocmsEnvironment` (which environment the editor link should target).
 - Any GraphQL query that wants an editor link must include **`id`** and **`__typename`** for the record you pass into the component.
 
-**Auto-generated / downloaded (don’t hand-edit):**
+**Auto-generated / downloaded (don’t edit):**
 
 - `src/lib/datocms/item-types.json`: downloaded list of model API keys → item type ids.
 - `src/lib/datocms/modelApiKeys.ts`: auto-generated `__typename` → model API key map.
@@ -121,7 +118,7 @@ The “open DatoCMS” / “edit in DatoCMS” link is rendered by:
 - **Project name** comes from `@lib/site.json` `internalDomain` (the `{project}` part of `{project}.admin.datocms.com`).
 - **Environment** comes from `datocms-environment.ts` (unless explicitly passed).
 
-3. **We build an editor link**
+3. **We build an editor URL**
 
 - `getEditorLinkFromRecord()` resolves `itemTypeId` using:
   - `src/lib/datocms/modelApiKeys.ts` (auto-generated `__typename` → model API key)
@@ -129,12 +126,10 @@ The “open DatoCMS” / “edit in DatoCMS” link is rendered by:
 - `buildEditorLink()` builds the final URL in:
   - `src/components/PreviewMode/features/EditInDatoCms/lib/buildEditorLink.ts`
 
-4. **We choose the final URL + button text**
+4. **We decide whether to show the link**
 
-- If we have `itemTypeId` → deep-link to the **record editor** (`isFallback = false`)
-- If we don’t → fall back to the **environment editor** root (`isFallback = true`)
-- The UI uses `EditorLink.isFallback` to change the link text (e.g. “open DatoCMS” vs “edit in DatoCMS”).
-- Note: the **fallback URL does not require a record id**. The low-level builder can return the environment editor link even when `recordId` is missing; the current UI component only renders the link when it has a record identity.
+- If we can resolve everything needed to build a **record editor URL** (`recordId`, `itemTypeId`, project, environment) → we render the link.
+- Otherwise → we return `null` and the UI **does not show** the “edit in DatoCMS” link.
 
 The URL format is:
 
@@ -147,7 +142,7 @@ https://{project}.admin.datocms.com/environments/{environment}/editor/item_types
 
 ### Examples
 
-#### Example 1: Deep-link to a record (preferred)
+#### Example 1: Deep-link to a record (shown)
 
 If `internalDomain` is `head-start.admin.datocms.com`, environment is `feat-test`, and we can resolve the `itemTypeId`:
 
@@ -156,16 +151,6 @@ https://head-start.admin.datocms.com/environments/feat-test/editor/item_types/{i
 ```
 
 The link text is “edit in DatoCMS”.
-
-#### Example 2: Fallback to the environment editor
-
-If we can’t resolve `itemTypeId` (missing mapping, unknown model, etc.):
-
-```text
-https://head-start.admin.datocms.com/environments/feat-test/editor
-```
-
-The link text becomes “open DatoCMS”.
 
 #### Example 3: What to pass to the component
 

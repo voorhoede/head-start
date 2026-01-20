@@ -23,7 +23,11 @@ const { page } = await datocmsRequest<NotFoundPageQuery, true>({
 });
 ---
 
-<Layout pageUrls={[]} seoMetaTags={[noIndexTag, titleTag(page.title)]}>
+<Layout
+  pageUrls={[]}
+  seoMetaTags={[noIndexTag, titleTag(page.title)]}
+  datocmsRecord={{ __typename: page.__typename, id: page.id }}
+>
   <h1>{page.title} {Astro.params.locale}</h1>
   <Blocks blocks={page.bodyBlocks} />
 </Layout>

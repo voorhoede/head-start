@@ -7,13 +7,13 @@ interface Props {
 }
 
 const { datocmsRecord } = Astro.props;
-const editorLink = getEditorLinkFromRecord(datocmsRecord);
+const editorUrl = getEditorLinkFromRecord(datocmsRecord);
 ---
 
 {
-  editorLink && (
-    <a href={editorLink.url} target="_blank" rel="noopener noreferrer">
-      {editorLink.isFallback ? 'open DatoCMS' : 'edit in DatoCMS'}
+  editorUrl && (
+    <a href={editorUrl} target="_blank" rel="noopener noreferrer">
+      edit in DatoCMS
     </a>
   )
 }
@@ -23,3 +23,4 @@ const editorLink = getEditorLinkFromRecord(datocmsRecord);
     color: currentColor;
   }
 </style>
+
