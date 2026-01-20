@@ -1,13 +1,11 @@
 ---
 // based on https://github.com/datocms/datocms-svelte/blob/main/src/lib/components/StructuredText/Node.svelte
-import type * as STU from 'datocms-structured-text-utils';
 import {
   hasChildren,
   isBlock,
   isBlockquote,
   isCode,
   isHeading,
-  isInlineItem,
   isItemLink,
   isLink,
   isList,
@@ -15,20 +13,22 @@ import {
   isParagraph,
   isRoot,
   isSpan,
+  isInlineItem,
   isThematicBreak,
   RenderError,
 } from 'datocms-structured-text-utils';
-import Blockquote from './Nodes/Blockquote.astro';
-import Code from './Nodes/Code.astro';
-import Heading from './Nodes/Heading.astro';
+import type * as STU from 'datocms-structured-text-utils';
+import type { PredicateComponentTuple } from './StructuredText';
+import Root from './Nodes/Root.astro';
+import Paragraph from './Nodes/Paragraph.astro';
 import Link from './Nodes/Link.astro';
 import List from './Nodes/List.astro';
 import ListItem from './Nodes/ListItem.astro';
-import Paragraph from './Nodes/Paragraph.astro';
-import Root from './Nodes/Root.astro';
+import Blockquote from './Nodes/Blockquote.astro';
+import Heading from './Nodes/Heading.astro';
 import Span from './Nodes/Span.astro';
+import Code from './Nodes/Code.astro';
 import ThematicBreak from './Nodes/ThematicBreak.astro';
-import type { PredicateComponentTuple } from './StructuredText';
 
 const DEFAULT_COMPONENTS: PredicateComponentTuple[] = [
   [isParagraph, Paragraph],
@@ -40,7 +40,7 @@ const DEFAULT_COMPONENTS: PredicateComponentTuple[] = [
   [isBlockquote, Blockquote],
   [isListItem, ListItem],
   [isThematicBreak, ThematicBreak],
-  [isCode, Code],
+  [isCode, Code]
 ];
 
 const throwRenderErrorForMissingComponent = (node: STU.Node) => {
@@ -73,9 +73,7 @@ const throwRenderErrorForMissingBlock = (node: STU.Block) => {
   );
 };
 
-const throwRenderErrorForMissingLink = (
-  node: STU.ItemLink | STU.InlineItem
-) => {
+const throwRenderErrorForMissingLink = (node: STU.ItemLink | STU.InlineItem) => {
   throw new RenderError(
     `The Structured Text document contains an 'itemLink' node, but cannot find a record with ID ${node.item} inside data.links!`,
     node
@@ -84,10 +82,8 @@ const throwRenderErrorForMissingLink = (
 
 const findBlock = (node: STU.Block, blocks: STU.StructuredText['blocks']) =>
   (blocks || []).find(({ id }) => id === node.item);
-const findLink = (
-  node: STU.ItemLink | STU.InlineItem,
-  links: STU.StructuredText['links']
-) => (links || []).find(({ id }) => id === node.item);
+const findLink = (node: STU.ItemLink | STU.InlineItem, links: STU.StructuredText['links']) =>
+  (links || []).find(({ id }) => id === node.item);
 
 interface Props {
   node: STU.Node;
@@ -98,50 +94,40 @@ interface Props {
 const { node, blocks, links, components = [] } = Astro.props;
 
 const predicateComponentTuple =
-  [...components, ...DEFAULT_COMPONENTS].find(([predicate]) =>
-    predicate(node)
-  ) || throwRenderErrorForMissingComponent(node);
+		[...components, ...DEFAULT_COMPONENTS].find(([predicate]) => predicate(node)) ||
+		throwRenderErrorForMissingComponent(node);
 
 const Component = (predicateComponentTuple ?? [])[1];
-const blockRecord = isBlock(node)
-  ? findBlock(node, blocks) || throwRenderErrorForMissingBlock(node)
-  : null;
+const block = isBlock(node) && (findBlock(node, blocks) || throwRenderErrorForMissingBlock(node));
 const link =
-  (isItemLink(node) &&
-    (findLink(node, links) || throwRenderErrorForMissingLink(node))) ||
-  (isInlineItem(node) &&
-    (findLink(node, links) || throwRenderErrorForMissingLink(node)));
+		(isItemLink(node) && (findLink(node, links) || throwRenderErrorForMissingLink(node))) ||
+		(isInlineItem(node) && (findLink(node, links) || throwRenderErrorForMissingLink(node)));
 ---
 
-{
-  Component &&
-    (isBlock(node) ? (
-      <Component {node} block={blockRecord} />
-    ) : isInlineItem(node) ? (
+{ Component && (
+  isBlock(node) ? (
+    <Component {node} {block} />
+  ) :
+    isInlineItem(node) ? (
       <Component {node} {link} />
-    ) : isItemLink(node) ? (
-      <Component node={node} {link}>
-        {hasChildren(node) &&
-          node.children.map((child) => (
-            <Astro.self
-              node={child}
-              blocks={blocks}
-              links={links}
-              {components}
-            />
-          ))}
-      </Component>
-    ) : (
-      /* default component handler */ <Component node={node}>
-        {hasChildren(node) &&
-          node.children.map((child) => (
-            <Astro.self
-              node={child}
-              blocks={blocks}
-              links={links}
-              {components}
-            />
-          ))}
-      </Component>
-    ))
-}
+    ) :
+      isItemLink(node) ? (
+        <Component node={node} {link}>
+          { hasChildren(node) && (
+            node.children.map((child) => (
+              <Astro.self node={child} blocks={blocks} links={links} {components} />
+            ))
+          ) }
+        </Component>
+      ) :
+      /* default component handler */ (
+          <Component node={node}>
+            { hasChildren(node) && (
+              node.children.map((child) => (
+                <Astro.self node={child} blocks={blocks} links={links} {components} />
+              ))
+            ) }
+          </Component>
+        )
+)}
+

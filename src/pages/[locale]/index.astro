@@ -1,11 +1,11 @@
 ---
-import Blocks from '@blocks/Blocks.astro';
-import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
-import Layout from '@layouts/Default.astro';
 import { datocmsRequest } from '@lib/datocms';
 import type { HomePageQuery } from '@lib/datocms/types';
 import { locales } from '@lib/i18n';
 import { getHomeHref, type PageUrl } from '@lib/routing';
+import Layout from '@layouts/Default.astro';
+import Blocks from '@blocks/Blocks.astro';
+import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
 import query from './_index.query.graphql';
 
 export async function getStaticPaths() {
@@ -14,10 +14,7 @@ export async function getStaticPaths() {
 
 const { locale } = Astro.params;
 const variables = { locale };
-const { page } = await datocmsRequest<HomePageQuery /*, typeof prerender */>({
-  query,
-  variables,
-});
+const { page } = await datocmsRequest<HomePageQuery /*, typeof prerender */>({ query, variables });
 const pageUrls = locales.map((locale) => ({
   locale,
   pathname: getHomeHref({ locale }),

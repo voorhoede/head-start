@@ -1,13 +1,15 @@
 ---
+import Layout from '@layouts/Default.astro';
 import Blocks from '@blocks/Blocks.astro';
 import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
-import Layout from '@layouts/Default.astro';
 import { getCollection, getEntry } from '@lib/content';
 
 export async function getStaticPaths() {
   // Fetch all locales by passing locale `null` and filter `undefined`.
   const pages = await getCollection('Pages', undefined, null);
-  return pages.map(({ data: page }) => ({
+  return pages.map(({ 
+    data: page,
+  }) => ({
     params: { locale: page.meta.locale, path: page.meta.path },
   }));
 }
@@ -20,10 +22,7 @@ if (!entry) {
   return Astro.redirect('/404', 404);
 }
 
-const {
-  data: { meta, ...page },
-  subscription,
-} = entry;
+const { data: { meta, ...page }, subscription } = entry;
 const { breadcrumbs, pageUrls, recordId } = meta;
 ---
 

@@ -1,9 +1,9 @@
 ---
-import Blocks from '@blocks/Blocks.astro';
-import Layout from '@layouts/Default.astro';
-import { datocmsRequest } from '@lib/datocms';
 import type { NotFoundPageQuery, SiteLocale } from '@lib/datocms/types';
+import { datocmsRequest } from '@lib/datocms';
 import { noIndexTag, titleTag } from '@lib/seo';
+import Layout from '@layouts/Default.astro';
+import Blocks from '@blocks/Blocks.astro';
 import query from './_404.query.graphql';
 
 export const prerender = false;
@@ -17,10 +17,7 @@ type Params = {
 const { locale } = Astro.params as Params;
 const variables = { locale };
 // While this page is not prerendered, we still want to treat it as a regular page with the default prerender strategy.
-const { page } = await datocmsRequest<NotFoundPageQuery, true>({
-  query,
-  variables,
-});
+const { page } = await datocmsRequest<NotFoundPageQuery, true>({ query, variables });
 ---
 
 <Layout

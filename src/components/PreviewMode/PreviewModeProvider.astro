@@ -10,17 +10,11 @@ interface Props {
 
 const { datocmsRecord } = Astro.props;
 ---
-
 {
-  isPreview ? (
-    isPreviewAuthOk ? (
-      <PreviewMode datocmsRecord={datocmsRecord}>
-        <slot />
-      </PreviewMode>
-    ) : (
-      <PreviewModeLogin />
-    )
-  ) : (
-    <slot />
-  )
+  isPreview
+    ? isPreviewAuthOk
+      ? <PreviewMode datocmsRecord={ datocmsRecord }><slot /></PreviewMode>
+      : <PreviewModeLogin />
+    : <slot />
 }
+
