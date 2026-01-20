@@ -1,19 +1,19 @@
 ---
-import { getEditorUrlFromRecord } from './lib/getEditorUrlFromRecord';
 import type { DatoCmsRecordIdentity } from '@lib/datocms/recordIdentity';
+import { getEditorLinkFromRecord } from './lib/getEditorLinkFromRecord';
 
 interface Props {
   datocmsRecord?: DatoCmsRecordIdentity | null;
 }
 
 const { datocmsRecord } = Astro.props;
-const editorUrl = getEditorUrlFromRecord(datocmsRecord);
+const editorLink = getEditorLinkFromRecord(datocmsRecord);
 ---
 
 {
-  editorUrl && (
-    <a href={editorUrl} target="_blank" rel="noopener noreferrer">
-      edit in DatoCMS
+  editorLink && (
+    <a href={editorLink.url} target="_blank" rel="noopener noreferrer">
+      {editorLink.isFallback ? 'open DatoCMS' : 'edit in DatoCMS'}
     </a>
   )
 }
