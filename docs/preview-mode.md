@@ -76,105 +76,60 @@ When in preview mode a bar in the user interface displays the status of the conn
 
 ## Edit in DatoCMS link
 
-When in preview mode, the preview bar can also show an **“edit in DatoCMS”** link. This opens the DatoCMS **record editor** in a new tab.
+In preview mode, the preview bar shows an **"edit in DatoCMS"** link that opens the record editor directly.
 
-### Requirements
+### Setup
 
-- `@lib/site.json` must include `internalDomain` like `head-start.admin.datocms.com` so the `{project}` can be derived.
-- The app must know the current DatoCMS environment (configured in `datocms-environment.ts`).
-- Env vars (preview mode + DatoCMS access):
-  - `HEAD_START_PREVIEW_SECRET`: required to enter/exit preview mode.
-  - `DATOCMS_READONLY_API_TOKEN`: required for DatoCMS data loading in preview mode (also used for the preview bar connection).
+The link requires:
 
-### What’s manual vs auto-generated
+- `@lib/site.json` with `internalDomain` (e.g. `head-start.admin.datocms.com`)
+- `datocms-environment.ts` with the target environment
+- GraphQL queries must include `id` and `__typename` for records you want to edit
 
-**You maintain (manual):**
+### How it works
 
-- `datocms-environment.ts` → `datocmsEnvironment` (which environment the editor link should target).
-- Any GraphQL query that wants an editor link must include **`id`** and **`__typename`** for the record you pass into the component.
+The URL is built from:
+- **Project name**: extracted from `internalDomain` in `@lib/site.json`
+- **Environment**: from `datocms-environment.ts`
+- **Record info**: `id` + `__typename` → resolved to `itemTypeId` via auto-generated mappings
 
-**Auto-generated / downloaded (don’t edit):**
+If any part can't be resolved, the link doesn't render.
 
-- `src/lib/site.json`: downloaded site config (includes `internalDomain` used to derive the DatoCMS `{project}` subdomain). This file is generated/overwritten by `scripts/download-site-data.ts`.
-- `src/lib/datocms/itemTypes.json`: downloaded list of model API keys → item type ids.
-- `src/lib/datocms/modelApiKeys.ts`: auto-generated `__typename` → model API key map.
-
-When models change, re-run:
-
-```bash
-npm run prep:download-item-types
-npm run prep:generate-model-api-keys
-```
-
-### How it works (high level)
-
-- The editor URL is built using the project name from `@lib/site.json` and the current environment.
-- If the project name can’t be derived, the link is not shown.
-
-### How it works (detailed)
-
-The “open DatoCMS” / “edit in DatoCMS” link is rendered by:
-
-- `src/components/PreviewMode/features/EditInDatoCms/EditInDatoCms.astro`
-
-#### Step-by-step flow
-
-1. **We get a record identity**
-
-- The component expects a `datocmsRecord` with **`id`** and **`__typename`**.
-- `__typename` lets us map the record to a DatoCMS **model API key**, and then to an **item type id**.
-
-2. **We derive the DatoCMS project + environment**
-
-- **Project name** comes from `@lib/site.json` `internalDomain` (the `{project}` part of `{project}.admin.datocms.com`).
-- **Environment** comes from `datocms-environment.ts` (unless explicitly passed).
-
-3. **We build an editor URL**
-
-- `getEditorLinkFromRecord()` resolves `itemTypeId` using:
-  - `src/lib/datocms/modelApiKeys.ts` (auto-generated `__typename` → model API key)
-  - `src/lib/datocms/itemTypes.json` (downloaded model API key → item type id)
-- `buildEditorLink()` builds the final URL in:
-  - `src/components/PreviewMode/features/EditInDatoCms/lib/buildEditorLink.ts`
-
-4. **We decide whether to show the link**
-
-- If we can resolve everything needed to build a **record editor URL** (`recordId`, `itemTypeId`, project, environment) → we render the link.
-- Otherwise → we return `null` and the UI **does not show** the “edit in DatoCMS” link.
-
-The URL format is:
+**URL format:**
 
 ```text
-https://{project}.admin.datocms.com/environments/{environment}/editor
-
-# when we know the record model
 https://{project}.admin.datocms.com/environments/{environment}/editor/item_types/{itemTypeId}/items/{recordId}/edit
 ```
 
-### Examples
+### Usage
 
-#### Example 1: Deep-link to a record (shown)
+Pass `datocmsRecord` to the layout:
 
-If `internalDomain` is `head-start.admin.datocms.com`, environment is `feat-test`, and we can resolve the `itemTypeId`:
-
-```text
-https://head-start.admin.datocms.com/environments/feat-test/editor/item_types/{itemTypeId}/items/{recordId}/edit
+```astro
+<Layout
+  datocmsRecord={{ __typename: page.__typename, id: page.id }}
+  ...
+>
 ```
 
-The link text is “edit in DatoCMS”.
+Your GraphQL query needs:
 
-#### Example 3: What to pass to the component
-
-Any query feeding this feature must include `id` and `__typename` for the record you want to edit:
-
-```text
-id
-__typename
+```graphql
+query MyPage {
+  page {
+    id
+    __typename
+    # ... other fields
+  }
+}
 ```
 
-### Keeping mappings up to date
+### Auto-generated files (don't edit)
 
-When DatoCMS models change, re-run:
+- `src/lib/datocms/itemTypes.json` — model API key → item type id
+- `src/lib/datocms/modelApiKeys.ts` — `__typename` → model API key
+
+When DatoCMS models change, regenerate:
 
 ```bash
 npm run prep:download-item-types
