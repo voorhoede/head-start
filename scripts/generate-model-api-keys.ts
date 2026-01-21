@@ -63,13 +63,10 @@ async function generateModelApiKeys() {
 export const DATOCMS_MODEL_API_KEY_MAP: Record<string, string> = {
 ${mappings.join('\n')}
 } as const;
-  
-/**
- * Gets the DatoCMS model API key from a GraphQL __typename.
- */
-export function getModelApiKey(typename: string | undefined, fallback = 'page'): string {
-  if (!typename) return fallback;
-  return DATOCMS_MODEL_API_KEY_MAP[typename] || fallback;
+
+export function getModelApiKey(typename: string | undefined): string | null {
+  if (!typename) return null;
+  return DATOCMS_MODEL_API_KEY_MAP[typename] ?? null;
 }
 `;
 

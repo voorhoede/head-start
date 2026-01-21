@@ -26,7 +26,6 @@ export function getDatoCmsEditorLink(
   return `${baseUrl}/item_types/${itemTypeId}/items/${recordId}/edit`;
 }
 
-
 export function buildEditorLink(
   recordId: string | null,
   itemTypeId: string | null,
