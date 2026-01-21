@@ -2,7 +2,6 @@ import { computePosition } from '@floating-ui/dom';
 import type { Placement } from '@floating-ui/dom';
 
 class AppMenu extends HTMLElement {
-  #closeButton: HTMLButtonElement;
   #menuButton: HTMLButtonElement;
   #dialog: HTMLDialogElement;
   #menuList: HTMLElement;
@@ -10,7 +9,6 @@ class AppMenu extends HTMLElement {
 
   constructor() {
     super();
-    this.#closeButton = this.querySelector('[data-menu-close]') as HTMLButtonElement;
     this.#menuButton = this.querySelector('[data-menu-button]') as HTMLButtonElement;
     this.#dialog = this.querySelector('[data-menu-dialog]') as HTMLDialogElement;
     this.#menuList = this.querySelector('[data-menu-list]') as HTMLElement;
@@ -25,16 +23,18 @@ class AppMenu extends HTMLElement {
     this.#menuButton.focus();
   }
 
-  #onDialogClick(event: MouseEvent) {
-    const rect = this.#dialog.getBoundingClientRect();
-    const isClickOutside =
-      event.clientY < rect.top ||
-      event.clientY > rect.bottom ||
-      event.clientX < rect.left ||
-      event.clientX > rect.right;
-    if (isClickOutside) {
-      this.close();
-    }
+  #popover(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    const button = target.closest('[popovertarget]') as HTMLElement;
+    const popoverId = target.getAttribute('popovertarget');
+    const popover = this.querySelector(`#${popoverId}`) as HTMLElement;
+    const placement = (popover?.getAttribute('data-placement') ?? 'bottom-start') as Placement;
+
+    if (!button || !popover) return;
+
+    computePosition(button, popover, { placement }).then(({ x, y }) => {
+      Object.assign(popover.style, { left: `${x}px`, top: `${y}px` });
+    });
   }
 
   #onResize() {
@@ -46,16 +46,15 @@ class AppMenu extends HTMLElement {
   connectedCallback() {
     this.#menuButton.removeAttribute('hidden');
     this.#menuButton.addEventListener('click', this.open.bind(this));
-    this.#dialog.addEventListener('click', this.#onDialogClick.bind(this));
-    this.#closeButton.addEventListener('click', this.close.bind(this));
+    this.#menuList.addEventListener('click', this.#popover.bind(this));
+    this.#dialog.addEventListener('click', this.close.bind(this));
     this.#observer = new ResizeObserver(() => this.#onResize());
     this.#observer.observe(this);
   }
 
   disconnectedCallback() {
     this.#menuButton.removeEventListener('click', this.open.bind(this));
-    this.#dialog.removeEventListener('click', this.#onDialogClick.bind(this));
-    this.#closeButton.removeEventListener('click', this.close.bind(this));
+    this.#dialog.removeEventListener('click', this.close.bind(this));
     this.#observer?.disconnect();
   }
 }
