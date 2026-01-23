@@ -7,7 +7,11 @@
 #import '@blocks/VideoBlock/VideoBlock.fragment.graphql'
 #import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
 
-query PagePartialCollectionEntry($locale: SiteLocale!, $id: ItemId!) {
+query PagePartialCollectionEntry(
+  $id: ItemId!,
+  $locale: SiteLocale!, 
+  $fallbackLocales: [SiteLocale!]
+) {
   record: pagePartial(locale: $locale, filter: { id: { eq: $id } }) {
     __typename
     id
