@@ -27,10 +27,10 @@ const mockSubItems = [
     <UnstyledList class:list="main-menu__list" data-menu-list>
       {
         items.map((item) => (
-          <AppMenuItem {item} class:list="main-menu__item">
-            <button type="button" popovertarget={`popover-${item.id}`}>
-              open
-            </button>
+          <AppMenuItem {item} class:list="main-menu__item"
+            hasChildren={true}
+            popoverId={`popover-${item.id}`}
+          >
             <ul popover id={`popover-${item.id}`} data-placement="bottom-start">
               {mockSubItems.map((subItem, index) => (
                 <li>
@@ -135,9 +135,11 @@ const mockSubItems = [
   app-menu.is-compact .main-menu__button {
     display: block;
   }
+
   app-menu.is-compact .main-menu__list {
     display: none;
   }
+
   [popover] {
     margin: 0;
   }

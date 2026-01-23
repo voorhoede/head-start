@@ -1,22 +1,51 @@
 ---
 import type { AppMenuFragment } from '@lib/datocms/types';
+import { t } from '@lib/i18n';
 import LinkToRecord from '@components/LinkToRecord/LinkToRecord.astro';
+import Icon from '@components/Icon/Icon.astro';
 
 export interface Props {
   item: AppMenuFragment['menuItems'][number];
+  hasChildren?: boolean;
+  popoverId?: string;
 }
-const { item, ...props } = Astro.props;
+const { item, hasChildren = false, popoverId, ...props } = Astro.props;
+
+const title =
+  item.__typename === 'MenuItemInternalRecord'
+    ? item.title || item.link.title
+    : item.title;
 ---
 
 <li {...props}>
   {
     item.__typename === 'MenuItemInternalRecord' ? (
-      <LinkToRecord record={item.link}>
-        {item.title || item.link.title}
-      </LinkToRecord>
+      <LinkToRecord record={item.link}>{title}</LinkToRecord>
     ) : (
-      item.title
+      title
+    )
+  }
+  {
+    hasChildren && popoverId && (
+      <button
+        type="button"
+        popovertarget={popoverId}
+        aria-label={`${t('open_submenu_for')} ${title}`}
+        data-submenu-button
+      >
+        <Icon name="chevron-down" />
+      </button>
     )
   }
   <slot />
 </li>
+
+<style>
+  [data-submenu-button] :global(svg) {
+    transition: transform 0.2s ease;
+  }
+
+  li:has([popover]:popover-open) [data-submenu-button] :global(svg) {
+    transform: rotate(180deg);
+  }
+</style>
