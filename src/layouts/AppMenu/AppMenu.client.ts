@@ -24,15 +24,8 @@ class AppMenu extends HTMLElement {
     this.#menuButton.focus();
   }
 
-  #popover(event: MouseEvent) {
-    const target = event.target as HTMLElement;
-    const button = target.closest('[popovertarget]') as HTMLElement;
-    const popoverId = button?.getAttribute('popovertarget');
-    const popover = popoverId ? this.querySelector(`#${popoverId}`) as HTMLElement : null;
-    const placement = (popover?.getAttribute('data-placement') ?? 'bottom-start') as Placement;
-
-    if (!button || !popover) return;
-
+  #positionPopover(button: HTMLElement, popover: HTMLElement) {
+    const placement = (popover.getAttribute('data-placement') ?? 'bottom-start') as Placement;
     computePosition(button, popover, { placement }).then(({ x, y }) => {
       Object.assign(popover.style, { left: `${x}px`, top: `${y}px` });
     });
@@ -48,8 +41,6 @@ class AppMenu extends HTMLElement {
     const popover = this.querySelector(`#${popoverId}`) as HTMLElement;
     if (!popover) return;
 
-    const placement = (popover.getAttribute('data-placement') ?? 'bottom-start') as Placement;
-
     // Clear any existing hide timeout
     const existingTimeout = this.#hoverTimeouts.get(popoverId);
     if (existingTimeout) {
@@ -57,16 +48,15 @@ class AppMenu extends HTMLElement {
       this.#hoverTimeouts.delete(popoverId);
     }
 
-    computePosition(button, popover, { placement }).then(({ x, y }) => {
-      Object.assign(popover.style, { left: `${x}px`, top: `${y}px` });
-      try {
-        if (!popover.matches(':popover-open')) {
-          popover.showPopover();
-        }
-      } catch (e) {
-        console.error(e);
+    this.#positionPopover(button, popover);
+
+    try {
+      if (!popover.matches(':popover-open')) {
+        popover.showPopover();
       }
-    });
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   #hidePopover(menuItem: HTMLElement, delay = 150) {
@@ -102,8 +92,20 @@ class AppMenu extends HTMLElement {
   connectedCallback() {
     this.#menuButton.removeAttribute('hidden');
     this.#menuButton.addEventListener('click', this.open.bind(this));
-    this.#menuList.addEventListener('click', this.#popover.bind(this));
     this.#dialog.addEventListener('click', this.close.bind(this));
+
+    // Position popovers on click
+    this.#menuList.addEventListener('click', (event) => {
+      const button = (event.target as HTMLElement).closest('[popovertarget]') as HTMLElement;
+      if (!button) return;
+
+      const popoverId = button.getAttribute('popovertarget');
+      const popover = popoverId ? this.querySelector(`#${popoverId}`) as HTMLElement : null;
+
+      if (popover) {
+        this.#positionPopover(button, popover);
+      }
+    });
 
     // Add hover support for menu items
     const menuItems = this.#menuList.querySelectorAll('.main-menu__item');
@@ -116,11 +118,10 @@ class AppMenu extends HTMLElement {
     const popovers = this.querySelectorAll('[popover]');
     popovers.forEach((popover) => {
       popover.addEventListener('mouseenter', () => {
-        const popoverId = popover.id;
-        const timeout = this.#hoverTimeouts.get(popoverId);
+        const timeout = this.#hoverTimeouts.get(popover.id);
         if (timeout) {
           clearTimeout(timeout);
-          this.#hoverTimeouts.delete(popoverId);
+          this.#hoverTimeouts.delete(popover.id);
         }
       });
       popover.addEventListener('mouseleave', () => {
