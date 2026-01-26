@@ -1,80 +1,28 @@
 {
-  "text_image_block": {
-    "id": "BRbU6VwTRgmG5SbwUs0rBg"
-  },
-  "grouping_item": {
-    "id": "BeM4dW2OQYWKc9iBZUyMeg"
-  },
-  "phone_link": {
-    "id": "C5fWG5CYRJ69oqaP6CjYdA"
-  },
-  "page_partial": {
-    "id": "DAdmJVaoTZKumF9GYBZDfQ"
-  },
-  "schema_migration": {
-    "id": "EkWwcYfPQSGXskAZKO_tTg"
-  },
-  "menu_item_internal": {
-    "id": "FmR0GklXRq-7Ix8-5MaJjw"
-  },
-  "action_block": {
-    "id": "F60ZY1wFSW2qbvh99poj3g"
-  },
-  "internal_link": {
-    "id": "GWnhoQDqQoGJj4-sQTVttw"
-  },
-  "file": {
-    "id": "GjWw8t-hTFaYYWyc53FeIg"
-  },
-  "page": {
-    "id": "LjXdkuCdQxCFT4hv8_ayew"
-  },
-  "text_block": {
-    "id": "PAk40zGjQJCcDXXPgygUrA"
-  },
-  "video_block": {
-    "id": "QYfZyBzIRWKxA1MinIR0aQ"
-  },
-  "translation": {
-    "id": "Sk_th2TFQ-q80D15KNzjMg"
-  },
-  "grouping_block": {
-    "id": "TBuD6qQOSDy6i9dM3T_XEA"
-  },
-  "video_text_track": {
-    "id": "Us90isT5SgeXHuetcEj8eA"
-  },
-  "embed_block": {
-    "id": "VZvVfu52RZK81WG0Dxp-FQ"
-  },
-  "page_partial_block": {
-    "id": "V80liDVtRC-UYgd3Sm-dXg"
-  },
-  "home_page": {
-    "id": "X_tZn3TxQY28ltSyjZUGHQ"
-  },
-  "external_link": {
-    "id": "Yk1ge9eTTf25Iwph1Dx3_g"
-  },
-  "image_block": {
-    "id": "ZdBokLsWRgKKjHrKeJzdpw"
-  },
-  "app": {
-    "id": "Zrs1dDxCTXKDS0pdgh1yCw"
-  },
-  "email_link": {
-    "id": "b90_c2zeS6auRELEzZHNcA"
-  },
-  "redirect_rule": {
-    "id": "c0S4sIyiRK-EewRhFEFPLA"
-  },
-  "not_found_page": {
-    "id": "d_AvMVoMSqmNbMqx-NdqIw"
-  },
-  "video_embed_block": {
-    "id": "gezG9nO7SfaiWcWnp-HNqw"
-  },
-  "table_block": {
-    "id": "0SxYNS2CR1it_5LHYWuEQg"
-  }
+  "ActionBlockRecord": "F60ZY1wFSW2qbvh99poj3g",
+  "AppRecord": "Zrs1dDxCTXKDS0pdgh1yCw",
+  "EmailLinkRecord": "b90_c2zeS6auRELEzZHNcA",
+  "EmbedBlockRecord": "VZvVfu52RZK81WG0Dxp-FQ",
+  "ExternalLinkRecord": "Yk1ge9eTTf25Iwph1Dx3_g",
+  "FileRecord": "GjWw8t-hTFaYYWyc53FeIg",
+  "GroupingBlockRecord": "TBuD6qQOSDy6i9dM3T_XEA",
+  "GroupingItemRecord": "BeM4dW2OQYWKc9iBZUyMeg",
+  "HomePageRecord": "X_tZn3TxQY28ltSyjZUGHQ",
+  "ImageBlockRecord": "ZdBokLsWRgKKjHrKeJzdpw",
+  "InternalLinkRecord": "GWnhoQDqQoGJj4-sQTVttw",
+  "MenuItemInternalRecord": "FmR0GklXRq-7Ix8-5MaJjw",
+  "NotFoundPageRecord": "d_AvMVoMSqmNbMqx-NdqIw",
+  "PagePartialBlockRecord": "V80liDVtRC-UYgd3Sm-dXg",
+  "PagePartialRecord": "DAdmJVaoTZKumF9GYBZDfQ",
+  "PageRecord": "LjXdkuCdQxCFT4hv8_ayew",
+  "PhoneLinkRecord": "C5fWG5CYRJ69oqaP6CjYdA",
+  "RedirectRuleRecord": "c0S4sIyiRK-EewRhFEFPLA",
+  "SchemaMigrationRecord": "EkWwcYfPQSGXskAZKO_tTg",
+  "TableBlockRecord": "0SxYNS2CR1it_5LHYWuEQg",
+  "TextBlockRecord": "PAk40zGjQJCcDXXPgygUrA",
+  "TextImageBlockRecord": "BRbU6VwTRgmG5SbwUs0rBg",
+  "TranslationRecord": "Sk_th2TFQ-q80D15KNzjMg",
+  "VideoBlockRecord": "QYfZyBzIRWKxA1MinIR0aQ",
+  "VideoEmbedBlockRecord": "gezG9nO7SfaiWcWnp-HNqw",
+  "VideoTextTrackRecord": "Us90isT5SgeXHuetcEj8eA"
 }

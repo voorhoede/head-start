@@ -8,36 +8,12 @@ dotenv.config({
   allowEmptyValues: Boolean(process.env.CI),
 });
 
-type ItemTypesMap = {
-  [modelApiKey: string]: { id: string };
-};
-
-/**
- * Downloads DatoCMS item type metadata from the Management API.
- *
- * Output: `src/lib/datocms/itemTypes.json`
- * - key: model API key (e.g. `text_block`)
- * - value: `{ id }`
- */
-async function getItemTypesMetadata() {
-  const client = buildClient({
-    apiToken: process.env.DATOCMS_API_TOKEN!,
-    environment: datocmsEnvironment,
-  });
-
-  const itemTypesMap: ItemTypesMap = {};
-
-  const itemTypes = await client.itemTypes.list();
-
-  for (const itemType of itemTypes) {
-    const apiKey = itemType.api_key;
-    if (!apiKey) continue;
-    if (!itemType.id) continue;
-
-    itemTypesMap[apiKey] = { id: itemType.id };
-  }
-
-  return itemTypesMap;
+function toTypename(apiKey: string): string {
+  const pascalCase = apiKey
+    .split(/[_-]/)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join('');
+  return `${pascalCase}Record`;
 }
 
 async function downloadItemTypes() {
@@ -45,21 +21,39 @@ async function downloadItemTypes() {
   if (!token) {
     if (process.env.CI) {
       console.log(
-        'DATOCMS_API_TOKEN is missing; skipping item type download.',
+        'DATOCMS_API_TOKEN is missing; skipping item types download.',
       );
       return;
     }
     throw new Error(
-      'DATOCMS_API_TOKEN is required to download item types. Set it and rerun `npm run prep:download-item-types`.',
+      'DATOCMS_API_TOKEN is required. Set it and rerun `npm run prep:download-item-types`.',
     );
   }
 
-  process.env.DATOCMS_API_TOKEN = token;
-  const itemTypes = await getItemTypesMetadata();
+  const client = buildClient({
+    apiToken: token,
+    environment: datocmsEnvironment,
+  });
 
-  const itemTypesPath = './src/lib/datocms/itemTypes.json';
-  await mkdir(dirname(itemTypesPath), { recursive: true });
-  await writeFile(itemTypesPath, JSON.stringify(itemTypes, null, 2));
+  const itemTypes = await client.itemTypes.list();
+  const typenameMap: Record<string, string> = {};
+
+  for (const itemType of itemTypes) {
+    const apiKey = itemType.api_key;
+    if (!apiKey || !itemType.id) continue;
+
+    const typename = toTypename(apiKey);
+    typenameMap[typename] = itemType.id;
+  }
+
+  const sortedEntries = Object.entries(typenameMap)
+    .sort(([a], [b]) => a.localeCompare(b));
+
+  const jsonContent = Object.fromEntries(sortedEntries);
+
+  const filePath = './src/lib/datocms/itemTypes.json';
+  await mkdir(dirname(filePath), { recursive: true });
+  await writeFile(filePath, JSON.stringify(jsonContent, null, 2));
 
   console.log('Item types downloaded');
 }

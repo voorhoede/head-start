@@ -126,12 +126,10 @@ query MyPage {
 
 ### Auto-generated files (don't edit)
 
-- `src/lib/datocms/itemTypes.json` — model API key → item type id
-- `src/lib/datocms/modelApiKeys.ts` — `__typename` → model API key
+- `src/lib/datocms/itemTypes.json` — `__typename` → item type id
 
 When DatoCMS models change, regenerate:
 
 ```bash
 npm run prep:download-item-types
-npm run prep:generate-model-api-keys
 ```

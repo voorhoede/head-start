@@ -1,14 +1,13 @@
-import { defineCollection, z } from 'astro:content';
+import { combine } from '@lib/content';
+import { datocmsCollection, datocmsRequest } from '@lib/datocms';
 import {
+  PageRoute as fragment,
   PageCollectionEntry as query,
   type PageCollectionEntryQuery,
-  PageRoute as fragment,
   type PageRouteFragment,
   type SiteLocale
 } from '@lib/datocms/types';
-import { datocmsCollection, datocmsRequest } from '@lib/datocms';
-import { combine } from '@lib/content';
-import { getPagePath, getParentPages } from '@lib/routing/page';
+import { isLocale } from '@lib/i18n';
 import {
   formatBreadcrumb,
   getPageHref,
@@ -16,10 +15,12 @@ import {
   type Breadcrumb,
   type PageUrl,
 } from '@lib/routing';
-import { isLocale } from '@lib/i18n';
+import { getPagePath, getParentPages } from '@lib/routing/page';
+import { defineCollection, z } from 'astro:content';
 
 type Meta = {
   recordId: string; // The record ID of the entry in DatoCMS
+  recordType: string; // The type of the record in DatoCMS
   path: string; // The path of the page, excluding the locale
   locale: SiteLocale;
   breadcrumbs: Breadcrumb[]; // Breadcrumbs for the page, used for navigation
@@ -78,6 +79,7 @@ const loadEntry = async (path: string, locale?: SiteLocale | null) => {
     id: combine({ id: path, locale }), // Combine the path and locale to create a unique ID for the entry
     meta: {
       recordId: record.id,
+      recordType: record.__typename,
       path,
       locale,
       breadcrumbs,

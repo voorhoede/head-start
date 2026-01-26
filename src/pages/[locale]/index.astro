@@ -1,11 +1,11 @@
 ---
+import Blocks from '@blocks/Blocks.astro';
+import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
+import Layout from '@layouts/Default.astro';
 import { datocmsRequest } from '@lib/datocms';
 import type { HomePageQuery } from '@lib/datocms/types';
 import { locales } from '@lib/i18n';
 import { getHomeHref, type PageUrl } from '@lib/routing';
-import Layout from '@layouts/Default.astro';
-import Blocks from '@blocks/Blocks.astro';
-import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
 import query from './_index.query.graphql';
 
 export async function getStaticPaths() {
@@ -24,9 +24,8 @@ const pageUrls = locales.map((locale) => ({
 <Layout
   pageUrls={pageUrls}
   seoMetaTags={page._seoMetaTags}
-  datocmsRecord={{ __typename: page.__typename, id: page.id }}
 >
-  <PreviewModeSubscription query={query} variables={variables} />
+  <PreviewModeSubscription query={query} variables={variables} record={{ type: page.__typename, id: page.id }} />
   <h1>{page.title}</h1>
   <Blocks blocks={page.bodyBlocks} />
 </Layout>
