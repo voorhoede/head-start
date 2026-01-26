@@ -1,8 +1,13 @@
 ---
-import { getProjectName } from './features/EditInDatoCms/lib/buildEditorLink';
+import siteDataUntyped from '@lib/site.json';
 
+type SiteData = {
+  internalDomain?: string;
+};
+
+const siteData = siteDataUntyped as SiteData;
 const { datocmsEnvironment, datocmsToken, isPreview } = Astro.locals;
-const projectName = getProjectName();
+const projectName = siteData.internalDomain?.split('.')[0] || null;
 ---
 
 <preview-mode
