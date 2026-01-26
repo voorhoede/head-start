@@ -9,7 +9,6 @@ type Query = string;
 type Variables = { [key: string]: string };
 type QueryVariables = { query: Query; variables?: Variables };
 
-
 /**
  * Each web page can have multiple preview mode subscriptions.
  * For example the page template and a menu component can both have a subscription.
@@ -83,8 +82,6 @@ class PreviewMode extends HTMLElement {
       }
     });
 
-   
-
     const updateBarStatus = () => {
       const status = this.$connectionStatus.get();
       const error = this.$connectionError.get();
@@ -119,12 +116,12 @@ class PreviewMode extends HTMLElement {
     if (!this.editableRecord?.id || !this.editableRecord?.type || !this.#datocmsProject) {
       return;
     }
-    
+
     const itemTypeId = PreviewMode.getItemTypeId(this.editableRecord.type);
     if (!itemTypeId) {
       return;
     }
-    
+
     this.editLinkElement.href = `https://${this.#datocmsProject}.admin.datocms.com/environments/${this.#datocmsEnvironment}/editor/item_types/${itemTypeId}/items/${this.editableRecord.id}/edit`;
   }
   
