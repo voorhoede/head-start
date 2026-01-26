@@ -18,11 +18,15 @@ function toTypename(apiKey: string): string {
 
 async function downloadItemTypes() {
   const token = process.env.DATOCMS_API_TOKEN?.trim();
+  const filePath = './src/lib/datocms/itemTypes.json';
+  
   if (!token) {
     if (process.env.CI) {
       console.log(
-        'DATOCMS_API_TOKEN is missing; skipping item types download.',
+        'DATOCMS_API_TOKEN is missing; creating empty itemTypes.json for CI.',
       );
+      await mkdir(dirname(filePath), { recursive: true });
+      await writeFile(filePath, JSON.stringify({}, null, 2));
       return;
     }
     throw new Error(
@@ -51,7 +55,6 @@ async function downloadItemTypes() {
 
   const jsonContent = Object.fromEntries(sortedEntries);
 
-  const filePath = './src/lib/datocms/itemTypes.json';
   await mkdir(dirname(filePath), { recursive: true });
   await writeFile(filePath, JSON.stringify(jsonContent, null, 2));
 
