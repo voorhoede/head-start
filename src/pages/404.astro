@@ -20,10 +20,7 @@ const variables = { locale };
 const { page } = await datocmsRequest<NotFoundPageQuery, true>({ query, variables });
 ---
 
-<Layout
-  pageUrls={[]}
-  seoMetaTags={[noIndexTag, titleTag(page.title)]}
->
+<Layout pageUrls={[]} seoMetaTags={[noIndexTag, titleTag(page.title)]}>
   <h1>{page.title} {Astro.params.locale}</h1>
   <Blocks blocks={page.bodyBlocks} />
 </Layout>
