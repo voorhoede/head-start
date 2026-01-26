@@ -66,9 +66,15 @@ const variables = { locale, slug };
 const { page } = await datocmsRequest<PageQuery>({ query, variables });
 ---
 
-<PreviewModeSubscription query={ query } variables={ variables }  />
+<PreviewModeSubscription
+  query={query}
+  variables={variables}
+  record={{ type: page.__typename, id: page.id }}
+/>
 <h1>{page.title}</h1>
 ```
+
+The `record` prop is used to generate the "edit page" link in the preview bar.
 
 ## Preview mode bar
 
@@ -76,40 +82,27 @@ When in preview mode a bar in the user interface displays the status of the conn
 
 ## Edit in DatoCMS link
 
-In preview mode, the preview bar shows an **"edit in DatoCMS"** link that opens the record editor directly.
-
-### Setup
-
-The link requires:
-
-- `@lib/site.json` with `internalDomain` (e.g. `head-start.admin.datocms.com`)
-- `datocms-environment.ts` with the target environment
-- GraphQL queries must include `id` and `__typename` for records you want to edit
+In preview mode, the preview bar shows an **"edit page"** link that opens the record editor directly in DatoCMS.
 
 ### How it works
 
-The URL is built from:
+The link is automatically generated from the `record` prop passed to `PreviewModeSubscription`. The URL is built from:
 - **Project name**: extracted from `internalDomain` in `@lib/site.json`
 - **Environment**: from `datocms-environment.ts`
-- **Record info**: `id` + `__typename` → resolved to `itemTypeId` via auto-generated mappings
+- **Record info**: `id` + `type` (from `record` prop) → resolved to `itemTypeId` via auto-generated mappings
 
 If any part can't be resolved, the link doesn't render.
 
-**URL format:**
-
-```text
-https://{project}.admin.datocms.com/environments/{environment}/editor/item_types/{itemTypeId}/items/{recordId}/edit
-```
-
 ### Usage
 
-Pass `datocmsRecord` to the layout:
+Pass the `record` prop to `PreviewModeSubscription`:
 
 ```astro
-<Layout
-  datocmsRecord={{ __typename: page.__typename, id: page.id }}
-  ...
->
+<PreviewModeSubscription
+  query={query}
+  variables={variables}
+  record={{ type: page.__typename, id: page.id }}
+/>
 ```
 
 Your GraphQL query needs:
@@ -124,9 +117,9 @@ query MyPage {
 }
 ```
 
-### Auto-generated files (don't edit)
+### Auto-generated files
 
-- `src/lib/datocms/itemTypes.json` — `__typename` → item type id
+- `src/lib/datocms/itemTypes.json` — `__typename` → item type id (generated, in `.gitignore`)
 
 When DatoCMS models change, regenerate:
 
