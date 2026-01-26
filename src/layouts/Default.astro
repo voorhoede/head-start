@@ -15,13 +15,11 @@ import PerfHead from './PerfHead/PerfHead.astro';
 import SeoHead from './SeoHead/SeoHead.astro';
 import { fontFamilyArchivo } from '@assets/fonts';
 import '@assets/a11y.css';
-import type { DatoCmsRecordIdentity } from '@lib/datocms/recordIdentity';
 
 interface Props {
   breadcrumbs?: Breadcrumb[];
   pageUrls: PageUrl[];
   seoMetaTags: Tag[];
-  datocmsRecord?: DatoCmsRecordIdentity | null;
 }
 
 const { locale = defaultLocale } = Astro.params as { locale?: SiteLocale };
@@ -29,7 +27,7 @@ const data = await datocmsRequest<DefaultLayoutQuery>({
   query,
   variables: { locale },
 });
-const { breadcrumbs = [], pageUrls, seoMetaTags, datocmsRecord } = Astro.props;
+const { breadcrumbs = [], pageUrls, seoMetaTags } = Astro.props;
 const mainContentId = 'content';
 const menuItems = data.app?.menuItems ?? [];
 ---
@@ -47,7 +45,7 @@ const menuItems = data.app?.menuItems ?? [];
     <StructuredData />
   </head>
   <body>
-    <PreviewModeProvider datocmsRecord={datocmsRecord}>
+    <PreviewModeProvider>
       <SkipLink targetId={mainContentId} />
       <div {...datocmsNoIndex}>
         <AppHeader {menuItems} {pageUrls} />

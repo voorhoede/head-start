@@ -1,19 +1,12 @@
 ---
-import type { DatoCmsRecordIdentity } from '@lib/datocms/recordIdentity';
 import PreviewMode from './PreviewMode.astro';
 import PreviewModeLogin from './PreviewModeLogin.astro';
 const { isPreview, isPreviewAuthOk } = Astro.locals;
-
-interface Props {
-  datocmsRecord?: DatoCmsRecordIdentity | null;
-}
-
-const { datocmsRecord } = Astro.props;
 ---
 {
   isPreview
     ? isPreviewAuthOk
-      ? <PreviewMode datocmsRecord={ datocmsRecord }><slot /></PreviewMode>
+      ? <PreviewMode><slot /></PreviewMode>
       : <PreviewModeLogin />
     : <slot />
 }

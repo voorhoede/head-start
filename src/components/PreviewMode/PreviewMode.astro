@@ -1,10 +1,5 @@
 ---
-import type { DatoCmsRecordIdentity } from '@lib/datocms/recordIdentity';
 import { getProjectName } from './features/EditInDatoCms/lib/buildEditorLink';
-
-interface Props {
-  datocmsRecord?: DatoCmsRecordIdentity | null;
-}
 
 const { datocmsEnvironment, datocmsToken, isPreview } = Astro.locals;
 const projectName = getProjectName();
