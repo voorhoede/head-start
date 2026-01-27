@@ -93,17 +93,7 @@ const raise = (message: string) => {
     
     return (
       <>
-        {/* eslint-disable-next-line astro/jsx-a11y/anchor-is-valid */}
-        <a
-          class="block-name-label"
-          data-edit-block
-          data-field-path={blockFieldPath ?? undefined}
-          data-block-name={blockName}
-          target="_blank"
-          title={blockFieldPath ?? undefined}
-        >
-          {blockName}
-        </a>
+        <span data-block-name={blockName} data-block-field-path={blockFieldPath ?? undefined} style="display: none;" aria-hidden="true" />
         {__typename === 'GroupingBlockRecord' && blockFieldPath ? (
           //@ts-expect-error - since block can be any block its type is conflated to `never`.
           <Block block={block} fieldPath={blockFieldPath} />
@@ -116,23 +106,3 @@ const raise = (message: string) => {
   })
 }
 
-<style>
-  :global(.block-name-label) {
-    display: none;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 0.25em 0.5em;
-    font-size: 0.75em;
-    font-family: monospace;
-    text-decoration: none;
-  }
-
-  :global([data-show-block-names="true"] .block-name-label) {
-    display: inline-block;
-  }
-
-  :global([data-show-block-names="true"] .block-name-label[href]) {
-    cursor: pointer;
-    text-decoration: underline;
-  }
-</style>

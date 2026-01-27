@@ -20,7 +20,7 @@ const projectName = siteData.internalDomain?.split('.')[0] || null;
     <div class="preview-mode-actions">
       {/* eslint-disable-next-line astro/jsx-a11y/anchor-is-valid */}
       <a data-edit-record target="_blank">edit page</a>
-      <button data-toggle-block-names type="button">toggle block names</button>
+      <button data-toggle-block-names type="button">toggle blocks</button>
       <a href={ `/api/preview/exit/?location=${Astro.url}` }>exit preview</a>
     </div>
   </preview-mode-bar>
@@ -86,6 +86,30 @@ a[data-edit-record]:not([href]) {
   0%   { opacity: 1; }
   50%  { opacity: 0.2; }
   100% { opacity: 1; }
+}
+
+:global(.block-name-label) {
+  display: none;
+  background: rgb(245, 88, 62);
+  color: white;
+  font-size: .75rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  border-radius: .25rem;
+  padding: .25rem .5rem;
+  z-index: 9999;
+  pointer-events: auto;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: 1px solid white;
+}
+
+:global([data-show-block-names="true"] .block-name-label) {
+  display: inline-block;
+}
+
+:global([data-show-block-names="true"] .block-name-label[href]:hover) {
+  background: rgb(203, 74, 51);
 }
 
 </style>

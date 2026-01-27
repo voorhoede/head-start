@@ -44,9 +44,13 @@ class PreviewMode extends HTMLElement {
     return hash.toString(36);
   }
   
-  static getItemTypeId (typename?: string): string { 
+  static getItemTypeId (typename?: string): string | null { 
     const key = typename as keyof typeof itemTypesJson;
-    return itemTypesJson[key] ?? null;
+    const value = itemTypesJson[key];
+    if (typeof value === 'string') {
+      return value;
+    }
+    return null;
   }
   
   constructor() { 
@@ -113,7 +117,6 @@ class PreviewMode extends HTMLElement {
     const storedState = localStorage.getItem('preview-mode-show-block-names');
     const initialShowState = storedState === 'true';
     this.$showBlockNames.set(initialShowState);
-    this.updateBlockNamesVisibility();
 
     this.$showBlockNames.listen((show) => {
       localStorage.setItem('preview-mode-show-block-names', show.toString());
@@ -125,9 +128,45 @@ class PreviewMode extends HTMLElement {
     });
   }
 
+  createBlockLabels() {
+    const wrapperElements = document.querySelectorAll<HTMLElement>('[data-block-name]');
+    wrapperElements.forEach((wrapper) => {
+      const existingLabel = wrapper.previousElementSibling as HTMLAnchorElement | null;
+      if (existingLabel?.classList.contains('block-name-label')) {
+        return;
+      }
+      
+      const blockName = wrapper.dataset.blockName;
+      const fieldPath = wrapper.dataset.blockFieldPath;
+      
+      if (blockName) {
+        const label = document.createElement('a');
+        label.className = 'block-name-label';
+        label.setAttribute('data-edit-block', '');
+        if (fieldPath) {
+          label.setAttribute('data-field-path', fieldPath);
+        }
+        label.setAttribute('data-block-name', blockName);
+        label.setAttribute('target', '_blank');
+        if (fieldPath) {
+          label.setAttribute('title', fieldPath);
+        }
+        label.textContent = blockName;
+        wrapper.parentNode?.insertBefore(label, wrapper);
+      }
+    });
+  }
+
   updateBlockNamesVisibility() {
     const show = this.$showBlockNames.get();
     document.documentElement.dataset.showBlockNames = show ? 'true' : 'false';
+    
+    if (show && this.editableRecord?.id && this.editableRecord?.type && this.#datocmsProject) {
+      const itemTypeId = PreviewMode.getItemTypeId(this.editableRecord.type);
+      if (itemTypeId) {
+        this.setBlockEditLinks(itemTypeId);
+      }
+    }
   }
 
   getRecordEditUrl(itemTypeId: string, recordId: string) {
@@ -169,6 +208,9 @@ class PreviewMode extends HTMLElement {
   }
 
   connectedCallback() {
+    this.createBlockLabels();
+    this.updateBlockNamesVisibility();
+    
     if (!this.editableRecord?.id || !this.editableRecord?.type || !this.#datocmsProject) {
       return;
     }
