@@ -128,35 +128,6 @@ class PreviewMode extends HTMLElement {
     });
   }
 
-  createBlockLabels() {
-    const wrapperElements = document.querySelectorAll<HTMLElement>('[data-block-name]');
-    wrapperElements.forEach((wrapper) => {
-      const existingLabel = wrapper.previousElementSibling as HTMLAnchorElement | null;
-      if (existingLabel?.classList.contains('block-name-label')) {
-        return;
-      }
-      
-      const blockName = wrapper.dataset.blockName;
-      const fieldPath = wrapper.dataset.blockFieldPath;
-      
-      if (blockName) {
-        const label = document.createElement('a');
-        label.className = 'block-name-label';
-        label.setAttribute('data-edit-block', '');
-        if (fieldPath) {
-          label.setAttribute('data-field-path', fieldPath);
-        }
-        label.setAttribute('data-block-name', blockName);
-        label.setAttribute('target', '_blank');
-        if (fieldPath) {
-          label.setAttribute('title', fieldPath);
-        }
-        label.textContent = blockName;
-        wrapper.parentNode?.insertBefore(label, wrapper);
-      }
-    });
-  }
-
   updateBlockNamesVisibility() {
     const show = this.$showBlockNames.get();
     document.documentElement.dataset.showBlockNames = show ? 'true' : 'false';
@@ -208,7 +179,6 @@ class PreviewMode extends HTMLElement {
   }
 
   connectedCallback() {
-    this.createBlockLabels();
     this.updateBlockNamesVisibility();
     
     if (!this.editableRecord?.id || !this.editableRecord?.type || !this.#datocmsProject) {

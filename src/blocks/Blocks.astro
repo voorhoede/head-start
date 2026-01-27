@@ -93,7 +93,16 @@ const raise = (message: string) => {
     
     return (
       <>
-        <span data-block-name={blockName} data-block-field-path={blockFieldPath ?? undefined} style="display: none;" aria-hidden="true" />
+        {/* eslint-disable-next-line astro/jsx-a11y/anchor-is-valid */}
+        <a
+          class="block-name-label"
+          data-edit-block
+          data-field-path={blockFieldPath ?? undefined}
+          data-block-name={blockName}
+          target="_blank"
+        >
+          {blockName}
+        </a>
         {__typename === 'GroupingBlockRecord' && blockFieldPath ? (
           //@ts-expect-error - since block can be any block its type is conflated to `never`.
           <Block block={block} fieldPath={blockFieldPath} />
