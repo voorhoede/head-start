@@ -20,6 +20,7 @@ const projectName = siteData.internalDomain?.split('.')[0] || null;
     <div class="preview-mode-actions">
       {/* eslint-disable-next-line astro/jsx-a11y/anchor-is-valid */}
       <a data-edit-record target="_blank">edit page</a>
+      <button data-toggle-block-names type="button">toggle block names</button>
       <a href={ `/api/preview/exit/?location=${Astro.url}` }>exit preview</a>
     </div>
   </preview-mode-bar>
@@ -40,6 +41,15 @@ preview-mode-bar {
 
 a {
   color: white;
+}
+
+button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
 }
 
 a[data-edit-record]:not([href]) {
@@ -77,4 +87,5 @@ a[data-edit-record]:not([href]) {
   50%  { opacity: 0.2; }
   100% { opacity: 1; }
 }
+
 </style>

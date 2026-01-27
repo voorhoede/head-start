@@ -1,7 +1,7 @@
 ---
 import Blocks from '@blocks/Blocks.astro';
 
-const { block } = Astro.props;
+const { block, fieldPath } = Astro.props;
 ---
 
-<Blocks blocks={[block]} />
+<Blocks blocks={[block]} fieldPath={fieldPath} />

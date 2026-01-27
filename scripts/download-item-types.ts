@@ -40,7 +40,8 @@ async function downloadItemTypes() {
   });
 
   const itemTypes = await client.itemTypes.list();
-  const typenameMap: Record<string, string> = {};
+  const typenameMap: Record<string, string | { id: string; focusField: string }> = {};
+  const blockFieldsMap: Record<string, string> = {};
 
   for (const itemType of itemTypes) {
     const apiKey = itemType.api_key;
@@ -48,12 +49,46 @@ async function downloadItemTypes() {
 
     const typename = toTypename(apiKey);
     typenameMap[typename] = itemType.id;
+    
+    const fields = await client.fields.list(itemType.id);
+    
+    const focusField = fields.find((field) => {
+      const fieldType = field.field_type;
+      if (fieldType === 'rich_text' || fieldType === 'structured_text') {
+        return true;
+      }
+      if (fieldType === 'file' || fieldType === 'video') {
+        return true;
+      }
+      if (fieldType === 'text' && field.api_key === 'url') {
+        return true;
+      }
+      if (fieldType === 'link') {
+        const validators = field.validators as { itemItemType?: { itemTypes?: unknown[] } } | undefined;
+        if (validators?.itemItemType?.itemTypes?.length) {
+          return true;
+        }
+      }
+      return false;
+    });
+
+    if (focusField?.api_key) {
+      blockFieldsMap[apiKey] = focusField.api_key;
+    }
   }
 
-  const sortedEntries = Object.entries(typenameMap)
+  const sortedTypenameEntries = Object.entries(typenameMap)
     .sort(([a], [b]) => a.localeCompare(b));
+  const typenameContent = Object.fromEntries(sortedTypenameEntries);
 
-  const jsonContent = Object.fromEntries(sortedEntries);
+  const sortedBlockFieldsEntries = Object.entries(blockFieldsMap)
+    .sort(([a], [b]) => a.localeCompare(b));
+  const blockFieldsContent = Object.fromEntries(sortedBlockFieldsEntries);
+
+  const jsonContent = {
+    ...typenameContent,
+    _blockFields: blockFieldsContent,
+  };
 
   await mkdir(dirname(filePath), { recursive: true });
   await writeFile(filePath, JSON.stringify(jsonContent, null, 2));

@@ -20,10 +20,12 @@ class PreviewMode extends HTMLElement {
   subscriptionElements: PreviewModeSubscription[];
   editableRecord: { id: string, type: string } | null;
   editLinkElement: HTMLAnchorElement;
+  toggleBlockNamesButton: HTMLButtonElement;
   $connections = map<Connection>({});
   $connectionError = atom<boolean>(false);
   $connectionStatus = atom<ConnectionStatus>('closed');
   $updateCounts = map<{ [key: string]: number }>({});
+  $showBlockNames = atom<boolean>(false);
   #datocmsToken: string = '';
   #datocmsEnvironment: string = '';
   #datocmsProject: string = '';
@@ -56,6 +58,7 @@ class PreviewMode extends HTMLElement {
       this.subscriptionElements.find((element) => element.dataset.record)?.dataset.record ?? 'null'
     );
     this.editLinkElement = this.querySelector('[data-edit-record]') as HTMLAnchorElement;
+    this.toggleBlockNamesButton = this.querySelector('[data-toggle-block-names]') as HTMLButtonElement;
 
     const { datocmsEnvironment, datocmsToken, datocmsProject } = this.dataset;
     if (!datocmsEnvironment) {
@@ -106,6 +109,59 @@ class PreviewMode extends HTMLElement {
     subscriptionConfigs.forEach(({ query, variables }) => {
       this.subscribe({ query, variables });
     });
+
+    const storedState = localStorage.getItem('preview-mode-show-block-names');
+    const initialShowState = storedState === 'true';
+    this.$showBlockNames.set(initialShowState);
+    this.updateBlockNamesVisibility();
+
+    this.$showBlockNames.listen((show) => {
+      localStorage.setItem('preview-mode-show-block-names', show.toString());
+      this.updateBlockNamesVisibility();
+    });
+
+    this.toggleBlockNamesButton?.addEventListener('click', () => {
+      this.$showBlockNames.set(!this.$showBlockNames.get());
+    });
+  }
+
+  updateBlockNamesVisibility() {
+    const show = this.$showBlockNames.get();
+    document.documentElement.dataset.showBlockNames = show ? 'true' : 'false';
+  }
+
+  getRecordEditUrl(itemTypeId: string, recordId: string) {
+    return `https://${this.#datocmsProject}.admin.datocms.com/environments/${this.#datocmsEnvironment}/editor/item_types/${itemTypeId}/items/${recordId}/edit`;
+  }
+
+  withLocaleFieldPath(fieldPath: string) {
+    const locale = document.documentElement.lang;
+    if (!locale) {
+      return fieldPath;
+    }
+    const parts = fieldPath.split('.');
+    if (parts.length < 2) {
+      return `${fieldPath}.${locale}`;
+    }
+    const [root, maybeLocale, ...rest] = parts;
+    if (maybeLocale === locale) {
+      return fieldPath;
+    }
+    return [root, locale, maybeLocale, ...rest].join('.');
+  }
+
+  setBlockEditLinks(itemTypeId: string) {
+    const baseUrl = this.getRecordEditUrl(itemTypeId, this.editableRecord!.id);
+    const anchors = document.querySelectorAll<HTMLAnchorElement>('[data-edit-block]');
+    anchors.forEach((anchor) => {
+      const fieldPath = anchor.dataset.fieldPath;
+      if (!fieldPath) {
+        return;
+      }
+      const url = new URL(baseUrl);
+      url.hash = `fieldPath=${this.withLocaleFieldPath(fieldPath)}`;
+      anchor.href = url.toString();
+    });
   }
 
   getSubscriptionConfigs () {
@@ -122,7 +178,8 @@ class PreviewMode extends HTMLElement {
       return;
     }
 
-    this.editLinkElement.href = `https://${this.#datocmsProject}.admin.datocms.com/environments/${this.#datocmsEnvironment}/editor/item_types/${itemTypeId}/items/${this.editableRecord.id}/edit`;
+    this.editLinkElement.href = this.getRecordEditUrl(itemTypeId, this.editableRecord.id);
+    this.setBlockEditLinks(itemTypeId);
   }
   
   getInstanceCounts () {

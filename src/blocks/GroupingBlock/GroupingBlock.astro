@@ -6,38 +6,55 @@ import { Tabs, TabsTab, TabsPanel } from '@components/Tabs';
 
 export interface Props {
   block: GroupingBlockFragment;
+  fieldPath?: string;
 }
 
 const isLayout = (layout: GroupingBlockFragment['layout']) => block.layout === layout;
 
-const { block } = Astro.props;
+const { block, fieldPath } = Astro.props;
 const items = block.items;
+
+function buildNestedFieldPath(basePath: string, itemIndex: number): string {
+  if (basePath.endsWith('.items')) {
+    return `${basePath}.${itemIndex}.blocks`;
+  }
+  return `${basePath}.items.${itemIndex}.blocks`;
+}
 ---
 { isLayout('stack-titled') && (
-  items.map(item => (
+  items.map((item, itemIndex) => (
     <section>
       <h2>{ item.title }</h2>
-      <Blocks blocks={ item.blocks } />
+      <Blocks
+        blocks={ item.blocks }
+        fieldPath={ fieldPath ? buildNestedFieldPath(fieldPath, itemIndex) : undefined }
+      />
     </section>
   ))
 )}
 
 { isLayout('stack-untitled') && (
-  items.map(item => (
-    <Blocks blocks={ item.blocks } />
+  items.map((item, itemIndex) => (
+    <Blocks
+      blocks={ item.blocks }
+      fieldPath={ fieldPath ? buildNestedFieldPath(fieldPath, itemIndex) : undefined }
+    />
   ))
 )}
 
 { (isLayout('accordion-open') || isLayout('accordion-closed')) && (
   <Accordion>
-    { items.map(item => (
+    { items.map((item, itemIndex) => (
       <AccordionItem
         name={ `block-${block.id}` }
         open={ isLayout('accordion-open') }
       >
         <Fragment slot="heading">{ item.title }</Fragment>
         <Fragment slot="body">
-          <Blocks blocks={ item.blocks }/>
+          <Blocks
+            blocks={ item.blocks }
+            fieldPath={ fieldPath ? buildNestedFieldPath(fieldPath, itemIndex) : undefined }
+          />
         </Fragment>
       </AccordionItem>
     ))}
@@ -46,10 +63,13 @@ const items = block.items;
 
 { isLayout('tabs') && (
   <Tabs>
-    { items.map(item => (<>
+    { items.map((item, itemIndex) => (<>
       <TabsTab>{ item.title }</TabsTab>
       <TabsPanel>
-        <Blocks blocks={ item.blocks }/>
+        <Blocks
+          blocks={ item.blocks }
+          fieldPath={ fieldPath ? buildNestedFieldPath(fieldPath, itemIndex) : undefined }
+        />
       </TabsPanel>
     </>))}
   </Tabs>
