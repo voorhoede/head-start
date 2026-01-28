@@ -1,8 +1,8 @@
+import { collectionMap } from '@content/config';
+import { SiteLocale } from '@lib/datocms/types';
+import { getLocale, isLocale } from '@lib/i18n';
 import { getCollection as getAstroCollection, getEntry as getAstroCollectionEntry } from 'astro:content';
 import { HEAD_START_PREVIEW, PUBLIC_IS_PRODUCTION } from 'astro:env/server';
-import { getLocale, isLocale } from '@lib/i18n';
-import { SiteLocale } from '@lib/datocms/types';
-import { collectionMap } from '@content/config';
 
 export type CollectionName = keyof typeof collectionMap;
 
@@ -36,17 +36,18 @@ export async function getCollection<K extends CollectionName>(
 ): Promise<CollectionEntry<K>[]> {
   const entries = (!filter && !locale) 
     ? await getAstroCollection(collection)
-    : await getAstroCollection(collection, (entry: BareCollectionEntry<K>) => {
-      const entryLocale = split(entry.id).locale;
+    : await getAstroCollection(collection, (entry) => {
+      const bareEntry = entry as BareCollectionEntry<K>;
+      const entryLocale = split(bareEntry.id).locale;
       return [
         // Check if the entry's locale is set and matches the requested locale
         !locale || !entryLocale || entryLocale === locale,
         // If a filter function is provided, apply it to the entry
-        !filter || (typeof filter === 'function' && filter(entry)),
+        !filter || (typeof filter === 'function' && filter(bareEntry)),
       ].every(Boolean);
     });
   
-  return entries.map(entry => addSubscription(entry, collection));
+  return entries.map(entry => addSubscription(entry as BareCollectionEntry<K>, collection));
 }
 
 /**
@@ -70,7 +71,7 @@ export async function getEntry<K extends CollectionName>(
       entry = normalizeEntry(liveEntry, collection);
     }
   } else {
-    entry = await getAstroCollectionEntry(collection, combine({ id, locale }));
+    entry = await getAstroCollectionEntry(collection, combine({ id, locale })) as BareCollectionEntry<K> | undefined;
   }
   
   if (!entry) {
