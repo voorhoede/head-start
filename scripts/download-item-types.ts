@@ -10,9 +10,8 @@ dotenv.config({
 
 // Override focus field detection if auto-detection picks the wrong field.
 // Useful when a block has multiple content fields and you want a specific one.
-// Format: block API key -> field API key
 const FOCUS_FIELD_OVERRIDES: Record<string, string> = {
-  'card_block': 'item',
+  'page_partial_block': 'items',
 };
 
 function toTypename(apiKey: string): string {
