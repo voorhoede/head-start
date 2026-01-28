@@ -126,3 +126,49 @@ When DatoCMS models change, regenerate:
 ```bash
 npm run prep:download-item-types
 ```
+
+## Block field path detection
+
+When clicking on a block label in preview mode, the system automatically generates a field path to focus the correct field in DatoCMS. This is done by detecting the "focus field" for each block type.
+
+### How it works
+
+The focus field is automatically detected based on field types:
+- **Rich/structured text fields** (primary content)
+- **Media fields** (file, video, image)
+- **JSON fields** (structured data like tables)
+- **Link fields** (with validators)
+- **URL text fields**
+
+**Metadata fields are excluded** (e.g., `title`, `layout`, `style`, `slug`, `id`) since they're configuration rather than editable content.
+
+The script finds the first field matching these criteria (excluding metadata) and uses it as the focus field.
+
+### Adding a new block
+
+When you add a new block type, the focus field is automatically detected when you run:
+
+```bash
+npm run prep:download-item-types
+```
+
+The script will:
+1. Find the first field matching the criteria above
+2. Use it as the focus field for that block type
+3. Generate the correct field path (e.g., `body_blocks.en.0.table` for TableBlock)
+
+### Manual override
+
+If automatic detection picks the wrong field, add an override in [`scripts/download-item-types.ts`](../scripts/download-item-types.ts):
+
+```typescript
+const FOCUS_FIELD_OVERRIDES: Record<string, string> = {
+  'card_block': 'item',  // block API key -> field API key
+};
+```
+
+**Finding the values:**
+- **Block API key**: Convert `__typename` to snake_case (`CardBlockRecord` → `card_block`) or check DatoCMS model settings
+- **Field API key**: Check DatoCMS field settings or the `_blockFields` section in `itemTypes.json`
+
+Then regenerate: `npm run prep:download-item-types`

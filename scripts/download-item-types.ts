@@ -8,6 +8,13 @@ dotenv.config({
   allowEmptyValues: Boolean(process.env.CI),
 });
 
+// Override focus field detection if auto-detection picks the wrong field.
+// Useful when a block has multiple content fields and you want a specific one.
+// Format: block API key -> field API key
+const FOCUS_FIELD_OVERRIDES: Record<string, string> = {
+  'card_block': 'item',
+};
+
 function toTypename(apiKey: string): string {
   const pascalCase = apiKey
     .split(/[_-]/)
@@ -43,21 +50,24 @@ async function downloadItemTypes() {
   const typenameMap: Record<string, string | { id: string; focusField: string }> = {};
   const blockFieldsMap: Record<string, string> = {};
 
-  for (const itemType of itemTypes) {
-    const apiKey = itemType.api_key;
-    if (!apiKey || !itemType.id) continue;
-
-    const typename = toTypename(apiKey);
-    typenameMap[typename] = itemType.id;
+  // Finds the field to focus when editing a block in preview mode.
+  function findFocusField(fields: Array<{ field_type: string; api_key: string; validators?: unknown }>) {
+    const metadataFields = new Set(['title', 'layout', 'style', 'slug', 'id', '_modelApiKey']);
     
-    const fields = await client.fields.list(itemType.id);
-    
-    const focusField = fields.find((field) => {
+    return fields.find((field) => {
+      if (metadataFields.has(field.api_key)) {
+        return false;
+      }
+      
       const fieldType = field.field_type;
+      
       if (fieldType === 'rich_text' || fieldType === 'structured_text') {
         return true;
       }
       if (fieldType === 'file' || fieldType === 'video') {
+        return true;
+      }
+      if (fieldType === 'json') {
         return true;
       }
       if (fieldType === 'text' && field.api_key === 'url') {
@@ -71,6 +81,22 @@ async function downloadItemTypes() {
       }
       return false;
     });
+  }
+
+  for (const itemType of itemTypes) {
+    const apiKey = itemType.api_key;
+    if (!apiKey || !itemType.id) continue;
+
+    const typename = toTypename(apiKey);
+    typenameMap[typename] = itemType.id;
+    
+    if (FOCUS_FIELD_OVERRIDES[apiKey]) {
+      blockFieldsMap[apiKey] = FOCUS_FIELD_OVERRIDES[apiKey];
+      continue;
+    }
+    
+    const fields = await client.fields.list(itemType.id);
+    const focusField = findFocusField(fields);
 
     if (focusField?.api_key) {
       blockFieldsMap[apiKey] = focusField.api_key;

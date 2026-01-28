@@ -87,8 +87,9 @@ const raise = (message: string) => {
     const modelApiKey = typenameToModelApiKey(__typename);
     const focusFieldApiKey = getFocusFieldApiKey(modelApiKey);
     const apiKeyPath = fieldPath ? toApiKey(fieldPath) : null;
-    const blockFieldPath = apiKeyPath
-      ? `${apiKeyPath}.${index}${focusFieldApiKey ? `.${focusFieldApiKey}` : ''}`
+    const blockBasePath = apiKeyPath ? `${apiKeyPath}.${index}` : null;
+    const blockFieldPath = blockBasePath
+      ? `${blockBasePath}${focusFieldApiKey ? `.${focusFieldApiKey}` : ''}`
       : null;
     
     return (
@@ -103,9 +104,9 @@ const raise = (message: string) => {
         >
           {blockName}
         </a>
-        {__typename === 'GroupingBlockRecord' && blockFieldPath ? (
+        {__typename === 'GroupingBlockRecord' && blockBasePath ? (
           //@ts-expect-error - since block can be any block its type is conflated to `never`.
-          <Block block={block} fieldPath={blockFieldPath} />
+          <Block block={block} fieldPath={blockBasePath} />
         ) : (
           //@ts-expect-error - since block can be any block its type is conflated to `never`.
           <Block block={block} />
