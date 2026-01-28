@@ -90,6 +90,7 @@ a[data-edit-record]:not([href]) {
 
 :global(.block-name-label) {
   display: none;
+  position: absolute;
   background: rgb(245, 88, 62);
   color: white;
   font-size: .75rem;
@@ -102,13 +103,16 @@ a[data-edit-record]:not([href]) {
   text-decoration: none;
   transition: all 0.2s ease;
   border: 1px solid white;
+  white-space: nowrap;
+  transform: translateY(-90%);
 }
 
 :global([data-show-block-names="true"] .block-name-label) {
-  display: inline-block;
+  display: block;
 }
 
-:global([data-show-block-names="true"] .block-name-label[href]:hover) {
+:global([data-show-block-names="true"] .block-name-label[href]:hover),
+:global([data-show-block-names="true"] .block-name-label.hover[href]) {
   background: rgb(203, 74, 51);
 }
 
@@ -116,6 +120,11 @@ a[data-edit-record]:not([href]) {
   opacity: 0.6;
   cursor: default;
   border-style: dashed;
+}
+
+:global([data-show-block-names="true"] [data-block-container].hover) {
+  outline: 2px solid rgb(255, 206, 197);
+  outline-offset: 2px;
 }
 
 </style>

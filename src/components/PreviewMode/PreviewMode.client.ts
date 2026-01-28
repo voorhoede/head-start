@@ -126,18 +126,98 @@ class PreviewMode extends HTMLElement {
     this.toggleBlockNamesButton?.addEventListener('click', () => {
       this.$showBlockNames.set(!this.$showBlockNames.get());
     });
+
+    this.#initBlockLabelHover();
   }
 
   updateBlockNamesVisibility() {
     const show = this.$showBlockNames.get();
     document.documentElement.dataset.showBlockNames = show ? 'true' : 'false';
     
-    if (show && this.editableRecord?.id && this.editableRecord?.type && this.#datocmsProject) {
-      const itemTypeId = PreviewMode.getItemTypeId(this.editableRecord.type);
-      if (itemTypeId) {
-        this.setBlockEditLinks(itemTypeId);
+    if (show) {
+      this.#positionBlockLabels();
+      if (this.editableRecord?.id && this.editableRecord?.type && this.#datocmsProject) {
+        const itemTypeId = PreviewMode.getItemTypeId(this.editableRecord.type);
+        if (itemTypeId) {
+          this.setBlockEditLinks(itemTypeId);
+        }
       }
     }
+  }
+
+  #positionBlockLabels() {
+    const labels = document.querySelectorAll<HTMLAnchorElement>('[data-edit-block]');
+    labels.forEach((label) => {
+      const block = label.nextElementSibling;
+      if (!block) return;
+
+      const rect = block.getBoundingClientRect();
+      if (rect.width === 0 && rect.height === 0) return;
+
+      label.style.top = `${rect.top + window.scrollY}px`;
+      label.style.left = `${rect.left + window.scrollX}px`;
+      block.setAttribute('data-block-container', '');
+    });
+  }
+
+  #initBlockLabelHover() {
+    let currentLabel: HTMLAnchorElement | null = null;
+    let currentBlock: Element | null = null;
+
+    document.addEventListener(
+      'pointermove',
+      (e) => {
+        if (document.documentElement.dataset.showBlockNames !== 'true') {
+          currentLabel?.classList.remove('hover');
+          currentBlock?.classList.remove('hover');
+          currentLabel = null;
+          currentBlock = null;
+          return;
+        }
+
+        if (!(e.target instanceof Element)) {
+          currentLabel?.classList.remove('hover');
+          currentBlock?.classList.remove('hover');
+          currentLabel = null;
+          currentBlock = null;
+          return;
+        }
+
+        const labels = document.querySelectorAll<HTMLAnchorElement>('[data-edit-block]');
+        let deepest: HTMLAnchorElement | null = null;
+        let deepestBlock: Element | null = null;
+
+        for (const label of labels) {
+          const block = label.nextElementSibling;
+          if (block && (label.contains(e.target) || block.contains(e.target))) {
+            deepest = label;
+            deepestBlock = block;
+          }
+        }
+
+        if (deepest === currentLabel) return;
+
+        currentLabel?.classList.remove('hover');
+        currentBlock?.classList.remove('hover');
+        currentLabel = deepest;
+        currentBlock = deepestBlock;
+        currentLabel?.classList.add('hover');
+        currentBlock?.classList.add('hover');
+      },
+      { passive: true }
+    );
+
+    window.addEventListener('resize', () => {
+      if (document.documentElement.dataset.showBlockNames === 'true') {
+        this.#positionBlockLabels();
+      }
+    }, { passive: true });
+
+    window.addEventListener('load', () => {
+      if (document.documentElement.dataset.showBlockNames === 'true') {
+        this.#positionBlockLabels();
+      }
+    }, { passive: true });
   }
 
   getRecordEditUrl(itemTypeId: string, recordId: string) {
