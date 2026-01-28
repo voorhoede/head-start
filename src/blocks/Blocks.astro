@@ -31,7 +31,7 @@ interface Props {
   fieldPath?: string;
 }
 const { blocks } = Astro.props;
-const fieldPath = Astro.props.fieldPath;
+const fieldPath = Astro.props.fieldPath ?? 'bodyBlocks';
 
 function camelToSnake(str: string): string {
   return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
