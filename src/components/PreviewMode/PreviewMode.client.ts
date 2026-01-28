@@ -122,7 +122,7 @@ class PreviewMode extends HTMLElement {
       return;
     }
 
-    this.editLinkElement.href = `https://${this.#datocmsProject}.admin.datocms.com/environments/${this.#datocmsEnvironment}/editor/item_types/${itemTypeId}/items/${this.editableRecord.id}/edit`;
+    this.editLinkElement.href = `https://${this.#datocmsProject}.admin.datocms.com/environments/${this.#datocmsEnvironment}/editor/item_types/${itemTypeId}/items/${this.editableRecord.id}`;
   }
   
   getInstanceCounts () {
