@@ -31,18 +31,14 @@ interface Props {
   fieldPath?: string;
 }
 const { blocks } = Astro.props;
-const fieldPath = Astro.props.fieldPath ?? 'bodyBlocks';
+const fieldPath = Astro.props.fieldPath === '' ? '' : (Astro.props.fieldPath ?? 'bodyBlocks');
 
 function camelToSnake(str: string): string {
-  return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+  return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`).replace(/^_/, '');
 }
 
 function typenameToModelApiKey(typename: string): string {
-  return typename
-    .replace(/Record$/, '')
-    .replace(/([A-Z])/g, '_$1')
-    .toLowerCase()
-    .replace(/^_/, '');
+  return camelToSnake(typename.replace(/Record$/, ''));
 }
 
 function toApiKey(fieldPath: string): string {
@@ -86,7 +82,7 @@ const raise = (message: string) => {
     const blockName = __typename.replace(/Record$/, '');
     const modelApiKey = typenameToModelApiKey(__typename);
     const focusFieldApiKey = getFocusFieldApiKey(modelApiKey);
-    const apiKeyPath = fieldPath ? toApiKey(fieldPath) : null;
+    const apiKeyPath = fieldPath && fieldPath !== '' ? toApiKey(fieldPath) : null;
     const blockBasePath = apiKeyPath ? `${apiKeyPath}.${index}` : null;
     const blockFieldPath = blockBasePath
       ? `${blockBasePath}${focusFieldApiKey ? `.${focusFieldApiKey}` : ''}`
@@ -94,16 +90,18 @@ const raise = (message: string) => {
     
     return (
       <>
-        {/* eslint-disable-next-line astro/jsx-a11y/anchor-is-valid */}
-        <a
-          class="block-name-label"
-          data-edit-block
-          data-field-path={blockFieldPath ?? undefined}
-          data-block-name={blockName}
-          target="_blank"
-        >
-          {blockName}
-        </a>
+        {blockFieldPath && (
+          /* eslint-disable-next-line astro/jsx-a11y/anchor-is-valid */
+          <a
+            class="block-name-label"
+            data-edit-block
+            data-field-path={blockFieldPath}
+            data-block-name={blockName}
+            target="_blank"
+          >
+            {blockName}
+          </a>
+        )}
         {__typename === 'GroupingBlockRecord' && blockBasePath ? (
           //@ts-expect-error - since block can be any block its type is conflated to `never`.
           <Block block={block} fieldPath={blockBasePath} />
