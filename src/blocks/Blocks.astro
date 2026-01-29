@@ -32,6 +32,7 @@ interface Props {
 }
 const { blocks } = Astro.props;
 const fieldPath = Astro.props.fieldPath === '' ? '' : (Astro.props.fieldPath ?? 'bodyBlocks');
+const isPreview = Astro.locals.isPreview;
 
 function camelToSnake(str: string): string {
   return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`).replace(/^_/, '');
@@ -90,7 +91,7 @@ const raise = (message: string) => {
     
     return (
       <>
-        {blockFieldPath && (
+        {isPreview && blockFieldPath && (
           /* eslint-disable-next-line astro/jsx-a11y/anchor-is-valid */
           <a
             class="block-name-label"
