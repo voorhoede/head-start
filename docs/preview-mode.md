@@ -74,7 +74,7 @@ const { page } = await datocmsRequest<PageQuery>({ query, variables });
 <h1>{page.title}</h1>
 ```
 
-The `record` prop is used to generate the "edit page" link in the preview bar.
+The `record` prop is used to generate the "edit page" link in the preview bar and to make block labels clickable (so they open the block’s field in DatoCMS). Pass it on any page that renders blocks you want to edit from preview.
 
 ## Preview mode bar
 
@@ -129,7 +129,7 @@ npm run prep:download-item-types
 
 ## Block field path detection
 
-When clicking on a block label in preview mode, the system automatically generates a field path to focus the correct field in DatoCMS. This is done by detecting the "focus field" for each block type.
+When clicking on a block label in preview mode, the system automatically generates a field path to focus the correct field in DatoCMS. Block labels are only clickable when `PreviewModeSubscription` receives a `record` prop (see above). This is done by detecting the "focus field" for each block type.
 
 ### How it works
 
