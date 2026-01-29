@@ -120,6 +120,9 @@ class PreviewMode extends HTMLElement {
 
     this.$showBlockNames.listen((show) => {
       localStorage.setItem('preview-mode-show-block-names', show.toString());
+      if (this.toggleBlockNamesButton) {
+        this.toggleBlockNamesButton.textContent = show ? 'hide blocks' : 'show blocks';
+      }
       this.updateBlockNamesVisibility();
     });
 

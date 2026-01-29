@@ -20,7 +20,7 @@ const projectName = siteData.internalDomain?.split('.')[0] || null;
     <div class="preview-mode-actions">
       {/* eslint-disable-next-line astro/jsx-a11y/anchor-is-valid */}
       <a data-edit-record target="_blank">edit page</a>
-      <button data-toggle-block-names type="button">toggle blocks</button>
+      <button data-toggle-block-names type="button">show blocks</button>
       <a href={ `/api/preview/exit/?location=${Astro.url}` }>exit preview</a>
     </div>
   </preview-mode-bar>
