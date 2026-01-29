@@ -18,9 +18,9 @@ import {
 import { getPagePath, getParentPages } from '@lib/routing/page';
 import { defineCollection, z } from 'astro:content';
 
-type Meta = {
+type Meta<T extends PageCollectionEntryQuery['record']> = {
   recordId: string; // The record ID of the entry in DatoCMS
-  recordType: string; // The type of the record in DatoCMS
+  recordType: NonNullable<T>['__typename']; // The type of the record in DatoCMS
   path: string; // The path of the page, excluding the locale
   locale: SiteLocale;
   breadcrumbs: Breadcrumb[]; // Breadcrumbs for the page, used for navigation
@@ -32,7 +32,7 @@ type QueryVariables = {
 };
 export type PageCollectionEntry = PageCollectionEntryQuery['record'] & {
   id: string, // A unique ID for the entry in the content collection, combining the path and locale
-  meta: Meta,
+  meta: Meta<PageCollectionEntryQuery['record']>,
   subscription: {
     variables: QueryVariables // Variables for the subscription
   }
