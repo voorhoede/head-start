@@ -1,17 +1,18 @@
 ---
-import type { GroupingBlockFragment } from '@lib/datocms/types';
 import Blocks from '@blocks/Blocks.astro';
 import { Accordion, AccordionItem } from '@components/Accordion';
-import { Tabs, TabsTab, TabsPanel } from '@components/Tabs';
+import { Tabs, TabsPanel, TabsTab } from '@components/Tabs';
+import type { GroupingBlockFragment } from '@lib/datocms/types';
 
 export interface Props {
   block: GroupingBlockFragment;
   fieldPath?: string;
+  skipDebugLabels?: boolean;
 }
 
 const isLayout = (layout: GroupingBlockFragment['layout']) => block.layout === layout;
 
-const { block, fieldPath } = Astro.props;
+const { block, fieldPath, skipDebugLabels } = Astro.props;
 const items = block.items;
 
 function buildNestedFieldPath(basePath: string, itemIndex: number): string {
@@ -28,6 +29,7 @@ function buildNestedFieldPath(basePath: string, itemIndex: number): string {
       <Blocks
         blocks={ item.blocks }
         fieldPath={ fieldPath ? buildNestedFieldPath(fieldPath, itemIndex) : undefined }
+        skipDebugLabels={ skipDebugLabels }
       />
     </section>
   ))
@@ -38,6 +40,7 @@ function buildNestedFieldPath(basePath: string, itemIndex: number): string {
     <Blocks
       blocks={ item.blocks }
       fieldPath={ fieldPath ? buildNestedFieldPath(fieldPath, itemIndex) : undefined }
+      skipDebugLabels={ skipDebugLabels }
     />
   ))
 )}
@@ -54,6 +57,7 @@ function buildNestedFieldPath(basePath: string, itemIndex: number): string {
           <Blocks
             blocks={ item.blocks }
             fieldPath={ fieldPath ? buildNestedFieldPath(fieldPath, itemIndex) : undefined }
+            skipDebugLabels={ skipDebugLabels }
           />
         </Fragment>
       </AccordionItem>
@@ -69,6 +73,7 @@ function buildNestedFieldPath(basePath: string, itemIndex: number): string {
         <Blocks
           blocks={ item.blocks }
           fieldPath={ fieldPath ? buildNestedFieldPath(fieldPath, itemIndex) : undefined }
+          skipDebugLabels={ skipDebugLabels }
         />
       </TabsPanel>
     </>))}

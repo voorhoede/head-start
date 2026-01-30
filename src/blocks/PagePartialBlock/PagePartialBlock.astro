@@ -1,9 +1,8 @@
 ---
-import type { PagePartialBlockFragment } from '@lib/datocms/types';
 import GroupingBlock from '@blocks/GroupingBlock/GroupingBlock.astro';
-import type { GroupingBlockFragment } from '@lib/datocms/types';
-import { getEntry } from '@lib/content';
 import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
+import { getEntry } from '@lib/content';
+import type { GroupingBlockFragment, PagePartialBlockFragment } from '@lib/datocms/types';
 
 export interface Props {
   block: PagePartialBlockFragment
@@ -22,7 +21,7 @@ const pagePartials = await Promise.all(
 )) }
 
 {/* Temporary solution to prevent breaking changes for existing Page Partial Blocks */}
-<GroupingBlock block={{
+<GroupingBlock skipDebugLabels block={{
   ...block,
   __typename: 'GroupingBlockRecord',
   items: pagePartials.map(({ data: item }) => ({

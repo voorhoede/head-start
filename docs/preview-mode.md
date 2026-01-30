@@ -144,6 +144,12 @@ The focus field is automatically detected based on field types:
 
 The script finds the first field matching these criteria (excluding metadata) and uses it as the focus field.
 
+`Blocks.astro` always passes a `fieldPath` prop to every block (the path to that block in the tree). Blocks that do not render nested `<Blocks />` can ignore it.
+
+### Skipping debug labels (skipDebugLabels)
+
+Pass `skipDebugLabels` on `<Blocks />` (or on a block that forwards it, e.g. `GroupingBlock`) when you do not want to render block labels in that subtree. We use this for **PagePartialBlock children**: those blocks live in a separate record (the page partial), so their labels would not take you to the correct field in the editor—the path would point at the wrong record. Skipping labels there avoids confusion.
+
 ### Adding a new block
 
 When you add a new block type, the focus field is automatically detected when you run:

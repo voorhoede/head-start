@@ -29,8 +29,9 @@ const blocksByTypename = {
 interface Props {
   blocks: AnyBlock[];
   fieldPath?: string;
+  skipDebugLabels?: boolean;
 }
-const { blocks } = Astro.props;
+const { blocks, skipDebugLabels = false } = Astro.props;
 const fieldPath = Astro.props.fieldPath === '' ? '' : (Astro.props.fieldPath ?? 'bodyBlocks');
 const isPreview = Astro.locals.isPreview;
 
@@ -91,7 +92,7 @@ const raise = (message: string) => {
     
     return (
       <>
-        {isPreview && blockFieldPath && (
+        {isPreview && !skipDebugLabels && blockFieldPath && (
           /* eslint-disable-next-line astro/jsx-a11y/anchor-is-valid */
           <a
             class="block-name-label"
@@ -103,13 +104,8 @@ const raise = (message: string) => {
             {blockName}
           </a>
         )}
-        {__typename === 'GroupingBlockRecord' && blockBasePath ? (
-          //@ts-expect-error - since block can be any block its type is conflated to `never`.
-          <Block block={block} fieldPath={blockBasePath} />
-        ) : (
-          //@ts-expect-error - since block can be any block its type is conflated to `never`.
-          <Block block={block} />
-        )}
+        {/* @ts-expect-error - since block can be any block its type is conflated to `never`. */}
+        <Block block={block} fieldPath={blockBasePath} />
       </>
     );
   })

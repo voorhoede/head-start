@@ -1,7 +1,7 @@
 ---
 import Blocks from '@blocks/Blocks.astro';
 
-const { block, fieldPath } = Astro.props;
+const { block } = Astro.props;
 ---
 
-<Blocks blocks={[block]} fieldPath={fieldPath ?? ''} />
+<Blocks blocks={[block]} skipDebugLabels />
