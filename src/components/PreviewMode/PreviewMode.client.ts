@@ -145,17 +145,31 @@ class PreviewMode extends HTMLElement {
     }
   }
 
+  #getBlockContainerForLabel(label: HTMLAnchorElement): Element | null {
+    let el: Element | null = label.nextElementSibling;
+    while (el) {
+      if (el.tagName.toLowerCase() === 'preview-mode-subscription') {
+        el = el.nextElementSibling;
+        continue;
+      }
+      return el;
+    }
+    return null;
+  }
+
   #positionBlockLabels() {
     const labels = document.querySelectorAll<HTMLAnchorElement>('[data-edit-block]');
     labels.forEach((label) => {
-      const block = label.nextElementSibling;
+      const block = this.#getBlockContainerForLabel(label);
       if (!block) return;
 
-      const rect = block.getBoundingClientRect();
-      if (rect.width === 0 && rect.height === 0) return;
+      const blockRect = block.getBoundingClientRect();
+      if (blockRect.width === 0 && blockRect.height === 0) return;
 
-      label.style.top = `${rect.top + window.scrollY}px`;
-      label.style.left = `${rect.left + window.scrollX}px`;
+      const offsetParent = label.offsetParent || document.body;
+      const parentRect = offsetParent.getBoundingClientRect();
+      label.style.top = `${blockRect.top - parentRect.top}px`;
+      label.style.left = `${blockRect.left - parentRect.left}px`;
       block.setAttribute('data-block-container', '');
     });
   }
@@ -188,7 +202,7 @@ class PreviewMode extends HTMLElement {
         let deepestBlock: Element | null = null;
 
         for (const label of labels) {
-          const block = label.nextElementSibling;
+          const block = this.#getBlockContainerForLabel(label);
           if (block && (label.contains(e.target) || block.contains(e.target))) {
             deepest = label;
             deepestBlock = block;

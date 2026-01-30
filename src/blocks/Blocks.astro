@@ -105,7 +105,7 @@ const raise = (message: string) => {
           </a>
         )}
         {/* @ts-expect-error - since block can be any block its type is conflated to `never`. */}
-        <Block block={block} fieldPath={blockBasePath} />
+        <Block block={block} fieldPath={blockBasePath} skipDebugLabels={skipDebugLabels} />
       </>
     );
   })
