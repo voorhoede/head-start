@@ -218,6 +218,14 @@ class PreviewMode extends HTMLElement {
     const onPositionLabels = () => {
       if (document.documentElement.dataset.showBlockNames === 'true') this.#positionBlockLabels();
     };
+    let scrollRaf: number | null = null;
+    window.addEventListener('scroll', () => {
+      if (scrollRaf != null) return;
+      scrollRaf = requestAnimationFrame(() => {
+        scrollRaf = null;
+        onPositionLabels();
+      });
+    }, { passive: true });
     window.addEventListener('resize', onPositionLabels, { passive: true });
     window.addEventListener('load', onPositionLabels, { passive: true });
   }
