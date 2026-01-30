@@ -128,21 +128,21 @@ class PreviewMode extends HTMLElement {
     this.#initBlockLabelHover();
   }
 
+  #applyEditLinks() {
+    if (!this.editableRecord?.id || !this.editableRecord?.type || !this.#datocmsProject) return;
+    const itemTypeId = PreviewMode.getItemTypeId(this.editableRecord.type);
+    if (!itemTypeId) return;
+    this.editLinkElement.href = this.getRecordEditUrl(itemTypeId, this.editableRecord.id);
+    if (document.documentElement.dataset.showBlockNames === 'true') this.setBlockEditLinks(itemTypeId);
+  }
+
   updateBlockNamesVisibility() {
     const show = this.$showBlockNames.get();
     localStorage.setItem('preview-mode-show-block-names', show.toString());
     this.toggleBlockNamesButton.textContent = show ? 'hide blocks' : 'show blocks';
     document.documentElement.dataset.showBlockNames = show ? 'true' : 'false';
-
-    if (show) {
-      this.#positionBlockLabels();
-      if (this.editableRecord?.id && this.editableRecord?.type && this.#datocmsProject) {
-        const itemTypeId = PreviewMode.getItemTypeId(this.editableRecord.type);
-        if (itemTypeId) {
-          this.setBlockEditLinks(itemTypeId);
-        }
-      }
-    }
+    if (show) this.#positionBlockLabels();
+    this.#applyEditLinks();
   }
 
   #getBlockContainerForLabel(label: HTMLAnchorElement): Element | null {
@@ -178,29 +178,24 @@ class PreviewMode extends HTMLElement {
     let currentLabel: HTMLAnchorElement | null = null;
     let currentBlock: Element | null = null;
 
+    const clearHover = () => {
+      currentLabel?.classList.remove('hover');
+      currentBlock?.classList.remove('hover');
+      currentLabel = null;
+      currentBlock = null;
+    };
+
     document.addEventListener(
       'pointermove',
       (e) => {
-        if (document.documentElement.dataset.showBlockNames !== 'true') {
-          currentLabel?.classList.remove('hover');
-          currentBlock?.classList.remove('hover');
-          currentLabel = null;
-          currentBlock = null;
-          return;
-        }
-
-        if (!(e.target instanceof Element)) {
-          currentLabel?.classList.remove('hover');
-          currentBlock?.classList.remove('hover');
-          currentLabel = null;
-          currentBlock = null;
+        if (document.documentElement.dataset.showBlockNames !== 'true' || !(e.target instanceof Element)) {
+          clearHover();
           return;
         }
 
         const labels = document.querySelectorAll<HTMLAnchorElement>('[data-edit-block]');
         let deepest: HTMLAnchorElement | null = null;
         let deepestBlock: Element | null = null;
-
         for (const label of labels) {
           const block = this.#getBlockContainerForLabel(label);
           if (block && (label.contains(e.target) || block.contains(e.target))) {
@@ -211,8 +206,7 @@ class PreviewMode extends HTMLElement {
 
         if (deepest === currentLabel) return;
 
-        currentLabel?.classList.remove('hover');
-        currentBlock?.classList.remove('hover');
+        clearHover();
         currentLabel = deepest;
         currentBlock = deepestBlock;
         currentLabel?.classList.add('hover');
@@ -221,17 +215,11 @@ class PreviewMode extends HTMLElement {
       { passive: true }
     );
 
-    window.addEventListener('resize', () => {
-      if (document.documentElement.dataset.showBlockNames === 'true') {
-        this.#positionBlockLabels();
-      }
-    }, { passive: true });
-
-    window.addEventListener('load', () => {
-      if (document.documentElement.dataset.showBlockNames === 'true') {
-        this.#positionBlockLabels();
-      }
-    }, { passive: true });
+    const onPositionLabels = () => {
+      if (document.documentElement.dataset.showBlockNames === 'true') this.#positionBlockLabels();
+    };
+    window.addEventListener('resize', onPositionLabels, { passive: true });
+    window.addEventListener('load', onPositionLabels, { passive: true });
   }
 
   getRecordEditUrl(itemTypeId: string, recordId: string) {
@@ -274,18 +262,6 @@ class PreviewMode extends HTMLElement {
 
   connectedCallback() {
     this.updateBlockNamesVisibility();
-    
-    if (!this.editableRecord?.id || !this.editableRecord?.type || !this.#datocmsProject) {
-      return;
-    }
-
-    const itemTypeId = PreviewMode.getItemTypeId(this.editableRecord.type);
-    if (!itemTypeId) {
-      return;
-    }
-
-    this.editLinkElement.href = this.getRecordEditUrl(itemTypeId, this.editableRecord.id);
-    this.setBlockEditLinks(itemTypeId);
   }
   
   getInstanceCounts () {
