@@ -82,6 +82,7 @@ const raise = (message: string) => {
       return <script define:vars={{ message }} is:inline>console.log(message);</script>;
     }
     const blockName = __typename.replace(/Record$/, '');
+    const layout = (block as { layout?: string }).layout;
     const modelApiKey = typenameToModelApiKey(__typename);
     const focusFieldApiKey = getFocusFieldApiKey(modelApiKey);
     const apiKeyPath = fieldPath && fieldPath !== '' ? toApiKey(fieldPath) : null;
@@ -89,7 +90,7 @@ const raise = (message: string) => {
     const blockFieldPath = blockBasePath
       ? `${blockBasePath}${focusFieldApiKey ? `.${focusFieldApiKey}` : ''}`
       : null;
-    
+
     return (
       <>
         {isPreview && !skipDebugLabels && blockFieldPath && (
@@ -101,7 +102,7 @@ const raise = (message: string) => {
             data-block-name={blockName}
             target="_blank"
           >
-            {blockName}
+            {blockName}{layout ? ` (${layout})` : ''}
           </a>
         )}
         {/* @ts-expect-error - since block can be any block its type is conflated to `never`. */}
