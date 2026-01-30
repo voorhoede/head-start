@@ -115,28 +115,25 @@ class PreviewMode extends HTMLElement {
     });
 
     const storedState = localStorage.getItem('preview-mode-show-block-names');
-    const initialShowState = storedState === 'true';
-    this.$showBlockNames.set(initialShowState);
+    this.$showBlockNames.set(storedState === 'true');
 
-    this.$showBlockNames.listen((show) => {
-      localStorage.setItem('preview-mode-show-block-names', show.toString());
-      if (this.toggleBlockNamesButton) {
-        this.toggleBlockNamesButton.textContent = show ? 'hide blocks' : 'show blocks';
-      }
-      this.updateBlockNamesVisibility();
-    });
+    this.$showBlockNames.listen(() => this.updateBlockNamesVisibility());
 
     this.toggleBlockNamesButton?.addEventListener('click', () => {
       this.$showBlockNames.set(!this.$showBlockNames.get());
     });
+
+    this.updateBlockNamesVisibility();
 
     this.#initBlockLabelHover();
   }
 
   updateBlockNamesVisibility() {
     const show = this.$showBlockNames.get();
+    localStorage.setItem('preview-mode-show-block-names', show.toString());
+    this.toggleBlockNamesButton.textContent = show ? 'hide blocks' : 'show blocks';
     document.documentElement.dataset.showBlockNames = show ? 'true' : 'false';
-    
+
     if (show) {
       this.#positionBlockLabels();
       if (this.editableRecord?.id && this.editableRecord?.type && this.#datocmsProject) {
