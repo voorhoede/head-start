@@ -6,6 +6,12 @@
 
 To enable preview mode for a git branch, you must add it to [`config/preview.ts`](../config/preview.ts). Preview branches will deploy as `output: 'server'` rather than `output: 'hybrid'`, ignoring all `getStaticPaths()` and always rendering the page during run-time. The `preview` branch is configured as one of the preview branches and is automatically kept in sync with the `main` branch, so it can be used as preview equivalent, for example from the CMS.
 
+> [!TIP]
+> To enable preview mode during local development:
+> - Make sure your current git branch is included in [`config/preview.ts`](../config/preview.ts).
+> - Set `HEAD_START_PREVIEW_SECRET` and `DATOCMS_READONLY_API_TOKEN` in your local `.env`.
+> - Enter preview mode via `/api/preview/enter/?secret=...` (or the preview login form).
+
 To protect a part of the page that must only be available in preview mode, you can wrap it in the `PreviewModeProvider`, as is done in the [`Default.astro` layout](../src/layouts/Default.astro):
 
 ```astro
@@ -58,10 +64,63 @@ const variables = { locale, slug };
 const { page } = await datocmsRequest<PageQuery>({ query, variables });
 ---
 
-<PreviewModeSubscription query={ query } variables={ variables }  />
+<PreviewModeSubscription
+  query={query}
+  variables={variables}
+  record={{ type: page.__typename, id: page.id }}
+/>
 <h1>{page.title}</h1>
 ```
+
+The `record` prop is used to generate the "edit in CMS" link in the preview bar.
 
 ## Preview mode bar
 
 When in preview mode a bar in the user interface displays the status of the connection with the CMS, along with a link to exit preview mode. Depending on the layout of your project, you may want to move the preview mode bar to another position, for example if your project has a sticky header.
+
+## Edit in CMS link
+
+In preview mode, the preview bar shows an **"edit in CMS"** link that opens the record in DatoCMS.
+
+### How it works
+
+The link is automatically generated from the `record` prop passed to `PreviewModeSubscription`. The URL is built from:
+- **Project name**: extracted from `internalDomain` in `@lib/site.json`
+- **Environment**: from `datocms-environment.ts`
+- **Record info**: `id` + `type` (from `record` prop) → resolved to `itemTypeId` via auto-generated mappings
+
+If any part can't be resolved, the link doesn't render.
+
+### Usage
+
+Pass the `record` prop to `PreviewModeSubscription`:
+
+```astro
+<PreviewModeSubscription
+  query={query}
+  variables={variables}
+  record={{ type: page.__typename, id: page.id }}
+/>
+```
+
+Your GraphQL query needs:
+
+```graphql
+query MyPage {
+  page {
+    id
+    __typename
+    # ... other fields
+  }
+}
+```
+
+### Auto-generated files
+
+- `src/lib/datocms/itemTypes.json` — `__typename` → item type id (generated, in `.gitignore`)
+
+When DatoCMS models change, regenerate:
+
+```bash
+npm run prep:download-item-types
+```

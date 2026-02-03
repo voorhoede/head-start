@@ -1,3 +1,4 @@
+import itemTypesJson from '@lib/datocms/itemTypes.json';
 import type { ConnectionStatus as DatocmsConnectionStatus } from 'datocms-listen';
 import { subscribeToQuery } from 'datocms-listen';
 import { atom, map } from 'nanostores';
@@ -17,12 +18,15 @@ type QueryVariables = { query: Query; variables?: Variables };
 class PreviewMode extends HTMLElement {
   barElement: PreviewModeBar;
   subscriptionElements: PreviewModeSubscription[];
+  editableRecord: { id: string, type: string } | null;
+  editLinkElement: HTMLAnchorElement;
   $connections = map<Connection>({});
   $connectionError = atom<boolean>(false);
   $connectionStatus = atom<ConnectionStatus>('closed');
   $updateCounts = map<{ [key: string]: number }>({});
   #datocmsToken: string = '';
   #datocmsEnvironment: string = '';
+  #datocmsProject: string = '';
 
   /**
    * Generates a hashed key for the map tracking subscriptions.
@@ -38,13 +42,22 @@ class PreviewMode extends HTMLElement {
     return hash.toString(36);
   }
   
+  static getItemTypeId (typename?: string): string { 
+    const key = typename as keyof typeof itemTypesJson;
+    return itemTypesJson[key] ?? null;
+  }
+  
   constructor() { 
     super();
 
     this.barElement = this.querySelector('preview-mode-bar') as PreviewModeBar;
     this.subscriptionElements = [...this.querySelectorAll('preview-mode-subscription')] as PreviewModeSubscription[];
+    this.editableRecord = JSON.parse(
+      this.subscriptionElements.find((element) => element.dataset.record)?.dataset.record ?? 'null'
+    );
+    this.editLinkElement = this.querySelector('[data-edit-record]') as HTMLAnchorElement;
 
-    const { datocmsEnvironment, datocmsToken } = this.dataset;
+    const { datocmsEnvironment, datocmsToken, datocmsProject } = this.dataset;
     if (!datocmsEnvironment) {
       console.warn('PreviewMode: missing required data-datocms-environment attribute');
       return;
@@ -55,6 +68,7 @@ class PreviewMode extends HTMLElement {
     }
     this.#datocmsEnvironment = datocmsEnvironment;
     this.#datocmsToken = datocmsToken;
+    this.#datocmsProject = datocmsProject || '';
 
     this.$connections.listen((connections) => {
       // set overall connection status to lowest of all connections:
@@ -96,6 +110,21 @@ class PreviewMode extends HTMLElement {
 
   getSubscriptionConfigs () {
     return this.subscriptionElements.map((element) => element.getConfig() as QueryVariables);
+  }
+
+  connectedCallback() {
+    const record = this.editableRecord;
+    const isLinkableRecord = record?.id && record?.type && this.#datocmsProject;
+    if (!isLinkableRecord || !record) {
+      return;
+    }
+
+    const itemTypeId = PreviewMode.getItemTypeId(record.type);
+    if (!itemTypeId) {
+      return;
+    }
+
+    this.editLinkElement.href = `https://${this.#datocmsProject}.admin.datocms.com/environments/${this.#datocmsEnvironment}/editor/item_types/${itemTypeId}/items/${record.id}`;
   }
   
   getInstanceCounts () {

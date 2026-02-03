@@ -1,14 +1,27 @@
 ---
+import siteDataUntyped from '@lib/site.json';
+
+type SiteData = {
+  internalDomain?: string;
+};
+
+const siteData = siteDataUntyped as SiteData;
 const { datocmsEnvironment, datocmsToken, isPreview } = Astro.locals;
+const projectName = siteData.internalDomain?.split('.')[0] || null;
 ---
 <preview-mode
   data-datocms-environment={ datocmsEnvironment }
   data-datocms-token={ isPreview && datocmsToken }
+  data-datocms-project={ projectName }
 >
   <preview-mode-bar>  
     Preview mode
     <span role="presentation" data-status="closed" />
-    <a href={ `/api/preview/exit/?location=${Astro.url}` }>exit preview</a>
+    <div class="preview-mode-actions">
+      {/* eslint-disable-next-line astro/jsx-a11y/anchor-is-valid */}
+      <a data-edit-record target="_blank" rel="noreferrer noopener">edit in CMS</a>
+      <a href={ `/api/preview/exit/?location=${Astro.url}` }>exit preview</a>
+    </div>
   </preview-mode-bar>
   <slot />
 </preview-mode>
@@ -27,6 +40,16 @@ preview-mode-bar {
 
 a {
   color: white;
+}
+
+a[data-edit-record]:not([href]) {
+  display: none;
+}
+
+.preview-mode-actions {
+  display: flex;
+  gap: 1em;
+  align-items: center;
 }
 
 [data-status]:before {
