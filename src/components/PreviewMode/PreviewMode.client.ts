@@ -113,17 +113,18 @@ class PreviewMode extends HTMLElement {
   }
 
   connectedCallback() {
-    const isLinkableRecord = this.editableRecord?.id && this.editableRecord?.type && this.#datocmsProject;
-    if (!isLinkableRecord) {
+    const record = this.editableRecord;
+    const isLinkableRecord = record?.id && record?.type && this.#datocmsProject;
+    if (!isLinkableRecord || !record) {
       return;
     }
 
-    const itemTypeId = PreviewMode.getItemTypeId(this.editableRecord?.type);
+    const itemTypeId = PreviewMode.getItemTypeId(record.type);
     if (!itemTypeId) {
       return;
     }
 
-    this.editLinkElement.href = `https://${this.#datocmsProject}.admin.datocms.com/environments/${this.#datocmsEnvironment}/editor/item_types/${itemTypeId}/items/${this.editableRecord.id}`;
+    this.editLinkElement.href = `https://${this.#datocmsProject}.admin.datocms.com/environments/${this.#datocmsEnvironment}/editor/item_types/${itemTypeId}/items/${record.id}`;
   }
   
   getInstanceCounts () {
