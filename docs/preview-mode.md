@@ -6,13 +6,11 @@
 
 To enable preview mode for a git branch, you must add it to [`config/preview.ts`](../config/preview.ts). Preview branches will deploy as `output: 'server'` rather than `output: 'hybrid'`, ignoring all `getStaticPaths()` and always rendering the page during run-time. The `preview` branch is configured as one of the preview branches and is automatically kept in sync with the `main` branch, so it can be used as preview equivalent, for example from the CMS.
 
-### Local development
-
-If you want to see the preview mode UI (preview bar, subscriptions) locally:
-
-- Make sure your current git branch is included in [`config/preview.ts`](../config/preview.ts).
-- Set `HEAD_START_PREVIEW_SECRET` and `DATOCMS_READONLY_API_TOKEN` in your local `.env`.
-- Enter preview mode via `/api/preview/enter/?secret=...` (or the preview login form).
+> [!TIP]
+> To enable preview mode during local development:
+> - Make sure your current git branch is included in [`config/preview.ts`](../config/preview.ts).
+> - Set `HEAD_START_PREVIEW_SECRET` and `DATOCMS_READONLY_API_TOKEN` in your local `.env`.
+> - Enter preview mode via `/api/preview/enter/?secret=...` (or the preview login form).
 
 To protect a part of the page that must only be available in preview mode, you can wrap it in the `PreviewModeProvider`, as is done in the [`Default.astro` layout](../src/layouts/Default.astro):
 
@@ -74,15 +72,15 @@ const { page } = await datocmsRequest<PageQuery>({ query, variables });
 <h1>{page.title}</h1>
 ```
 
-The `record` prop is used to generate the "edit page" link in the preview bar and to make block labels clickable (so they open the block’s field in DatoCMS). Pass it on any page that renders blocks you want to edit from preview.
+The `record` prop is used to generate the "edit in CMS" link in the preview bar and to make block labels clickable (so they open the block’s field in DatoCMS).
 
 ## Preview mode bar
 
 When in preview mode a bar in the user interface displays the status of the connection with the CMS, along with a link to exit preview mode. Depending on the layout of your project, you may want to move the preview mode bar to another position, for example if your project has a sticky header.
 
-## Edit page link
+## Edit in CMS link
 
-In preview mode, the preview bar shows an **"edit page"** link that opens the record in DatoCMS.
+In preview mode, the preview bar shows an **"edit in CMS"** link that opens the record in DatoCMS.
 
 ### How it works
 

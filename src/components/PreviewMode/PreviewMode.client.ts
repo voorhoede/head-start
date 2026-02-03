@@ -231,7 +231,7 @@ class PreviewMode extends HTMLElement {
   }
 
   getRecordEditUrl(itemTypeId: string, recordId: string) {
-    return `https://${this.#datocmsProject}.admin.datocms.com/environments/${this.#datocmsEnvironment}/editor/item_types/${itemTypeId}/items/${recordId}/edit`;
+    return `https://${this.#datocmsProject}.admin.datocms.com/environments/${this.#datocmsEnvironment}/editor/item_types/${itemTypeId}/items/${recordId}`;
   }
 
   withLocaleFieldPath(fieldPath: string) {
