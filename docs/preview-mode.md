@@ -72,15 +72,15 @@ const { page } = await datocmsRequest<PageQuery>({ query, variables });
 <h1>{page.title}</h1>
 ```
 
-The `record` prop is used to generate the "edit page" link in the preview bar.
+The `record` prop is used to generate the "edit in CMS" link in the preview bar.
 
 ## Preview mode bar
 
 When in preview mode a bar in the user interface displays the status of the connection with the CMS, along with a link to exit preview mode. Depending on the layout of your project, you may want to move the preview mode bar to another position, for example if your project has a sticky header.
 
-## Edit page link
+## Edit in CMS link
 
-In preview mode, the preview bar shows an **"edit page"** link that opens the record in DatoCMS.
+In preview mode, the preview bar shows an **"edit in CMS"** link that opens the record in DatoCMS.
 
 ### How it works
 
