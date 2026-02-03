@@ -113,11 +113,12 @@ class PreviewMode extends HTMLElement {
   }
 
   connectedCallback() {
-    if (!this.editableRecord?.id || !this.editableRecord?.type || !this.#datocmsProject) {
+    const isLinkableRecord = this.editableRecord?.id && this.editableRecord?.type && this.#datocmsProject;
+    if (!isLinkableRecord) {
       return;
     }
 
-    const itemTypeId = PreviewMode.getItemTypeId(this.editableRecord.type);
+    const itemTypeId = PreviewMode.getItemTypeId(this.editableRecord?.type);
     if (!itemTypeId) {
       return;
     }
