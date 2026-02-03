@@ -84,7 +84,6 @@ const raise = (message: string) => {
       return <script define:vars={{ message }} is:inline>console.log(message);</script>;
     }
     const blockName = getBlockDisplayName(__typename);
-    const layout = (block as { layout?: string }).layout;
     const focusFieldApiKey = getFocusFieldApiKey(__typename);
     const apiKeyPath = fieldPath && fieldPath !== '' ? toApiKey(fieldPath) : null;
     const blockBasePath = apiKeyPath ? `${apiKeyPath}.${index}` : null;
@@ -103,7 +102,7 @@ const raise = (message: string) => {
             data-block-name={blockName}
             target="_blank"
           >
-            {blockName}{layout ? ` (${layout})` : ''}
+            {blockName}
           </a>
         )}
         {/* @ts-expect-error - since block can be any block its type is conflated to `never`. */}
