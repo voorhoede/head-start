@@ -117,7 +117,7 @@ query MyPage {
 
 ### Auto-generated files
 
-- `src/lib/datocms/itemTypes.json` — `__typename` → item type id (generated, in `.gitignore`)
+- `src/lib/datocms/itemTypes.json` — `itemTypes[__typename]` with `id`, `name`, `focusField` (generated, in `.gitignore`)
 
 When DatoCMS models change, regenerate:
 
@@ -173,6 +173,6 @@ const FOCUS_FIELD_OVERRIDES: Record<string, string> = {
 
 **Finding the values:**
 - **Block API key**: Convert `__typename` to snake_case (`CardBlockRecord` → `card_block`) or check DatoCMS model settings
-- **Field API key**: Check DatoCMS field settings or the `_blockFields` section in `itemTypes.json`
+- **Field API key**: Check DatoCMS field settings or `itemTypes[typename].focusField` in `itemTypes.json`
 
 Then regenerate: `npm run prep:download-item-types`

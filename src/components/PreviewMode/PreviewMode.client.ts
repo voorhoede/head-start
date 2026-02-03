@@ -44,13 +44,10 @@ class PreviewMode extends HTMLElement {
     return hash.toString(36);
   }
   
-  static getItemTypeId (typename?: string): string | null { 
-    const key = typename as keyof typeof itemTypesJson;
-    const value = itemTypesJson[key];
-    if (typeof value === 'string') {
-      return value;
-    }
-    return null;
+  static getItemTypeId(typename?: string): string | null {
+    const itemTypes = itemTypesJson.itemTypes as Record<string, { id: string }> | undefined;
+    const meta = typename ? itemTypes?.[typename] : undefined;
+    return meta && typeof meta.id === 'string' ? meta.id : null;
   }
   
   constructor() { 

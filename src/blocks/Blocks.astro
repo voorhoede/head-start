@@ -39,10 +39,6 @@ function camelToSnake(str: string): string {
   return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`).replace(/^_/, '');
 }
 
-function typenameToModelApiKey(typename: string): string {
-  return camelToSnake(typename.replace(/Record$/, ''));
-}
-
 function toApiKey(fieldPath: string): string {
   if (fieldPath.includes('.')) {
     const parts = fieldPath.split('.');
@@ -53,12 +49,18 @@ function toApiKey(fieldPath: string): string {
   return camelToSnake(fieldPath);
 }
 
-function getFocusFieldApiKey(modelApiKey?: string) {
-  if (!modelApiKey) {
-    return null;
-  }
-  const blockFields = (itemTypesJson as typeof itemTypesJson & { _blockFields?: Record<string, string> })._blockFields;
-  return blockFields?.[modelApiKey] ?? null;
+const itemTypes = (itemTypesJson as { itemTypes?: Record<string, { id: string; name: string; focusField?: string }> }).itemTypes;
+
+function getItemTypeMeta(typename: string) {
+  return itemTypes?.[typename];
+}
+
+function getFocusFieldApiKey(typename: string): string | null {
+  return getItemTypeMeta(typename)?.focusField ?? null;
+}
+
+function getBlockDisplayName(typename: string): string {
+  return getItemTypeMeta(typename)?.name ?? typename.replace(/Record$/, '');
 }
 
 const raise = (message: string) => {
@@ -81,10 +83,9 @@ const raise = (message: string) => {
       const message = raise(`No block data found for "${__typename}". Is it included in ${import.meta.filename}?`);
       return <script define:vars={{ message }} is:inline>console.log(message);</script>;
     }
-    const blockName = __typename.replace(/Record$/, '');
+    const blockName = getBlockDisplayName(__typename);
     const layout = (block as { layout?: string }).layout;
-    const modelApiKey = typenameToModelApiKey(__typename);
-    const focusFieldApiKey = getFocusFieldApiKey(modelApiKey);
+    const focusFieldApiKey = getFocusFieldApiKey(__typename);
     const apiKeyPath = fieldPath && fieldPath !== '' ? toApiKey(fieldPath) : null;
     const blockBasePath = apiKeyPath ? `${apiKeyPath}.${index}` : null;
     const blockFieldPath = blockBasePath

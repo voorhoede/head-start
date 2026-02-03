@@ -91,7 +91,7 @@ async function downloadItemTypes() {
   if (!token) {
     if (process.env.CI) {
       console.log('DATOCMS_API_TOKEN is missing; creating empty itemTypes.json for CI.');
-      await ensureDirAndWriteJson(FILE_PATH, {});
+      await ensureDirAndWriteJson(FILE_PATH, { itemTypes: {} });
       return;
     }
     throw new Error(
@@ -103,14 +103,13 @@ async function downloadItemTypes() {
 
   const itemTypes = (await client.itemTypes.list())
     .filter((itemType) => Boolean(itemType.api_key && itemType.id))
-    .map((itemType) => ({ id: itemType.id as string, apiKey: itemType.api_key as string }));
+    .map((itemType) => ({
+      id: itemType.id as string,
+      apiKey: itemType.api_key as string,
+      name: (itemType.name as string) ?? '',
+    }));
 
-  const typenameMap: Record<string, string> = {};
   const blockFieldsMap: Record<string, string> = {};
-
-  for (const { id, apiKey } of itemTypes) {
-    typenameMap[convertApiKeyToTypename(apiKey)] = id;
-  }
 
   await processItemsConcurrently(itemTypes, CONCURRENT_REQUESTS_LIMIT, async ({ id, apiKey }) => {
     const manualOverride = FOCUS_FIELD_OVERRIDES[apiKey];
@@ -126,10 +125,17 @@ async function downloadItemTypes() {
     }
   });
 
-  const jsonContent = {
-    ...sortObjectKeys(typenameMap),
-    _blockFields: sortObjectKeys(blockFieldsMap),
-  };
+  const itemTypesMap: Record<string, { id: string; name: string; focusField?: string }> = {};
+  for (const { id, apiKey, name } of itemTypes) {
+    const typename = convertApiKeyToTypename(apiKey);
+    itemTypesMap[typename] = {
+      id,
+      name: name || typename.replace(/Record$/, ''),
+      ...(blockFieldsMap[apiKey] && { focusField: blockFieldsMap[apiKey] }),
+    };
+  }
+
+  const jsonContent = { itemTypes: sortObjectKeys(itemTypesMap) };
 
   await ensureDirAndWriteJson(FILE_PATH, jsonContent);
   console.log('Item types downloaded');
