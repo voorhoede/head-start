@@ -18,17 +18,19 @@ type QueryVariables = { query: Query; variables?: Variables };
 class PreviewMode extends HTMLElement {
   barElement: PreviewModeBar;
   subscriptionElements: PreviewModeSubscription[];
-  editableRecord: { id: string, type: string } | null;
-  editLinkElement: HTMLAnchorElement;
-  toggleBlockNamesButton: HTMLButtonElement;
   $connections = map<Connection>({});
   $connectionError = atom<boolean>(false);
   $connectionStatus = atom<ConnectionStatus>('closed');
   $updateCounts = map<{ [key: string]: number }>({});
-  $showBlockNames = atom<boolean>(false);
   #datocmsToken: string = '';
   #datocmsEnvironment: string = '';
+
+  // CMS debugging tools
   #datocmsProject: string = '';
+  #editableRecord: { id: string; type: string } | null = null;
+  #editLinkElement: HTMLAnchorElement | null = null;
+  #toggleBlockNamesButton: HTMLButtonElement | null = null;
+  #$showBlockNames = atom<boolean>(false);
 
   /**
    * Generates a hashed key for the map tracking subscriptions.
@@ -43,25 +45,20 @@ class PreviewMode extends HTMLElement {
     }
     return hash.toString(36);
   }
-  
-  static getItemTypeId(typename?: string): string | null {
+
+  static #getItemTypeId(typename?: string): string | null {
     const itemTypes = itemTypesJson.itemTypes as Record<string, { id: string }> | undefined;
     const meta = typename ? itemTypes?.[typename] : undefined;
     return meta && typeof meta.id === 'string' ? meta.id : null;
   }
-  
+
   constructor() { 
     super();
 
     this.barElement = this.querySelector('preview-mode-bar') as PreviewModeBar;
     this.subscriptionElements = [...this.querySelectorAll('preview-mode-subscription')] as PreviewModeSubscription[];
-    this.editableRecord = JSON.parse(
-      this.subscriptionElements.find((element) => element.dataset.record)?.dataset.record ?? 'null'
-    );
-    this.editLinkElement = this.querySelector('[data-edit-record]') as HTMLAnchorElement;
-    this.toggleBlockNamesButton = this.querySelector('[data-toggle-block-names]') as HTMLButtonElement;
 
-    const { datocmsEnvironment, datocmsToken, datocmsProject } = this.dataset;
+    const { datocmsEnvironment, datocmsToken } = this.dataset;
     if (!datocmsEnvironment) {
       console.warn('PreviewMode: missing required data-datocms-environment attribute');
       return;
@@ -72,7 +69,6 @@ class PreviewMode extends HTMLElement {
     }
     this.#datocmsEnvironment = datocmsEnvironment;
     this.#datocmsToken = datocmsToken;
-    this.#datocmsProject = datocmsProject || '';
 
     this.$connections.listen((connections) => {
       // set overall connection status to lowest of all connections:
@@ -111,164 +107,13 @@ class PreviewMode extends HTMLElement {
       this.subscribe({ query, variables });
     });
 
-    const storedState = localStorage.getItem('preview-mode-show-block-names');
-    this.$showBlockNames.set(storedState === 'true');
-
-    this.$showBlockNames.listen(() => this.updateBlockNamesVisibility());
-
-    this.toggleBlockNamesButton?.addEventListener('click', () => {
-      this.$showBlockNames.set(!this.$showBlockNames.get());
-    });
-
-    this.updateBlockNamesVisibility();
-
-    this.#initBlockLabelHover();
-  }
-
-  #applyEditLinks() {
-    if (!this.editableRecord?.id || !this.editableRecord?.type || !this.#datocmsProject) return;
-    const itemTypeId = PreviewMode.getItemTypeId(this.editableRecord.type);
-    if (!itemTypeId) return;
-    this.editLinkElement.href = this.getRecordEditUrl(itemTypeId, this.editableRecord.id);
-    if (document.documentElement.dataset.showBlockNames === 'true') this.setBlockEditLinks(itemTypeId);
-  }
-
-  updateBlockNamesVisibility() {
-    const show = this.$showBlockNames.get();
-    localStorage.setItem('preview-mode-show-block-names', show.toString());
-    this.toggleBlockNamesButton.textContent = show ? 'hide blocks' : 'show blocks';
-    document.documentElement.dataset.showBlockNames = show ? 'true' : 'false';
-    if (show) this.#positionBlockLabels();
-    this.#applyEditLinks();
-  }
-
-  #getBlockContainerForLabel(label: HTMLAnchorElement): Element | null {
-    let el: Element | null = label.nextElementSibling;
-    while (el) {
-      if (el.tagName.toLowerCase() === 'preview-mode-subscription') {
-        el = el.nextElementSibling;
-        continue;
-      }
-      return el;
-    }
-    return null;
-  }
-
-  #positionBlockLabels() {
-    const labels = document.querySelectorAll<HTMLAnchorElement>('[data-edit-block]');
-    labels.forEach((label) => {
-      const block = this.#getBlockContainerForLabel(label);
-      if (!block) return;
-
-      const blockRect = block.getBoundingClientRect();
-      if (blockRect.width === 0 && blockRect.height === 0) return;
-
-      const offsetParent = label.offsetParent || document.body;
-      const parentRect = offsetParent.getBoundingClientRect();
-      label.style.top = `${blockRect.top - parentRect.top}px`;
-      label.style.left = `${blockRect.left - parentRect.left}px`;
-      block.setAttribute('data-block-container', '');
-    });
-  }
-
-  #initBlockLabelHover() {
-    let currentLabel: HTMLAnchorElement | null = null;
-    let currentBlock: Element | null = null;
-
-    const clearHover = () => {
-      currentLabel?.classList.remove('hover');
-      currentBlock?.classList.remove('hover');
-      currentLabel = null;
-      currentBlock = null;
-    };
-
-    document.addEventListener(
-      'pointermove',
-      (e) => {
-        if (document.documentElement.dataset.showBlockNames !== 'true' || !(e.target instanceof Element)) {
-          clearHover();
-          return;
-        }
-
-        const labels = document.querySelectorAll<HTMLAnchorElement>('[data-edit-block]');
-        let deepest: HTMLAnchorElement | null = null;
-        let deepestBlock: Element | null = null;
-        for (const label of labels) {
-          const block = this.#getBlockContainerForLabel(label);
-          if (block && (label.contains(e.target) || block.contains(e.target))) {
-            deepest = label;
-            deepestBlock = block;
-          }
-        }
-
-        if (deepest === currentLabel) return;
-
-        clearHover();
-        currentLabel = deepest;
-        currentBlock = deepestBlock;
-        currentLabel?.classList.add('hover');
-        currentBlock?.classList.add('hover');
-      },
-      { passive: true }
-    );
-
-    const onPositionLabels = () => {
-      if (document.documentElement.dataset.showBlockNames === 'true') this.#positionBlockLabels();
-    };
-    let scrollRaf: number | null = null;
-    window.addEventListener('scroll', () => {
-      if (scrollRaf != null) return;
-      scrollRaf = requestAnimationFrame(() => {
-        scrollRaf = null;
-        onPositionLabels();
-      });
-    }, { passive: true });
-    window.addEventListener('resize', onPositionLabels, { passive: true });
-    window.addEventListener('load', onPositionLabels, { passive: true });
-  }
-
-  getRecordEditUrl(itemTypeId: string, recordId: string) {
-    return `https://${this.#datocmsProject}.admin.datocms.com/environments/${this.#datocmsEnvironment}/editor/item_types/${itemTypeId}/items/${recordId}`;
-  }
-
-  withLocaleFieldPath(fieldPath: string) {
-    const locale = document.documentElement.lang;
-    if (!locale) {
-      return fieldPath;
-    }
-    const parts = fieldPath.split('.');
-    if (parts.length < 2) {
-      return `${fieldPath}.${locale}`;
-    }
-    const [root, maybeLocale, ...rest] = parts;
-    if (maybeLocale === locale) {
-      return fieldPath;
-    }
-    return [root, locale, maybeLocale, ...rest].join('.');
-  }
-
-  setBlockEditLinks(itemTypeId: string) {
-    const baseUrl = this.getRecordEditUrl(itemTypeId, this.editableRecord!.id);
-    const anchors = document.querySelectorAll<HTMLAnchorElement>('[data-edit-block]');
-    anchors.forEach((anchor) => {
-      const fieldPath = anchor.dataset.fieldPath;
-      if (!fieldPath) {
-        return;
-      }
-      const url = new URL(baseUrl);
-      url.hash = `fieldPath=${this.withLocaleFieldPath(fieldPath)}`;
-      anchor.href = url.toString();
-    });
+    this.#setupCmsDebuggingTools(); // Optional: remove this to disable edit links and block overlays
   }
 
   getSubscriptionConfigs () {
     return this.subscriptionElements.map((element) => element.getConfig() as QueryVariables);
   }
 
-  connectedCallback() {
-    this.updateBlockNamesVisibility();
-  }
-  
   getInstanceCounts () {
     return this.getSubscriptionConfigs()
       .reduce((instanceMap, { query, variables }: QueryVariables) => {
@@ -303,6 +148,174 @@ class PreviewMode extends HTMLElement {
         console.error('PreviewMode subscription error:', { error, query, variables });
       },
     });
+  }
+
+  /**
+   * CMS debugging tools (edit links + block overlays)
+   */
+
+  #setupCmsDebuggingTools() {
+    this.#datocmsProject = this.dataset.datocmsProject || '';
+    if (!this.#datocmsProject) return;
+
+    this.#editableRecord = JSON.parse(
+      this.subscriptionElements.find((el) => el.dataset.record)?.dataset.record ?? 'null'
+    );
+    this.#editLinkElement = this.querySelector('[data-edit-record]');
+    this.#toggleBlockNamesButton = this.querySelector('[data-toggle-block-names]');
+
+    const stored = localStorage.getItem('preview-mode-show-block-names');
+    this.#$showBlockNames.set(stored === 'true');
+
+    this.#$showBlockNames.listen(() => this.#syncDebuggingToolsVisibility());
+    this.#toggleBlockNamesButton?.addEventListener('click', () => {
+      this.#$showBlockNames.set(!this.#$showBlockNames.get());
+    });
+
+    this.#syncDebuggingToolsVisibility();
+    this.#setupBlockLabelHoverTracking();
+  }
+
+  #syncDebuggingToolsVisibility() {
+    const show = this.#$showBlockNames.get();
+    localStorage.setItem('preview-mode-show-block-names', show.toString());
+    if (this.#toggleBlockNamesButton) {
+      this.#toggleBlockNamesButton.textContent = show ? 'hide blocks' : 'show blocks';
+    }
+    document.documentElement.dataset.showBlockNames = show ? 'true' : 'false';
+
+    if (show) this.#positionBlockLabels();
+    this.#applyEditLinks();
+  }
+
+  #applyEditLinks() {
+    if (!this.#editableRecord?.id || !this.#editableRecord?.type) return;
+
+    const itemTypeId = PreviewMode.#getItemTypeId(this.#editableRecord.type);
+    if (!itemTypeId) return;
+
+    if (this.#editLinkElement) {
+      this.#editLinkElement.href = this.#buildRecordEditUrl(itemTypeId, this.#editableRecord.id);
+    }
+
+    if (document.documentElement.dataset.showBlockNames === 'true') {
+      this.#applyBlockEditLinks(itemTypeId);
+    }
+  }
+
+  #buildRecordEditUrl(itemTypeId: string, recordId: string) {
+    return `https://${this.#datocmsProject}.admin.datocms.com/environments/${this.#datocmsEnvironment}/editor/item_types/${itemTypeId}/items/${recordId}`;
+  }
+
+  #applyBlockEditLinks(itemTypeId: string) {
+    const baseUrl = this.#buildRecordEditUrl(itemTypeId, this.#editableRecord!.id);
+    document.querySelectorAll<HTMLAnchorElement>('[data-edit-block]').forEach((anchor) => {
+      const fieldPath = anchor.dataset.fieldPath;
+      if (!fieldPath) return;
+
+      const url = new URL(baseUrl);
+      url.hash = `fieldPath=${this.#withLocaleFieldPath(fieldPath)}`;
+      anchor.href = url.toString();
+    });
+  }
+
+  #withLocaleFieldPath(fieldPath: string) {
+    const locale = document.documentElement.lang;
+    if (!locale) return fieldPath;
+
+    const parts = fieldPath.split('.');
+    if (parts.length < 2) return `${fieldPath}.${locale}`;
+
+    const [root, maybeLocale, ...rest] = parts;
+    if (maybeLocale === locale) return fieldPath;
+
+    return [root, locale, maybeLocale, ...rest].join('.');
+  }
+
+  #getBlockContainerForLabel(label: HTMLAnchorElement): Element | null {
+    let el: Element | null = label.nextElementSibling;
+    while (el) {
+      if (el.tagName.toLowerCase() !== 'preview-mode-subscription') return el;
+      el = el.nextElementSibling;
+    }
+    return null;
+  }
+
+  #positionBlockLabels() {
+    document.querySelectorAll<HTMLAnchorElement>('[data-edit-block]').forEach((label) => {
+      const block = this.#getBlockContainerForLabel(label);
+      if (!block) return;
+
+      const blockRect = block.getBoundingClientRect();
+      if (blockRect.width === 0 && blockRect.height === 0) return;
+
+      const offsetParent = label.offsetParent || document.body;
+      const parentRect = offsetParent.getBoundingClientRect();
+      label.style.top = `${blockRect.top - parentRect.top}px`;
+      label.style.left = `${blockRect.left - parentRect.left}px`;
+      block.setAttribute('data-block-container', '');
+    });
+  }
+
+  #setupBlockLabelHoverTracking() {
+    let currentLabel: HTMLAnchorElement | null = null;
+    let currentBlock: Element | null = null;
+
+    const clearHover = () => {
+      currentLabel?.classList.remove('hover');
+      currentBlock?.classList.remove('hover');
+      currentLabel = null;
+      currentBlock = null;
+    };
+
+    document.addEventListener(
+      'pointermove',
+      (e) => {
+        if (document.documentElement.dataset.showBlockNames !== 'true' || !(e.target instanceof Element)) {
+          clearHover();
+          return;
+        }
+
+        const labels = document.querySelectorAll<HTMLAnchorElement>('[data-edit-block]');
+        let deepest: HTMLAnchorElement | null = null;
+        let deepestBlock: Element | null = null;
+
+        for (const label of labels) {
+          const block = this.#getBlockContainerForLabel(label);
+          if (block && (label.contains(e.target) || block.contains(e.target))) {
+            deepest = label;
+            deepestBlock = block;
+          }
+        }
+
+        if (deepest === currentLabel) return;
+
+        clearHover();
+        currentLabel = deepest;
+        currentBlock = deepestBlock;
+        currentLabel?.classList.add('hover');
+        currentBlock?.classList.add('hover');
+      },
+      { passive: true }
+    );
+
+    let scrollRaf: number | null = null;
+    const onReposition = () => {
+      if (document.documentElement.dataset.showBlockNames === 'true') {
+        this.#positionBlockLabels();
+      }
+    };
+
+    window.addEventListener('scroll', () => {
+      if (scrollRaf !== null) return;
+      scrollRaf = requestAnimationFrame(() => {
+        scrollRaf = null;
+        onReposition();
+      });
+    }, { passive: true });
+
+    window.addEventListener('resize', onReposition, { passive: true });
+    window.addEventListener('load', onReposition, { passive: true });
   }
 }
 
