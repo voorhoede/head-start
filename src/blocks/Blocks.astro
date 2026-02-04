@@ -28,25 +28,25 @@ const blocksByTypename = {
 
 interface Props {
   blocks: AnyBlock[];
-  fieldPath?: string;
-  skipDebugLabels?: boolean;
+  debugFieldPath?: string;
+  hideDebugLabels?: boolean;
 }
-const { blocks, skipDebugLabels = false } = Astro.props;
-const fieldPath = Astro.props.fieldPath === '' ? '' : (Astro.props.fieldPath ?? 'bodyBlocks');
+const { blocks, hideDebugLabels = false } = Astro.props;
+const debugFieldPath = Astro.props.debugFieldPath === '' ? '' : (Astro.props.debugFieldPath ?? 'bodyBlocks');
 const isPreview = Astro.locals.isPreview;
 
 function camelToSnake(str: string): string {
   return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`).replace(/^_/, '');
 }
 
-function toApiKey(fieldPath: string): string {
-  if (fieldPath.includes('.')) {
-    const parts = fieldPath.split('.');
+function toApiKey(debugFieldPath: string): string {
+  if (debugFieldPath.includes('.')) {
+    const parts = debugFieldPath.split('.');
     const rootField = parts[0];
     const rest = parts.slice(1).join('.');
     return `${camelToSnake(rootField)}.${rest}`;
   }
-  return camelToSnake(fieldPath);
+  return camelToSnake(debugFieldPath);
 }
 
 const itemTypes = (itemTypesJson as { itemTypes?: Record<string, { id: string; name: string; focusField?: string }> }).itemTypes;
@@ -85,7 +85,7 @@ const raise = (message: string) => {
     }
     const blockName = getBlockDisplayName(__typename);
     const focusFieldApiKey = getFocusFieldApiKey(__typename);
-    const apiKeyPath = fieldPath && fieldPath !== '' ? toApiKey(fieldPath) : null;
+    const apiKeyPath = debugFieldPath && debugFieldPath !== '' ? toApiKey(debugFieldPath) : null;
     const blockBasePath = apiKeyPath ? `${apiKeyPath}.${index}` : null;
     const blockFieldPath = blockBasePath
       ? `${blockBasePath}${focusFieldApiKey ? `.${focusFieldApiKey}` : ''}`
@@ -93,20 +93,20 @@ const raise = (message: string) => {
 
     return (
       <>
-        {isPreview && !skipDebugLabels && blockFieldPath && (
+        {isPreview && !hideDebugLabels && blockFieldPath && (
           /* eslint-disable-next-line astro/jsx-a11y/anchor-is-valid */
           <a
             class="block-name-label"
-            data-edit-block
-            data-field-path={blockFieldPath}
-            data-block-name={blockName}
+            data-debug-edit-block
+            data-debug-field-path={blockFieldPath}
+            data-debug-block-name={blockName}
             target="_blank"
           >
             {blockName}
           </a>
         )}
         {/* @ts-expect-error - since block can be any block its type is conflated to `never`. */}
-        <Block block={block} fieldPath={blockBasePath} skipDebugLabels={skipDebugLabels} />
+        <Block block={block} debugFieldPath={blockBasePath} hideDebugLabels={hideDebugLabels} />
       </>
     );
   })

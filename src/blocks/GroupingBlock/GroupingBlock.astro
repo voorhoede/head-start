@@ -6,13 +6,13 @@ import type { GroupingBlockFragment } from '@lib/datocms/types';
 
 export interface Props {
   block: GroupingBlockFragment;
-  fieldPath?: string;
-  skipDebugLabels?: boolean;
+  debugFieldPath?: string;
+  hideDebugLabels?: boolean;
 }
 
 const isLayout = (layout: GroupingBlockFragment['layout']) => block.layout === layout;
 
-const { block, fieldPath, skipDebugLabels } = Astro.props;
+const { block, debugFieldPath, hideDebugLabels } = Astro.props;
 const items = block.items;
 
 function buildNestedFieldPath(basePath: string, itemIndex: number): string {
@@ -28,8 +28,8 @@ function buildNestedFieldPath(basePath: string, itemIndex: number): string {
       <h2>{ item.title }</h2>
       <Blocks
         blocks={ item.blocks }
-        fieldPath={ fieldPath ? buildNestedFieldPath(fieldPath, itemIndex) : undefined }
-        skipDebugLabels={ skipDebugLabels }
+        debugFieldPath={ debugFieldPath ? buildNestedFieldPath(debugFieldPath, itemIndex) : undefined }
+        hideDebugLabels={ hideDebugLabels }
       />
     </section>
   ))
@@ -39,8 +39,8 @@ function buildNestedFieldPath(basePath: string, itemIndex: number): string {
   items.map((item, itemIndex) => (
     <Blocks
       blocks={ item.blocks }
-      fieldPath={ fieldPath ? buildNestedFieldPath(fieldPath, itemIndex) : undefined }
-      skipDebugLabels={ skipDebugLabels }
+      debugFieldPath={ debugFieldPath ? buildNestedFieldPath(debugFieldPath, itemIndex) : undefined }
+      hideDebugLabels={ hideDebugLabels }
     />
   ))
 )}
@@ -56,8 +56,8 @@ function buildNestedFieldPath(basePath: string, itemIndex: number): string {
         <Fragment slot="body">
           <Blocks
             blocks={ item.blocks }
-            fieldPath={ fieldPath ? buildNestedFieldPath(fieldPath, itemIndex) : undefined }
-            skipDebugLabels={ skipDebugLabels }
+            debugFieldPath={ debugFieldPath ? buildNestedFieldPath(debugFieldPath, itemIndex) : undefined }
+            hideDebugLabels={ hideDebugLabels }
           />
         </Fragment>
       </AccordionItem>
@@ -72,8 +72,8 @@ function buildNestedFieldPath(basePath: string, itemIndex: number): string {
       <TabsPanel>
         <Blocks
           blocks={ item.blocks }
-          fieldPath={ fieldPath ? buildNestedFieldPath(fieldPath, itemIndex) : undefined }
-          skipDebugLabels={ skipDebugLabels }
+          debugFieldPath={ debugFieldPath ? buildNestedFieldPath(debugFieldPath, itemIndex) : undefined }
+          hideDebugLabels={ hideDebugLabels }
         />
       </TabsPanel>
     </>))}

@@ -140,7 +140,7 @@ The focus field is automatically detected based on field types:
 
 **Metadata fields are excluded** (e.g., `title`, `layout`, `style`, `slug`, `id`) since they're configuration rather than editable content.
 
-The script finds the first field matching these criteria (excluding metadata) and uses it as the focus field. Results are written to `itemTypes.json` (id, name, focusField per block type). `Blocks.astro` reads that and builds the path; blocks that render nested `<Blocks />` (e.g. GroupingBlock) must pass a `fieldPath` that matches the schema path to the nested list.
+The script finds the first field matching these criteria (excluding metadata) and uses it as the focus field. Results are written to `itemTypes.json` (id, name, focusField per block type). `Blocks.astro` reads that and builds the path; blocks that render nested `<Blocks />` (e.g. GroupingBlock) must pass a `debugFieldPath` that matches the schema path to the nested list.
 
 ### Field path format
 
@@ -149,12 +149,12 @@ Paths use **DatoCMS API keys** (snake_case), not GraphQL field names.
 **How we build the path:**
 
 1. **Script** ([`scripts/download-item-types.ts`](../scripts/download-item-types.ts)): For each block type, picks one focus field (or uses `FOCUS_FIELD_OVERRIDES`) and writes it to `itemTypes.json`. Block types with no matching field get no `focusField`; the path then stops at the block index.
-2. **Blocks.astro**: Receives `fieldPath` (default `bodyBlocks`). Converts the first segment to API key with `toApiKey` (camelCase → snake_case, e.g. `bodyBlocks` → `body_blocks`). For each block at index `i`, `blockBasePath = apiKeyPath.i`; the label path is `blockBasePath` + optional `.focusField` from itemTypes. Passes `fieldPath={blockBasePath}` into the block (so nested blocks know their parent path).
-3. **Blocks with nested Blocks** (e.g. GroupingBlock): Receive `fieldPath` = parent’s `blockBasePath` (e.g. `body_blocks.2`). They must append the schema path to the nested blocks array and pass that to `<Blocks />`. GroupingBlock does `fieldPath.items.{itemIndex}.blocks` (see `buildNestedFieldPath` in [`GroupingBlock.astro`](../src/blocks/GroupingBlock/GroupingBlock.astro)). Any other block that renders nested `<Blocks />` should follow the same idea so paths match the record structure in DatoCMS.
+2. **Blocks.astro**: Receives `debugFieldPath` (default `bodyBlocks`). Converts the first segment to API key with `toApiKey` (camelCase → snake_case, e.g. `bodyBlocks` → `body_blocks`). For each block at index `i`, `blockBasePath = apiKeyPath.i`; the label path is `blockBasePath` + optional `.focusField` from itemTypes. Passes `debugFieldPath={blockBasePath}` into the block (so nested blocks know their parent path).
+3. **Blocks with nested Blocks** (e.g. GroupingBlock): Receive `debugFieldPath` = parent’s `blockBasePath` (e.g. `body_blocks.2`). They must append the schema path to the nested blocks array and pass that to `<Blocks />`. GroupingBlock does `debugFieldPath.items.{itemIndex}.blocks` (see `buildNestedFieldPath` in [`GroupingBlock.astro`](../src/blocks/GroupingBlock/GroupingBlock.astro)). Any other block that renders nested `<Blocks />` should follow the same idea so paths match the record structure in DatoCMS.
 
 **Examples:**
 
-| Context | Path (`data-field-path`) |
+| Context | Path (`data-debug-field-path`) |
 |--------|---------------------------|
 | First block on page, TableBlock (focus `table`) | `body_blocks.0.table` |
 | Second block, TextBlock (focus `body`) | `body_blocks.1.body` |
@@ -165,12 +165,12 @@ The client injects the current locale (from `<html lang="...">`) after the root 
 
 **Specific cases:**
 
-- **GroupingBlock**: Builds nested path as `{parentBasePath}.items.{itemIndex}.blocks`. Forwards `skipDebugLabels` to nested `<Blocks />`.
+- **GroupingBlock**: Builds nested path as `{parentBasePath}.items.{itemIndex}.blocks`. Forwards `hideDebugLabels` to nested `<Blocks />`.
 
 
-### Skipping debug labels (skipDebugLabels)
+### Hiding debug labels (hideDebugLabels)
 
-Pass `skipDebugLabels` on `<Blocks />` (or on a block that forwards it, e.g. `GroupingBlock`) when you do not want to render block labels in that subtree.
+Pass `hideDebugLabels` on `<Blocks />` (or on a block that forwards it, e.g. `GroupingBlock`) when you do not want to render block labels in that subtree.
 
 - **PagePartialBlock children**: Blocks belong to the partial record, not the main page. Labels would open the wrong record in the editor.
 - **TextBlock inline blocks** (`src/blocks/TextBlock/nodes/Block.astro`): Blocks are embedded in rich text. Labels would open the wrong field or add clutter.

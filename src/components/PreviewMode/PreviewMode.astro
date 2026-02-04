@@ -19,8 +19,8 @@ const projectName = siteData.internalDomain?.split('.')[0] || null;
     <span role="presentation" data-status="closed" />
     <div class="preview-mode-actions">
       {/* eslint-disable-next-line astro/jsx-a11y/anchor-is-valid */}
-      <a data-edit-record target="_blank" rel="noreferrer noopener">edit in CMS</a>
-      <button data-toggle-block-names type="button">show blocks</button>
+      <a data-debug-edit-record target="_blank" rel="noreferrer noopener">edit in CMS</a>
+      <button data-debug-toggle-blocks type="button">show blocks</button>
       <a href={ `/api/preview/exit/?location=${Astro.url}` }>exit preview</a>
     </div>
   </preview-mode-bar>
@@ -43,7 +43,7 @@ a {
   color: white;
 }
 
-a[data-edit-record]:not([href]) {
+a[data-debug-edit-record]:not([href]) {
   display: none;
 }
 
@@ -99,28 +99,28 @@ a[data-edit-record]:not([href]) {
   width: fit-content !important;
 }
 
-:global([data-show-block-names="true"] .block-name-label) {
+:global([data-debug-blocks-visible="true"] .block-name-label) {
   display: block;
 }
 
-:global([data-show-block-names="true"] .block-name-label[href]:hover),
-:global([data-show-block-names="true"] .block-name-label.hover[href]) {
+:global([data-debug-blocks-visible="true"] .block-name-label[href]:hover),
+:global([data-debug-blocks-visible="true"] .block-name-label.hover[href]) {
   background: rgb(203, 74, 51);
   z-index: 99999;
 }
 
-:global([data-show-block-names="true"] .block-name-label:not([href])) {
+:global([data-debug-blocks-visible="true"] .block-name-label:not([href])) {
   opacity: 0.6;
   cursor: default;
   border-style: dashed;
 }
 
-:global([data-show-block-names="true"] [data-block-container].hover) {
+:global([data-debug-blocks-visible="true"] [data-debug-block-container].hover) {
   outline: 2px solid rgb(255, 206, 197);
   outline-offset: -2px;
 }
 
-[data-toggle-block-names] {
+[data-debug-toggle-blocks] {
   all: unset;
   text-decoration: underline;
   cursor: pointer;
