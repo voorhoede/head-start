@@ -32,7 +32,7 @@ interface Props {
   hideDebugLabels?: boolean;
 }
 const { blocks, hideDebugLabels = false } = Astro.props;
-const debugFieldPath = Astro.props.debugFieldPath === '' ? '' : (Astro.props.debugFieldPath ?? 'bodyBlocks');
+const debugFieldPath = Astro.props.debugFieldPath ?? 'bodyBlocks';
 const isPreview = Astro.locals.isPreview;
 
 const raise = (message: string) => {

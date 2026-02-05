@@ -52,7 +52,10 @@ export function getDebugPaths(
   return { blockBasePath, blockFieldPath, blockName };
 }
 
-export function buildNestedFieldPath(basePath: string, itemIndex: number): string {
+export function buildNestedFieldPath(basePath: string | null | undefined, itemIndex: number): string | undefined {
+  if (!basePath || basePath === '') {
+    return undefined;
+  }
   if (basePath.endsWith('.items')) {
     return `${basePath}.${itemIndex}.blocks`;
   }

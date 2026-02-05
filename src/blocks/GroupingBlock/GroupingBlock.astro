@@ -22,7 +22,7 @@ const items = block.items;
       <h2>{ item.title }</h2>
       <Blocks
         blocks={ item.blocks }
-        debugFieldPath={ debugFieldPath ? buildNestedFieldPath(debugFieldPath, itemIndex) : undefined }
+        debugFieldPath={ buildNestedFieldPath(debugFieldPath, itemIndex) }
         hideDebugLabels={ hideDebugLabels }
       />
     </section>
@@ -33,7 +33,7 @@ const items = block.items;
   items.map((item, itemIndex) => (
     <Blocks
       blocks={ item.blocks }
-      debugFieldPath={ debugFieldPath ? buildNestedFieldPath(debugFieldPath, itemIndex) : undefined }
+      debugFieldPath={ buildNestedFieldPath(debugFieldPath, itemIndex) }
       hideDebugLabels={ hideDebugLabels }
     />
   ))
@@ -50,7 +50,7 @@ const items = block.items;
         <Fragment slot="body">
           <Blocks
             blocks={ item.blocks }
-            debugFieldPath={ debugFieldPath ? buildNestedFieldPath(debugFieldPath, itemIndex) : undefined }
+            debugFieldPath={ buildNestedFieldPath(debugFieldPath, itemIndex) }
             hideDebugLabels={ hideDebugLabels }
           />
         </Fragment>
@@ -66,7 +66,7 @@ const items = block.items;
       <TabsPanel>
         <Blocks
           blocks={ item.blocks }
-          debugFieldPath={ debugFieldPath ? buildNestedFieldPath(debugFieldPath, itemIndex) : undefined }
+          debugFieldPath={ buildNestedFieldPath(debugFieldPath, itemIndex) }
           hideDebugLabels={ hideDebugLabels }
         />
       </TabsPanel>
