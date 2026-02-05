@@ -3,7 +3,7 @@ import { execSync } from 'node:child_process';
 export const previewBranches = [
   'preview',
   'feat/pages-content-collection',
-  'feat/edit-page'
+  'feat/show-blocks'
 ];
 
 function getGitBranch() {
