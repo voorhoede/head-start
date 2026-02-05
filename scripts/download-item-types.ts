@@ -89,14 +89,9 @@ async function downloadItemTypes() {
   const token = process.env.DATOCMS_API_TOKEN?.trim();
 
   if (!token) {
-    if (process.env.CI) {
-      console.log('DATOCMS_API_TOKEN is missing; creating empty itemTypes.json for CI.');
-      await ensureDirAndWriteJson(FILE_PATH, { itemTypes: {} });
-      return;
-    }
-    throw new Error(
-      'DATOCMS_API_TOKEN is required. Set it and rerun `npm run prep:download-item-types`.'
-    );
+    console.log('DATOCMS_API_TOKEN is missing; creating empty itemTypes.json.');
+    await ensureDirAndWriteJson(FILE_PATH, { itemTypes: {} });
+    return;
   }
 
   const client = buildClient({ apiToken: token, environment: datocmsEnvironment });
