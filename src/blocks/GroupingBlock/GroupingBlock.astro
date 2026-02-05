@@ -1,5 +1,6 @@
 ---
 import Blocks from '@blocks/Blocks.astro';
+import { buildNestedFieldPath } from '@blocks/block-debug-utils';
 import { Accordion, AccordionItem } from '@components/Accordion';
 import { Tabs, TabsPanel, TabsTab } from '@components/Tabs';
 import type { GroupingBlockFragment } from '@lib/datocms/types';
@@ -14,13 +15,6 @@ const isLayout = (layout: GroupingBlockFragment['layout']) => block.layout === l
 
 const { block, debugFieldPath, hideDebugLabels } = Astro.props;
 const items = block.items;
-
-function buildNestedFieldPath(basePath: string, itemIndex: number): string {
-  if (basePath.endsWith('.items')) {
-    return `${basePath}.${itemIndex}.blocks`;
-  }
-  return `${basePath}.items.${itemIndex}.blocks`;
-}
 ---
 { isLayout('stack-titled') && (
   items.map((item, itemIndex) => (

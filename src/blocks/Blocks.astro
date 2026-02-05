@@ -11,7 +11,7 @@ import TextImageBlock from './TextImageBlock/TextImageBlock.astro';
 import VideoBlock from './VideoBlock/VideoBlock.astro';
 import VideoEmbedBlock from './VideoEmbedBlock/VideoEmbedBlock.astro';
 import GroupingBlock from './GroupingBlock/GroupingBlock.astro';
-import itemTypesJson from '@lib/datocms/itemTypes.json';
+import { getDebugPaths } from './block-debug-utils';
 
 const blocksByTypename = {
   ActionBlockRecord: ActionBlock,
@@ -35,34 +35,6 @@ const { blocks, hideDebugLabels = false } = Astro.props;
 const debugFieldPath = Astro.props.debugFieldPath === '' ? '' : (Astro.props.debugFieldPath ?? 'bodyBlocks');
 const isPreview = Astro.locals.isPreview;
 
-function camelToSnake(str: string): string {
-  return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`).replace(/^_/, '');
-}
-
-function toApiKey(debugFieldPath: string): string {
-  if (debugFieldPath.includes('.')) {
-    const parts = debugFieldPath.split('.');
-    const rootField = parts[0];
-    const rest = parts.slice(1).join('.');
-    return `${camelToSnake(rootField)}.${rest}`;
-  }
-  return camelToSnake(debugFieldPath);
-}
-
-const itemTypes = (itemTypesJson as { itemTypes?: Record<string, { id: string; name: string; focusField?: string }> }).itemTypes;
-
-function getItemTypeMeta(typename: string) {
-  return itemTypes?.[typename];
-}
-
-function getFocusFieldApiKey(typename: string): string | null {
-  return getItemTypeMeta(typename)?.focusField ?? null;
-}
-
-function getBlockDisplayName(typename: string): string {
-  return getItemTypeMeta(typename)?.name ?? typename.replace(/Record$/, '');
-}
-
 const raise = (message: string) => {
   if (!PUBLIC_IS_PRODUCTION) {
     console.error(message);
@@ -83,13 +55,8 @@ const raise = (message: string) => {
       const message = raise(`No block data found for "${__typename}". Is it included in ${import.meta.filename}?`);
       return <script define:vars={{ message }} is:inline>console.log(message);</script>;
     }
-    const blockName = getBlockDisplayName(__typename);
-    const focusFieldApiKey = getFocusFieldApiKey(__typename);
-    const apiKeyPath = debugFieldPath && debugFieldPath !== '' ? toApiKey(debugFieldPath) : null;
-    const blockBasePath = apiKeyPath ? `${apiKeyPath}.${index}` : null;
-    const blockFieldPath = blockBasePath
-      ? `${blockBasePath}${focusFieldApiKey ? `.${focusFieldApiKey}` : ''}`
-      : null;
+
+    const { blockBasePath, blockFieldPath, blockName } = getDebugPaths(debugFieldPath, index, __typename);
 
     return (
       <>

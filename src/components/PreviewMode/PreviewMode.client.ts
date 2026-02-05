@@ -1,4 +1,4 @@
-import itemTypesJson from '@lib/datocms/itemTypes.json';
+import { getItemTypeId } from '@blocks/block-debug-utils';
 import type { ConnectionStatus as DatocmsConnectionStatus } from 'datocms-listen';
 import { subscribeToQuery } from 'datocms-listen';
 import { atom, map } from 'nanostores';
@@ -44,12 +44,6 @@ class PreviewMode extends HTMLElement {
       hash = (hash >> 5) + hash + string.charCodeAt(i);
     }
     return hash.toString(36);
-  }
-
-  static #getItemTypeId(typename?: string): string | null {
-    const itemTypes = itemTypesJson.itemTypes as Record<string, { id: string }> | undefined;
-    const meta = typename ? itemTypes?.[typename] : undefined;
-    return meta && typeof meta.id === 'string' ? meta.id : null;
   }
 
   constructor() { 
@@ -191,7 +185,7 @@ class PreviewMode extends HTMLElement {
   #applyEditLinks() {
     if (!this.#editableRecord?.id || !this.#editableRecord?.type) return;
 
-    const itemTypeId = PreviewMode.#getItemTypeId(this.#editableRecord.type);
+    const itemTypeId = getItemTypeId(this.#editableRecord.type);
     if (!itemTypeId) return;
 
     if (this.#editLinkElement) {
