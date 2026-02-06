@@ -6,14 +6,14 @@ import { datocmsEnvironment } from '../datocms-environment';
 
 dotenv.config({ allowEmptyValues: Boolean(process.env.CI) });
 
-const FILE_PATH = './src/lib/datocms/itemTypes.json';
-const CONCURRENT_REQUESTS_LIMIT = 6;
+const filePath = './src/lib/datocms/itemTypes.json';
+const concurrentRequestsLimit = 6;
 
-const FOCUS_FIELD_OVERRIDES: Record<string, string> = {
+const focusFieldOverrides: Record<string, string> = {
   page_partial_block: 'items',
 };
 
-const METADATA_FIELDS = new Set(['title', 'layout', 'style', 'slug', 'id', '_modelApiKey']);
+const metadataFields = new Set(['title', 'layout', 'style', 'slug', 'id', '_modelApiKey']);
 
 type DatoField = {
   field_type: string;
@@ -36,7 +36,7 @@ function hasLinkedItemTypes(field: DatoField): boolean {
 }
 
 function pickFocusField(fields: DatoField[]): DatoField | null {
-  const contentFields = fields.filter((field) => !METADATA_FIELDS.has(field.api_key));
+  const contentFields = fields.filter((field) => !metadataFields.has(field.api_key));
 
   const fieldTypeMatchers: Array<(field: DatoField) => boolean> = [
     (field) => field.field_type === 'rich_text' || field.field_type === 'structured_text',
@@ -90,7 +90,7 @@ async function downloadItemTypes() {
 
   if (!token) {
     console.log('DATOCMS_API_TOKEN is missing; creating empty itemTypes.json.');
-    await ensureDirAndWriteJson(FILE_PATH, { itemTypes: {} });
+    await ensureDirAndWriteJson(filePath, { itemTypes: {} });
     return;
   }
 
@@ -106,8 +106,8 @@ async function downloadItemTypes() {
 
   const blockFieldsMap: Record<string, string> = {};
 
-  await processItemsConcurrently(itemTypes, CONCURRENT_REQUESTS_LIMIT, async ({ id, apiKey }) => {
-    const manualOverride = FOCUS_FIELD_OVERRIDES[apiKey];
+  await processItemsConcurrently(itemTypes, concurrentRequestsLimit, async ({ id, apiKey }) => {
+    const manualOverride = focusFieldOverrides[apiKey];
     if (manualOverride) {
       blockFieldsMap[apiKey] = manualOverride;
       return;
@@ -132,7 +132,7 @@ async function downloadItemTypes() {
 
   const jsonContent = { itemTypes: sortObjectKeys(itemTypesMap) };
 
-  await ensureDirAndWriteJson(FILE_PATH, jsonContent);
+  await ensureDirAndWriteJson(filePath, jsonContent);
   console.log('Item types downloaded');
 }
 
