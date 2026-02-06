@@ -1,19 +1,16 @@
+import { snakeCase } from 'scule';
 import itemTypesJson from '@lib/datocms/itemTypes.json';
 
 const itemTypes = (itemTypesJson as { itemTypes?: Record<string, { id: string; name: string; focusField?: string }> }).itemTypes;
-
-function camelToSnake(str: string): string {
-  return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`).replace(/^_/, '');
-}
 
 export function toApiKey(debugFieldPath: string): string {
   if (debugFieldPath.includes('.')) {
     const parts = debugFieldPath.split('.');
     const rootField = parts[0];
     const rest = parts.slice(1).join('.');
-    return `${camelToSnake(rootField)}.${rest}`;
+    return `${snakeCase(rootField)}.${rest}`;
   }
-  return camelToSnake(debugFieldPath);
+  return snakeCase(debugFieldPath);
 }
 
 function getItemTypeMeta(typename: string) {

@@ -148,7 +148,7 @@ Paths use **DatoCMS API keys** (snake_case), not GraphQL field names.
 
 **How we build the path:**
 
-1. **Script** ([`scripts/download-item-types.ts`](../scripts/download-item-types.ts)): For each block type, picks one focus field (or uses `FOCUS_FIELD_OVERRIDES`) and writes it to `itemTypes.json`. Block types with no matching field get no `focusField`; the path then stops at the block index.
+1. **Script** ([`scripts/download-item-types.ts`](../scripts/download-item-types.ts)): For each block type, picks one focus field (or uses `focusFieldOverrides`) and writes it to `itemTypes.json`. Block types with no matching field get no `focusField`; the path then stops at the block index.
 2. **Blocks.astro**: Receives `debugFieldPath` (default `bodyBlocks`). Converts the first segment to API key with `toApiKey` (camelCase → snake_case, e.g. `bodyBlocks` → `body_blocks`). For each block at index `i`, `blockBasePath = apiKeyPath.i`; the label path is `blockBasePath` + optional `.focusField` from itemTypes. Passes `debugFieldPath={blockBasePath}` into the block (so nested blocks know their parent path).
 3. **Blocks with nested Blocks** (e.g. GroupingBlock): Receive `debugFieldPath` = parent’s `blockBasePath` (e.g. `body_blocks.2`). They must append the schema path to the nested blocks array and pass that to `<Blocks />`. GroupingBlock does `debugFieldPath.items.{itemIndex}.blocks` (see `buildNestedFieldPath` in [`block-debug-utils.ts`](../src/blocks/block-debug-utils.ts)). Any other block that renders nested `<Blocks />` should follow the same idea so paths match the record structure in DatoCMS.
 
@@ -193,7 +193,7 @@ The script will:
 If automatic detection picks the wrong field, add an override in [`scripts/download-item-types.ts`](../scripts/download-item-types.ts):
 
 ```typescript
-const FOCUS_FIELD_OVERRIDES: Record<string, string> = {
+const focusFieldOverrides: Record<string, string> = {
   'card_block': 'item',  // block API key -> field API key
 };
 ```

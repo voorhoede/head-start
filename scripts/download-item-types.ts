@@ -2,6 +2,7 @@ import { buildClient } from '@datocms/cma-client-node';
 import dotenv from 'dotenv-safe';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
+import { pascalCase } from 'scule';
 import { datocmsEnvironment } from '../datocms-environment';
 
 dotenv.config({ allowEmptyValues: Boolean(process.env.CI) });
@@ -22,11 +23,7 @@ type DatoField = {
 };
 
 function convertApiKeyToTypename(apiKey: string): string {
-  const words = apiKey.split(/[_-]/);
-  const pascalCase = words
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join('');
-  return `${pascalCase}Record`;
+  return `${pascalCase(apiKey)}Record`;
 }
 
 function hasLinkedItemTypes(field: DatoField): boolean {
