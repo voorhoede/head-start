@@ -1,4 +1,5 @@
 import { buildClient } from '@datocms/cma-client-node';
+import { mapLimit } from 'async';
 import dotenv from 'dotenv-safe';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
@@ -20,6 +21,12 @@ type DatoField = {
   field_type: string;
   api_key: string;
   validators?: unknown;
+};
+
+type ItemTypeInfo = {
+  id: string;
+  apiKey: string;
+  name: string;
 };
 
 function convertApiKeyToTypename(apiKey: string): string {
@@ -60,28 +67,6 @@ function sortObjectKeys<T extends Record<string, unknown>>(obj: T): T {
   return Object.fromEntries(Object.entries(obj).sort(([a], [b]) => a.localeCompare(b))) as T;
 }
 
-// Run async work with a small concurrency cap to avoid spiking the api
-async function processItemsConcurrently<T>(
-  items: T[],
-  concurrencyLimit: number,
-  processItem: (item: T, index: number) => Promise<void>
-): Promise<void> {
-  let currentIndex = 0;
-
-  const workers = Array.from(
-    { length: Math.min(concurrencyLimit, items.length) },
-    async () => {
-      while (true) {
-        const i = currentIndex++;
-        if (i >= items.length) return;
-        await processItem(items[i], i);
-      }
-    }
-  );
-
-  await Promise.all(workers);
-}
-
 async function downloadItemTypes() {
   const token = process.env.DATOCMS_API_TOKEN?.trim();
 
@@ -93,7 +78,7 @@ async function downloadItemTypes() {
 
   const client = buildClient({ apiToken: token, environment: datocmsEnvironment });
 
-  const itemTypes = (await client.itemTypes.list())
+  const itemTypes: ItemTypeInfo[] = (await client.itemTypes.list())
     .filter((itemType) => Boolean(itemType.api_key && itemType.id))
     .map((itemType) => ({
       id: itemType.id as string,
@@ -103,7 +88,8 @@ async function downloadItemTypes() {
 
   const blockFieldsMap: Record<string, string> = {};
 
-  await processItemsConcurrently(itemTypes, concurrentRequestsLimit, async ({ id, apiKey }) => {
+  await mapLimit(itemTypes, concurrentRequestsLimit, async (itemType: ItemTypeInfo) => {
+    const { id, apiKey } = itemType;
     const manualOverride = focusFieldOverrides[apiKey];
     if (manualOverride) {
       blockFieldsMap[apiKey] = manualOverride;
