@@ -127,7 +127,7 @@ npm run prep:download-item-types
 
 ## Block field path detection
 
-When clicking on a block label in preview mode, the system automatically generates a field path to focus the correct field in DatoCMS. Block labels are only clickable when `PreviewModeSubscription` receives a `record` prop (see above). This is done by detecting the "focus field" for each block type.
+When clicking on a block label in preview mode, the system automatically generates a field path to focus the correct field in DatoCMS. This uses the [DatoCMS content link](https://www.datocms.com/docs/content-link/how-to-use-content-link) feature, which allows linking directly to a specific field in the editor via a URL hash. Block labels are only clickable when `PreviewModeSubscription` receives a `record` prop (see above). This is done by detecting the "focus field" for each block type.
 
 ### How it works
 
@@ -150,7 +150,7 @@ Paths use **DatoCMS API keys** (snake_case), not GraphQL field names.
 
 1. **Script** ([`scripts/download-item-types.ts`](../scripts/download-item-types.ts)): For each block type, picks one focus field (or uses `FOCUS_FIELD_OVERRIDES`) and writes it to `itemTypes.json`. Block types with no matching field get no `focusField`; the path then stops at the block index.
 2. **Blocks.astro**: Receives `debugFieldPath` (default `bodyBlocks`). Converts the first segment to API key with `toApiKey` (camelCase → snake_case, e.g. `bodyBlocks` → `body_blocks`). For each block at index `i`, `blockBasePath = apiKeyPath.i`; the label path is `blockBasePath` + optional `.focusField` from itemTypes. Passes `debugFieldPath={blockBasePath}` into the block (so nested blocks know their parent path).
-3. **Blocks with nested Blocks** (e.g. GroupingBlock): Receive `debugFieldPath` = parent’s `blockBasePath` (e.g. `body_blocks.2`). They must append the schema path to the nested blocks array and pass that to `<Blocks />`. GroupingBlock does `debugFieldPath.items.{itemIndex}.blocks` (see `buildNestedFieldPath` in [`GroupingBlock.astro`](../src/blocks/GroupingBlock/GroupingBlock.astro)). Any other block that renders nested `<Blocks />` should follow the same idea so paths match the record structure in DatoCMS.
+3. **Blocks with nested Blocks** (e.g. GroupingBlock): Receive `debugFieldPath` = parent’s `blockBasePath` (e.g. `body_blocks.2`). They must append the schema path to the nested blocks array and pass that to `<Blocks />`. GroupingBlock does `debugFieldPath.items.{itemIndex}.blocks` (see `buildNestedFieldPath` in [`block-debug-utils.ts`](../src/blocks/block-debug-utils.ts)). Any other block that renders nested `<Blocks />` should follow the same idea so paths match the record structure in DatoCMS.
 
 **Examples:**
 
@@ -186,7 +186,7 @@ npm run prep:download-item-types
 The script will:
 1. Find the first field matching the criteria above
 2. Use it as the focus field for that block type
-3. Generate the correct field path (e.g., `body_blocks.en.0.table` for TableBlock)
+3. Write the focus field to `itemTypes.json` (the locale and full path are resolved at runtime by `Blocks.astro` and the client)
 
 ### Manual override
 
