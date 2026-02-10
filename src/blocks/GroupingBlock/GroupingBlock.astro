@@ -1,43 +1,58 @@
 ---
-import type { GroupingBlockFragment } from '@lib/datocms/types';
 import Blocks from '@blocks/Blocks.astro';
+import { buildNestedFieldPath } from '@blocks/block-editor-utils';
 import { Accordion, AccordionItem } from '@components/Accordion';
-import { Tabs, TabsTab, TabsPanel } from '@components/Tabs';
+import { Tabs, TabsPanel, TabsTab } from '@components/Tabs';
+import type { GroupingBlockFragment } from '@lib/datocms/types';
 
 export interface Props {
   block: GroupingBlockFragment;
+  editorFieldPath?: string;
+  hideEditorLabels?: boolean;
 }
 
 const isLayout = (layout: GroupingBlockFragment['layout']) => block.layout === layout;
 
-const { block } = Astro.props;
+const { block, editorFieldPath, hideEditorLabels } = Astro.props;
 const items = block.items;
 ---
 { isLayout('stack-titled') && (
-  items.map(item => (
+  items.map((item, itemIndex) => (
     <section>
       <h2>{ item.title }</h2>
-      <Blocks blocks={ item.blocks } />
+      <Blocks
+        blocks={ item.blocks }
+        editorFieldPath={ buildNestedFieldPath(editorFieldPath, itemIndex) }
+        hideEditorLabels={ hideEditorLabels }
+      />
     </section>
   ))
 )}
 
 { isLayout('stack-untitled') && (
-  items.map(item => (
-    <Blocks blocks={ item.blocks } />
+  items.map((item, itemIndex) => (
+    <Blocks
+      blocks={ item.blocks }
+      editorFieldPath={ buildNestedFieldPath(editorFieldPath, itemIndex) }
+      hideEditorLabels={ hideEditorLabels }
+    />
   ))
 )}
 
 { (isLayout('accordion-open') || isLayout('accordion-closed')) && (
   <Accordion>
-    { items.map(item => (
+    { items.map((item, itemIndex) => (
       <AccordionItem
         name={ `block-${block.id}` }
         open={ isLayout('accordion-open') }
       >
         <Fragment slot="heading">{ item.title }</Fragment>
         <Fragment slot="body">
-          <Blocks blocks={ item.blocks }/>
+          <Blocks
+            blocks={ item.blocks }
+            editorFieldPath={ buildNestedFieldPath(editorFieldPath, itemIndex) }
+            hideEditorLabels={ hideEditorLabels }
+          />
         </Fragment>
       </AccordionItem>
     ))}
@@ -46,10 +61,14 @@ const items = block.items;
 
 { isLayout('tabs') && (
   <Tabs>
-    { items.map(item => (<>
+    { items.map((item, itemIndex) => (<>
       <TabsTab>{ item.title }</TabsTab>
       <TabsPanel>
-        <Blocks blocks={ item.blocks }/>
+        <Blocks
+          blocks={ item.blocks }
+          editorFieldPath={ buildNestedFieldPath(editorFieldPath, itemIndex) }
+          hideEditorLabels={ hideEditorLabels }
+        />
       </TabsPanel>
     </>))}
   </Tabs>

@@ -11,6 +11,8 @@ import TextImageBlock from './TextImageBlock/TextImageBlock.astro';
 import VideoBlock from './VideoBlock/VideoBlock.astro';
 import VideoEmbedBlock from './VideoEmbedBlock/VideoEmbedBlock.astro';
 import GroupingBlock from './GroupingBlock/GroupingBlock.astro';
+import { getEditorPaths } from './block-editor-utils';
+import Icon from '@components/Icon';
 
 const blocksByTypename = {
   ActionBlockRecord: ActionBlock,
@@ -27,8 +29,12 @@ const blocksByTypename = {
 
 interface Props {
   blocks: AnyBlock[];
+  editorFieldPath?: string;
+  hideEditorLabels?: boolean;
 }
-const { blocks } = Astro.props;
+const { blocks, hideEditorLabels = false } = Astro.props;
+const editorFieldPath = Astro.props.editorFieldPath ?? 'bodyBlocks';
+const isPreview = Astro.locals.isPreview;
 
 const raise = (message: string) => {
   if (!PUBLIC_IS_PRODUCTION) {
@@ -39,7 +45,7 @@ const raise = (message: string) => {
 ---
 
 {
-  blocks.map((block) => {
+  blocks.map((block, index) => {
     const { __typename, ...rest } = block;
     if (!Object.keys(rest).length) {
       const message = raise(`No block data found for "${__typename}". Is the associated fragment included in the query?`);
@@ -50,7 +56,27 @@ const raise = (message: string) => {
       const message = raise(`No block data found for "${__typename}". Is it included in ${import.meta.filename}?`);
       return <script define:vars={{ message }} is:inline>console.log(message);</script>;
     }
-    //@ts-expect-error - since block can be any block its type is conflated to `never`.
-    return <Block block={block} />;
+
+    const { blockBasePath, blockFieldPath, blockName } = getEditorPaths(editorFieldPath, index, __typename);
+
+    return (
+      <>
+        {isPreview && !hideEditorLabels && blockFieldPath && (
+          /* eslint-disable-next-line astro/jsx-a11y/anchor-is-valid */
+          <a
+            class="block-name-label"
+            data-editor-edit-block
+            data-editor-field-path={blockFieldPath}
+            data-editor-block-name={blockName}
+            target="_blank"
+          >
+            {blockName} <Icon name="external" />
+          </a>
+        )}
+        {/* @ts-expect-error - since block can be any block its type is conflated to `never`. */}
+        <Block block={block} editorFieldPath={blockBasePath} hideEditorLabels={hideEditorLabels} />
+      </>
+    );
   })
 }
+
