@@ -7,14 +7,14 @@ const itemTypes = (itemTypesJson as { itemTypes?: Record<string, { id: string; n
  * Converts the root segment of a field path to snake_case (DatoCMS API key format).
  * "bodyBlocks" => "body_blocks", "bodyBlocks.0.title" => "body_blocks.0.title"
  */
-export function toApiKey(debugFieldPath: string): string {
-  if (debugFieldPath.includes('.')) {
-    const parts = debugFieldPath.split('.');
+export function toApiKey(fieldPath: string): string {
+  if (fieldPath.includes('.')) {
+    const parts = fieldPath.split('.');
     const rootField = parts[0];
     const rest = parts.slice(1).join('.');
     return `${snakeCase(rootField)}.${rest}`;
   }
-  return snakeCase(debugFieldPath);
+  return snakeCase(fieldPath);
 }
 
 function getItemTypeMeta(typename: string) {
@@ -35,19 +35,19 @@ export function getBlockDisplayName(typename: string): string {
 }
 
 /**
- * Builds the field paths used for block edit links and debug labels.
+ * Builds the field paths used for block edit links and editor labels.
  * ("bodyBlocks", 2, "TextBlockRecord") => { blockBasePath: "body_blocks.2", blockFieldPath: "body_blocks.2.text", blockName: "📝 Text Block" }
  */
-export function getDebugPaths(
-  debugFieldPath: string | null | undefined,
+export function getEditorPaths(
+  editorFieldPath: string | null | undefined,
   index: number,
   typename: string
 ): { blockBasePath: string | null; blockFieldPath: string | null; blockName: string } {
-  if (!debugFieldPath || debugFieldPath === '') {
+  if (!editorFieldPath || editorFieldPath === '') {
     return { blockBasePath: null, blockFieldPath: null, blockName: getBlockDisplayName(typename) };
   }
 
-  const apiKeyPath = toApiKey(debugFieldPath);
+  const apiKeyPath = toApiKey(editorFieldPath);
   const blockBasePath = `${apiKeyPath}.${index}`;
   const meta = getItemTypeMeta(typename);
   const focusFieldApiKey = meta?.focusField ?? null;

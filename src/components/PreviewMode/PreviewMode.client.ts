@@ -1,4 +1,4 @@
-import { getItemTypeId } from '@blocks/block-debug-utils';
+import { getItemTypeId } from '@blocks/block-editor-utils';
 import type { ConnectionStatus as DatocmsConnectionStatus } from 'datocms-listen';
 import { subscribeToQuery } from 'datocms-listen';
 import { atom, map } from 'nanostores';
@@ -25,7 +25,7 @@ class PreviewMode extends HTMLElement {
   #datocmsToken: string = '';
   #datocmsEnvironment: string = '';
 
-  // CMS debugging tools
+  // CMS editor tools
   #datocmsProject: string = '';
   #editableRecord: { id: string; type: string } | null = null;
   #editLinkElement: HTMLAnchorElement | null = null;
@@ -101,7 +101,7 @@ class PreviewMode extends HTMLElement {
       this.subscribe({ query, variables });
     });
 
-    this.#setupCmsDebuggingTools(); // Optional: remove this to disable edit links and block overlays
+    this.#setupCmsEditorTools(); // Optional: remove this to disable edit links and block overlays
   }
 
   getSubscriptionConfigs () {
@@ -145,38 +145,38 @@ class PreviewMode extends HTMLElement {
   }
 
   /**
-   * CMS debugging tools (edit links + block overlays)
+   * CMS editor tools (edit links + block overlays)
    */
 
-  #setupCmsDebuggingTools() {
+  #setupCmsEditorTools() {
     this.#datocmsProject = this.dataset.datocmsProject || '';
     if (!this.#datocmsProject) return;
 
     this.#editableRecord = JSON.parse(
       this.subscriptionElements.find((el) => el.dataset.record)?.dataset.record ?? 'null'
     );
-    this.#editLinkElement = this.querySelector('[data-debug-edit-record]');
-    this.#toggleBlockNamesButton = this.querySelector('[data-debug-toggle-blocks]');
+    this.#editLinkElement = this.querySelector('[data-editor-edit-record]');
+    this.#toggleBlockNamesButton = this.querySelector('[data-editor-toggle-blocks]');
 
     const stored = localStorage.getItem('preview-mode-show-block-names');
     this.#$showBlockNames.set(stored === 'true');
 
-    this.#$showBlockNames.listen(() => this.#syncDebuggingToolsVisibility());
+    this.#$showBlockNames.listen(() => this.#syncEditorToolsVisibility());
     this.#toggleBlockNamesButton?.addEventListener('click', () => {
       this.#$showBlockNames.set(!this.#$showBlockNames.get());
     });
 
-    this.#syncDebuggingToolsVisibility();
+    this.#syncEditorToolsVisibility();
     this.#setupBlockLabelHoverTracking();
   }
 
-  #syncDebuggingToolsVisibility() {
+  #syncEditorToolsVisibility() {
     const show = this.#$showBlockNames.get();
     localStorage.setItem('preview-mode-show-block-names', show.toString());
     if (this.#toggleBlockNamesButton) {
       this.#toggleBlockNamesButton.textContent = show ? 'hide blocks' : 'show blocks';
     }
-    document.documentElement.dataset.debugBlocksVisible = show ? 'true' : 'false';
+    document.documentElement.dataset.editorBlocksVisible = show ? 'true' : 'false';
 
     if (show) this.#positionBlockLabels();
     this.#applyEditLinks();
@@ -192,7 +192,7 @@ class PreviewMode extends HTMLElement {
       this.#editLinkElement.href = this.#buildRecordEditUrl(itemTypeId, this.#editableRecord.id);
     }
 
-    if (document.documentElement.dataset.debugBlocksVisible === 'true') {
+    if (document.documentElement.dataset.editorBlocksVisible === 'true') {
       this.#applyBlockEditLinks(itemTypeId);
     }
   }
@@ -212,8 +212,8 @@ class PreviewMode extends HTMLElement {
    */
   #applyBlockEditLinks(itemTypeId: string) {
     const baseUrl = this.#buildRecordEditUrl(itemTypeId, this.#editableRecord!.id);
-    document.querySelectorAll<HTMLAnchorElement>('[data-debug-edit-block]').forEach((anchor) => {
-      const fieldPath = anchor.dataset.debugFieldPath;
+    document.querySelectorAll<HTMLAnchorElement>('[data-editor-edit-block]').forEach((anchor) => {
+      const fieldPath = anchor.dataset.editorFieldPath;
       if (!fieldPath) return;
 
       const url = new URL(baseUrl);
@@ -249,7 +249,7 @@ class PreviewMode extends HTMLElement {
   }
 
   #positionBlockLabels() {
-    document.querySelectorAll<HTMLAnchorElement>('[data-debug-edit-block]').forEach((label) => {
+    document.querySelectorAll<HTMLAnchorElement>('[data-editor-edit-block]').forEach((label) => {
       const block = this.#getBlockContainerForLabel(label);
       if (!block) return;
 
@@ -260,7 +260,7 @@ class PreviewMode extends HTMLElement {
       const parentRect = offsetParent.getBoundingClientRect();
       label.style.top = `${blockRect.top - parentRect.top}px`;
       label.style.left = `${blockRect.left - parentRect.left}px`;
-      block.setAttribute('data-debug-block-container', '');
+      block.setAttribute('data-editor-block-container', '');
     });
   }
 
@@ -278,12 +278,12 @@ class PreviewMode extends HTMLElement {
     document.addEventListener(
       'pointermove',
       (e) => {
-        if (document.documentElement.dataset.debugBlocksVisible !== 'true' || !(e.target instanceof Element)) {
+        if (document.documentElement.dataset.editorBlocksVisible !== 'true' || !(e.target instanceof Element)) {
           clearHover();
           return;
         }
 
-        const labels = document.querySelectorAll<HTMLAnchorElement>('[data-debug-edit-block]');
+        const labels = document.querySelectorAll<HTMLAnchorElement>('[data-editor-edit-block]');
         let deepest: HTMLAnchorElement | null = null;
         let deepestBlock: Element | null = null;
 
@@ -308,7 +308,7 @@ class PreviewMode extends HTMLElement {
 
     let scrollRaf: number | null = null;
     const onReposition = () => {
-      if (document.documentElement.dataset.debugBlocksVisible === 'true') {
+      if (document.documentElement.dataset.editorBlocksVisible === 'true') {
         this.#positionBlockLabels();
       }
     };

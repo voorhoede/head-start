@@ -19,8 +19,8 @@ const projectName = siteData.internalDomain?.split('.')[0] || null;
     <span role="presentation" data-status="closed" />
     <div class="preview-mode-actions">
       {/* eslint-disable-next-line astro/jsx-a11y/anchor-is-valid */}
-      <a data-debug-edit-record target="_blank" rel="noreferrer noopener">edit in CMS</a>
-      <button data-debug-toggle-blocks type="button">show blocks</button>
+      <a data-editor-edit-record target="_blank" rel="noreferrer noopener">edit in CMS</a>
+      <button data-editor-toggle-blocks type="button">show blocks</button>
       <a href={ `/api/preview/exit/?location=${Astro.url}` }>exit preview</a>
     </div>
   </preview-mode-bar>
@@ -45,7 +45,7 @@ a {
   color: white;
 }
 
-a[data-debug-edit-record]:not([href]) {
+a[data-editor-edit-record]:not([href]) {
   display: none;
 }
 
@@ -81,7 +81,7 @@ a[data-debug-edit-record]:not([href]) {
   100% { opacity: 1; }
 }
 
-[data-debug-toggle-blocks] {
+[data-editor-toggle-blocks] {
   all: unset;
   text-decoration: underline;
   cursor: pointer;
@@ -89,7 +89,7 @@ a[data-debug-edit-record]:not([href]) {
 :global(.block-name-label) {
   display: none;
 }
-:global([data-debug-blocks-visible="true"]) {
+:global([data-editor-blocks-visible="true"]) {
   --block-label-z-index: 9999;
   --block-label-color: tomato;
 
@@ -133,13 +133,13 @@ a[data-debug-edit-record]:not([href]) {
     border-style: dashed;
   }
 
-  [data-debug-block-container] {
+  [data-editor-block-container] {
     outline: 2px solid transparent;
     outline-offset: -2px;
     transition: outline-color 0.4s ease;
   }
 
-  [data-debug-block-container].hover {
+  [data-editor-block-container].hover {
     outline-color: color-mix(in srgb, var(--block-label-color) 30%, white);
   }
 

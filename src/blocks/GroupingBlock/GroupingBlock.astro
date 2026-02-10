@@ -1,19 +1,19 @@
 ---
 import Blocks from '@blocks/Blocks.astro';
-import { buildNestedFieldPath } from '@blocks/block-debug-utils';
+import { buildNestedFieldPath } from '@blocks/block-editor-utils';
 import { Accordion, AccordionItem } from '@components/Accordion';
 import { Tabs, TabsPanel, TabsTab } from '@components/Tabs';
 import type { GroupingBlockFragment } from '@lib/datocms/types';
 
 export interface Props {
   block: GroupingBlockFragment;
-  debugFieldPath?: string;
-  hideDebugLabels?: boolean;
+  editorFieldPath?: string;
+  hideEditorLabels?: boolean;
 }
 
 const isLayout = (layout: GroupingBlockFragment['layout']) => block.layout === layout;
 
-const { block, debugFieldPath, hideDebugLabels } = Astro.props;
+const { block, editorFieldPath, hideEditorLabels } = Astro.props;
 const items = block.items;
 ---
 { isLayout('stack-titled') && (
@@ -22,8 +22,8 @@ const items = block.items;
       <h2>{ item.title }</h2>
       <Blocks
         blocks={ item.blocks }
-        debugFieldPath={ buildNestedFieldPath(debugFieldPath, itemIndex) }
-        hideDebugLabels={ hideDebugLabels }
+        editorFieldPath={ buildNestedFieldPath(editorFieldPath, itemIndex) }
+        hideEditorLabels={ hideEditorLabels }
       />
     </section>
   ))
@@ -33,8 +33,8 @@ const items = block.items;
   items.map((item, itemIndex) => (
     <Blocks
       blocks={ item.blocks }
-      debugFieldPath={ buildNestedFieldPath(debugFieldPath, itemIndex) }
-      hideDebugLabels={ hideDebugLabels }
+      editorFieldPath={ buildNestedFieldPath(editorFieldPath, itemIndex) }
+      hideEditorLabels={ hideEditorLabels }
     />
   ))
 )}
@@ -50,8 +50,8 @@ const items = block.items;
         <Fragment slot="body">
           <Blocks
             blocks={ item.blocks }
-            debugFieldPath={ buildNestedFieldPath(debugFieldPath, itemIndex) }
-            hideDebugLabels={ hideDebugLabels }
+            editorFieldPath={ buildNestedFieldPath(editorFieldPath, itemIndex) }
+            hideEditorLabels={ hideEditorLabels }
           />
         </Fragment>
       </AccordionItem>
@@ -66,8 +66,8 @@ const items = block.items;
       <TabsPanel>
         <Blocks
           blocks={ item.blocks }
-          debugFieldPath={ buildNestedFieldPath(debugFieldPath, itemIndex) }
-          hideDebugLabels={ hideDebugLabels }
+          editorFieldPath={ buildNestedFieldPath(editorFieldPath, itemIndex) }
+          hideEditorLabels={ hideEditorLabels }
         />
       </TabsPanel>
     </>))}

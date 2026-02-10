@@ -11,7 +11,7 @@ import TextImageBlock from './TextImageBlock/TextImageBlock.astro';
 import VideoBlock from './VideoBlock/VideoBlock.astro';
 import VideoEmbedBlock from './VideoEmbedBlock/VideoEmbedBlock.astro';
 import GroupingBlock from './GroupingBlock/GroupingBlock.astro';
-import { getDebugPaths } from './block-debug-utils';
+import { getEditorPaths } from './block-editor-utils';
 import Icon from '@components/Icon';
 
 const blocksByTypename = {
@@ -29,11 +29,11 @@ const blocksByTypename = {
 
 interface Props {
   blocks: AnyBlock[];
-  debugFieldPath?: string;
-  hideDebugLabels?: boolean;
+  editorFieldPath?: string;
+  hideEditorLabels?: boolean;
 }
-const { blocks, hideDebugLabels = false } = Astro.props;
-const debugFieldPath = Astro.props.debugFieldPath ?? 'bodyBlocks';
+const { blocks, hideEditorLabels = false } = Astro.props;
+const editorFieldPath = Astro.props.editorFieldPath ?? 'bodyBlocks';
 const isPreview = Astro.locals.isPreview;
 
 const raise = (message: string) => {
@@ -57,24 +57,24 @@ const raise = (message: string) => {
       return <script define:vars={{ message }} is:inline>console.log(message);</script>;
     }
 
-    const { blockBasePath, blockFieldPath, blockName } = getDebugPaths(debugFieldPath, index, __typename);
+    const { blockBasePath, blockFieldPath, blockName } = getEditorPaths(editorFieldPath, index, __typename);
 
     return (
       <>
-        {isPreview && !hideDebugLabels && blockFieldPath && (
+        {isPreview && !hideEditorLabels && blockFieldPath && (
           /* eslint-disable-next-line astro/jsx-a11y/anchor-is-valid */
           <a
             class="block-name-label"
-            data-debug-edit-block
-            data-debug-field-path={blockFieldPath}
-            data-debug-block-name={blockName}
+            data-editor-edit-block
+            data-editor-field-path={blockFieldPath}
+            data-editor-block-name={blockName}
             target="_blank"
           >
             {blockName} <Icon name="external" />
           </a>
         )}
         {/* @ts-expect-error - since block can be any block its type is conflated to `never`. */}
-        <Block block={block} debugFieldPath={blockBasePath} hideDebugLabels={hideDebugLabels} />
+        <Block block={block} editorFieldPath={blockBasePath} hideEditorLabels={hideEditorLabels} />
       </>
     );
   })
