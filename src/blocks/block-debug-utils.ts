@@ -3,6 +3,10 @@ import itemTypesJson from '@lib/datocms/itemTypes.json';
 
 const itemTypes = (itemTypesJson as { itemTypes?: Record<string, { id: string; name: string; focusField?: string }> }).itemTypes;
 
+/**
+ * Converts the root segment of a field path to snake_case (DatoCMS API key format).
+ * "bodyBlocks" => "body_blocks", "bodyBlocks.0.title" => "body_blocks.0.title"
+ */
 export function toApiKey(debugFieldPath: string): string {
   if (debugFieldPath.includes('.')) {
     const parts = debugFieldPath.split('.');
@@ -30,6 +34,10 @@ export function getBlockDisplayName(typename: string): string {
   return getItemTypeMeta(typename)?.name ?? typename.replace(/Record$/, '');
 }
 
+/**
+ * Builds the field paths used for block edit links and debug labels.
+ * ("bodyBlocks", 2, "TextBlockRecord") => { blockBasePath: "body_blocks.2", blockFieldPath: "body_blocks.2.text", blockName: "📝 Text Block" }
+ */
 export function getDebugPaths(
   debugFieldPath: string | null | undefined,
   index: number,
@@ -49,6 +57,11 @@ export function getDebugPaths(
   return { blockBasePath, blockFieldPath, blockName };
 }
 
+/**
+ * Builds a field path for nested blocks within a parent block.
+ * ("body_blocks.2", 0) => "body_blocks.2.items.0.blocks"
+ * ("body_blocks.2.items.0.blocks", 1) => "body_blocks.2.items.0.blocks.1.blocks"
+ */
 export function buildNestedFieldPath(basePath: string | null | undefined, itemIndex: number): string | undefined {
   if (!basePath || basePath === '') {
     return undefined;

@@ -197,10 +197,19 @@ class PreviewMode extends HTMLElement {
     }
   }
 
+  /**
+   * Builds a DatoCMS editor URL for a specific record.
+   * (itemTypeId = "LjXdkuCdQxCFT4hv8_ayew" (Page), recordId = "X_tZn3TxQY28ltSyjZUGHQ")
+   * => https://my-project.admin.datocms.com/environments/main/editor/item_types/LjXdkuCdQxCFT4hv8_ayew/items/X_tZn3TxQY28ltSyjZUGHQ
+   */
   #buildRecordEditUrl(itemTypeId: string, recordId: string) {
     return `https://${this.#datocmsProject}.admin.datocms.com/environments/${this.#datocmsEnvironment}/editor/item_types/${itemTypeId}/items/${recordId}`;
   }
 
+  /**
+   * Sets edit link hrefs on block label anchors by appending a #fieldPath hash.
+   * e.g. https://my-project.admin.datocms.com/.../items/12345#fieldPath=body.en.0.title
+   */
   #applyBlockEditLinks(itemTypeId: string) {
     const baseUrl = this.#buildRecordEditUrl(itemTypeId, this.#editableRecord!.id);
     document.querySelectorAll<HTMLAnchorElement>('[data-debug-edit-block]').forEach((anchor) => {
@@ -213,6 +222,10 @@ class PreviewMode extends HTMLElement {
     });
   }
 
+  /**
+   * Inserts the current locale as the second segment of a field path.
+   * "body" => "body.en", "body.0.title" => "body.en.0.title"
+   */
   #withLocaleFieldPath(fieldPath: string) {
     const locale = document.documentElement.lang;
     if (!locale) return fieldPath;
