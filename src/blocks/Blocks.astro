@@ -12,6 +12,7 @@ import VideoBlock from './VideoBlock/VideoBlock.astro';
 import VideoEmbedBlock from './VideoEmbedBlock/VideoEmbedBlock.astro';
 import GroupingBlock from './GroupingBlock/GroupingBlock.astro';
 import { getDebugPaths } from './block-debug-utils';
+import Icon from '@components/Icon';
 
 const blocksByTypename = {
   ActionBlockRecord: ActionBlock,
@@ -69,7 +70,7 @@ const raise = (message: string) => {
             data-debug-block-name={blockName}
             target="_blank"
           >
-            {blockName}
+            {blockName} <Icon name="external" />
           </a>
         )}
         {/* @ts-expect-error - since block can be any block its type is conflated to `never`. */}

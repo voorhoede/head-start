@@ -89,27 +89,32 @@ a[data-debug-edit-record]:not([href]) {
 }
 :global([data-debug-blocks-visible="true"]) {
   --block-label-z-index: 9999;
-  --block-label-color: blue;
+  --block-label-color: tomato;
 
   .block-name-label {
-    display: block;
-    position: absolute;
+    border: 1px solid white;
     background: var(--block-label-color);
+    border-radius: .35rem;
     color: white;
+    display: block;
     font-size: .75rem;
     font-weight: bold;
     letter-spacing: 1px;
-    border-radius: .35rem;
+    line-height: 1.5;
     padding: .25rem .5rem;
-    z-index: var(--block-label-z-index);
     pointer-events: auto;
-    text-decoration: underline;
-    text-underline-offset: .25em;
-    transition: all 0.2s ease;
-    border: 1px solid white;
-    white-space: nowrap;
+    position: absolute;
+    text-decoration: none;
+    transition: all 0.2s ease, opacity .4s ease;
     transform: translateY(-90%);
+    white-space: nowrap;
     width: fit-content !important;
+    z-index: var(--block-label-z-index);
+  }
+  .block-name-label svg {
+    margin-left: .25em;
+    vertical-align: text-bottom;
+    width: .875rem;
   }
 
   .block-name-label[href]:hover,
@@ -125,9 +130,19 @@ a[data-debug-edit-record]:not([href]) {
     border-style: dashed;
   }
 
-  [data-debug-block-container].hover {
-    outline: 2px solid color-mix(in srgb, var(--block-label-color) 30%, white);
+  [data-debug-block-container] {
+    outline: 2px solid transparent;
     outline-offset: -2px;
+    transition: outline-color 0.4s ease;
+  }
+
+  [data-debug-block-container].hover {
+    outline-color: color-mix(in srgb, var(--block-label-color) 30%, white);
+  }
+
+  &:has(.block-name-label.hover) .block-name-label:not(.hover) {
+    opacity: 0;
+    pointer-events: none;
   }
 }
 </style>
