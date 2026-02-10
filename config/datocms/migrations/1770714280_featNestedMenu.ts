@@ -62,23 +62,19 @@ export default async function (client: Client) {
   });
 
   console.log(
-    'Create Single link field "Link" (`link`) in block model "\uD83D\uDD3D Menu Item (External)" (`menu_item_external`)',
+    'Create Single-line string field "Link" (`link`) in block model "\uD83D\uDD3D Menu Item (External)" (`menu_item_external`)',
   );
   await client.fields.create('HK5FsUejSR-11KojiPoWbQ', {
-    id: 'XzD-DFzpRf-6jUvETIge3w',
+    id: 'ThmoBnufTnmoqh1OOpfjnw',
     label: 'Link',
-    field_type: 'link',
+    field_type: 'string',
     api_key: 'link',
-    validators: {
-      item_item_type: {
-        on_publish_with_unpublished_references_strategy: 'fail',
-        on_reference_unpublish_strategy: 'delete_references',
-        on_reference_delete_strategy: 'delete_references',
-        item_types: [],
-      },
-      required: {},
+    validators: { required: {} },
+    appearance: {
+      addons: [],
+      editor: 'single_line',
+      parameters: { heading: false, placeholder: null },
     },
-    appearance: { addons: [], editor: 'link_select', parameters: {} },
     default_value: null,
   });
 
