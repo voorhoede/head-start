@@ -1,5 +1,8 @@
-query OpenSearchXml($locale: SiteLocale!) {
-  site: _site(locale: $locale) {
+query OpenSearchXml(
+  $locale: SiteLocale!, 
+  $fallbackLocales: [SiteLocale!]
+) {
+  site: _site(locale: $locale, fallbackLocales: $fallbackLocales) {
     globalSeo {
       fallbackSeo {
         description
