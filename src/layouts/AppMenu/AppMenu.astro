@@ -97,13 +97,9 @@ const { items, pageUrls } = Astro.props;
       <UnstyledList class="dialog__list">
         {
           items.map((item) => {
-            if (item.__typename === 'MenuItemGroupRecord') {
-              return null;
-            }
-
             return (
               <AppMenuItem item={item} class:list="dialog__item">
-                {item.items?.length && (
+                {item.items?.length > 0 && (
                   <ul>
                     {item.items?.map((subItem) => (
                       <AppMenuItem
@@ -111,7 +107,7 @@ const { items, pageUrls } = Astro.props;
                         class:list="submenu__item"
                         data-submenu-item
                       >
-                        {subItem.items?.length && (
+                        {subItem.items?.length > 0 && (
                           <ul>
                             {subItem.items?.map((subSubItem) => (
                               <AppMenuItem
