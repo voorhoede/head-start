@@ -1,0 +1,17 @@
+@media print {
+  img {
+    break-inside: avoid;
+  }
+
+  a[href^="https://"]:after {
+    content: " (" attr(href) ")";
+    /* @todo: prevent overflow */
+  }
+
+  details::details-content {
+    display: contents;
+  }
+  summary {
+    list-style: none;
+  }
+}

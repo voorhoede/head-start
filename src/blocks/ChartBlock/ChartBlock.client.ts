@@ -45,6 +45,7 @@ class ChartBlock extends HTMLElement {
 
   connectedCallback() {
     this.#contrastButton?.addEventListener('click', this.#onContrastButtonClick.bind(this));
+    $highContrast.listen(() => this.#setContrastMode());
   }
 
   disconnectCallback() {

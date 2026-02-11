@@ -1,7 +1,7 @@
 import type { Data, ThemeName } from '../';
 import * as echarts from 'echarts/core';
-import { AriaComponent } from 'echarts/components';
-import { PieChart } from 'echarts/charts';
+import { AriaComponent, GridComponent, LegendComponent } from 'echarts/components';
+import { BarChart } from 'echarts/charts';
 import { LabelLayout } from 'echarts/features';
 import { SVGRenderer } from 'echarts/renderers';
 import { getThemeColors, themeNames, valueFormatter } from '../';
@@ -9,9 +9,11 @@ import { $highContrast } from '../ChartBlock.client';
 
 echarts.use([
   AriaComponent,
-  PieChart,
+  BarChart,
+  GridComponent,
+  LegendComponent,
+  LabelLayout,
   SVGRenderer,
-  LabelLayout
 ]);
 
 const readJsonData = (script: HTMLScriptElement): Data | null => {
@@ -19,12 +21,12 @@ const readJsonData = (script: HTMLScriptElement): Data | null => {
     const data: Data = JSON.parse(script.innerText);
     return data;
   } catch (error) {
-    console.warn('PieChart: script element does not contain valid JSON', script.innerText, error);
+    console.warn('BarChart: script element does not contain valid JSON', script.innerText, error);
     return null;
   }
 };
 
-class PieChartComponent extends HTMLElement { // @todo: Pie-, Bar- etc Chart could extend a BaseChart class
+class BarChartComponent extends HTMLElement {
   #canvas?: HTMLElement;
   #chart?: echarts.ECharts;
   #data?: Data;
@@ -43,19 +45,22 @@ class PieChartComponent extends HTMLElement { // @todo: Pie-, Bar- etc Chart cou
 
     const script = this.querySelector('script[data-chart-data]') as HTMLScriptElement;
     if (!script) {
-      console.warn('PieChart: missing required script element', this);
+      console.warn('BarChart: missing required script element', this);
       return;
     }
     const data = readJsonData(script);
     if (!data) {
       return;
     }
-    this.#data = data;
+    this.#data = {
+      columns: data.columns,
+      data: data.data.reverse(),
+    };
   }
 
   connectedCallback() {
     if (!this.#canvas || !this.#data) {
-      console.warn('PieChart: missing canvas element or data', this);
+      console.warn('BarChart: missing canvas element or data', this);
       return;
     }
     this.#chart = echarts.init(this.#canvas, null, { renderer: 'svg' });
@@ -92,20 +97,21 @@ class PieChartComponent extends HTMLElement { // @todo: Pie-, Bar- etc Chart cou
     const isHighContrastMode = $highContrast.get().isEnabled;
     const themeColors = getThemeColors(this.#theme, entries.length);
     const itemStyle = {
-      borderRadius: 10,
+      
     };
 
-    const series = serieNames.map(name => ({
+    const series = serieNames.map((name, serieIndex) => ({
       name,
-      type: 'pie',
-      radius: ['30%', '60%'],
+      type: 'bar',
       animation: false,
-      avoidLabelOverlap: false,
-      data: entries.map(entry => ({ 
+      data: entries.map(entry => ({
+        name: entry[entryNameKey], 
         value: Number(entry[name]),
-        name: entry[entryNameKey],
+        label: {
+          show: true,
+          position: Number(entry[name]) < 0 ? 'left' : 'right',
+        }
       })),
-      padAngle: 2,
       itemStyle: isHighContrastMode
         ? {
           ...itemStyle,
@@ -118,7 +124,7 @@ class PieChartComponent extends HTMLElement { // @todo: Pie-, Bar- etc Chart cou
         }
         : {
           ...itemStyle,
-          color: (params: { dataIndex: number }) => themeColors[params.dataIndex],
+          color: themeColors[serieIndex],
           borderWidth: 0,
           decal: false,
         },
@@ -127,16 +133,10 @@ class PieChartComponent extends HTMLElement { // @todo: Pie-, Bar- etc Chart cou
       },
       label: {
         fontSize: 16,
-        lineHeight: 24,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
+        color: 'black',
         formatter: (params: { name: string; value: number }) => {
-          // @todo: if not a percentage, show both value and percentage?
-          return `${params.name}\n{valueStyle|${formatValue(params.value)}}`;
-        },
-        rich: {
-          valueStyle: {
-            fontWeight: 'normal',
-          },
+          return formatValue(params.value);
         },
       },
     }));
@@ -148,19 +148,46 @@ class PieChartComponent extends HTMLElement { // @todo: Pie-, Bar- etc Chart cou
       return;
     }
 
+    const entryNameKey = this.#data.columns[0];
+    const rowNames = this.#data.data.map(entry => entry[entryNameKey]);
     const isHighContrastMode = $highContrast.get().isEnabled;
     const noMerge = true;
 
     this.#chart.setOption({
       aria: {
-        enabled: true, // @todo: this generates an aria-label, evaluate usefulness.
+        enabled: true,
         decal: {
           show: isHighContrastMode,
         }
+      },
+      label: {
+        show: true,
+      },
+      legend: {
+        textStyle: { color: 'black', fontSize: 16 },
+      },
+      // @todo: make orientation configurable, vertical for now
+      xAxis: {
+        type: 'value',
+      },
+      yAxis: {
+        type: 'category',
+        data: rowNames,
+        name: entryNameKey,
+        nameTextStyle: {
+          fontSize: 16,
+          fontWeight: 'bold',
+          color: 'black',
+        },
+        axisLabel: {
+          fontSize: 16,
+          fontWeight: 'bold',
+          color: 'black',
+        },
       },
       series: this.#dataToSeries(this.#data),
     }, noMerge);
   }
 }
 
-customElements.define('pie-chart', PieChartComponent);
+customElements.define('bar-chart', BarChartComponent);

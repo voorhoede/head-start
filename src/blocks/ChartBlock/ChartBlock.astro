@@ -6,7 +6,9 @@ import Icon from '@components/Icon';
 import Text from '@blocks/TextBlock/Text.astro';
 import DownloadLink from '@components/DownloadLink/DownloadLink.astro';
 import { ResponsiveTable, TableHeadCell, TableRowCell } from '@components/ResponsiveTable';
+import BarChart from './charts/BarChart.astro';
 import PieChart from './charts/PieChart.astro';
+import LineChart from './charts/LineChart.astro';
 import { getThemeColors, valueFormatter } from './';
 
 export interface Props {
@@ -69,6 +71,7 @@ const fetchFilesize = async (url: string): Promise<number> => {
 const chartDataUrl = new URL(`/charts/${block.id}.csv`, Astro.site).href;
 const filesize = await fetchFilesize(chartDataUrl);
 const themeColors = getThemeColors(block.theme, data.data.length);
+const tableLegend = block.chartType === 'pie' ? 'row' : 'column';
 ---
 
 <chart-block>
@@ -84,10 +87,22 @@ const themeColors = getThemeColors(block.theme, data.data.length);
       />
     )}
     { block.chartType === 'bar' && (
-      <p>TODO: Bar chart</p>
+      <BarChart 
+        data={ data }
+        theme={ block.theme }
+        valuePrefix={ block.valuePrefix }
+        valueSuffix={ block.valueSuffix }
+        valuePrecision={ block.valuePrecision }
+      />
     )}
     { block.chartType === 'line' && (
-      <p>TODO: Line chart</p>
+      <LineChart 
+        data={ data }
+        theme={ block.theme }
+        valuePrefix={ block.valuePrefix }
+        valueSuffix={ block.valueSuffix }
+        valuePrecision={ block.valuePrecision }
+      />
     )}
 
     <button type="button" hidden class="contrast-button" aria-pressed="false" data-contrast-button>
@@ -105,10 +120,16 @@ const themeColors = getThemeColors(block.theme, data.data.length);
         </summary>
         <Text data={ block.text as StructuredText } />
 
+        {/* @todo: render decals in legend. use https://echarts.apache.org/examples/en/editor.html?c=doc-example%2Faria-decal&edit=1&reset=1 ? */}
         <ResponsiveTable>
           <Fragment slot="tableHeadRow">
-            {data.columns.map((value: string) => (
-              <TableHeadCell>{value}</TableHeadCell>
+            {data.columns.map((value: string, columnIndex) => (
+              <TableHeadCell>
+                {tableLegend === 'column' && columnIndex > 0 ? (
+                  <span class="chart-table-legend" style={`--theme-color: ${themeColors[data.columns.indexOf(value)-1]}`}></span>
+                ) : null}
+                {value}
+              </TableHeadCell>
             ))}
           </Fragment>
           <Fragment slot="tableBody">
@@ -117,7 +138,9 @@ const themeColors = getThemeColors(block.theme, data.data.length);
                 {Object.values(row).map((value, index) => (
                   index === 0 ? (
                     <TableRowCell isHeader={true}>
-                      <span class="chart-table-legend" style={`--theme-color: ${themeColors[rowIndex]}`}></span>
+                      { tableLegend === 'row' ? (
+                        <span class="chart-table-legend" style={`--theme-color: ${themeColors[rowIndex]}`}></span>
+                      ) : null }
                       {value}
                     </TableRowCell>
                   ) : (
@@ -141,6 +164,7 @@ const themeColors = getThemeColors(block.theme, data.data.length);
           >
             {/* @todo: translate and add title so link explains what's downloaded? */}
               Download chart data</DownloadLink>
+          {/* @todo: add image download using https://echarts.apache.org/en/api.html#echartsInstance.getDataURL ? */}
         </p>
       </details>
     </figcaption>
@@ -197,8 +221,8 @@ const themeColors = getThemeColors(block.theme, data.data.length);
   }
 
   @media print {
-    details::details-content {
-      display: contents;
+    button.contrast-button {
+      display: none;
     }
   }
 </style>

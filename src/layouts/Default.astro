@@ -15,6 +15,7 @@ import PerfHead from './PerfHead/PerfHead.astro';
 import SeoHead from './SeoHead/SeoHead.astro';
 import { fontFamilyArchivo } from '@assets/fonts';
 import '@assets/a11y.css';
+import printCssUrl from '@assets/print.css?url'; // use in <link>, to load only if [media=print]
 
 interface Props {
   breadcrumbs?: Breadcrumb[];
@@ -43,6 +44,7 @@ const menuItems = data.app?.menuItems ?? [];
       tags={[...data.seo.faviconMetaTags, ...seoMetaTags]}
     />
     <StructuredData />
+    <link rel="stylesheet" media="print" href={printCssUrl} />
   </head>
   <body>
     <PreviewModeProvider>
