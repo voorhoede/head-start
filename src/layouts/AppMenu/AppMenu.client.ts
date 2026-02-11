@@ -24,9 +24,9 @@ class AppMenu extends HTMLElement {
     this.#menuButton.focus();
   }
 
-  #positionPopover(button: HTMLElement, popover: HTMLElement) {
+  #positionPopover(reference: HTMLElement, popover: HTMLElement) {
     const placement = (popover.getAttribute('data-placement') ?? 'bottom-start') as Placement;
-    computePosition(button, popover, { placement }).then(({ x, y }) => {
+    computePosition(reference, popover, { placement }).then(({ x, y }) => {
       Object.assign(popover.style, { left: `${x}px`, top: `${y}px` });
     });
   }
@@ -48,7 +48,7 @@ class AppMenu extends HTMLElement {
       this.#hoverTimeouts.delete(popoverId);
     }
 
-    this.#positionPopover(button, popover);
+    this.#positionPopover(menuItem, popover);
 
     try {
       if (!popover.matches(':popover-open')) {
@@ -59,7 +59,7 @@ class AppMenu extends HTMLElement {
     }
   }
 
-  #hidePopover(menuItem: HTMLElement, delay = 150) {
+  #hidePopover(menuItem: HTMLElement) {
     const button = menuItem.querySelector('[popovertarget]') as HTMLElement;
     if (!button) return;
 
@@ -69,18 +69,11 @@ class AppMenu extends HTMLElement {
     const popover = this.querySelector(`#${popoverId}`) as HTMLElement;
     if (!popover) return;
 
-    const timeout = window.setTimeout(() => {
-      try {
-        if (popover.matches(':popover-open')) {
-          popover.hidePopover();
-        }
-      } catch (e) {
-        console.error(e);
-      }
-      this.#hoverTimeouts.delete(popoverId);
-    }, delay);
+    if (popover.matches(':popover-open')) {
+      popover.hidePopover();
+    }
 
-    this.#hoverTimeouts.set(popoverId, timeout);
+    this.#hoverTimeouts.delete(popoverId);
   }
 
   #onResize() {
@@ -101,14 +94,16 @@ class AppMenu extends HTMLElement {
 
       const popoverId = button.getAttribute('popovertarget');
       const popover = popoverId ? this.querySelector(`#${popoverId}`) as HTMLElement : null;
+      const menuItem = button.closest('[data-menu-item], [data-submenu-item]') as HTMLElement | null;
+      const reference = menuItem ?? button;
 
       if (popover) {
-        this.#positionPopover(button, popover);
+        this.#positionPopover(reference, popover);
       }
     });
 
     // Add hover support for menu items
-    const menuItems = this.#menuList.querySelectorAll('.main-menu__item');
+    const menuItems = this.#menuList.querySelectorAll('[data-menu-item]');
     menuItems.forEach((item) => {
       item.addEventListener('mouseenter', () => this.#showPopover(item as HTMLElement));
       item.addEventListener('mouseleave', () => this.#hidePopover(item as HTMLElement));
@@ -125,7 +120,7 @@ class AppMenu extends HTMLElement {
         }
       });
       popover.addEventListener('mouseleave', () => {
-        const menuItem = this.#menuList.querySelector(`[popovertarget="${popover.id}"]`)?.closest('.main-menu__item') as HTMLElement;
+        const menuItem = this.#menuList.querySelector(`[popovertarget="${popover.id}"]`)?.closest('[data-menu-item]') as HTMLElement;
         if (menuItem) {
           this.#hidePopover(menuItem);
         }

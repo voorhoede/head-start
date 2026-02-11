@@ -8,17 +8,13 @@ import LocaleSelector from '@components/LocaleSelector/LocaleSelector.astro';
 import SearchLink from '@components/SearchLink/SearchLink.astro';
 import UnstyledList from '@components/UnstyledList/UnstyledList.astro';
 import AppMenuItem from './AppMenuItem.astro';
+import { getItemPopoverId } from './AppMenu';
 
 export interface Props {
   items: AppMenuFragment['menuItems'];
   pageUrls: PageUrl[];
 }
 const { items, pageUrls } = Astro.props;
-const mockSubItems = [
-  { title: 'sub item 1', items: [1, 2, 3].map((n) => `sub sub item ${n}`) },
-  { title: 'sub item 2', items: [1, 2, 3].map((n) => `sub sub item ${n}`) },
-  { title: 'sub item 3', items: [1, 2, 3].map((n) => `sub sub item ${n}`) },
-];
 ---
 
 <app-menu>
@@ -26,37 +22,63 @@ const mockSubItems = [
     <span id="main-menu-title" class="a11y-sr-only">{t('main_menu')}</span>
     <UnstyledList class:list="main-menu__list" data-menu-list>
       {
-        items.map((item) => (
-          <AppMenuItem {item} class:list="main-menu__item"
-            hasChildren={true}
-            popoverId={`popover-${item.id}`}
-          >
-            <ul popover id={`popover-${item.id}`} data-placement="bottom-start">
-              {mockSubItems.map((subItem, index) => (
-                <li>
-                  {subItem.title}
-                  <button
-                    type="button"
-                    popovertarget={`popover-${item.id}-sub-${index}`}
-                  >
-                    open
-                  </button>
-                  <ul
-                    popover
-                    id={`popover-${item.id}-sub-${index}`}
-                    data-placement="right-start"
-                  >
-                    {subItem.items.map((subSubItem) => (
-                      <li>{subSubItem}</li>
-                    ))}
-                  </ul>
-                </li>
-              ))}
-            </ul>
-          </AppMenuItem>
-        ))
+        items.map((item) => {
+          return (
+            <AppMenuItem
+              item={item}
+              class:list="main-menu__item"
+              data-menu-item
+            >
+              {item.items?.length && (
+                <ul
+                  popover
+                  id={getItemPopoverId(item.id)}
+                  data-placement="bottom-start"
+                >
+                  {item.items?.map((subItem, index) => (
+                    <AppMenuItem
+                      item={subItem}
+                      class:list="submenu__item"
+                      data-submenu-item
+                    >
+                      {Array.isArray(subItem.items) &&
+                        subItem.items.length > 0 && (
+                        <button
+                          type="button"
+                          popovertarget={getItemPopoverId(
+                            item.id,
+                            `sub-${index}`,
+                          )}
+                        >
+                            open
+                        </button>
+                      )}
+                      {Array.isArray(subItem.items) &&
+                        subItem.items.length > 0 && (
+                        <ul
+                          popover
+                          id={getItemPopoverId(item.id, `sub-${index}`)}
+                          data-placement="right-start"
+                        >
+                          {subItem.items?.map((subSubItem) => (
+                            <AppMenuItem
+                              item={subSubItem}
+                              data-submenu-item
+                            />
+                          ))}
+                        </ul>
+                      )}
+                    </AppMenuItem>
+                  ))}
+                </ul>
+              )}
+            </AppMenuItem>
+          );
+        })
       }
-      <li class="main-menu__item main-menu__item--last"><SearchLink /></li>
+      <li class="main-menu__item main-menu__item--last" data-menu-item>
+        <SearchLink />
+      </li>
     </UnstyledList>
   </nav>
   <LocaleSelector pageUrls={pageUrls} />
@@ -74,22 +96,38 @@ const mockSubItems = [
       <span id="menu-dialog-title" class="a11y-sr-only">{t('main_menu')}</span>
       <UnstyledList class="dialog__list">
         {
-          items.map((item) => (
-            <AppMenuItem {item} class:list="dialog__item">
-              <ul>
-                {mockSubItems.map((subItem) => (
-                  <li>
-                    {subItem.title}
-                    <ul>
-                      {subItem.items.map((subSubItem) => (
-                        <li>{subSubItem}</li>
-                      ))}
-                    </ul>
-                  </li>
-                ))}
-              </ul>
-            </AppMenuItem>
-          ))
+          items.map((item) => {
+            if (item.__typename === 'MenuItemGroupRecord') {
+              return null;
+            }
+
+            return (
+              <AppMenuItem item={item} class:list="dialog__item">
+                {item.items?.length && (
+                  <ul>
+                    {item.items?.map((subItem) => (
+                      <AppMenuItem
+                        item={subItem}
+                        class:list="submenu__item"
+                        data-submenu-item
+                      >
+                        {subItem.items?.length && (
+                          <ul>
+                            {subItem.items?.map((subSubItem) => (
+                              <AppMenuItem
+                                item={subSubItem}
+                                data-submenu-item
+                              />
+                            ))}
+                          </ul>
+                        )}
+                      </AppMenuItem>
+                    ))}
+                  </ul>
+                )}
+              </AppMenuItem>
+            );
+          })
         }
         <li><SearchLink /></li>
       </UnstyledList>
@@ -110,7 +148,7 @@ const mockSubItems = [
   }
 
   app-menu a {
-    padding: 5px;
+    margin: 5px;
   }
 
   .main-menu {
@@ -142,6 +180,20 @@ const mockSubItems = [
 
   [popover] {
     margin: 0;
+    inset-inline-start: 0;
+  }
+
+  [popover]::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 0;
+    right: 0;
+    height: 10px;
+  }
+
+  [popover][data-placement='right-start'] {
+    margin-left: 5px;
   }
 
   dialog {

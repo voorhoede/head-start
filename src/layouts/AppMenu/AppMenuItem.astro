@@ -1,37 +1,57 @@
 ---
-import type { AppMenuFragment } from '@lib/datocms/types';
+import type {
+  MenuItemExternalFieldsFragment,
+  MenuItemGroupFieldsFragment,
+  MenuItemInternalFieldsFragment,
+} from '@lib/datocms/types';
 import { t } from '@lib/i18n';
 import LinkToRecord from '@components/LinkToRecord/LinkToRecord.astro';
 import Icon from '@components/Icon/Icon.astro';
+import Link from '@components/Link/Link.astro';
+import { getItemPopoverId } from './AppMenu';
 
 export interface Props {
-  item: AppMenuFragment['menuItems'][number];
-  hasChildren?: boolean;
-  popoverId?: string;
+  item: MenuItem;
 }
-const { item, hasChildren = false, popoverId, ...props } = Astro.props;
+const { item, ...props } = Astro.props as Props & Record<string, unknown>;
+const popoverId = getItemPopoverId(item.id);
+const hasItems = Array.isArray(item.items) && item.items.length > 0;
+const showPopoverButton = 'data-menu-item' in props && hasItems;
 
-const title =
-  item.__typename === 'MenuItemInternalRecord'
-    ? item.title || item.link.title
-    : item.title;
+type MenuItem = (
+  | MenuItemExternalFieldsFragment
+  | MenuItemInternalFieldsFragment
+  | MenuItemGroupFieldsFragment
+) & {
+  items?: MenuItem[];
+};
+
+const isInternal = item.__typename === 'MenuItemInternalRecord';
+const title = isInternal
+  ? item.internalTitle || item.internalLink.title
+  : item.title;
 ---
 
 <li {...props}>
   {
     item.__typename === 'MenuItemInternalRecord' ? (
-      <LinkToRecord record={item.link}>{title}</LinkToRecord>
+      <LinkToRecord record={item.internalLink}>{title}</LinkToRecord>
+    ) : item.__typename === 'MenuItemExternalRecord' ? (
+      <Link href={item.link} openInNewTab>
+        {item.title}
+      </Link>
     ) : (
-      title
+      item.title
     )
   }
   {
-    hasChildren && popoverId && (
+    showPopoverButton && (
       <button
         type="button"
         popovertarget={popoverId}
         aria-label={`${t('open_submenu_for')} ${title}`}
         data-submenu-button
+        class="submenu-button"
       >
         <Icon name="chevron-down" />
       </button>
@@ -41,11 +61,11 @@ const title =
 </li>
 
 <style>
-  [data-submenu-button] :global(svg) {
+  .submenu-button :global(svg) {
     transition: transform 0.2s ease;
   }
 
-  li:has([popover]:popover-open) [data-submenu-button] :global(svg) {
+  li:has([popover]:popover-open) .submenu-button :global(svg) {
     transform: rotate(180deg);
   }
 </style>
