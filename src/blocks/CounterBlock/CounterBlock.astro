@@ -1,0 +1,33 @@
+---
+import type { CounterBlockFragment } from '@lib/datocms/types';
+import { getLocale } from '@lib/i18n';
+
+export interface Props {
+  block: CounterBlockFragment;
+}
+
+const { block } = Astro.props;
+const formattedNumber = new Intl.NumberFormat(getLocale()).format(block.value);
+---
+
+<counter-block class="counter-item" data-counter data-duration={1000}>
+  <span class="a11y-sr-only">
+    {formattedNumber}
+  </span>
+  <span class="counter-item__value" data-counter-number data-target={block.value} aria-hidden="true">
+    0
+  </span>
+</counter-block>
+
+<script src="./CounterBlock.client.ts"></script>
+
+<style>
+  counter-block {
+    display: inline-block;
+    position: relative;
+  }
+
+  .counter-item__value {
+    font-variant-numeric: tabular-nums; /* so all numbers are same width, prevents unwanted text jumping. */
+  }
+</style>
