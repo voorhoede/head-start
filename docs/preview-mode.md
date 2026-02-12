@@ -38,7 +38,7 @@ Preview mode is protected with a secret. If you attempt to view content protecte
 /api/preview/enter/?secret=my-little-secret&location=/en/some-page/
 ```
 
-This endpoint can for example be used to link to previews from within the CMS.
+This endpoint is used by the CMS preview links (see [Preview links from the CMS](#preview-links-from-the-cms) below).
 
 When authorised an encrypted cookie is set, to persist preview mode throughout a session. Calling the 'exit preview mode' endpoint removes the cookie and disables preview mode:
 
@@ -51,6 +51,26 @@ When authorised an encrypted cookie is set, to persist preview mode throughout a
 ```
 
 Note: the secret is configured as environment variable `HEAD_START_PREVIEW_SECRET`.
+
+## Preview links from the CMS
+
+Head Start includes the [Model Deployment Links plugin](https://www.datocms.com/marketplace/plugins/i/datocms-plugin-model-deployment-links) which adds preview links to the CMS sidebar. This allows editors to preview any page directly from the CMS, including draft (unpublished) content.
+
+The plugin is configured automatically via migrations (see [`1750900000_previewLinks.ts`](../config/datocms/migrations/1750900000_previewLinks.ts)). It adds a "Preview" field to the Home, Page, and Not Found models with URL patterns for each.
+
+### How it works
+
+Each model has a different URL pattern:
+
+| Model | URL pattern | How it resolves |
+|---|---|---|
+| Home | `/{ locale }/` | Direct link to the home page |
+| Page | `/api/reroute/page/{ locale }/{ slug }` | Looks up the page by slug, 307 redirects to its canonical URL |
+| Not found | `/{ locale }/404` | Direct link to the 404 page |
+
+The **Page** model uses a reroute endpoint because the CMS only knows a page's slug, not its full nested path (e.g. a page with slug `my-page` might live at `/en/parent/my-page/`). The endpoint at `src/pages/api/reroute/page/[locale]/[slug].ts` queries DatoCMS for the page by slug and redirects to the correct canonical URL.
+
+The sidebar links are shown for each Build Trigger configured in DatoCMS (e.g. Localhost, Preview, Production).
 
 ## Preview mode subscriptions
 
