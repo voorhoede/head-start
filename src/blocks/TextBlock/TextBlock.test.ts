@@ -10,6 +10,7 @@ describe('TextBlock Component', () => {
           __typename: 'TextBlockRecord',
           text: {
             blocks: [],
+            inlineBlocks: [],
             links: [],
             value: {
               schema: 'dast',
@@ -54,6 +55,7 @@ describe('TextBlock Component', () => {
           __typename: 'TextBlockRecord',
           text: {
             blocks: [],
+            inlineBlocks: [],
             links: [],
             value: {
               schema: 'dast',
@@ -90,7 +92,7 @@ describe('TextBlock Component', () => {
     expect(fragment.querySelector('h3')?.textContent).toBe('This is a test heading');
     expect(fragment.querySelector('p')?.textContent).toBe('This is a test paragraph');
   });
-  
+
   test('renders custom style as a class name', async () => {
     const fragment = await renderToFragment<Props>(TextBlock, {
       props: {
@@ -98,6 +100,7 @@ describe('TextBlock Component', () => {
           __typename: 'TextBlockRecord',
           text: {
             blocks: [],
+            inlineBlocks: [],
             links: [],
             value: {
               schema: 'dast',
