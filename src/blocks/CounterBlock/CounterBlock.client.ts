@@ -28,7 +28,15 @@ class CounterBlock extends HTMLElement {
     }
 
     const counters = Array.from(this.querySelectorAll<HTMLSpanElement>('[data-counter-number]'));
-    counters.forEach((el) => this.#observer?.observe(el));
+    counters.forEach((el) => {
+      // Measure and lock width immediately to prevent layout shift
+      const formatted = this.#formatter.format(Number(el.dataset.target));
+      el.textContent = formatted;
+      el.style.width = `${el.offsetWidth}px`;
+      el.textContent = '0';
+
+      this.#observer?.observe(el);
+    });
   }
 
   disconnectedCallback() {

@@ -14,7 +14,12 @@ const formattedNumber = new Intl.NumberFormat(getLocale()).format(block.value);
   <span class="a11y-sr-only">
     {formattedNumber}
   </span>
-  <span class="counter-item__value" data-counter-number data-target={block.value} aria-hidden="true">
+  <span
+    class="counter-item__value"
+    data-counter-number
+    data-target={block.value}
+    aria-hidden="true"
+  >
     0
   </span>
 </counter-block>
@@ -29,5 +34,6 @@ const formattedNumber = new Intl.NumberFormat(getLocale()).format(block.value);
 
   .counter-item__value {
     font-variant-numeric: tabular-nums; /* so all numbers are same width, prevents unwanted text jumping. */
+    display: inline-block;
   }
 </style>

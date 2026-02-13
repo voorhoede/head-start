@@ -1,0 +1,12 @@
+---
+import { type CdaStructuredTextRecord } from 'datocms-structured-text-utils';
+import Blocks from '@blocks/Blocks.astro';
+
+interface Props {
+  block: CdaStructuredTextRecord;
+}
+
+const { block } = Astro.props;
+---
+
+<Blocks blocks={[block]} hideEditorLabels />
