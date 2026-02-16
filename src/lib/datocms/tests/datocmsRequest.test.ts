@@ -10,7 +10,7 @@ import {
 import { HttpResponse, graphql } from 'msw';
 import { setupServer } from 'msw/node';
 import { parse } from 'graphql/language';
-import { datocmsRequest } from '@lib/datocms';
+import { datocmsRequest } from '~/lib/datocms';
 
 // these imports will resolve to their mocked counterparts
 import * as env from 'astro:env/server';

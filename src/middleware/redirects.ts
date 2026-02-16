@@ -1,5 +1,5 @@
 import { defineMiddleware } from 'astro:middleware';
-import { getRedirectTarget } from '@lib/routing/redirects';
+import { getRedirectTarget } from '~/lib/routing/redirects';
 
 /**
  * Redirects middleware:

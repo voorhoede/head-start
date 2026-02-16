@@ -1,21 +1,21 @@
-import { combine } from '@lib/content';
-import { datocmsCollection, datocmsRequest } from '@lib/datocms';
+import { combine } from '~/lib/content';
+import { datocmsCollection, datocmsRequest } from '~/lib/datocms';
 import {
   PageRoute as fragment,
   PageCollectionEntry as query,
   type PageCollectionEntryQuery,
   type PageRouteFragment,
   type SiteLocale
-} from '@lib/datocms/types';
-import { isLocale } from '@lib/i18n';
+} from '~/lib/datocms/types';
+import { isLocale } from '~/lib/i18n';
 import {
   formatBreadcrumb,
   getPageHref,
   getSlugFromPath,
   type Breadcrumb,
   type PageUrl,
-} from '@lib/routing';
-import { getPagePath, getParentPages } from '@lib/routing/page';
+} from '~/lib/routing';
+import { getPagePath, getParentPages } from '~/lib/routing/page';
 import { defineCollection, z } from 'astro:content';
 
 type Meta<T extends PageCollectionEntryQuery['record']> = {

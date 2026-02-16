@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { formatSearchResults, type RawSearchResult } from '@lib/datocms';
+import { formatSearchResults, type RawSearchResult } from '~/lib/datocms';
 
 vi.mock('../../../../datocms-environment', () => ({
   datocmsBuildTriggerId: 'mock-build-trigger-id',

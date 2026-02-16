@@ -29,7 +29,7 @@ Head Start combines icons in a sprite and makes them available through the `<Ico
 
 ```astro
 ---
-import Icon from '@components/Icon/';
+import Icon from '~/components/Icon/';
 ---
 <Icon name="share">
 

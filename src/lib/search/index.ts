@@ -1,6 +1,6 @@
-import type { SiteLocale } from '@lib/datocms/types';
-import { getLocale } from '@lib/i18n';
-import { globalSeo } from '@lib/site.json';
+import type { SiteLocale } from '~/lib/datocms/types';
+import { getLocale } from '~/lib/i18n';
+import { globalSeo } from '~/lib/site.json';
 
 export const queryParamName = 'query';
 export const minQueryLength = 3;

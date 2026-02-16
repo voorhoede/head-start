@@ -1,9 +1,9 @@
 ---
-import Blocks from '@blocks/Blocks.astro';
-import { buildNestedFieldPath } from '@blocks/block-editor-utils';
-import { Accordion, AccordionItem } from '@components/Accordion';
-import { Tabs, TabsPanel, TabsTab } from '@components/Tabs';
-import type { GroupingBlockFragment } from '@lib/datocms/types';
+import Blocks from '~/blocks/Blocks.astro';
+import { buildNestedFieldPath } from '~/blocks/block-editor-utils';
+import { Accordion, AccordionItem } from '~/components/Accordion';
+import { Tabs, TabsPanel, TabsTab } from '~/components/Tabs';
+import type { GroupingBlockFragment } from '~/lib/datocms/types';
 
 export interface Props {
   block: GroupingBlockFragment;

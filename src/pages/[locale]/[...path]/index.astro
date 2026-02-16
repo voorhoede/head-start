@@ -1,8 +1,8 @@
 ---
-import Blocks from '@blocks/Blocks.astro';
-import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
-import Layout from '@layouts/Default.astro';
-import { getCollection, getEntry } from '@lib/content';
+import Blocks from '~/blocks/Blocks.astro';
+import PreviewModeSubscription from '~/components/PreviewMode/PreviewModeSubscription.astro';
+import Layout from '~/layouts/Default.astro';
+import { getCollection, getEntry } from '~/lib/content';
 
 export async function getStaticPaths() {
   // Fetch all locales by passing locale `null` and filter `undefined`.

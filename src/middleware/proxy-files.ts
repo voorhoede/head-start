@@ -1,5 +1,5 @@
 import { defineMiddleware } from 'astro/middleware';
-import { getFileUrlByPath } from '@lib/routing/file';
+import { getFileUrlByPath } from '~/lib/routing/file';
 
 /**
  * Proxy files middleware:
