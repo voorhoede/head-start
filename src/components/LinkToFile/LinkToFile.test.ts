@@ -1,8 +1,8 @@
 import { describe, expect, test, } from 'vitest';
-import { datocmsAssetsOrigin } from '@lib/datocms';
-import { renderToFragment } from '@lib/renderer';
+import { datocmsAssetsOrigin } from '~/lib/datocms';
+import { renderToFragment } from '~/lib/renderer';
 import LinkToFile, { type Props as LinkToFileProps } from './LinkToFile.astro';
-import { getLocale } from '@lib/i18n';
+import { getLocale } from '~/lib/i18n';
 
 type MockFileOptions = {
   basename?: string;

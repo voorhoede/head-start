@@ -1,11 +1,11 @@
 ---
-import Blocks from '@blocks/Blocks.astro';
-import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
-import Layout from '@layouts/Default.astro';
-import { datocmsRequest } from '@lib/datocms';
-import type { HomePageQuery } from '@lib/datocms/types';
-import { locales } from '@lib/i18n';
-import { getHomeHref, type PageUrl } from '@lib/routing';
+import Blocks from '~/blocks/Blocks.astro';
+import PreviewModeSubscription from '~/components/PreviewMode/PreviewModeSubscription.astro';
+import Layout from '~/layouts/Default.astro';
+import { datocmsRequest } from '~/lib/datocms';
+import type { HomePageQuery } from '~/lib/datocms/types';
+import { locales } from '~/lib/i18n';
+import { getHomeHref, type PageUrl } from '~/lib/routing';
 import query from './_index.query.graphql';
 
 export async function getStaticPaths() {

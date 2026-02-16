@@ -1,4 +1,4 @@
-import { getLocale } from '@lib/i18n';
+import { getLocale } from '~/lib/i18n';
 
 const enhanceIntersectedVideoBlocks = (entries: IntersectionObserverEntry[]) => {
   entries.forEach((entry) => {

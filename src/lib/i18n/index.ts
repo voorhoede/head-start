@@ -1,8 +1,8 @@
 import rosetta from 'rosetta';
-import type { TranslationKey } from '@lib/i18n/types';
-import { type SiteLocale } from '@lib/datocms/types';
-import messages from '@lib/i18n/messages.json';
-import { locales as siteLocales } from '@lib/site.json';
+import type { TranslationKey } from '~/lib/i18n/types';
+import { type SiteLocale } from '~/lib/datocms/types';
+import messages from '~/lib/i18n/messages.json';
+import { locales as siteLocales } from '~/lib/site.json';
 
 export const locales = siteLocales as SiteLocale[];
 export const defaultLocale = locales[0];

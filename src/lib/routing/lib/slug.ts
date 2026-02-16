@@ -1,4 +1,4 @@
-import type { SiteLocale } from '@lib/datocms/types';
+import type { SiteLocale } from '~/lib/datocms/types';
 
 export const missingSlug = '-';
 export type MaybeSlug = string | undefined;

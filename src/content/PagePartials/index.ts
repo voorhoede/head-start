@@ -3,9 +3,9 @@ import {
   PagePartialCollectionEntry as query,
   type PagePartialCollectionEntryQuery,
   type SiteLocale
-} from '@lib/datocms/types';
-import { datocmsCollection, datocmsRequest } from '@lib/datocms';
-import { combine } from '@lib/content';
+} from '~/lib/datocms/types';
+import { datocmsCollection, datocmsRequest } from '~/lib/datocms';
+import { combine } from '~/lib/content';
 
 type Meta = {
   locale: SiteLocale;

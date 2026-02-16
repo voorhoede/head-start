@@ -1,4 +1,4 @@
-import { getItemTypeId } from '@blocks/block-editor-utils';
+import { getItemTypeId } from '~/blocks/block-editor-utils';
 import type { ConnectionStatus as DatocmsConnectionStatus } from 'datocms-listen';
 import { subscribeToQuery } from 'datocms-listen';
 import { atom, map } from 'nanostores';

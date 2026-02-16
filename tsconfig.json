@@ -3,16 +3,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@assets/*": ["src/assets/*"],
-      "@blocks/*": ["src/blocks/*"],
-      "@components/*": ["src/components/*"],
-      "@content/*": ["src/content/*"],
-      "@layouts/*": ["src/layouts/*"],
-      "@lib/*": ["src/lib/*"],
-      "@middleware/*": ["src/middleware/*"],
-      "@pages/*": ["src/pages/*"],
-      "@root/*": ["./*"],
-      "@src/*": ["src/*"]
+      "~/*": ["./src/*"],
+      "@root/*": ["./*"]
     },
     "verbatimModuleSyntax": true,
     "plugins": [

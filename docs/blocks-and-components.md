@@ -55,7 +55,7 @@ Head Start uses the same convention for props and types for every Block: the `Pr
 
 ```astro
 ---
-import type { SomeContentBlockFragment } from '@lib/datocms/types';
+import type { SomeContentBlockFragment } from '~/lib/datocms/types';
 
 interface Props {
   block: SomeContentBlockFragment
@@ -75,8 +75,8 @@ Pages and other templates can use the `<Blocks />` component to render a Modular
 
 ```astro
 ---
-import { datocmsRequest } from '@lib/datocms';
-import Blocks from '@blocks/Blocks.astro';
+import { datocmsRequest } from '~/lib/datocms';
+import Blocks from '~/blocks/Blocks.astro';
 import query from './_index.query.graphql';
 
 const { page } = await datocmsRequest({ query, variables: { locale: Astro.params.locale } });
@@ -122,7 +122,7 @@ import {
   // import new Block's Fragment:
   SomeContentBlockFragment,
   TextBlockFragment,
-} from '@lib/datocms/types';
+} from '~/lib/datocms/types';
 
 export type AnyBlock =
   | ImageBlockFragment
@@ -147,7 +147,7 @@ You probably want to use your block on certain pages. Depending on the block you
 #  Update the above file for the Page model
 #  Be sure to import your new block fragment
 
-#import '@blocks/TestBlock/TestBlock.fragment.graphql'
+#import '~/blocks/TestBlock/TestBlock.fragment.graphql'
 
 page(locale: $locale, filter: { slug: { eq: $slug } }) {
   # redacted content
@@ -177,7 +177,7 @@ Astro supports [client-side scripts inside components](https://docs.astro.build/
 ```ts
 // SomeComponent.test.ts
 import { describe, expect, test } from 'vitest';
-import { renderToFragment } from '@lib/renderer';
+import { renderToFragment } from '~/lib/renderer';
 import SomeComponent, { type Props } from './SomeComponent.astro';
 
 describe('Some Component', () => {

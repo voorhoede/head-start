@@ -1,20 +1,20 @@
 ---
-import type { DefaultLayoutQuery, SiteLocale, Tag } from '@lib/datocms/types';
-import { datocmsRequest } from '@lib/datocms';
-import { defaultLocale } from '@lib/i18n';
-import { datocmsNoIndex } from '@lib/search';
-import type { Breadcrumb, PageUrl } from '@lib/routing';
+import type { DefaultLayoutQuery, SiteLocale, Tag } from '~/lib/datocms/types';
+import { datocmsRequest } from '~/lib/datocms';
+import { defaultLocale } from '~/lib/i18n';
+import { datocmsNoIndex } from '~/lib/search';
+import type { Breadcrumb, PageUrl } from '~/lib/routing';
 import query from './default.query.graphql';
-import Breadcrumbs from '@components/Breadcrumbs/Breadcrumbs.astro';
-import IconSprite from '@components/Icon/IconSprite.astro';
-import PreviewModeProvider from '@components/PreviewMode/PreviewModeProvider.astro';
-import StructuredData from '@components/StructuredData/StructuredData.astro';
-import SkipLink from '@components/SkipLink/SkipLink.astro';
+import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs.astro';
+import IconSprite from '~/components/Icon/IconSprite.astro';
+import PreviewModeProvider from '~/components/PreviewMode/PreviewModeProvider.astro';
+import StructuredData from '~/components/StructuredData/StructuredData.astro';
+import SkipLink from '~/components/SkipLink/SkipLink.astro';
 import AppHeader from './AppHeader/AppHeader.astro';
 import PerfHead from './PerfHead/PerfHead.astro';
 import SeoHead from './SeoHead/SeoHead.astro';
-import { fontFamilyArchivo } from '@assets/fonts';
-import '@assets/a11y.css';
+import { fontFamilyArchivo } from '~/assets/fonts';
+import '~/assets/a11y.css';
 
 interface Props {
   breadcrumbs?: Breadcrumb[];

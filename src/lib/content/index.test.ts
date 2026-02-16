@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
 import { getCollection, getEntry, combine, split } from './index';
-import type { collectionMap } from '@content/config';
+import type { collectionMap } from '~/content/config';
 
 function mockEntry(id: string, locale?: string) {
   const meta = locale ? { locale } : {};
@@ -14,7 +14,7 @@ function mockEntry(id: string, locale?: string) {
   };
 }
 
-vi.mock('@lib/i18n', () => {
+vi.mock('~/lib/i18n', () => {
   const locales = ['en', 'nl'] as const;
   return {
     locales,
@@ -23,8 +23,8 @@ vi.mock('@lib/i18n', () => {
   };
 });
 
-vi.mock('@content/config', async () => {
-  const { locales } = await import('@lib/i18n');
+vi.mock('~/content/config', async () => {
+  const { locales } = await import('~/lib/i18n');
   const localizedItems = ['a', 'b', 'c'].flatMap(id =>
     locales.map(locale => mockEntry(id, locale))
   );
@@ -50,7 +50,7 @@ vi.mock('@content/config', async () => {
 
 // Mocking the Astro content module to simulate collections,
 vi.mock('astro:content', async () => {
-  const { collectionMap } = await import('@content/config');
+  const { collectionMap } = await import('~/content/config');
 
   return {
     getCollection: async (
@@ -75,8 +75,8 @@ vi.mock('astro:env/server', () => ({
 }));
 
 describe('getCollection', async () => {
-  const { collectionMap } = await import('@content/config');
-  const { locales, getLocale } = await import('@lib/i18n');
+  const { collectionMap } = await import('~/content/config');
+  const { locales, getLocale } = await import('~/lib/i18n');
   test('filters by locale by default', async () => {
     const collection = 'LocalizedItems' as keyof typeof collectionMap;
     const entries = await getCollection(collection);
@@ -115,7 +115,7 @@ describe('getCollection', async () => {
 });
 
 describe('getEntry', async () => {
-  const { getLocale } = await import('@lib/i18n');
+  const { getLocale } = await import('~/lib/i18n');
   test('filters by locale by default', async () => {
     const collection = 'LocalizedItems' as keyof typeof collectionMap;
     const id = 'a';
@@ -144,7 +144,7 @@ describe('getEntry', async () => {
 
 describe('combine', () => {
   test('appends a separator and locale to a given id', async () => {
-    const { locales } = await import('@lib/i18n');
+    const { locales } = await import('~/lib/i18n');
     locales.forEach(locale => {
       const result = combine({ id: 'a/b/c', locale });
       expect(result).toBe(`${locale}/a/b/c`);
@@ -169,7 +169,7 @@ describe('split', () => {
     expect(result).toStrictEqual({ id: 'a/b/c', locale: null });
   });
   test('extracts locale added with combine', async () => {
-    const { locales } = await import('@lib/i18n');
+    const { locales } = await import('~/lib/i18n');
     const id = 'a/b/c';
     locales.forEach(locale => {
       const result = split(combine({ id, locale }));

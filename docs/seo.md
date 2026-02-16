@@ -25,7 +25,7 @@ The [`_seoMetaTags`](https://www.datocms.com/docs/content-delivery-api/seo-and-f
 
 ```astro
 ---
-import Layout from '@layouts/Default.astro';
+import Layout from '~/layouts/Default.astro';
 const { page } = // ...
 ---
 <Layout
@@ -40,7 +40,7 @@ For SEO it's important that a page has a preferred canonical URL and links to pa
 
 ```astro
 ---
-import Layout from '@layouts/Default.astro';
+import Layout from '~/layouts/Default.astro';
 ---
 <Layout 
   pageUrls={[

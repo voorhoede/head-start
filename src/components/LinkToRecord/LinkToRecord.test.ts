@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import { renderToFragment } from '@lib/renderer';
-import type { RecordRoute } from '@lib/routing';
+import { renderToFragment } from '~/lib/renderer';
+import type { RecordRoute } from '~/lib/routing';
 import LinkToRecord, { type Props as LinkToRecordProps } from './LinkToRecord.astro';
 
 const record = {

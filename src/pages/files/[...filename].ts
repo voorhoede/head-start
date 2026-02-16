@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { datocmsAssetsOrigin } from '@lib/datocms';
+import { datocmsAssetsOrigin } from '~/lib/datocms';
 
 export const prerender = false;
 

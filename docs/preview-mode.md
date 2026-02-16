@@ -16,7 +16,7 @@ To protect a part of the page that must only be available in preview mode, you c
 
 ```astro
 ---
-import PreviewModeProvider from '@components/PreviewMode/PreviewModeProvider.astro';
+import PreviewModeProvider from '~/components/PreviewMode/PreviewModeProvider.astro';
 ---
 
 <PreviewModeProvider>
@@ -58,7 +58,7 @@ In preview mode the web page listens for content changes and automatically reloa
 
 ```astro
 ---
-import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
+import PreviewModeSubscription from '~/components/PreviewMode/PreviewModeSubscription.astro';
 // ...
 const variables = { locale, slug };
 const { page } = await datocmsRequest<PageQuery>({ query, variables });
@@ -85,7 +85,7 @@ In preview mode, the preview bar shows an **"edit in CMS"** link that opens the 
 ### How it works
 
 The link is automatically generated from the `record` prop passed to `PreviewModeSubscription`. The URL is built from:
-- **Project name**: extracted from `internalDomain` in `@lib/site.json`
+- **Project name**: extracted from `internalDomain` in `~/lib/site.json`
 - **Environment**: from `datocms-environment.ts`
 - **Record info**: `id` + `type` (from `record` prop) → resolved to `itemTypeId` via auto-generated mappings
 

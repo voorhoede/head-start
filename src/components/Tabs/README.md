@@ -12,7 +12,7 @@
 
 ```astro
 ---
-import { Tabs, TabsTab, TabsPanel } from '@components/Tabs';
+import { Tabs, TabsTab, TabsPanel } from '~/components/Tabs';
 ---
 
 <Tabs>
