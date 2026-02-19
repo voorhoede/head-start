@@ -11,6 +11,7 @@ const blocksDir = './src/blocks';
 const itemTypesPath = './src/lib/datocms/itemTypes.json';
 const imageExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
 const force = process.argv.includes('--force');
+const uploadCollectionName = 'Block Previews';
 
 type ItemTypeEntry = {
   id: string;
@@ -58,8 +59,8 @@ async function discoverBlockPreviews(itemTypes: ItemTypesJson['itemTypes']): Pro
     );
     const imagePath = imageFile ? join(blockDir, imageFile) : undefined;
 
-    if (!textPath) warnings.push(`${blockName}: missing ${blockName}.preview.txt`);
-    if (!imagePath) warnings.push(`${blockName}: missing ${blockName}.preview image`);
+    if (!textPath) warnings.push(`${blockName}: add src/blocks/${blockName}/${blockName}.preview.txt`);
+    if (!imagePath) warnings.push(`${blockName}: add src/blocks/${blockName}/${blockName}.preview.{jpg,png,webp}`);
 
     if (!textPath && !imagePath) continue;
 
@@ -73,6 +74,16 @@ async function discoverBlockPreviews(itemTypes: ItemTypesJson['itemTypes']): Pro
   }
 
   return previews;
+}
+
+async function findOrCreateCollection(client: ReturnType<typeof buildClient>): Promise<string> {
+  const collections = await client.uploadCollections.list();
+  const existing = collections.find((c) => c.label === uploadCollectionName);
+  if (existing) return existing.id;
+
+  const created = await client.uploadCollections.create({ label: uploadCollectionName });
+  console.log(`Created upload collection "${uploadCollectionName}"`);
+  return created.id;
 }
 
 async function uploadBlockPreviews() {
@@ -96,37 +107,48 @@ async function uploadBlockPreviews() {
 
   console.log(`Found ${previews.length} block(s) with preview files.${force ? ' (--force)' : ''}`);
 
+  const hasAnyImage = previews.some((p) => p.imagePath);
+  const collectionId = hasAnyImage ? await findOrCreateCollection(client) : null;
+
   let updatedCount = 0;
   let skippedCount = 0;
 
   for (const { blockName, itemTypeId, textPath, imagePath } of previews) {
     const current = await client.itemTypes.find(itemTypeId);
-    const updates: Record<string, unknown> = {};
 
-    if (textPath) {
-      if (force || !current.hint) {
-        const textContent = await readFile(textPath, 'utf-8');
-        updates.hint = textContent.trim();
-      }
-    }
-
-    if (imagePath) {
-      if (force || !current.image_preview_field) {
-        const upload = await client.uploads.createFromLocalFile({
-          localPath: imagePath,
-          filename: `${blockName.toLowerCase()}-preview${extname(imagePath)}`,
-          onProgress: () => {},
-        });
-        updates.image_preview_field = { id: upload.id, type: 'upload' };
-      }
-    }
-
-    if (Object.keys(updates).length === 0) {
+    if (!force && current.hint) {
       skippedCount++;
       continue;
     }
 
-    await client.itemTypes.update(itemTypeId, updates as Parameters<typeof client.itemTypes.update>[1]);
+    // Build the hint: image URL on the first line (if available), then the text description.
+    // DatoCMS renders an image preview when the hint starts with an image URL.
+    let hint = '';
+
+    if (imagePath) {
+      const upload = await client.uploads.createFromLocalFile({
+        localPath: imagePath,
+        filename: `${blockName.toLowerCase()}-preview${extname(imagePath)}`,
+        ...(collectionId && { upload_collection: { id: collectionId, type: 'upload_collection' } }),
+        onProgress: () => {},
+      });
+      hint += upload.url;
+    }
+
+    if (textPath) {
+      const textContent = await readFile(textPath, 'utf-8');
+      const trimmed = textContent.trim();
+      if (trimmed) {
+        hint += hint ? `\n${trimmed}` : trimmed;
+      }
+    }
+
+    if (!hint) {
+      skippedCount++;
+      continue;
+    }
+
+    await client.itemTypes.update(itemTypeId, { hint } as Parameters<typeof client.itemTypes.update>[1]);
     console.log(`${blockName}: updated`);
     updatedCount++;
   }
