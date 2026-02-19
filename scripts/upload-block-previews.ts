@@ -116,7 +116,12 @@ async function uploadBlockPreviews() {
   for (const { blockName, itemTypeId, textPath, imagePath } of previews) {
     const current = await client.itemTypes.find(itemTypeId);
 
-    if (!force && current.hint) {
+    const hasText = Boolean(current.hint);
+    const hasImage = Boolean(current.hint?.startsWith('http'));
+    const needsText = textPath && !hasText;
+    const needsImage = imagePath && !hasImage;
+
+    if (!force && !needsText && !needsImage) {
       skippedCount++;
       continue;
     }
@@ -128,7 +133,7 @@ async function uploadBlockPreviews() {
     if (imagePath) {
       const upload = await client.uploads.createFromLocalFile({
         localPath: imagePath,
-        filename: `${blockName.toLowerCase()}-preview${extname(imagePath)}`,
+        filename: `${blockName}.preview${extname(imagePath)}`,
         ...(collectionId && { upload_collection: { id: collectionId, type: 'upload_collection' } }),
         onProgress: () => {},
       });
