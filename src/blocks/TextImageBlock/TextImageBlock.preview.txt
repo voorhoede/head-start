@@ -1,0 +1,1 @@
+Rich text alongside an image, side by side. The image can appear on the left or right.
