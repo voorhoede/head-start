@@ -101,7 +101,7 @@ const findBlock = (node: STU.Block, blocks: STU.CdaStructuredTextValue['blocks']
   (blocks || []).find(({ id }) => id === node.item);
 const findInlineBlock = (
   node: STU.InlineBlock,
-  inlineBlocks: STU.CdaStructuredTextValue['blocks'],
+  inlineBlocks: STU.CdaStructuredTextValue['inlineBlocks'],
 ) => (inlineBlocks || []).find(({ id }) => id === node.item);
 const findLink = (node: STU.ItemLink | STU.InlineItem, links: STU.CdaStructuredTextValue['links']) =>
   (links || []).find(({ id }) => id === node.item);
@@ -109,7 +109,7 @@ const findLink = (node: STU.ItemLink | STU.InlineItem, links: STU.CdaStructuredT
 interface Props {
   node: STU.Node;
   blocks: STU.CdaStructuredTextValue['blocks'];
-  inlineBlocks?: STU.CdaStructuredTextValue['blocks'];
+  inlineBlocks?: STU.CdaStructuredTextValue['inlineBlocks'];
   links: STU.CdaStructuredTextValue['links'];
   components?: PredicateComponentTuple[];
 }
