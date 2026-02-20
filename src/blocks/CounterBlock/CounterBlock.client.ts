@@ -29,11 +29,13 @@ class CounterBlock extends HTMLElement {
 
     const counters = Array.from(this.querySelectorAll<HTMLSpanElement>('[data-counter-number]'));
     counters.forEach((el) => {
-      // Measure and lock width immediately to prevent layout shift
-      const formatted = this.#formatter.format(Number(el.dataset.target));
-      el.textContent = formatted;
-      el.style.width = `${el.offsetWidth}px`;
-      el.textContent = '0';
+      const target = Number(el.dataset.target);
+      if (Number.isNaN(target)) return;
+
+      // Pre-format the initial value to ensure consistent decimal places during animation
+      const fractionDigits = this.#getFractionDigits(target);
+      const animationFormatter = this.#getAnimationFormatter(fractionDigits);
+      el.textContent = animationFormatter.format(0);
 
       this.#observer?.observe(el);
     });
@@ -48,6 +50,9 @@ class CounterBlock extends HTMLElement {
     const target = Number(el.dataset.target);
     if (Number.isNaN(target)) return;
 
+    const fractionDigits = this.#getFractionDigits(target);
+    const animationFormatter = this.#getAnimationFormatter(fractionDigits);
+
     // Respect reduced motion preference
     if (this.#prefersReducedMotion) {
       el.textContent = this.#formatter.format(target);
@@ -59,8 +64,10 @@ class CounterBlock extends HTMLElement {
 
     const update = (now: number) => {
       const progress = Math.min((now - startTime) / duration, 1);
-      const value = Math.floor(progress * target);
-      el.textContent = this.#formatter.format(value);
+      const scaled = progress * target;
+      const factor = 10 ** fractionDigits;
+      const value = Math.trunc(scaled * factor) / factor;
+      el.textContent = animationFormatter.format(value);
 
       if (progress < 1) {
         requestAnimationFrame(update);
@@ -70,6 +77,17 @@ class CounterBlock extends HTMLElement {
     };
 
     requestAnimationFrame(update);
+  }
+
+  #getFractionDigits(value: number) {
+    return this.#formatter.formatToParts(value).find((part) => part.type === 'fraction')?.value.length ?? 0;
+  }
+
+  #getAnimationFormatter(fractionDigits: number) {
+    return new Intl.NumberFormat(getLocale(), {
+      minimumFractionDigits: fractionDigits,
+      maximumFractionDigits: fractionDigits,
+    });
   }
 }
 
