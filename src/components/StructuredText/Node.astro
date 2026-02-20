@@ -3,6 +3,7 @@
 import {
   hasChildren,
   isBlock,
+  isInlineBlock,
   isBlockquote,
   isCode,
   isHeading,
@@ -29,6 +30,7 @@ import Heading from './Nodes/Heading.astro';
 import Span from './Nodes/Span.astro';
 import Code from './Nodes/Code.astro';
 import ThematicBreak from './Nodes/ThematicBreak.astro';
+import InlineBlock from './Nodes/InlineBlock.astro';
 
 const DEFAULT_COMPONENTS: PredicateComponentTuple[] = [
   [isParagraph, Paragraph],
@@ -40,7 +42,8 @@ const DEFAULT_COMPONENTS: PredicateComponentTuple[] = [
   [isBlockquote, Blockquote],
   [isListItem, ListItem],
   [isThematicBreak, ThematicBreak],
-  [isCode, Code]
+  [isCode, Code],
+  [isInlineBlock, InlineBlock],
 ];
 
 const throwRenderErrorForMissingComponent = (node: STU.Node) => {
@@ -64,11 +67,25 @@ const throwRenderErrorForMissingComponent = (node: STU.Node) => {
       node
     );
   }
+
+  if (isInlineBlock(node)) {
+    throw new RenderError(
+      'The Structured Text document contains an \'inlineBlock\' node, but no component for rendering is specified!',
+      node
+    );
+  }
 };
 
 const throwRenderErrorForMissingBlock = (node: STU.Block) => {
   throw new RenderError(
     `The Structured Text document contains a 'block' node, but cannot find a record with ID ${node.item} inside data.blocks!`,
+    node
+  );
+};
+
+const throwRenderErrorForMissingInlineBlock = (node: STU.InlineBlock) => {
+  throw new RenderError(
+    `The Structured Text document contains an 'inlineBlock' node, but cannot find a record with ID ${node.item} inside data.inlineBlocks!`,
     node
   );
 };
@@ -80,18 +97,23 @@ const throwRenderErrorForMissingLink = (node: STU.ItemLink | STU.InlineItem) => 
   );
 };
 
-const findBlock = (node: STU.Block, blocks: STU.StructuredText['blocks']) =>
+const findBlock = (node: STU.Block, blocks: STU.CdaStructuredTextValue['blocks']) =>
   (blocks || []).find(({ id }) => id === node.item);
-const findLink = (node: STU.ItemLink | STU.InlineItem, links: STU.StructuredText['links']) =>
+const findInlineBlock = (
+  node: STU.InlineBlock,
+  inlineBlocks: STU.CdaStructuredTextValue['inlineBlocks'],
+) => (inlineBlocks || []).find(({ id }) => id === node.item);
+const findLink = (node: STU.ItemLink | STU.InlineItem, links: STU.CdaStructuredTextValue['links']) =>
   (links || []).find(({ id }) => id === node.item);
 
 interface Props {
   node: STU.Node;
-  blocks: STU.StructuredText['blocks'];
-  links: STU.StructuredText['links'];
+  blocks: STU.CdaStructuredTextValue['blocks'];
+  inlineBlocks?: STU.CdaStructuredTextValue['inlineBlocks'];
+  links: STU.CdaStructuredTextValue['links'];
   components?: PredicateComponentTuple[];
 }
-const { node, blocks, links, components = [] } = Astro.props;
+const { node, blocks, inlineBlocks, links, components = [] } = Astro.props;
 
 const predicateComponentTuple =
 		[...components, ...DEFAULT_COMPONENTS].find(([predicate]) => predicate(node)) ||
@@ -99,6 +121,10 @@ const predicateComponentTuple =
 
 const Component = (predicateComponentTuple ?? [])[1];
 const block = isBlock(node) && (findBlock(node, blocks) || throwRenderErrorForMissingBlock(node));
+const inlineBlock =
+  isInlineBlock(node) &&
+  (findInlineBlock(node, inlineBlocks) ||
+    throwRenderErrorForMissingInlineBlock(node));
 const link =
 		(isItemLink(node) && (findLink(node, links) || throwRenderErrorForMissingLink(node))) ||
 		(isInlineItem(node) && (findLink(node, links) || throwRenderErrorForMissingLink(node)));
@@ -107,6 +133,8 @@ const link =
 { Component && (
   isBlock(node) ? (
     <Component {node} {block} />
+  ) : isInlineBlock(node) ? (
+    <Component {node} block={inlineBlock} />
   ) :
     isInlineItem(node) ? (
       <Component {node} {link} />
@@ -115,7 +143,7 @@ const link =
         <Component node={node} {link}>
           { hasChildren(node) && (
             node.children.map((child) => (
-              <Astro.self node={child} blocks={blocks} links={links} {components} />
+              <Astro.self node={child} blocks={blocks} links={links} {components} inlineBlocks={inlineBlocks} />
             ))
           ) }
         </Component>
@@ -124,7 +152,7 @@ const link =
           <Component node={node}>
             { hasChildren(node) && (
               node.children.map((child) => (
-                <Astro.self node={child} blocks={blocks} links={links} {components} />
+                <Astro.self node={child} blocks={blocks} links={links} {components} inlineBlocks={inlineBlocks} />
               ))
             ) }
           </Component>
