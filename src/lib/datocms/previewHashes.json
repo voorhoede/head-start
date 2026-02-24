@@ -1,0 +1,34 @@
+{
+  "ActionBlock": {
+    "text": "d2a49190527b55484b9bd755d9032637"
+  },
+  "EmbedBlock": {
+    "text": "7c31340de3cb5be89bd5e0eddc50cce9"
+  },
+  "GroupingBlock": {
+    "text": "f900dbab8e5c94f22b633b9242d66afd",
+    "image": "0c6a05bf3d0033dbb9309e318bab883b",
+    "imageUrl": "https://www.datocms-assets.com/145765/1771927953-groupingblock-preview.png"
+  },
+  "ImageBlock": {
+    "text": "daa01039a44b2448df55c88cd6f8ec55"
+  },
+  "PagePartialBlock": {
+    "text": "d7089b35b504985953ea4a16b2e31934"
+  },
+  "TableBlock": {
+    "text": "a93633c8da3d7cb48410c86109116267"
+  },
+  "TextBlock": {
+    "text": "f0dfcf82376de109d9caefc0dd47c77c"
+  },
+  "TextImageBlock": {
+    "text": "0c435d2355250e932a65f3936412158d"
+  },
+  "VideoBlock": {
+    "text": "a02f6c554a4ba2c2eac4912c3035759d"
+  },
+  "VideoEmbedBlock": {
+    "text": "733126aec7fd555d020b0059bf810415"
+  }
+}
