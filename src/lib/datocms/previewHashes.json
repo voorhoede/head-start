@@ -1,34 +1,52 @@
 {
   "ActionBlock": {
-    "text": "d2a49190527b55484b9bd755d9032637"
+    "text": "d2a49190527b55484b9bd755d9032637",
+    "image": "3bae217554cff3715fea884a1f7a4b68",
+    "imageUrl": "https://www.datocms-assets.com/145765/1771943187-actionblock-preview.png"
   },
   "EmbedBlock": {
-    "text": "7c31340de3cb5be89bd5e0eddc50cce9"
+    "text": "7c31340de3cb5be89bd5e0eddc50cce9",
+    "image": "4c5d071daab9e8e79ddc8a799cc571d1",
+    "imageUrl": "https://www.datocms-assets.com/145765/1771943195-embedblock-preview.png"
   },
   "GroupingBlock": {
     "text": "f900dbab8e5c94f22b633b9242d66afd",
-    "image": "0c6a05bf3d0033dbb9309e318bab883b",
-    "imageUrl": "https://www.datocms-assets.com/145765/1771927953-groupingblock-preview.png"
+    "image": "02d76a2d4be2be9b319eabe1dc15d594",
+    "imageUrl": "https://www.datocms-assets.com/145765/1771942660-groupingblock-preview.png"
   },
   "ImageBlock": {
-    "text": "daa01039a44b2448df55c88cd6f8ec55"
+    "text": "daa01039a44b2448df55c88cd6f8ec55",
+    "image": "a1a9ee0bba72d19a595593f443505ca8",
+    "imageUrl": "https://www.datocms-assets.com/145765/1771943626-imageblock-preview.png"
   },
   "PagePartialBlock": {
-    "text": "d7089b35b504985953ea4a16b2e31934"
+    "text": "d7089b35b504985953ea4a16b2e31934",
+    "image": "ceb09ac1be384134a87919222f6950a3",
+    "imageUrl": "https://www.datocms-assets.com/145765/1771942672-pagepartialblock-preview.png"
   },
   "TableBlock": {
-    "text": "a93633c8da3d7cb48410c86109116267"
+    "text": "a93633c8da3d7cb48410c86109116267",
+    "image": "f2b1c21ad4b8710ac0f105516f07e6b4",
+    "imageUrl": "https://www.datocms-assets.com/145765/1771943967-tableblock-preview.png"
   },
   "TextBlock": {
-    "text": "f0dfcf82376de109d9caefc0dd47c77c"
+    "text": "f0dfcf82376de109d9caefc0dd47c77c",
+    "image": "6645e5fb4fac8b558c323666f46e576b",
+    "imageUrl": "https://www.datocms-assets.com/145765/1771944505-textblock-preview.png"
   },
   "TextImageBlock": {
-    "text": "0c435d2355250e932a65f3936412158d"
+    "text": "0c435d2355250e932a65f3936412158d",
+    "image": "265a4344bf9ca1f9112e19e8c8828d29",
+    "imageUrl": "https://www.datocms-assets.com/145765/1771943633-textimageblock-preview.png"
   },
   "VideoBlock": {
-    "text": "a02f6c554a4ba2c2eac4912c3035759d"
+    "text": "a02f6c554a4ba2c2eac4912c3035759d",
+    "image": "2fe1f9979812937891e70615070dc155",
+    "imageUrl": "https://www.datocms-assets.com/145765/1771942680-videoblock-preview.png"
   },
   "VideoEmbedBlock": {
-    "text": "733126aec7fd555d020b0059bf810415"
+    "text": "733126aec7fd555d020b0059bf810415",
+    "image": "0b6ef17b963fc892839eb1ecdfdb9269",
+    "imageUrl": "https://www.datocms-assets.com/145765/1771942688-videoembedblock-preview.png"
   }
 }
