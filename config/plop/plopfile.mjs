@@ -47,7 +47,7 @@ export default function (plop) {
       {
         type: 'confirm',
         name: 'preview',
-        message: 'Add CMS preview files (.preview.txt and .preview.jpg placeholder)?',
+        message: 'Add CMS preview hint (.preview.txt)?',
         default: true,
       },
       {
@@ -78,7 +78,7 @@ export default function (plop) {
         type: 'add',
         path: '../../src/blocks/{{ pascalCase name }}/{{ pascalCase name }}.preview.txt',
         templateFile: 'templates/block/Block.preview.txt.hbs',
-        skip: (data) => !data.preview && 'No preview files (add .preview.txt and a .preview.jpg/.png/.webp image manually)',
+        skip: (data) => !data.preview && 'No preview file (add .preview.txt and optionally a .preview.{jpg,png,webp} image manually)',
       },
       {
         type: 'add',
