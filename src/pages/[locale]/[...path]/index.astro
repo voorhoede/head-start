@@ -14,10 +14,10 @@ export async function getStaticPaths() {
 
 // Load as an entry so this route can also be a server route in preview mode.
 // @see /docs/preview-mode.md
-const { path } = Astro.params;
+const { locale, path } = Astro.params;
 const entry = await getEntry('Pages', path);
 if (!entry) {
-  return Astro.redirect('/404', 404);
+  return Astro.rewrite(`/404/?locale=${locale}`);
 }
 
 const {
@@ -25,6 +25,11 @@ const {
   subscription,
 } = entry;
 const { breadcrumbs, pageUrls, recordId, recordType } = meta;
+
+const canonicalUrl = pageUrls.find((url) => url.locale === meta.locale)?.pathname;
+if (canonicalUrl && Astro.url.pathname !== canonicalUrl) {
+  return Astro.redirect(canonicalUrl);
+}
 ---
 
 <Layout
