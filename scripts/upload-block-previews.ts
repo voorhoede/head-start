@@ -3,6 +3,7 @@ import dotenv from 'dotenv-safe';
 import { readFile, readdir } from 'node:fs/promises';
 import { extname, join } from 'node:path';
 import { pascalCase } from 'scule';
+import { confirm } from '@inquirer/prompts';
 import { datocmsEnvironment } from '../datocms-environment';
 
 dotenv.config({ allowEmptyValues: Boolean(process.env.CI) });
@@ -91,6 +92,17 @@ async function uploadBlockPreviews() {
   if (!token) {
     console.log('DATOCMS_API_TOKEN is missing; skipping block preview upload.');
     return;
+  }
+
+  if (force && !process.env.CI) {
+    const confirmed = await confirm({
+      message: 'Re-upload all block previews, even if they already exist?',
+      default: false,
+    });
+    if (!confirmed) {
+      console.log('Cancelled.');
+      return;
+    }
   }
 
   const client = buildClient({ apiToken: token, environment: datocmsEnvironment });
