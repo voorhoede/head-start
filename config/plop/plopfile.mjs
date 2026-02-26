@@ -78,7 +78,15 @@ export default function (plop) {
         type: 'add',
         path: '../../src/blocks/{{ pascalCase name }}/{{ pascalCase name }}.preview.txt',
         templateFile: 'templates/block/Block.preview.txt.hbs',
-        skip: (data) => !data.preview && 'No preview file (add .preview.txt and optionally a .preview.{jpg,png,webp} image manually)',
+        skip: (data) => {
+          const name = plop.getHelper('pascalCase')(data.name);
+          if (!data.preview) return `Skipped. Add ${name}.preview.txt and optionally a ${name}.preview.{jpg,png,webp} image manually`;
+        },
+      },
+      (data) => {
+        if (!data.preview) return '';
+        const name = plop.getHelper('pascalCase')(data.name);
+        return `Optionally add a ${name}.preview.{jpg,png,webp} image for a visual block preview`;
       },
       {
         type: 'add',
