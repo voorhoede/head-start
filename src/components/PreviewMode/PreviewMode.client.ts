@@ -1,4 +1,4 @@
-import { getItemTypeId } from '@blocks/block-editor-utils';
+import { renderVisualEditing } from '@datocms/content-link';
 import type { ConnectionStatus as DatocmsConnectionStatus } from 'datocms-listen';
 import { subscribeToQuery } from 'datocms-listen';
 import { atom, map } from 'nanostores';
@@ -25,12 +25,8 @@ class PreviewMode extends HTMLElement {
   #datocmsToken: string = '';
   #datocmsEnvironment: string = '';
 
-  // CMS editor tools
+  // CMS editor tools for visual editing
   #datocmsProject: string = '';
-  #editableRecord: { id: string; type: string } | null = null;
-  #editLinkElement: HTMLAnchorElement | null = null;
-  #toggleBlockNamesButton: HTMLButtonElement | null = null;
-  #$showBlockNames = atom<boolean>(false);
 
   /**
    * Generates a hashed key for the map tracking subscriptions.
@@ -145,185 +141,27 @@ class PreviewMode extends HTMLElement {
   }
 
   /**
-   * CMS editor tools (edit links + block overlays)
+   * CMS editor tools (visual editing with official @datocms/content-link)
    */
 
   #setupCmsEditorTools() {
     this.#datocmsProject = this.dataset.datocmsProject || '';
     if (!this.#datocmsProject) return;
 
-    this.#editableRecord = JSON.parse(
-      this.subscriptionElements.find((el) => el.dataset.record)?.dataset.record ?? 'null'
-    );
-    this.#editLinkElement = this.querySelector('[data-editor-edit-record]');
-    this.#toggleBlockNamesButton = this.querySelector('[data-editor-toggle-blocks]');
+    // Initialize official DatoCMS Visual Editing
+    renderVisualEditing({
+      buildUrl: ({ record, locale, fieldPath }) => {
+        const baseUrl = `https://${this.#datocmsProject}.admin.datocms.com/environments/${this.#datocmsEnvironment}/editor/item_types/${record.type}/items/${record.id}`;
 
-    const stored = localStorage.getItem('preview-mode-show-block-names');
-    this.#$showBlockNames.set(stored === 'true');
-
-    this.#$showBlockNames.listen(() => this.#syncEditorToolsVisibility());
-    this.#toggleBlockNamesButton?.addEventListener('click', () => {
-      this.#$showBlockNames.set(!this.#$showBlockNames.get());
-    });
-
-    this.#syncEditorToolsVisibility();
-    this.#setupBlockLabelHoverTracking();
-  }
-
-  #syncEditorToolsVisibility() {
-    const show = this.#$showBlockNames.get();
-    localStorage.setItem('preview-mode-show-block-names', show.toString());
-    if (this.#toggleBlockNamesButton) {
-      this.#toggleBlockNamesButton.textContent = show ? 'hide blocks' : 'show blocks';
-    }
-    document.documentElement.dataset.editorBlocksVisible = show ? 'true' : 'false';
-
-    if (show) this.#positionBlockLabels();
-    this.#applyEditLinks();
-  }
-
-  #applyEditLinks() {
-    if (!this.#editableRecord?.id || !this.#editableRecord?.type) return;
-
-    const itemTypeId = getItemTypeId(this.#editableRecord.type);
-    if (!itemTypeId) return;
-
-    if (this.#editLinkElement) {
-      this.#editLinkElement.href = this.#buildRecordEditUrl(itemTypeId, this.#editableRecord.id);
-    }
-
-    if (document.documentElement.dataset.editorBlocksVisible === 'true') {
-      this.#applyBlockEditLinks(itemTypeId);
-    }
-  }
-
-  /**
-   * Builds a DatoCMS editor URL for a specific record.
-   * (itemTypeId = "LjXdkuCdQxCFT4hv8_ayew" (Page), recordId = "X_tZn3TxQY28ltSyjZUGHQ")
-   * => https://my-project.admin.datocms.com/environments/main/editor/item_types/LjXdkuCdQxCFT4hv8_ayew/items/X_tZn3TxQY28ltSyjZUGHQ
-   */
-  #buildRecordEditUrl(itemTypeId: string, recordId: string) {
-    return `https://${this.#datocmsProject}.admin.datocms.com/environments/${this.#datocmsEnvironment}/editor/item_types/${itemTypeId}/items/${recordId}`;
-  }
-
-  /**
-   * Sets edit link hrefs on block label anchors by appending a #fieldPath hash.
-   * e.g. https://my-project.admin.datocms.com/.../items/12345#fieldPath=body.en.0.title
-   */
-  #applyBlockEditLinks(itemTypeId: string) {
-    const baseUrl = this.#buildRecordEditUrl(itemTypeId, this.#editableRecord!.id);
-    document.querySelectorAll<HTMLAnchorElement>('[data-editor-edit-block]').forEach((anchor) => {
-      const fieldPath = anchor.dataset.editorFieldPath;
-      if (!fieldPath) return;
-
-      const url = new URL(baseUrl);
-      url.hash = `fieldPath=${this.#withLocaleFieldPath(fieldPath)}`;
-      anchor.href = url.toString();
-    });
-  }
-
-  /**
-   * Inserts the current locale as the second segment of a field path.
-   * "body" => "body.en", "body.0.title" => "body.en.0.title"
-   */
-  #withLocaleFieldPath(fieldPath: string) {
-    const locale = document.documentElement.lang;
-    if (!locale) return fieldPath;
-
-    const parts = fieldPath.split('.');
-    if (parts.length < 2) return `${fieldPath}.${locale}`;
-
-    const [root, maybeLocale, ...rest] = parts;
-    if (maybeLocale === locale) return fieldPath;
-
-    return [root, locale, maybeLocale, ...rest].join('.');
-  }
-
-  #getBlockContainerForLabel(label: HTMLAnchorElement): Element | null {
-    let el: Element | null = label.nextElementSibling;
-    while (el) {
-      if (el.tagName.toLowerCase() !== 'preview-mode-subscription') return el;
-      el = el.nextElementSibling;
-    }
-    return null;
-  }
-
-  #positionBlockLabels() {
-    document.querySelectorAll<HTMLAnchorElement>('[data-editor-edit-block]').forEach((label) => {
-      const block = this.#getBlockContainerForLabel(label);
-      if (!block) return;
-
-      const blockRect = block.getBoundingClientRect();
-      if (blockRect.width === 0 && blockRect.height === 0) return;
-
-      const offsetParent = label.offsetParent || document.body;
-      const parentRect = offsetParent.getBoundingClientRect();
-      label.style.top = `${blockRect.top - parentRect.top}px`;
-      label.style.left = `${blockRect.left - parentRect.left}px`;
-      block.setAttribute('data-editor-block-container', '');
-    });
-  }
-
-  #setupBlockLabelHoverTracking() {
-    let currentLabel: HTMLAnchorElement | null = null;
-    let currentBlock: Element | null = null;
-
-    const clearHover = () => {
-      currentLabel?.classList.remove('hover');
-      currentBlock?.classList.remove('hover');
-      currentLabel = null;
-      currentBlock = null;
-    };
-
-    document.addEventListener(
-      'pointermove',
-      (e) => {
-        if (document.documentElement.dataset.editorBlocksVisible !== 'true' || !(e.target instanceof Element)) {
-          clearHover();
-          return;
+        if (fieldPath) {
+          const path = locale ? `${fieldPath}.${locale}` : fieldPath;
+          return `${baseUrl}#fieldPath=${path}`;
         }
-
-        const labels = document.querySelectorAll<HTMLAnchorElement>('[data-editor-edit-block]');
-        let deepest: HTMLAnchorElement | null = null;
-        let deepestBlock: Element | null = null;
-
-        for (const label of labels) {
-          const block = this.#getBlockContainerForLabel(label);
-          if (block && (label.contains(e.target) || block.contains(e.target))) {
-            deepest = label;
-            deepestBlock = block;
-          }
-        }
-
-        if (deepest === currentLabel) return;
-
-        clearHover();
-        currentLabel = deepest;
-        currentBlock = deepestBlock;
-        currentLabel?.classList.add('hover');
-        currentBlock?.classList.add('hover');
+        return baseUrl;
       },
-      { passive: true }
-    );
-
-    let scrollRaf: number | null = null;
-    const onReposition = () => {
-      if (document.documentElement.dataset.editorBlocksVisible === 'true') {
-        this.#positionBlockLabels();
-      }
-    };
-
-    window.addEventListener('scroll', () => {
-      if (scrollRaf !== null) return;
-      scrollRaf = requestAnimationFrame(() => {
-        scrollRaf = null;
-        onReposition();
-      });
-    }, { passive: true });
-
-    window.addEventListener('resize', onReposition, { passive: true });
-    window.addEventListener('load', onReposition, { passive: true });
+    });
   }
+
 }
 
 class PreviewModeBar extends HTMLElement {
