@@ -43,7 +43,7 @@
     "test": "run-s test:*",
     "test:unit": "vitest run",
     "post": "run-s post:* --print-label",
-    "post:remove-public-dir-readme": "rm dist/README.md",
+    "post:remove-public-dir-readme": "rm -f dist/README.md",
     "postinstall": "npx husky install",
     "seed:docs": "npm run seed:docs --workspace=config/datocms",
     "cms:manage": "jiti scripts/cms-manage.ts",
