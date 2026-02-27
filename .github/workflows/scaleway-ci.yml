@@ -1,8 +1,8 @@
-name: CI
+name: Scaleway CI
 
 on:
   push:
-    branches: '*'
+    branches: ['**']
 
 jobs:
   build:
