@@ -1,0 +1,1 @@
+Rich text content: paragraphs, headings, lists, quotes, and inline media. The most common block for body copy.

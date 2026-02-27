@@ -1,0 +1,1 @@
+Embeds external content from a URL. Works with YouTube, Vimeo, Twitter/X, maps, and other oEmbed providers.

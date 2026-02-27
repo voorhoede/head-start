@@ -51,7 +51,8 @@
     "cms:environments:destroy": "jiti scripts/cms-destroy-environment.ts",
     "cms:environments:sync": "jiti scripts/cms-sync-environment.ts",
     "cms:environments:promote": "jiti scripts/cms-promote-environment.ts",
-    "cms:migrations:generate": "jiti scripts/cms-generate-migration.ts"
+    "cms:migrations:generate": "jiti scripts/cms-generate-migration.ts",
+    "cms:upload-block-previews": "jiti scripts/upload-block-previews.ts"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
