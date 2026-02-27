@@ -56,6 +56,8 @@ export async function datocmsRequest<
   });
   if (HEAD_START_PREVIEW) {
     headers.append('X-Include-Drafts', 'true');
+    // Enable DatoCMS Visual Editing with stega encoding
+    headers.append('X-Visual-Editing', 'v1');
   }
 
   const response = await fetch(datocmsGraphqlOrigin, {

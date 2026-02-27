@@ -12,7 +12,7 @@ import VideoBlock from './VideoBlock/VideoBlock.astro';
 import VideoEmbedBlock from './VideoEmbedBlock/VideoEmbedBlock.astro';
 import GroupingBlock from './GroupingBlock/GroupingBlock.astro';
 import { getEditorPaths } from './block-editor-utils';
-import Icon from '@components/Icon';
+import ContentLink from '@components/ContentLink/ContentLink.astro';
 
 const blocksByTypename = {
   ActionBlockRecord: ActionBlock,
@@ -30,11 +30,9 @@ const blocksByTypename = {
 interface Props {
   blocks: AnyBlock[];
   editorFieldPath?: string;
-  hideEditorLabels?: boolean;
 }
-const { blocks, hideEditorLabels = false } = Astro.props;
+const { blocks } = Astro.props;
 const editorFieldPath = Astro.props.editorFieldPath ?? 'bodyBlocks';
-const isPreview = Astro.locals.isPreview;
 
 const raise = (message: string) => {
   if (!PUBLIC_IS_PRODUCTION) {
@@ -60,22 +58,14 @@ const raise = (message: string) => {
     const { blockBasePath, blockFieldPath, blockName } = getEditorPaths(editorFieldPath, index, __typename);
 
     return (
-      <>
-        {isPreview && !hideEditorLabels && blockFieldPath && (
-          /* eslint-disable-next-line astro/jsx-a11y/anchor-is-valid */
-          <a
-            class="block-name-label"
-            data-editor-edit-block
-            data-editor-field-path={blockFieldPath}
-            data-editor-block-name={blockName}
-            target="_blank"
-          >
-            {blockName} <Icon name="external" />
-          </a>
-        )}
+      <ContentLink
+        editorFieldPath={blockFieldPath}
+        blockName={blockName}
+        blockType={__typename}
+      >
         {/* @ts-expect-error - since block can be any block its type is conflated to `never`. */}
-        <Block block={block} editorFieldPath={blockBasePath} hideEditorLabels={hideEditorLabels} />
-      </>
+        <Block block={block} editorFieldPath={blockBasePath} />
+      </ContentLink>
     );
   })
 }
