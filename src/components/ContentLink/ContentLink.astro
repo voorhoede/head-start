@@ -1,0 +1,23 @@
+---
+interface Props {
+  editorFieldPath?: string;
+  blockName?: string;
+  blockType?: string;
+}
+
+const { editorFieldPath, blockName, blockType } = Astro.props;
+const isPreview = Astro.locals.isPreview;
+---
+
+{isPreview && editorFieldPath ? (
+  <div
+    data-editable
+    data-editor-field-path={editorFieldPath}
+    data-editor-block-name={blockName}
+    data-editor-block-type={blockType}
+  >
+    <slot />
+  </div>
+) : (
+  <slot />
+)}

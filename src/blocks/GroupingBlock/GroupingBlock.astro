@@ -8,12 +8,11 @@ import type { GroupingBlockFragment } from '@lib/datocms/types';
 export interface Props {
   block: GroupingBlockFragment;
   editorFieldPath?: string;
-  hideEditorLabels?: boolean;
 }
 
 const isLayout = (layout: GroupingBlockFragment['layout']) => block.layout === layout;
 
-const { block, editorFieldPath, hideEditorLabels } = Astro.props;
+const { block, editorFieldPath } = Astro.props;
 const items = block.items;
 ---
 { isLayout('stack-titled') && (
@@ -23,7 +22,6 @@ const items = block.items;
       <Blocks
         blocks={ item.blocks }
         editorFieldPath={ buildNestedFieldPath(editorFieldPath, itemIndex) }
-        hideEditorLabels={ hideEditorLabels }
       />
     </section>
   ))
@@ -34,7 +32,6 @@ const items = block.items;
     <Blocks
       blocks={ item.blocks }
       editorFieldPath={ buildNestedFieldPath(editorFieldPath, itemIndex) }
-      hideEditorLabels={ hideEditorLabels }
     />
   ))
 )}
@@ -51,7 +48,6 @@ const items = block.items;
           <Blocks
             blocks={ item.blocks }
             editorFieldPath={ buildNestedFieldPath(editorFieldPath, itemIndex) }
-            hideEditorLabels={ hideEditorLabels }
           />
         </Fragment>
       </AccordionItem>
@@ -67,7 +63,6 @@ const items = block.items;
         <Blocks
           blocks={ item.blocks }
           editorFieldPath={ buildNestedFieldPath(editorFieldPath, itemIndex) }
-          hideEditorLabels={ hideEditorLabels }
         />
       </TabsPanel>
     </>))}
