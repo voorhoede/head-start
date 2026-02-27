@@ -1,5 +1,5 @@
 import { defineConfig, envField } from 'astro/config';
-import cloudflare from '@astrojs/cloudflare';
+import scaleway from '@voorhoede/astrojs-scaleway-adapter';
 import graphql from '@rollup/plugin-graphql';
 import sitemap from '@astrojs/sitemap';
 import Sonda from 'sonda/astro';
@@ -21,12 +21,7 @@ export const siteUrl = process.env.CF_PAGES
 
 // https://astro.build/config
 export default defineConfig({
-  adapter: cloudflare({
-    imageService: 'compile',
-    platformProxy: {
-      enabled: true,
-    },
-  }),
+  adapter: scaleway(),
   env: {
     schema: {
       DATOCMS_READONLY_API_TOKEN: envField.string({

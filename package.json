@@ -62,6 +62,7 @@
     "@inquirer/prompts": "^7.5.3",
     "@nanostores/persistent": "^0.10.1",
     "@rollup/plugin-graphql": "^2.0.3",
+    "@voorhoede/astrojs-scaleway-adapter": "^0.0.1-dev",
     "accept-language-parser": "^1.5.0",
     "astro": "^5.13.5",
     "async": "^3.2.6",
