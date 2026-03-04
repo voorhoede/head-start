@@ -1,12 +1,12 @@
 ---
 // based on https://github.com/datocms/datocms-svelte/blob/main/src/lib/components/StructuredText/StructuredText.svelte
-import { isDocument, isNode, isStructuredText } from 'datocms-structured-text-utils';
+import { isDocument, isNode, isCdaStructuredTextValue } from 'datocms-structured-text-utils';
 import type * as STU from 'datocms-structured-text-utils';
 import type { PredicateComponentTuple } from './StructuredText';
 import Node from './Node.astro';
 
 interface Props {
-  data: STU.StructuredText | STU.Document | null;
+  data: STU.CdaStructuredTextValue | STU.Document | null;
   components?: PredicateComponentTuple[];
 }
 
@@ -14,13 +14,14 @@ const { data = null, components = [] } = Astro.props;
 
 const node = (() => {
   if (!data) return null;
-  if (isStructuredText(data) && isDocument(data.value)) return data.value.document;
+  if (isCdaStructuredTextValue(data) && isDocument(data.value)) return data.value.document;
   if (isDocument(data)) return data.document;
   if (isNode(data)) return data;
   return null;
 })() satisfies STU.Node | null;
-const blocks = isStructuredText(data) ? data?.blocks : undefined;
-const links =  isStructuredText(data) ? data?.links : undefined;
+const blocks = isCdaStructuredTextValue(data) ? data?.blocks : undefined;
+const inlineBlocks = isCdaStructuredTextValue(data) ? data?.inlineBlocks : undefined;
+const links = isCdaStructuredTextValue(data) ? data?.links : undefined;
 ---
 
-{node && <Node {node} {blocks} {links} {components} />}
+{node && <Node {node} {blocks} {inlineBlocks} {links} {components} />}
