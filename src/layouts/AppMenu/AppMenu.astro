@@ -8,6 +8,7 @@ import LocaleSelector from '@components/LocaleSelector/LocaleSelector.astro';
 import SearchLink from '@components/SearchLink/SearchLink.astro';
 import UnstyledList from '@components/UnstyledList/UnstyledList.astro';
 import AppMenuItem from './AppMenuItem.astro';
+import { getItemPopoverId } from './AppMenu';
 
 export interface Props {
   items: AppMenuFragment['menuItems'];
@@ -20,19 +21,110 @@ const { items, pageUrls } = Astro.props;
   <nav class="main-menu" aria-labelledby="main-menu-title">
     <span id="main-menu-title" class="a11y-sr-only">{t('main_menu')}</span>
     <UnstyledList class:list="main-menu__list" data-menu-list>
-      {items.map((item) => <AppMenuItem {item} class:list="main-menu__item" />)}
-      <li class="main-menu__item main-menu__item--last"><SearchLink /></li>
+      {
+        items.map((item) => {
+          return (
+            <AppMenuItem
+              item={item}
+              class:list="main-menu__item"
+              data-menu-item
+            >
+              {item.items?.length && (
+                <ul
+                  popover
+                  id={getItemPopoverId(item.id)}
+                  data-placement="bottom-start"
+                >
+                  {item.items?.map((subItem, index) => (
+                    <AppMenuItem
+                      item={subItem}
+                      class:list="submenu__item"
+                      data-submenu-item
+                    >
+                      {Array.isArray(subItem.items) &&
+                        subItem.items.length > 0 && (
+                        <button
+                          type="button"
+                          popovertarget={getItemPopoverId(
+                            item.id,
+                            `sub-${index}`,
+                          )}
+                        >
+                            open
+                        </button>
+                      )}
+                      {Array.isArray(subItem.items) &&
+                        subItem.items.length > 0 && (
+                        <ul
+                          popover
+                          id={getItemPopoverId(item.id, `sub-${index}`)}
+                          data-placement="right-start"
+                        >
+                          {subItem.items?.map((subSubItem) => (
+                            <AppMenuItem
+                              item={subSubItem}
+                              data-submenu-item
+                            />
+                          ))}
+                        </ul>
+                      )}
+                    </AppMenuItem>
+                  ))}
+                </ul>
+              )}
+            </AppMenuItem>
+          );
+        })
+      }
+      <li class="main-menu__item main-menu__item--last" data-menu-item>
+        <SearchLink />
+      </li>
     </UnstyledList>
   </nav>
   <LocaleSelector pageUrls={pageUrls} />
-  <IconButton icon="menu" label={t('open_menu')} data-menu-button hidden />
+  <IconButton
+    icon="menu"
+    label={t('open_menu')}
+    class:list="main-menu__button"
+    data-menu-button
+    hidden
+  />
 
   <dialog data-menu-dialog>
     <AppLogo />
     <nav aria-labelledby="menu-dialog-title">
       <span id="menu-dialog-title" class="a11y-sr-only">{t('main_menu')}</span>
       <UnstyledList class="dialog__list">
-        {items.map((item) => <AppMenuItem {item} class:list="dialog__item" />)}
+        {
+          items.map((item) => {
+            return (
+              <AppMenuItem item={item} class:list="dialog__item">
+                {item.items?.length > 0 && (
+                  <ul>
+                    {item.items?.map((subItem) => (
+                      <AppMenuItem
+                        item={subItem}
+                        class:list="submenu__item"
+                        data-submenu-item
+                      >
+                        {subItem.items?.length > 0 && (
+                          <ul>
+                            {subItem.items?.map((subSubItem) => (
+                              <AppMenuItem
+                                item={subSubItem}
+                                data-submenu-item
+                              />
+                            ))}
+                          </ul>
+                        )}
+                      </AppMenuItem>
+                    ))}
+                  </ul>
+                )}
+              </AppMenuItem>
+            );
+          })
+        }
         <li><SearchLink /></li>
       </UnstyledList>
     </nav>
@@ -52,7 +144,7 @@ const { items, pageUrls } = Astro.props;
   }
 
   app-menu a {
-    padding: 5px;
+    margin: 5px;
   }
 
   .main-menu {
@@ -70,15 +162,34 @@ const { items, pageUrls } = Astro.props;
     margin-inline-start: auto;
   }
 
-  button {
+  .main-menu__button {
     display: none;
   }
 
-  app-menu.is-compact button {
+  app-menu.is-compact .main-menu__button {
     display: block;
   }
+
   app-menu.is-compact .main-menu__list {
     display: none;
+  }
+
+  [popover] {
+    margin: 0;
+    inset-inline-start: 0;
+  }
+
+  [popover]::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 0;
+    right: 0;
+    height: 10px;
+  }
+
+  [popover][data-placement='right-start'] {
+    margin-left: 5px;
   }
 
   dialog {
