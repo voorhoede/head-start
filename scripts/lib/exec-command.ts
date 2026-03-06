@@ -46,9 +46,15 @@ export const execCommandSafe = async (
   return hasSucceeded;
 };
 
-export const cancelByUser = async () => {
-  console.log('🚫 Operation cancelled by user');
+export const cancel = async (message?: string) => {
+  if(message) {
+    console.log(message);
+  }
   process.exit(1);
+};
+
+export const cancelByUser = async () => {
+  await cancel('🚫 Operation cancelled by user');
 };
 
 export const catchError = (error: unknown) => {
