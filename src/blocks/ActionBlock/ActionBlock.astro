@@ -4,13 +4,14 @@ import Link from '@components/Link/Link.astro';
 import LinkToRecord from '@components/LinkToRecord/LinkToRecord.astro';
 import EmailLink from './EmailLink.astro';
 import PhoneLink from './PhoneLink.astro';
+import { stripStega } from '@datocms/content-link';
 
 export interface Props {
   block: ActionBlockFragment;
 }
 const { block } = Astro.props;
 const { items } = block;
-const actionClassList = (style: string) => ['action', `action--${style}`];
+const actionClassList = (style: string) => ['action', `action--${stripStega(style)}`];
 ---
 
 <div class="action-block">

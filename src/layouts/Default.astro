@@ -8,6 +8,7 @@ import query from './default.query.graphql';
 import Breadcrumbs from '@components/Breadcrumbs/Breadcrumbs.astro';
 import IconSprite from '@components/Icon/IconSprite.astro';
 import PreviewModeProvider from '@components/PreviewMode/PreviewModeProvider.astro';
+import { ContentLink } from '@datocms/astro/ContentLink';
 import StructuredData from '@components/StructuredData/StructuredData.astro';
 import SkipLink from '@components/SkipLink/SkipLink.astro';
 import AppHeader from './AppHeader/AppHeader.astro';
@@ -45,6 +46,7 @@ const menuItems = data.app?.menuItems ?? [];
     <StructuredData />
   </head>
   <body>
+    {Astro.locals.isPreview && <ContentLink enableClickToEdit={{ hoverOnly: true }} />}
     <PreviewModeProvider>
       <SkipLink targetId={mainContentId} />
       <div {...datocmsNoIndex}>

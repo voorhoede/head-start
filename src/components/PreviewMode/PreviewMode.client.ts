@@ -1,4 +1,3 @@
-import { renderVisualEditing } from '@datocms/content-link';
 import type { ConnectionStatus as DatocmsConnectionStatus } from 'datocms-listen';
 import { subscribeToQuery } from 'datocms-listen';
 import { atom, map } from 'nanostores';
@@ -24,9 +23,6 @@ class PreviewMode extends HTMLElement {
   $updateCounts = map<{ [key: string]: number }>({});
   #datocmsToken: string = '';
   #datocmsEnvironment: string = '';
-
-  // CMS editor tools for visual editing
-  #datocmsProject: string = '';
 
   /**
    * Generates a hashed key for the map tracking subscriptions.
@@ -97,7 +93,6 @@ class PreviewMode extends HTMLElement {
       this.subscribe({ query, variables });
     });
 
-    this.#setupCmsEditorTools(); // Optional: remove this to disable edit links and block overlays
   }
 
   getSubscriptionConfigs () {
@@ -136,28 +131,6 @@ class PreviewMode extends HTMLElement {
       onChannelError: (error) => {
         this.$connectionError.set(true);
         console.error('PreviewMode subscription error:', { error, query, variables });
-      },
-    });
-  }
-
-  /**
-   * CMS editor tools (visual editing with official @datocms/content-link)
-   */
-
-  #setupCmsEditorTools() {
-    this.#datocmsProject = this.dataset.datocmsProject || '';
-    if (!this.#datocmsProject) return;
-
-    // Initialize official DatoCMS Visual Editing
-    renderVisualEditing({
-      buildUrl: ({ record, locale, fieldPath }) => {
-        const baseUrl = `https://${this.#datocmsProject}.admin.datocms.com/environments/${this.#datocmsEnvironment}/editor/item_types/${record.type}/items/${record.id}`;
-
-        if (fieldPath) {
-          const path = locale ? `${fieldPath}.${locale}` : fieldPath;
-          return `${baseUrl}#fieldPath=${path}`;
-        }
-        return baseUrl;
       },
     });
   }
