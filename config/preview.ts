@@ -4,7 +4,6 @@ export const previewBranches = [
   'preview',
   'feat/pages-content-collection',
   'feat/show-blocks',
-  'feat/new-ui-test'
 ];
 
 function getGitBranch() {
