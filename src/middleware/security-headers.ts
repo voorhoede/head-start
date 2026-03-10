@@ -9,13 +9,14 @@ import { defineMiddleware } from 'astro:middleware';
  */
 export const securityheaders = defineMiddleware(async (_, next) => {
   const response = await next();
-  const headers = {
+  const headers: Record<string, string> = {
     'Referrer-Policy': 'no-referrer-when-downgrade',
     'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
     'X-Content-Type-Options': 'nosniff',
-    'X-Frame-Options': 'SAMEORIGIN',
     'X-XSS-Protection': '1; mode=block',
   };
+  // Allow DatoCMS Web Previews plugin to embed the site; omit X-Frame-Options so CSP applies
+  headers['Content-Security-Policy'] = 'frame-ancestors \'self\' https://plugins-cdn.datocms.com';
   
   // Apply security headers to the response if they are not already set
   for (const [key, value] of Object.entries(headers)) {

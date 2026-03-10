@@ -15,16 +15,18 @@ interface Props {
 const { data = null, components = [] } = Astro.props;
 ---
 
-<StructuredText 
-  data={data as CdaStructuredTextValue }
-  components={[
+<div data-datocms-content-link-group>
+  <StructuredText
+    data={data as CdaStructuredTextValue}
+    components={[
     // override default components:
-    [isHeading, Heading],
-    // add custom node components for records that can be embedded in structured text:
-    [isBlock, Block],
-    [isInlineItem, InlineItem],
-    [isItemLink, ItemLink],
-    // allow extension by other Astro templates using this template:
-    ...components,
-  ]}
-/>
+      [isHeading, Heading],
+      // add custom node components for records that can be embedded in structured text:
+      [isBlock, Block],
+      [isInlineItem, InlineItem],
+      [isItemLink, ItemLink],
+      // allow extension by other Astro templates using this template:
+      ...components,
+    ]}
+  />
+</div>
