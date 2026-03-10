@@ -1,44 +1,41 @@
 ---
 import Blocks from '@blocks/Blocks.astro';
-import { buildNestedFieldPath } from '@blocks/block-editor-utils';
 import { Accordion, AccordionItem } from '@components/Accordion';
 import { Tabs, TabsPanel, TabsTab } from '@components/Tabs';
+import { stripStega } from '@datocms/content-link';
 import type { GroupingBlockFragment } from '@lib/datocms/types';
 
 export interface Props {
   block: GroupingBlockFragment;
-  editorFieldPath?: string;
 }
 
-const isLayout = (layout: GroupingBlockFragment['layout']) => block.layout === layout;
-
-const { block, editorFieldPath } = Astro.props;
+const { block } = Astro.props;
 const items = block.items;
+const layout = stripStega(block.layout);
+const isLayout = (value: GroupingBlockFragment['layout']) => layout === value;
 ---
 { isLayout('stack-titled') && (
-  items.map((item, itemIndex) => (
+  items.map((item) => (
     <section>
       <h2>{ item.title }</h2>
       <Blocks
         blocks={ item.blocks }
-        editorFieldPath={ buildNestedFieldPath(editorFieldPath, itemIndex) }
       />
     </section>
   ))
 )}
 
 { isLayout('stack-untitled') && (
-  items.map((item, itemIndex) => (
+  items.map((item) => (
     <Blocks
       blocks={ item.blocks }
-      editorFieldPath={ buildNestedFieldPath(editorFieldPath, itemIndex) }
     />
   ))
 )}
 
 { (isLayout('accordion-open') || isLayout('accordion-closed')) && (
   <Accordion>
-    { items.map((item, itemIndex) => (
+    { items.map((item) => (
       <AccordionItem
         name={ `block-${block.id}` }
         open={ isLayout('accordion-open') }
@@ -47,7 +44,6 @@ const items = block.items;
         <Fragment slot="body">
           <Blocks
             blocks={ item.blocks }
-            editorFieldPath={ buildNestedFieldPath(editorFieldPath, itemIndex) }
           />
         </Fragment>
       </AccordionItem>
@@ -57,12 +53,11 @@ const items = block.items;
 
 { isLayout('tabs') && (
   <Tabs>
-    { items.map((item, itemIndex) => (<>
+    { items.map((item) => (<>
       <TabsTab>{ item.title }</TabsTab>
       <TabsPanel>
         <Blocks
           blocks={ item.blocks }
-          editorFieldPath={ buildNestedFieldPath(editorFieldPath, itemIndex) }
         />
       </TabsPanel>
     </>))}
