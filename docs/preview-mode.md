@@ -52,6 +52,17 @@ When authorised an encrypted cookie is set, to persist preview mode throughout a
 
 Note: the secret is configured as environment variable `HEAD_START_PREVIEW_SECRET`.
 
+## Web Previews plugin (Visual Editing)
+
+For side-by-side editing in DatoCMS (preview on the left, edit panel on the right), install the [Web Previews plugin](https://www.datocms.com/marketplace/plugins/i/datocms-plugin-web-previews) and configure a frontend with:
+
+- **Preview Links API endpoint:** `https://yoursite.com/api/preview-links?token=YOUR_SECRET`  
+  Use the same value as `HEAD_START_PREVIEW_SECRET` for the token.
+- **Enable Draft Mode route:** `https://yoursite.com/api/draft-mode/enable?token=YOUR_SECRET`  
+  The plugin will append `&redirect=/path` when opening the preview.
+
+Content Link (click-to-edit overlays) and stega encoding are already enabled when running in preview mode. The site allows being embedded in the plugin iframe via `Content-Security-Policy: frame-ancestors 'self' https://plugins-cdn.datocms.com`.
+
 ## Preview links from the CMS
 
 Head Start includes the [Model Deployment Links plugin](https://www.datocms.com/marketplace/plugins/i/datocms-plugin-model-deployment-links) which adds preview links to the CMS sidebar. This allows editors to preview any page directly from the CMS, including draft (unpublished) content.
