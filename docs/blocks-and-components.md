@@ -15,7 +15,9 @@ src/
 │       ├── SomeContentBlock.astro
 │       ├── SomeContentBlock.fragment.graphql
 │       ├── SomeContentBlock.client.ts
-│       └── SomeContentBlock.test.ts
+│       ├── SomeContentBlock.test.ts
+│       ├── SomeContentBlock.preview.txt
+│       └── SomeContentBlock.preview.png
 │
 └── components/
     └── SomeUiComponent/
@@ -48,6 +50,51 @@ For example, if you want to create a `TestBlock`, you need to set your DatoCMS B
 Name: Test Block
 'Model ID': test_block
 ```
+
+## Block Previews
+
+Blocks can have preview files that are uploaded to DatoCMS as visual hints for CMS editors. When editors select blocks in modular content or structured text fields, these previews help them identify the right block.
+
+### Preview files
+
+Each block can have a text description and/or an image preview. Place them in the block's directory:
+
+```
+src/blocks/HeroBlock/
+├── HeroBlock.astro
+├── HeroBlock.fragment.graphql
+├── HeroBlock.preview.txt              ← short text description
+└── HeroBlock.preview.png              ← visual preview (jpg, png, or webp)
+```
+
+- The **text file** should contain a brief description of what the block does (one or two sentences).
+- The **image file** should be a screenshot or mockup showing how the block looks on the front end.
+
+> [!NOTE]
+> When you scaffold a new block with `npm run create:block`, a `.preview.txt` file is automatically created. You can add a preview image manually.
+
+### Uploading previews
+
+Run the upload command to sync preview files to DatoCMS:
+
+```shell
+npm run cms:upload-block-previews
+```
+
+The script automatically detects which preview files have changed (using file hashes) and only uploads those. It will show which blocks need updating and ask for confirmation before making changes:
+
+```
+Found 10 block(s) with preview files.
+2 block(s) to upload: HeroBlock, TextBlock
+? Upload block previews to DatoCMS? (Y/n)
+```
+
+### How it works
+
+- File hashes are stored in `src/lib/datocms/previewHashes.json` and should be committed to git so that all developers share the same sync state.
+- The preview text and image URL are combined into the item type's `hint` field in DatoCMS.
+- Preview files in `src/blocks/` are the **source of truth**. Avoid editing hints directly in the DatoCMS dashboard, as they will be overwritten the next time the script runs for that block.
+- No migration is needed. The script updates hints via the Management API directly.
 
 ## Block templates
 

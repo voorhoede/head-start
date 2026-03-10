@@ -1,0 +1,1 @@
+Groups multiple blocks together. Choose a layout: stack, accordion, or tabs.
