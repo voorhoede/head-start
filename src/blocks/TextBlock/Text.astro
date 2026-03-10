@@ -1,6 +1,6 @@
 ---
 import { isBlock, isHeading, isInlineItem, isItemLink } from 'datocms-structured-text-utils';
-import { type CdaStructuredTextValue } from 'datocms-structured-text-utils';
+import type * as STU from 'datocms-structured-text-utils';
 import type { PredicateComponentTuple } from '@components/StructuredText/StructuredText';
 import StructuredText from '@components/StructuredText/StructuredText.astro';
 import Block from './nodes/Block.astro';
@@ -9,7 +9,7 @@ import InlineItem from './nodes/InlineItem.astro';
 import ItemLink from './nodes/ItemLink.astro';
 
 interface Props {
-  data: CdaStructuredTextValue | Document | null;
+  data: STU.StructuredText | STU.Document | null;
   components?: PredicateComponentTuple[];
 }
 const { data = null, components = [] } = Astro.props;
@@ -17,7 +17,7 @@ const { data = null, components = [] } = Astro.props;
 
 <div data-datocms-content-link-group>
   <StructuredText
-    data={data as CdaStructuredTextValue}
+    data={data as STU.StructuredText}
     components={[
     // override default components:
       [isHeading, Heading],
