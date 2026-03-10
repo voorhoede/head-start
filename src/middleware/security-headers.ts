@@ -15,8 +15,8 @@ export const securityheaders = defineMiddleware(async (_, next) => {
     'X-Content-Type-Options': 'nosniff',
     'X-XSS-Protection': '1; mode=block',
   };
-  // Allow DatoCMS Web Previews plugin to embed the site; omit X-Frame-Options so CSP applies
-  headers['Content-Security-Policy'] = 'frame-ancestors \'self\' https://plugins-cdn.datocms.com';
+  // Allow DatoCMS admin (Visual tab) and Web Previews plugin to embed the site
+  headers['Content-Security-Policy'] = 'frame-ancestors \'self\' https://*.admin.datocms.com https://plugins-cdn.datocms.com';
   
   // Apply security headers to the response if they are not already set
   for (const [key, value] of Object.entries(headers)) {

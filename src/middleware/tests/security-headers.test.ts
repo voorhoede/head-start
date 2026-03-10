@@ -18,7 +18,7 @@ describe('securityheaders middleware', () => {
     const finalResponse = await securityheaders(mockContext, next);
 
     const expectedHeaders = {
-      'Content-Security-Policy': 'frame-ancestors \'self\' https://plugins-cdn.datocms.com',
+      'Content-Security-Policy': 'frame-ancestors \'self\' https://*.admin.datocms.com https://plugins-cdn.datocms.com',
       'Referrer-Policy': 'no-referrer-when-downgrade',
       'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
       'X-Content-Type-Options': 'nosniff',
