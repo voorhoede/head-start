@@ -58,6 +58,8 @@
     "@astrojs/check": "^0.9.4",
     "@astrojs/cloudflare": "^12.6.7",
     "@astrojs/sitemap": "^3.5.1",
+    "@datocms/astro": "^0.6.11",
+    "@datocms/content-link": "^0.3.18",
     "@fontsource/archivo": "^5.1.0",
     "@inquirer/prompts": "^7.5.3",
     "@nanostores/persistent": "^0.10.1",

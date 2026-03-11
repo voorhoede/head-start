@@ -18,7 +18,7 @@ const isProvider = (name: string) =>
   providerName?.toLowerCase() === name.toLowerCase();
 ---
 
-<div class='embed-block'>
+<div class='embed-block' data-datocms-content-link-source={block.url}>
   {
     data && data.html ? (
       isProvider('Twitter') ? (
