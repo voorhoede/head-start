@@ -1,4 +1,4 @@
-import { cancelByUser, catchError, execCommandSafe, execCommandStrict, getExecConfirmationMessage } from './lib/exec-command';
+import { catchError, execCommandStrict, cancel } from './lib/exec-command';
 import {
   getPrimaryEnvironment,
   getTargetSandBoxEnvironment,
@@ -8,6 +8,7 @@ import confirm from '@inquirer/confirm';
 import { getProjectName } from './lib/projects';
 import { color } from './lib/color';
 import { stripIndents } from 'proper-tags';
+import { input } from '@inquirer/prompts';
 
 const printSuccessMessage = (environmentName: string) => {
   console.log(stripIndents`
@@ -15,22 +16,19 @@ const printSuccessMessage = (environmentName: string) => {
   `);
 };
 
-const execDeleteSandboxEnvironment = async (environmentName: string, isStrict: boolean) => {
+const execDeleteSandboxEnvironment = async (environmentName: string) => {
   const deleteCommand = `npx datocms environments:destroy ${environmentName}`;
   const logMessage = `🗑️  Destroying sandbox environment '${color.blue(environmentName)}'`;
-  if (isStrict) {
-    await execCommandStrict(deleteCommand, logMessage);
-  } else {
-    await execCommandSafe(deleteCommand);
-  }
+  await execCommandStrict(deleteCommand, logMessage);
 };
 
-const isConfirmedDeleteSandboxEnvironment = async (targetEnvironment: string) => {
+const isConfirmedDeleteSandboxEnvironment = async (targetEnvironment: string): Promise<boolean> => {
   const projectName = await getProjectName();
+  const inputValue = await input({
+    message: `Destroy the environment ${color.blue(targetEnvironment)} of project ${color.yellow(projectName)}? Enter the sandbox environment name ${color.red(targetEnvironment)} to confirm deletion:`,
+  });
 
-  const message = stripIndents`
-    Destroy the environment ${color.blue(targetEnvironment)} of project ${color.yellow(projectName)}`;
-  return await confirm(getExecConfirmationMessage(message));
+  return inputValue === targetEnvironment;
 };
 
 const askForSettingLocalEnvironmentToPrimary = async (
@@ -43,20 +41,23 @@ const askForSettingLocalEnvironmentToPrimary = async (
   return allow;
 };
 
-export const deleteSandboxEnvironment = async (environmentName: string, isStrict: boolean) => {
+export const deleteSandboxEnvironment = async (environmentName: string) => {
   const allow = await isConfirmedDeleteSandboxEnvironment(environmentName);
   if(allow) {
-    await execDeleteSandboxEnvironment(environmentName, isStrict);
+    await execDeleteSandboxEnvironment(environmentName);
     printSuccessMessage(environmentName);
   }
-  else if(!isStrict) {
-    await cancelByUser();
+  else {
+    console.log(stripIndents`
+      🚫 Deletion failed. Environment ${color.blue(environmentName)} has not been deleted.
+    `);
+    await cancel();
   }
 };
 
 export default async function run() {
   const targetEnvironment = await getTargetSandBoxEnvironment();
-  await deleteSandboxEnvironment(targetEnvironment, false);
+  await deleteSandboxEnvironment(targetEnvironment);
 
   // Ask for updating the local environment to the primary environment
   const primaryEnvironment = await getPrimaryEnvironment();
