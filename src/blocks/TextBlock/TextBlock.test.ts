@@ -10,6 +10,7 @@ describe('TextBlock Component', () => {
           __typename: 'TextBlockRecord',
           text: {
             blocks: [],
+            inlineBlocks: [],
             links: [],
             value: {
               schema: 'dast',
@@ -54,6 +55,7 @@ describe('TextBlock Component', () => {
           __typename: 'TextBlockRecord',
           text: {
             blocks: [],
+            inlineBlocks: [],
             links: [],
             value: {
               schema: 'dast',
@@ -98,6 +100,7 @@ describe('TextBlock Component', () => {
           __typename: 'TextBlockRecord',
           text: {
             blocks: [],
+            inlineBlocks: [],
             links: [],
             value: {
               schema: 'dast',
