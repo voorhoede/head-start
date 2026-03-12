@@ -3,6 +3,7 @@
 #import '@blocks/TableBlock/TableBlock.fragment.graphql'
 #import '@blocks/VideoBlock/VideoBlock.fragment.graphql'
 #import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
+#import '@blocks/ListBlock/ListBlockFragment.graphql'
 #import '@lib/routing/FileRoute.fragment.graphql'
 #import '@lib/routing/HomeRoute.fragment.graphql'
 #import '@lib/routing/PageRoute.fragment.graphql'
@@ -25,6 +26,9 @@ fragment TextBlock on TextBlockRecord {
       }
       ... on VideoEmbedBlockRecord {
         ...VideoEmbedBlock
+      }  
+      ... on ListBlockRecord {
+        ...ListBlock
       }
     }
     links {
