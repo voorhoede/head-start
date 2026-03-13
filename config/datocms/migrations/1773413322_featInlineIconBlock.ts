@@ -43,19 +43,36 @@ export default async function (client: Client) {
     default_value: null,
   });
 
-  console.log(
-    'Create Single asset field "Icon" (`icon`) in model "\uD83D\uDE98 Icon" (`icon`)',
-  );
-  await client.fields.create('Z4kYvq4hS8GfdZh7JjfCBg', {
-    id: 'cJAOIlm5Spy7UTiMapgMFw',
-    label: 'Icon',
-    field_type: 'file',
-    api_key: 'icon',
-    appearance: { addons: [], editor: 'file', parameters: {} },
-    default_value: null,
-  });
-
   console.log('Update existing fields/fieldsets');
+
+  console.log(
+    'Update Structured text field "Text" (`text`) in block model "\uD83D\uDCDD \uD83D\uDDBC\uFE0F Text Image Block" (`text_image_block`)',
+  );
+  await client.fields.update('V4dMfrWsQ027JYEp6q3KhA', {
+    validators: {
+      required: {},
+      structured_text_blocks: {
+        item_types: [
+          'F60ZY1wFSW2qbvh99poj3g',
+          'ZdBokLsWRgKKjHrKeJzdpw',
+          'gezG9nO7SfaiWcWnp-HNqw',
+          '0SxYNS2CR1it_5LHYWuEQg',
+        ],
+      },
+      structured_text_inline_blocks: { item_types: [] },
+      structured_text_links: {
+        on_publish_with_unpublished_references_strategy: 'fail',
+        on_reference_unpublish_strategy: 'delete_references',
+        on_reference_delete_strategy: 'delete_references',
+        item_types: [
+          'GjWw8t-hTFaYYWyc53FeIg',
+          'LjXdkuCdQxCFT4hv8_ayew',
+          'X_tZn3TxQY28ltSyjZUGHQ',
+          'Z4kYvq4hS8GfdZh7JjfCBg',
+        ],
+      },
+    },
+  });
 
   console.log(
     'Update Structured text field "Text" (`text`) in block model "\uD83D\uDCDD Text Block" (`text_block`)',
@@ -85,6 +102,14 @@ export default async function (client: Client) {
         ],
       },
     },
+  });
+
+  console.log('Finalize models/block models');
+
+  console.log('Update model "\uD83D\uDE98 Icon" (`icon`)');
+  await client.itemTypes.update('Z4kYvq4hS8GfdZh7JjfCBg', {
+    presentation_title_field: { id: 'Qxinx0xxSbmTB8ywzAVgWA', type: 'field' },
+    title_field: { id: 'Qxinx0xxSbmTB8ywzAVgWA', type: 'field' },
   });
 
   console.log('Update permissions for environment in role Editor');
