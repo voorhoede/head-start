@@ -9,8 +9,16 @@ import {
 } from 'vitest';
 import { HttpResponse, graphql } from 'msw';
 import { setupServer } from 'msw/node';
-import { parse } from 'graphql';
-import { datocmsCollection, type CollectionInfo } from '@lib/datocms';
+import { Kind, parse, type FragmentDefinitionNode } from 'graphql';
+import { print } from 'graphql/language/printer';
+import { 
+  datocmsCollection, 
+  getFragmentNameAndDocument, 
+  getQueryNameAndVariables, 
+  inlineFragmentName, 
+  type CollectionInfo 
+} from './collection';
+import type { LocaleVariables } from './request';
 
 vi.mock('../../../../datocms-environment', () => ({
   datocmsBuildTriggerId: 'mock-build-trigger-id',
@@ -52,7 +60,7 @@ describe('datocmsCollection:', () => {
     })));
 
     server.use(graphql.query('AllMyMockCollection', () => HttpResponse.json({
-      data: { MyMockCollection: mockCollection }
+      data: { entries: mockCollection }
     })));
 
     const records = await datocmsCollection({ collection: 'MyMockCollection', fragment: 'id title' });
@@ -76,7 +84,7 @@ describe('datocmsCollection:', () => {
     })));
 
     server.use(graphql.query('AllMyMockCollection', () => HttpResponse.json({
-      data: { MyMockCollection: mockCollection }
+      data: { entries: mockCollection }
     })));
 
     const records = await datocmsCollection({ collection: 'MyMockCollection', fragment });
@@ -108,7 +116,7 @@ describe('datocmsCollection:', () => {
         const paginatedData = mockCollection.slice(skip, skip + recordsPerRequest);
 
         requestCount++;
-        return HttpResponse.json({ data: { MyMockCollection: paginatedData } });
+        return HttpResponse.json({ data: { entries: paginatedData } });
       }),
     );
 
@@ -146,7 +154,7 @@ describe('datocmsCollection:', () => {
     })));
 
     server.use(graphql.query('AllMyMockCollection', () => HttpResponse.json({
-      data: { MyMockCollection: [] }
+      data: { entries: [] }
     })));
 
     const records = await datocmsCollection({ collection: 'MyMockCollection', fragment: 'id title' });
@@ -178,5 +186,77 @@ describe('datocmsCollection:', () => {
 
     expect(response!).toBeInstanceOf(Error);
     expect(response!.message).toContain(errorResponse[0].message);
+  });
+});
+
+describe('getFragmentNameAndDocument:', () => {
+  const type = 'MyMockRecord';
+  const name = 'MyMockRecordFragment';
+  const inlineFragment = /* graphql */`
+    id
+    title
+  `;
+  const createFragment = (name: string, type: string) => parse(/* graphql */`fragment ${name} on ${type} {
+    ${inlineFragment}
+  }`);
+  const fragment = createFragment(name, type);
+
+  test('returns a name and document for a parsed fragment', () => {
+    const { fragmentName, fragmentDocument } = getFragmentNameAndDocument({ fragment, type });
+    expect(fragmentName).toBe(name);
+    expect(fragmentDocument).toBe(print(fragment));
+  });
+
+  test('returns a name and document for a fragment body as string', () => {
+    const fragment = createFragment(inlineFragmentName, type);
+    const { fragmentName, fragmentDocument } = getFragmentNameAndDocument({ fragment: inlineFragment, type });
+    expect(fragmentName).toBe(inlineFragmentName);
+    expect(fragmentDocument).toBe(print(fragment));
+  });
+
+  test('returns fragment on correct type for a fragment body as string', () => {
+    const { fragmentDocument } = getFragmentNameAndDocument({ fragment: inlineFragment, type });
+    const { definitions } = parse(fragmentDocument);
+    const fragmentDefinition = definitions.find(({ kind }) => kind === Kind.FRAGMENT_DEFINITION) as FragmentDefinitionNode;
+    expect(fragmentDefinition.typeCondition.name.value).toBe(type);
+  });
+});
+
+describe('queryNameAndVariables:', () => {
+  const collection = 'Mocks';
+  const variables: LocaleVariables = {
+    locale: 'en',
+    fallbackLocales: []
+  };
+  const fragment = `
+    fragment MyMockRecordFragment on MyMockRecord {
+      id
+      slug
+    }
+  `;
+  
+  const fragmentWithVariables = `
+    fragment MyMockRecordFragment on MyMockRecord {
+      id
+      slug(locale: $locale, fallbackLocales: $fallbackLocales)
+    }
+  `;
+  
+  test('returns just the query name when no variables are used in fragment', () => {
+    const queryName = getQueryNameAndVariables({
+      collection,
+      variables,
+      fragmentDocument: fragment,
+    });
+    expect(queryName).toBe(`All${collection}`);
+  });
+  
+  test('returns just query name and variables when variables are used in fragment', () => {
+    const queryName = getQueryNameAndVariables({
+      collection,
+      variables,
+      fragmentDocument: fragmentWithVariables,
+    });
+    expect(queryName).toBe(`All${collection}($locale: SiteLocale!, $fallbackLocales: [SiteLocale!])`);
   });
 });

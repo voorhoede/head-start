@@ -2,6 +2,7 @@ import type { FileRouteFragment, HomeRouteFragment, PageRouteFragment, SiteLocal
 import { getLocale } from '@lib/i18n';
 import { getPagePath } from './page';
 import { getFileHref } from './file';
+import { getRecordLocale } from './lib/slug';
 
 export type PageUrl = {
   locale: SiteLocale,
@@ -22,7 +23,8 @@ export const getHomeHref = ({ locale = getLocale() } = {}) => {
 };
 
 export const getPageHref = ({ locale, record }: { locale: SiteLocale, record: PageRouteFragment }) => {
-  return `/${locale}/${getPagePath({ page: record, locale })}/`;
+  const recordLocale = getRecordLocale({ locale, record });
+  return `/${recordLocale}/${getPagePath({ page: record, locale })}/`;
 };
 
 /**
