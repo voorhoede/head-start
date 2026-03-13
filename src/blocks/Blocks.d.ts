@@ -9,7 +9,8 @@ import type {
   VideoBlockFragment,
   VideoEmbedBlockFragment,
   GroupingBlockFragment,
-  CounterBlockFragment
+  CounterBlockFragment,
+  TextVariableBlockFragment
 } from '@lib/datocms/types';
 
 export type AnyBlock = Omit<
@@ -25,5 +26,6 @@ export type AnyBlock = Omit<
     | VideoBlockFragment
     | VideoEmbedBlockFragment
     | CounterBlockFragment
+    | TextVariableBlockFragment
   ), '__typename' // Allow for any __typename so that missing blocks can be reported on.
 > & { __typename: string };
