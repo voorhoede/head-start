@@ -35,10 +35,17 @@ const routeRecord = isIconRecord(record) ? null : record;
 
 {
   isIconRecord(record) && record.name && isIconName(record.name) ? (
-    <Icon name={record.name} aria-label={record.name} />
+    <Icon name={record.name} aria-label={record.name} class="icon-record" />
   ) : (
     routeRecord && (
       <LinkToRecord record={routeRecord} {openInNewTab} {...props}><slot>{routeRecord.title}</slot></LinkToRecord>
     )
   )
 }
+
+<style>
+  .icon-record {
+    height: 1em;
+    width: 1em;
+  }
+</style>
