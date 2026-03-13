@@ -1,0 +1,16 @@
+fragment ListBlock on ListBlockRecord {
+  id
+  listType
+  startNumber
+  items {
+    __typename
+    ... on ListItemRecord {
+      ...ListItem
+    }
+  }
+}
+fragment ListItem on ListItemRecord {
+  content {
+    value
+  }
+}

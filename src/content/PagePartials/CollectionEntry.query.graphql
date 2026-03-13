@@ -38,6 +38,9 @@ query PagePartialCollectionEntry($locale: SiteLocale!, $id: ItemId!) {
       ... on VideoEmbedBlockRecord {
         ...VideoEmbedBlock
       }
+      ... on ListBlockRecord {
+        ...ListBlock
+      }
     }
   }
 }
