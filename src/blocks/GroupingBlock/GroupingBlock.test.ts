@@ -13,6 +13,7 @@ export const items = [
       __typename: TEXT_BLOCK_RECORD,
       text: {
         blocks: [],
+        inlineBlocks: [],
         links: [],
         value: {
           schema: 'dast',
