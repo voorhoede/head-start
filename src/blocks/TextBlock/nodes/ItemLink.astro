@@ -1,6 +1,9 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
 import type { RecordRoute } from '@lib/routing';
+import type { IconName } from '@assets/icon-sprite';
+import type { IconRecord } from '@lib/datocms/types';
+import Icon, { iconNames } from '@components/Icon';
 import LinkToRecord from '@components/LinkToRecord/LinkToRecord.astro';
 
 type Node = {
@@ -10,14 +13,39 @@ type Node = {
   }[];
 };
 
+export type StructuredTextLinkRecord = RecordRoute | IconRecord;
+
 export type Props = HTMLAttributes<'a'> & {
   node?: Node;
-  link: RecordRoute;
+  link: StructuredTextLinkRecord;
 };
 
 const { link: record, node, ...props } = Astro.props;
 
 const openInNewTab = Boolean(node?.meta?.find(entry => entry.id === 'target' && entry.value === '_blank'));
+
+const isIconName = (name: string): name is IconName =>
+  (iconNames as readonly string[]).includes(name);
+
+const isIconRecord = (link: StructuredTextLinkRecord): link is IconRecord =>
+  link.__typename === 'IconRecord';
+
+const routeRecord = isIconRecord(record) ? null : record;
 ---
 
-<LinkToRecord {record} {openInNewTab} {...props}><slot>{record.title}</slot></LinkToRecord>
+{
+  isIconRecord(record) && record.name && isIconName(record.name) ? (
+    <Icon name={record.name} aria-label={record.name} class="icon-record" />
+  ) : (
+    routeRecord && (
+      <LinkToRecord record={routeRecord} {openInNewTab} {...props}><slot>{routeRecord.title}</slot></LinkToRecord>
+    )
+  )
+}
+
+<style>
+  .icon-record {
+    height: 1em;
+    width: 1em;
+  }
+</style>
