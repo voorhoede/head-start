@@ -22,6 +22,9 @@ fragment TextImageBlock on TextImageBlockRecord {
       ... on VideoEmbedBlockRecord {
         ...VideoEmbedBlock
       }
+      ... on ListBlockRecord {
+        ...ListBlock
+      }
     }
     links {
       __typename
