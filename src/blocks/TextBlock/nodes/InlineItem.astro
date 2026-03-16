@@ -1,9 +1,8 @@
 ---
-import type { RecordRoute } from '@lib/routing';
-import ItemLink from './ItemLink.astro';
+import ItemLink, { type StructuredTextLinkRecord } from './ItemLink.astro';
 
 export type Props = {
-  link: RecordRoute;
+  link: StructuredTextLinkRecord;
 };
 
 const { link } = Astro.props;
