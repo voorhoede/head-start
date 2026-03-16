@@ -114,15 +114,6 @@ export default async function (client: Client) {
 
   console.log('Update permissions for environment in role Editor');
   await client.roles.updateCurrentEnvironmentPermissions('303748', {
-    positive_item_type_permissions: {
-      add: [
-        {
-          item_type: 'Z4kYvq4hS8GfdZh7JjfCBg',
-          action: 'create',
-          localization_scope: 'all',
-        },
-      ],
-    },
     negative_item_type_permissions: {
       add: [
         {
@@ -135,6 +126,11 @@ export default async function (client: Client) {
           item_type: 'Z4kYvq4hS8GfdZh7JjfCBg',
           action: 'delete',
           on_creator: 'anyone',
+        },
+        {
+          item_type: 'Z4kYvq4hS8GfdZh7JjfCBg',
+          action: 'create',
+          localization_scope: 'all',
         },
       ],
     },
