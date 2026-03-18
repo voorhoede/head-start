@@ -248,10 +248,8 @@ async function seedDocs() {
   const documents: Document[] = [];
   for (const filename of filenames) {
     const document = await readDoc(docDirectory, filename);
-    if(document) {
-      documents.push(document);
-      await upsertRecord({ model, document, parent });
-    } 
+    documents.push(document);
+    await upsertRecord({ model, document, parent });
   }
   await upsertDocPartialIndex(documents);
   await seedSrcDocs(blockDirectory, 'blocks');
