@@ -233,19 +233,11 @@ function resolveLinks (mdast: Root) {
   });
 }
 
-async function seedBlockDocs() {
-  const blockFiles = await listSrcDocs(blockDirectory);
+async function seedSrcDocs(directory: string, sourceType: string) {
+  const blockFiles = await listSrcDocs(directory);
   for (const file of blockFiles) {    
-    const document = await readDoc(blockDirectory, file.path);
-    await upsertDocPartialDemo(document, file.folderName, 'blocks');
-  }
-}
-
-async function seedComponentDocs() {
-  const componentFiles = await listSrcDocs(componentDirectory);
-  for (const file of componentFiles) {    
-    const document = await readDoc(componentDirectory, file.path);
-    await upsertDocPartialDemo(document, file.folderName, 'components');
+    const document = await readDoc(directory, file.path);
+    await upsertDocPartialDemo(document, file.folderName, sourceType);
   }
 }
 
@@ -262,8 +254,8 @@ async function seedDocs() {
     } 
   }
   await upsertDocPartialIndex(documents);
-  await seedBlockDocs();
-  await seedComponentDocs();
+  await seedSrcDocs(blockDirectory, 'blocks');
+  await seedSrcDocs(componentDirectory, 'components');
 }
 
 seedDocs()
