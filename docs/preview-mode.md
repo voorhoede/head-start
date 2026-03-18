@@ -52,16 +52,32 @@ When authorised an encrypted cookie is set, to persist preview mode throughout a
 
 Note: the secret is configured as environment variable `HEAD_START_PREVIEW_SECRET`.
 
-## Web Previews plugin (Visual Editing)
+## Web Previews plugin
 
-For side-by-side editing in DatoCMS (preview on the left, edit panel on the right), install the [Web Previews plugin](https://www.datocms.com/marketplace/plugins/i/datocms-plugin-web-previews) and configure a frontend with:
+The [Web Previews plugin](https://www.datocms.com/marketplace/plugins/i/datocms-plugin-web-previews) enables side-by-side editing in DatoCMS: editors see a live preview of the website alongside the editing panel. The plugin loads the website in an iframe, so editors can see their changes reflected in real-time.
 
-- **Preview Links API endpoint:** `https://yoursite.com/api/preview-links?token=YOUR_SECRET`  
-  Use the same value as `HEAD_START_PREVIEW_SECRET` for the token.
-- **Enable Draft Mode route:** `https://yoursite.com/api/draft-mode/enable?token=YOUR_SECRET`  
-  The plugin will append `&redirect=/path` when opening the preview.
+### How it works
 
-Content Link (click-to-edit overlays) and stega encoding are already enabled when running in preview mode. The site allows being embedded in the plugin iframe via `Content-Security-Policy: frame-ancestors 'self' https://plugins-cdn.datocms.com`.
+1. The plugin calls `/api/preview-links` to get the preview URL for the current record
+2. It opens `/api/draft-mode/enable` to set the preview cookie in the iframe
+3. The iframe loads the preview URL with draft content visible
+
+### Setup
+
+The plugin is installed automatically via migration ([`1773830634_webPreviewsPlugin.ts`](../config/datocms/migrations/1773830634_webPreviewsPlugin.ts)). After running the migration, configure the frontend URLs in the plugin settings in DatoCMS:
+
+| Setting | Value |
+|---|---|
+| **Preview Links API endpoint** | `https://yoursite.com/api/preview-links?token=YOUR_SECRET` |
+| **Enable Draft Mode route** | `https://yoursite.com/api/draft-mode/enable?token=YOUR_SECRET` |
+
+Replace `yoursite.com` with your deployment URL and `YOUR_SECRET` with the value of `HEAD_START_PREVIEW_SECRET`.
+
+> [!NOTE]
+> The URLs must be configured manually per environment because they contain your deployment URL and secret, which differ between localhost, preview, and production.
+
+> [!NOTE]
+> The site's Content-Security-Policy allows embedding in the plugin iframe via `frame-ancestors 'self' https://*.admin.datocms.com https://plugins-cdn.datocms.com` (see [`security-headers.ts`](../src/middleware/security-headers.ts)).
 
 ## Preview links from the CMS
 
