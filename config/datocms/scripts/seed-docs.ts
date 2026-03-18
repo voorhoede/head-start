@@ -25,6 +25,7 @@ const client = buildClient({
 const docExtension = '.md';
 const docDirectory = path.resolve(rootDir,'docs/');
 const blockDirectory = path.resolve(rootDir,'src/blocks/');
+const componentDirectory = path.resolve(rootDir,'src/components/');
 const modelType = 'page';
 const documentationSlug = 'documentation';
 const mainBranchUrl = 'https://github.com/voorhoede/head-start/tree/main/';
@@ -34,19 +35,19 @@ async function listDocs() {
   return filenames.filter(file  => file.endsWith(docExtension));
 }
 
-async function listBlockDocs() {
-  const blockFolders = await readdir(blockDirectory, { withFileTypes: true });
-  const blockDirectories = blockFolders.filter(entry => entry.isDirectory());
+async function listSrcDocs(directory: string) {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const folders = entries.filter(entry => entry.isDirectory());
   const readmes = [];
 
-  for (const entry of blockDirectories) {
-    const readmePath = path.join(entry.name, 'README.md');
-    const absolutePath = path.join(blockDirectory, readmePath);
+  for (const folder of folders) {
+    const readmePath = path.join(folder.name, 'README.md');
+    const absolutePath = path.join(directory, readmePath);
     try {
       await access(absolutePath);
-      readmes.push(readmePath);
+      readmes.push({ path: readmePath, folderName: folder.name });
     } catch {
-      console.log('❗Missing README in: ', `${blockDirectory}${entry.name}`);
+      console.log('❗Missing README in:', `${directory}${folder.name}`);
     }
   }
   return readmes;
@@ -134,10 +135,10 @@ async function upsertDocPartialIndex(documents: Document[]) {
   await upsertPartialRecord({ docTitle: 'index', markdown });
 }
 
-async function upsertBlockDocPartialDemo( document: Document, filename: string) {
-  const note = `!Note: this piece of documentation is auto-generated from [blocks/${filename}](${mainBranchUrl}src/blocks/${filename}).`;
+async function upsertDocPartialDemo( document: Document, filename: string, sourceType: string) {
+  const note = `!Note: this piece of documentation is auto-generated from [${sourceType}/${filename}/README.md](${mainBranchUrl}src/${sourceType}/${filename}/README.md).`;
   const markdown = `${note}\n\n${document.text}`;
-  await upsertPartialRecord({ docTitle: document.title, markdown });
+  await upsertPartialRecord({ docTitle: filename, markdown });
 }
 
 async function upsertPartialRecord({ docTitle, markdown }: { docTitle: string, markdown: string }) {
@@ -233,10 +234,18 @@ function resolveLinks (mdast: Root) {
 }
 
 async function seedBlockDocs() {
-  const filenames = await listBlockDocs();
-  for (const filename of filenames) {    
-    const document = await readDoc(blockDirectory, filename);
-    await upsertBlockDocPartialDemo(document, filename);
+  const blockFiles = await listSrcDocs(blockDirectory);
+  for (const file of blockFiles) {    
+    const document = await readDoc(blockDirectory, file.path);
+    await upsertDocPartialDemo(document, file.folderName, 'blocks');
+  }
+}
+
+async function seedComponentDocs() {
+  const componentFiles = await listSrcDocs(componentDirectory);
+  for (const file of componentFiles) {    
+    const document = await readDoc(componentDirectory, file.path);
+    await upsertDocPartialDemo(document, file.folderName, 'components');
   }
 }
 
@@ -246,7 +255,7 @@ async function seedDocs() {
   const parent = await getDocumentationRecord();
   const documents: Document[] = [];
   for (const filename of filenames) {
-    const document = await readDoc(docDirectory,filename);
+    const document = await readDoc(docDirectory, filename);
     if(document) {
       documents.push(document);
       await upsertRecord({ model, document, parent });
@@ -254,6 +263,7 @@ async function seedDocs() {
   }
   await upsertDocPartialIndex(documents);
   await seedBlockDocs();
+  await seedComponentDocs();
 }
 
 seedDocs()
