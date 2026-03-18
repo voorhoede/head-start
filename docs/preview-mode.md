@@ -52,6 +52,33 @@ When authorised an encrypted cookie is set, to persist preview mode throughout a
 
 Note: the secret is configured as environment variable `HEAD_START_PREVIEW_SECRET`.
 
+## Web Previews plugin
+
+The [Web Previews plugin](https://www.datocms.com/marketplace/plugins/i/datocms-plugin-web-previews) enables side-by-side editing in DatoCMS: editors see a live preview of the website alongside the editing panel. The plugin loads the website in an iframe, so editors can see their changes reflected in real-time.
+
+### How it works
+
+1. The plugin calls `/api/preview-links` to get the preview URL for the current record
+2. It opens `/api/draft-mode/enable` to set the preview cookie in the iframe
+3. The iframe loads the preview URL with draft content visible
+
+### Setup
+
+The plugin is installed automatically via migration ([`1773830634_webPreviewsPlugin.ts`](../config/datocms/migrations/1773830634_webPreviewsPlugin.ts)). After running the migration, configure the frontend URLs in the plugin settings in DatoCMS:
+
+| Setting | Value |
+|---|---|
+| **Preview Links API endpoint** | `https://yoursite.com/api/preview-links?token=YOUR_SECRET` |
+| **Enable Draft Mode route** | `https://yoursite.com/api/draft-mode/enable?token=YOUR_SECRET` |
+
+Replace `yoursite.com` with your deployment URL and `YOUR_SECRET` with the value of `HEAD_START_PREVIEW_SECRET`.
+
+> [!NOTE]
+> The URLs must be configured manually per environment because they contain your deployment URL and secret, which differ between localhost, preview, and production.
+
+> [!NOTE]
+> The site's Content-Security-Policy allows embedding in the plugin iframe via `frame-ancestors 'self' https://*.admin.datocms.com https://plugins-cdn.datocms.com` (see [`security-headers.ts`](../src/middleware/security-headers.ts)).
+
 ## Preview links from the CMS
 
 Head Start includes the [Model Deployment Links plugin](https://www.datocms.com/marketplace/plugins/i/datocms-plugin-model-deployment-links) which adds preview links to the CMS sidebar. This allows editors to preview any page directly from the CMS, including draft (unpublished) content.

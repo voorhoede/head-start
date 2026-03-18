@@ -1,5 +1,6 @@
 ---
 import type { VideoEmbedBlockFragment, VideoField } from '@lib/datocms/types';
+import { stripStega } from '@datocms/content-link';
 import { t } from '@lib/i18n';
 import Icon from '@components/Icon';
 import PlayButton from './PlayButton.astro';
@@ -8,9 +9,10 @@ export interface Props {
   block: VideoEmbedBlockFragment;
 }
 const { block } = Astro.props;
-const { autoplay = false, loop = false, mute = false, video } = block;
+const { autoplay = false, loop = false, mute = false } = block;
+const video = stripStega(block.video);
 const aspectRatio = `${video.width} / ${video.height}`;
-const title = block.title || video.title;
+const title = block.title || block.video.title;
 const providerName =
   { youtube: 'YouTube', vimeo: 'Vimeo' }[video.provider] || video.provider;
 const vimeoSizeRegex = /_\d+(x\d+)?(\.\w+)?$/; // match _123(.ext) and _123x123(.ext)
@@ -94,7 +96,7 @@ function getVideoUrl({
 }
 ---
 
-<figure>
+<figure data-datocms-content-link-source={block.title || block.video.title}>
   <video-embed
     data-autoplay={autoplay ? 'true' : undefined}
     data-provider={video.provider}
