@@ -3,7 +3,6 @@ import Blocks from '@blocks/Blocks.astro';
 import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
 import Layout from '@layouts/Default.astro';
 import { getCollection, getEntry } from '@lib/content';
-import { defaultLocale, isLocale } from '@lib/i18n';
 
 export async function getStaticPaths() {
   // Fetch all locales by passing locale `null` and filter `undefined`.
@@ -16,9 +15,6 @@ export async function getStaticPaths() {
 // Load as an entry so this route can also be a server route in preview mode.
 // @see /docs/preview-mode.md
 const { locale, path } = Astro.params;
-if (!isLocale(locale)) {
-  return Astro.rewrite(`/404/?locale=${defaultLocale}`);
-}
 const entry = await getEntry('Pages', path);
 if (!entry) {
   return Astro.rewrite(`/404/?locale=${locale}`);

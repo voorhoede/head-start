@@ -4,7 +4,7 @@ import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscrip
 import Layout from '@layouts/Default.astro';
 import { datocmsRequest } from '@lib/datocms';
 import type { HomePageQuery } from '@lib/datocms/types';
-import { defaultLocale, isLocale, locales } from '@lib/i18n';
+import { locales } from '@lib/i18n';
 import { getHomeHref, type PageUrl } from '@lib/routing';
 import query from './_index.query.graphql';
 
@@ -13,9 +13,6 @@ export async function getStaticPaths() {
 }
 
 const { locale } = Astro.params;
-if (!isLocale(locale)) {
-  return Astro.rewrite(`/404/?locale=${defaultLocale}`);
-}
 const variables = { locale };
 const { page } = await datocmsRequest<HomePageQuery /*, typeof prerender */>({ query, variables });
 const pageUrls = locales.map((locale) => ({

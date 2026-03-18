@@ -1,5 +1,5 @@
 ---
-import { defaultLocale, isLocale, locales, t } from '@lib/i18n';
+import { locales, t } from '@lib/i18n';
 import { noIndexTag, siteName, titleTag } from '@lib/seo';
 import { datocmsSearch } from '@lib/datocms';
 import type { SiteLocale } from '@lib/datocms/types';
@@ -11,9 +11,6 @@ import SearchResult from '@components/SearchResult.astro';
 export const prerender = false;
 
 const { locale } = Astro.params as { locale: SiteLocale };
-if (!isLocale(locale)) {
-  return Astro.rewrite(`/404/?locale=${defaultLocale}`);
-}
 const query = new URL(Astro.request.url).searchParams.get(queryParamName) || '';
 const { results } = hasValidQuery(query) ? await datocmsSearch({ locale, query }) : { results: [] };
 const hasResults = results.length > 0;

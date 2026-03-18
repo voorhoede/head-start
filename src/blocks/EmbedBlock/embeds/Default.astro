@@ -9,8 +9,8 @@ const aspectRatio = data.width && data.height ? data.width / data.height : null;
 const maxWidth = data.width ? `${data.width}px` : '100%';
 ---
 
-<default-embed
-  data-enhanced="false"
+<default-embed 
+  data-enhanced="false" 
   data-provider={data.provider_name}
   class:list={[ classList, { 'with-iframe': isIframeHtml(html) } ]}
   { ...props }
