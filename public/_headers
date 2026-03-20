@@ -12,6 +12,11 @@
   X-Frame-Options: SAMEORIGIN
   X-XSS-Protection: 1; mode=block
 
+# Allow DatoCMS to embed the self-guide page in an iframe
+/self-guide/
+  X-Frame-Options: ALLOW-FROM https://*.datocms.com
+  Content-Security-Policy: frame-ancestors 'self' https://*.datocms.com
+
 # Static assets are hashed and can therefore be cached forever
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
