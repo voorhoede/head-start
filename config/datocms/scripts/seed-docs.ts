@@ -47,7 +47,7 @@ async function listSrcDocs(directory: string) {
       await access(absolutePath);
       readmes.push({ path: readmePath, folderName: folder.name });
     } catch {
-      console.log('❗Missing README in:', `${directory}${folder.name}`);
+      console.log('❗Missing README in:', path.join(directory, folder.name));
     }
   }
   return readmes;
