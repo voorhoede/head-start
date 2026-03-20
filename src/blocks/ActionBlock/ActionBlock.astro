@@ -11,10 +11,10 @@ export interface Props {
 const { block } = Astro.props;
 const { items } = block;
 
-let primaryActionsSeen = 0;
+let hasPrimary = false;
 const actionClassList = (style: string) => {
-  if (primaryActionsSeen === 1 && style === 'primary') style = 'secondary';
-  else if (style === 'primary') primaryActionsSeen += 1;
+  if (hasPrimary && style === 'primary') style = 'secondary';
+  else if (style === 'primary') hasPrimary = true;
 
   return ['action', `action--${style}`];
 };
