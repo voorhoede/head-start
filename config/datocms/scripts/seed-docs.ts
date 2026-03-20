@@ -234,10 +234,10 @@ function resolveLinks (mdast: Root) {
 }
 
 async function seedSrcDocs(directory: string, sourceType: string) {
-  const blockFiles = await listSrcDocs(directory);
-  for (const file of blockFiles) {    
-    const document = await readDoc(directory, file.path);
-    await upsertDocPartialDemo(document, file.folderName, sourceType);
+  const docs = await listSrcDocs(directory);
+  for (const doc of docs) {    
+    const document = await readDoc(directory, doc.path);
+    await upsertDocPartialDemo(document, doc.folderName, sourceType);
   }
 }
 
