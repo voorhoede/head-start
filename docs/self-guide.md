@@ -2,6 +2,18 @@
 
 Welcome to your CMS! This guide helps you understand how content is organised and how to create and manage it effectively.
 
+## Table of contents
+
+- [Pages](#pages)
+  - [Creating a new page](#creating-a-new-page)
+- [Content Blocks](#content-blocks)
+  - [Available blocks](#available-blocks)
+  - [Tips for working with blocks](#tips-for-working-with-blocks)
+- [Naming and field conventions](#naming-and-field-conventions)
+- [Media and Assets](#media-and-assets)
+- [Multilingual content](#multilingual-content)
+- [Further reading](#further-reading)
+
 ## Pages
 
 Your website is built from **Pages**. Each page has:

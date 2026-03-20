@@ -2,7 +2,10 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { marked } from 'marked';
+import { gfmHeadingId } from 'marked-gfm-heading-id';
 import Minimal from '@layouts/Minimal.astro';
+
+marked.use(gfmHeadingId());
 
 const markdown = await readFile(resolve('docs/self-guide.md'), 'utf-8');
 const html = await marked(markdown);
@@ -13,29 +16,10 @@ const html = await marked(markdown);
 </Minimal>
 
 <style>
-  .guide :global(h1) {
-    margin: 0 0 0.5em;
-    font-size: 2em;
-    line-height: 1.2;
-  }
-  .guide :global(h2) {
-    margin: 1.5em 0 0.5em;
-    font-size: 1.4em;
-    padding-bottom: 0.3em;
-    border-bottom: 1px solid #e0e0e0;
-  }
-  .guide :global(h3) {
-    margin: 1.2em 0 0.4em;
-    font-size: 1.15em;
-  }
-  .guide :global(p) {
-    margin: 0.6em 0;
-  }
   .guide :global(table) {
     width: 100%;
     border-collapse: collapse;
     margin: 1em 0;
-    font-size: 0.95em;
   }
   .guide :global(th),
   .guide :global(td) {
@@ -57,30 +41,30 @@ const html = await marked(markdown);
   .guide :global(blockquote p) {
     margin: 0;
   }
-  .guide :global(a) {
-    color: #1a73e8;
-  }
   .guide :global(code) {
     background: #f0f0f0;
     padding: 0.15em 0.4em;
     border-radius: 3px;
     font-size: 0.9em;
   }
-  .guide :global(ul),
-  .guide :global(ol) {
-    padding-left: 1.5em;
-  }
-  .guide :global(li) {
-    margin: 0.3em 0;
-  }
   .guide :global(img) {
     max-width: 100%;
     height: auto;
-    border-radius: 4px;
   }
-  .guide :global(hr) {
-    border: none;
-    border-top: 1px solid #e0e0e0;
-    margin: 2em 0;
+  .guide :global(h2#table-of-contents) {
+    border-bottom: none;
+    font-size: 1.15em;
+    margin-bottom: 0.2em;
+  }
+  .guide :global(h2#table-of-contents + ul) {
+    background: #f8f8f8;
+    border: 1px solid #e8e8e8;
+    border-radius: 6px;
+    padding: 0.75em 0.75em 0.75em 2em;
+    list-style: none;
+    margin-bottom: 1.5em;
+  }
+  .guide :global(h2#table-of-contents + ul ul) {
+    padding-left: 1.2em;
   }
 </style>
