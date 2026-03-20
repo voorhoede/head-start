@@ -25,7 +25,6 @@ const client = buildClient({
 const docExtension = '.md';
 const docDirectory = path.resolve(rootDir,'docs/');
 const blockDirectory = path.resolve(rootDir,'src/blocks/');
-const componentDirectory = path.resolve(rootDir,'src/components/');
 const modelType = 'page';
 const documentationSlug = 'documentation';
 const mainBranchUrl = 'https://github.com/voorhoede/head-start/tree/main/';
@@ -221,7 +220,7 @@ async function markdownToStructuredText(markdown: string) {
   return structuredText;
 }
 
-function resolveLinks (mdast: Root) {
+function resolveLinks(mdast: Root) {
   visit(mdast, 'link', (node) => {
     if (node.url.startsWith('./') && node.url.includes('.md')) {
       node.url = node.url
@@ -253,7 +252,6 @@ async function seedDocs() {
   }
   await upsertDocPartialIndex(documents);
   await seedSrcDocs(blockDirectory, 'blocks');
-  await seedSrcDocs(componentDirectory, 'components');
 }
 
 seedDocs()
