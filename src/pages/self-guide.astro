@@ -1,0 +1,86 @@
+---
+import { readFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { marked } from 'marked';
+import Minimal from '@layouts/Minimal.astro';
+
+const markdown = await readFile(resolve('docs/self-guide.md'), 'utf-8');
+const html = await marked(markdown);
+---
+
+<Minimal title="Content Editor Guide">
+  <article class="guide" set:html={html} />
+</Minimal>
+
+<style>
+  .guide :global(h1) {
+    margin: 0 0 0.5em;
+    font-size: 2em;
+    line-height: 1.2;
+  }
+  .guide :global(h2) {
+    margin: 1.5em 0 0.5em;
+    font-size: 1.4em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .guide :global(h3) {
+    margin: 1.2em 0 0.4em;
+    font-size: 1.15em;
+  }
+  .guide :global(p) {
+    margin: 0.6em 0;
+  }
+  .guide :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1em 0;
+    font-size: 0.95em;
+  }
+  .guide :global(th),
+  .guide :global(td) {
+    padding: 0.5em 0.75em;
+    border: 1px solid #e0e0e0;
+    text-align: left;
+    vertical-align: top;
+  }
+  .guide :global(th) {
+    background: #f5f5f5;
+    font-weight: 600;
+  }
+  .guide :global(blockquote) {
+    margin: 1em 0;
+    padding: 0.75em 1em;
+    border-left: 4px solid #d0d0d0;
+    background: #fafafa;
+  }
+  .guide :global(blockquote p) {
+    margin: 0;
+  }
+  .guide :global(a) {
+    color: #1a73e8;
+  }
+  .guide :global(code) {
+    background: #f0f0f0;
+    padding: 0.15em 0.4em;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }
+  .guide :global(ul),
+  .guide :global(ol) {
+    padding-left: 1.5em;
+  }
+  .guide :global(li) {
+    margin: 0.3em 0;
+  }
+  .guide :global(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+  }
+  .guide :global(hr) {
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    margin: 2em 0;
+  }
+</style>
