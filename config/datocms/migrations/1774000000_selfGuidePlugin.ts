@@ -24,7 +24,7 @@ export default async function (client: Client) {
           pageEmbedUrl: `${siteUrl}/self-guide/`,
           pageType: 'MainNavigationTabs',
           placement: 'After',
-          menuItemPlacement: 'Media',
+          menuItemPlacement: 'Configuration',
         },
       ],
     },
