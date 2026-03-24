@@ -39,6 +39,7 @@ Inside of this project, you'll see the following folders and files:
 
 - `docs/` contains project documentation.
   - `decision-log/` lists all key decisions made during the project. Please read the log so you understand why decisions are made and document key decisions when you make them.
+  - `self-guide.md` is the content editor guide displayed inside the CMS via the [custom page plugin](https://www.datocms.com/marketplace/plugins/i/datocms-plugin-custom-page). Edit this file to update the guide. Images for the guide go in `public/self-guide/` and can be referenced as `![alt](/self-guide/filename.png)`. Preview changes locally at `http://localhost:4323/self-guide/`.
 - `src/` contains all website source files that will be handled by Astro.
   - `pages/` - [Pages](https://docs.astro.build/en/core-concepts/astro-pages/) are organised by file system routing and are paired with GraphQL query files for data loading.
   - `pages/api/` - [API routes](https://docs.astro.build/en/core-concepts/endpoints/#server-endpoints-api-routes) are dynamic server endpoints with support for path & query params etc.
