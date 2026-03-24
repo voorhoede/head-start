@@ -9,7 +9,6 @@ Welcome to your CMS! This guide helps you understand how content is organised an
 - [Content Blocks](#content-blocks)
   - [Available blocks](#available-blocks)
   - [Tips for working with blocks](#tips-for-working-with-blocks)
-- [Naming and field conventions](#naming-and-field-conventions)
 - [Media and Assets](#media-and-assets)
 - [Multilingual content](#multilingual-content)
 - [Further reading](#further-reading)
@@ -69,19 +68,11 @@ To add a block, click the **+** button in the body blocks field and choose the t
 
 - **Reorder blocks** by dragging them up or down within the body blocks field.
 - **Duplicate a block** to quickly create a similar section without starting from scratch.
+- **Copy and paste blocks** using the inline menu on each block. You can paste them on the same page or on a different page. This also works in bulk by selecting multiple blocks.
+- **Hover over a block** when adding a new one to see a preview image of what it looks like.
 - **Page Partials** are great for content that appears on multiple pages (e.g. a call-to-action or contact section). Edit the partial once, and it updates everywhere.
 
-## Naming and field conventions
-
-When working with content, you'll notice consistent field names across different models. This keeps things predictable:
-
-- **Title** - the main heading or name.
-- **Slug** - the URL path segment (auto-generated from the title).
-- **Text** - rich text content (structured text with formatting options).
-- **Image / Images** - a single image or a gallery of images.
-- **Video** - a video file or external video reference.
-- **Layout** - controls the position or arrangement of content (e.g. `image-text` or `text-image`).
-- **Style** - controls the visual appearance (e.g. `default`, `highlighted`).
+For more detail, watch the DatoCMS video on [working with modular content](https://www.datocms.com/user-guides/content-management/building-pages-and-deep-dive-into-modular-content).
 
 ## Media and Assets
 
@@ -105,5 +96,7 @@ Your CMS supports multiple languages. When editing a record, you'll see a langua
 For more detailed guidance, check out these resources from DatoCMS:
 
 - [Creating and Managing Content](https://www.datocms.com/user-guides/content-creation-and-management) - how to create, edit, publish, and organise records.
+- [Deep dive into Structured Text](https://www.datocms.com/user-guides/content-management/deep-dive-into-structured-text-in-datocms) - essential video on working with rich text fields.
+- [Building pages with Modular Content](https://www.datocms.com/user-guides/content-management/building-pages-and-deep-dive-into-modular-content) - essential video on composing pages with blocks.
 - [Digital Asset Management](https://www.datocms.com/user-guides/digital-asset-management) - how to manage your images, videos, and files.
 - [Content Modelling](https://www.datocms.com/docs/content-modelling) - understand how models, fields, and blocks are structured (for advanced users).
