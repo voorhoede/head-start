@@ -24,8 +24,9 @@ const execDeleteSandboxEnvironment = async (environmentName: string) => {
 
 const isConfirmedDeleteSandboxEnvironment = async (targetEnvironment: string): Promise<boolean> => {
   const projectName = await getProjectName();
+  console.log(`\n⚠️  You are about to destroy environment ${color.blue(targetEnvironment)} of project ${color.yellow(projectName)}`);
   const inputValue = await input({
-    message: `Destroy the environment ${color.blue(targetEnvironment)} of project ${color.yellow(projectName)}? Enter the sandbox environment name ${color.red(targetEnvironment)} to confirm deletion:`,
+    message: `Type ${color.red(targetEnvironment)} to confirm:`,
   });
 
   return inputValue === targetEnvironment;
@@ -49,7 +50,7 @@ export const deleteSandboxEnvironment = async (environmentName: string) => {
   }
   else {
     console.log(stripIndents`
-      🚫 Deletion failed. Environment ${color.blue(environmentName)} has not been deleted.
+      🚫 Deletion cancelled. Environment name did not match.
     `);
     await cancel();
   }

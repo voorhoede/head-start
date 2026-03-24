@@ -55,7 +55,7 @@ const askForConfirmationPromoteEnvironment = async (
 // ============================================================================
 
 const handleError = async (error: unknown) => {
-  console.error('❌ Error occured while promoting environment .');
+  console.error('❌ Error occurred while promoting environment.');
   console.warn(
     '⚠️ Please check the project and turn off maintenance mode manually.',
   );

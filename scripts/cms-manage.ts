@@ -23,7 +23,7 @@ async function run() {
         name: '🆕 Start development in a new sandbox environment',
         value: 'env:create',
         description:
-          'Create a new sandbox environment (fast fork of primary environment). You can set the name of the sandbox environment and wheter you would like to run all new migration files or not.',
+          'Create a new sandbox environment (fast fork of primary environment). You can set the name of the sandbox environment and whether you would like to run all new migration files or not.',
       },
       {
         name: '🔁 Sync my sandbox environment with migration files',
@@ -52,7 +52,7 @@ async function run() {
         name: '🚀 Promote sandbox environment to production',
         value: 'env:promote',
         description:
-          'Promote a sandbox environment to primary. You will have the option to create a new environment first based on your current migrations. You will also have the option to delete the old primary environment upon success.',
+          'Promote a sandbox environment to primary. You will have the option to create a new environment first based on your current migrations.',
       },
     ],
   });
