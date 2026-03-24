@@ -3,7 +3,8 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { marked } from 'marked';
 import { gfmHeadingId } from 'marked-gfm-heading-id';
-import Minimal from '@layouts/Minimal.astro';
+import { fontFamilyArchivo } from '@assets/fonts';
+import PerfHead from '@layouts/PerfHead/PerfHead.astro';
 
 marked.use(gfmHeadingId());
 
@@ -11,11 +12,52 @@ const markdown = await readFile(resolve('docs/self-guide.md'), 'utf-8');
 const html = await marked(markdown);
 ---
 
-<Minimal title="Content Editor Guide">
-  <article class="guide" set:html={html} />
-</Minimal>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Content Editor Guide</title>
+    <PerfHead />
+  </head>
+  <body>
+    <main>
+      <article class="guide" set:html={html} />
+    </main>
+  </body>
+</html>
 
+<style is:global define:vars={{ fontFamilyArchivo }}>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--fontFamilyArchivo);
+    background: #ffffff;
+    color: #1a1a1a;
+  }
+  figure {
+    margin: 0;
+  }
+  pre {
+    overflow-x: scroll;
+  }
+</style>
 <style>
+  main {
+    margin: auto;
+    padding: 2rem 1rem;
+    width: 800px;
+    max-width: calc(100% - 2rem);
+    font-size: 18px;
+    line-height: 1.6;
+  }
   .guide :global(table) {
     width: 100%;
     border-collapse: collapse;
