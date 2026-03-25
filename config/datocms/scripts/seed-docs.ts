@@ -1,4 +1,4 @@
-import { readdir, readFile } from 'node:fs/promises';
+import { readdir, readFile, access } from 'node:fs/promises';
 import path from 'node:path';
 import dotenv from 'dotenv-safe';
 import { buildClient } from '@datocms/cma-client-node';
@@ -24,6 +24,7 @@ const client = buildClient({
 });
 const docExtension = '.md';
 const docDirectory = path.resolve(rootDir,'docs/');
+const blockDirectory = path.resolve(rootDir,'src/blocks/');
 const modelType = 'page';
 const documentationSlug = 'documentation';
 const mainBranchUrl = 'https://github.com/voorhoede/head-start/tree/main/';
@@ -33,8 +34,26 @@ async function listDocs() {
   return filenames.filter(file  => file.endsWith(docExtension));
 }
 
-async function readDoc(filename: string) {
-  const filepath = path.join(docDirectory, filename);
+async function listSrcDocs(directory: string) {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const folders = entries.filter(entry => entry.isDirectory());
+  const readmes = [];
+
+  for (const folder of folders) {
+    const readmePath = path.join(folder.name, 'README.md');
+    const absolutePath = path.join(directory, readmePath);
+    try {
+      await access(absolutePath);
+      readmes.push({ path: readmePath, folderName: folder.name });
+    } catch {
+      console.log('❗Missing README in:', path.join(directory, folder.name));
+    }
+  }
+  return readmes;
+}
+
+async function readDoc(directory: string, filename: string) {
+  const filepath = path.join(directory, filename);
   const contents = await readFile(filepath, 'utf-8');
   const titlePattern = /^# .*\n/;
   const title = contents.match(titlePattern)?.[0].replace(/^# /, '').trim() ?? '';
@@ -95,7 +114,7 @@ async function upsertRecord ({ model, document, parent }: { model: Model, docume
   return newRecord;
 }
 
-async function findRecordBySlug (slug: string) {
+async function findRecordBySlug(slug: string) {
   const items = await client.items.list({
     nested: true,
     filter: {
@@ -108,8 +127,21 @@ async function findRecordBySlug (slug: string) {
   return items[0];
 }
 
-async function upsertDocumentationPartialRecord(documents: Document[]) {
-  const title = 'Documentation index';
+async function upsertDocPartialIndex(documents: Document[]) {
+  const markdown = documents.map(doc => {
+    return `* [${doc.title}](/en/${documentationSlug}/${doc.slug}/)`;
+  }).join('\n');
+  await upsertPartialRecord({ docTitle: 'index', markdown });
+}
+
+async function upsertDocPartialDemo( document: Document, filename: string, sourceType: string) {
+  const note = `!Note: this piece of documentation is auto-generated from [${sourceType}/${filename}/README.md](${mainBranchUrl}src/${sourceType}/${filename}/README.md).`;
+  const markdown = `${note}\n\n${document.text}`;
+  await upsertPartialRecord({ docTitle: filename, markdown });
+}
+
+async function upsertPartialRecord({ docTitle, markdown }: { docTitle: string, markdown: string }) {
+  const title = `Documentation ${docTitle}`;
   const itemType = 'page_partial';
   const model = await client.itemTypes.find(itemType);
   const items = await client.items.list({
@@ -123,9 +155,6 @@ async function upsertDocumentationPartialRecord(documents: Document[]) {
   });
   const record = items[0];
 
-  const markdown = documents.map(doc => {
-    return `* [${doc.title}](/en/${documentationSlug}/${doc.slug}/)`;
-  }).join('\n');
   const structuredText = await markdownToStructuredText(markdown);
   const textBlockItemType = await client.itemTypes.find('text_block');
 
@@ -191,7 +220,7 @@ async function markdownToStructuredText(markdown: string) {
   return structuredText;
 }
 
-function resolveLinks (mdast: Root) {
+function resolveLinks(mdast: Root) {
   visit(mdast, 'link', (node) => {
     if (node.url.startsWith('./') && node.url.includes('.md')) {
       node.url = node.url
@@ -203,17 +232,26 @@ function resolveLinks (mdast: Root) {
   });
 }
 
+async function seedSrcDocs(directory: string, sourceType: string) {
+  const docs = await listSrcDocs(directory);
+  for (const doc of docs) {    
+    const document = await readDoc(directory, doc.path);
+    await upsertDocPartialDemo(document, doc.folderName, sourceType);
+  }
+}
+
 async function seedDocs() {
   const filenames = await listDocs();
   const model = await client.itemTypes.find(modelType);
   const parent = await getDocumentationRecord();
   const documents: Document[] = [];
   for (const filename of filenames) {
-    const document = await readDoc(filename);
+    const document = await readDoc(docDirectory, filename);
     documents.push(document);
     await upsertRecord({ model, document, parent });
   }
-  await upsertDocumentationPartialRecord(documents);
+  await upsertDocPartialIndex(documents);
+  await seedSrcDocs(blockDirectory, 'blocks');
 }
 
 seedDocs()
