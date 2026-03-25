@@ -17,7 +17,7 @@ const items = block.items;
     <ol start={block.startNumber ?? 1}>
       {items.map((item) => (
         <li>
-          <Text data={item.content as CdaStructuredTextValue} />
+          <Text data={item.listText as CdaStructuredTextValue} />
         </li>
       ))}
     </ol>
@@ -25,7 +25,7 @@ const items = block.items;
     <ul>
       {items.map((item) => (
         <li>
-          <Text data={item.content as CdaStructuredTextValue} />
+          <Text data={item.listText as CdaStructuredTextValue} />
         </li>
       ))}
     </ul>
@@ -55,6 +55,7 @@ const items = block.items;
     flex-shrink: 0;
     width: 2em;
     height: 2em;
+    vertical-align: middle;
     display: inline-flex;
     align-items: center;
     justify-content: center;
