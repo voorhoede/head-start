@@ -1,13 +1,7 @@
 ---
 import type { RecordRoute } from '@lib/routing';
+import type { VariableRecord } from '@lib/datocms/types';
 import ItemLink from './ItemLink.astro';
-
-type VariableRecord = {
-  __typename: 'VariableRecord';
-  id: string;
-  title: string;
-  value: string;
-};
 
 export type Props = {
   link: RecordRoute | VariableRecord;
