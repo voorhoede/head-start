@@ -2,7 +2,9 @@
 import type { CdaStructuredTextRecord } from 'datocms-structured-text-utils';
 import { type CdaStructuredTextValue } from 'datocms-structured-text-utils';
 import { StructuredText } from '@datocms/astro/StructuredText';
-import LinkToRecord from '~/components/LinkToRecord/LinkToRecord.astro';
+import LinkToRecord from '../LinkToRecord/LinkToRecord.astro';
+import Heading from './nodes/Heading.astro';
+import Paragraph from './nodes/Paragraph.astro';
 import Block from './nodes/Block.astro';
 import ItemLink from './nodes/ItemLink.astro';
 
@@ -28,9 +30,6 @@ const linkToRecordComponents = Object.fromEntries(
 const inlineRecordComponents = Object.fromEntries(
   getTypenames(data?.links).map((typename) => [typename, LinkToRecord]),
 );
-
-// TODO const openInNewTab = Boolean(node?.meta?.find(entry => entry.id === 'target' && entry.value === '_blank'));
-// TODO TEXT STYLING
 ---
 
 <StructuredText
@@ -39,4 +38,8 @@ const inlineRecordComponents = Object.fromEntries(
   inlineBlockComponents={inlineBlockComponents}
   inlineRecordComponents={inlineRecordComponents}
   linkToRecordComponents={linkToRecordComponents}
+  nodeOverrides={{
+    heading: Heading,
+    paragraph: Paragraph,
+  }}
 />
