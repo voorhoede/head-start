@@ -1,6 +1,0 @@
-fragment TextVariableBlock on TextVariableBlockRecord {
-  __typename
-  id
-  title
-  variableValue: value
-}

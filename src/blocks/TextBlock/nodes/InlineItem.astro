@@ -2,11 +2,24 @@
 import type { RecordRoute } from '@lib/routing';
 import ItemLink from './ItemLink.astro';
 
+type VariableRecord = {
+  __typename: 'VariableRecord';
+  id: string;
+  title: string;
+  value: string;
+};
+
 export type Props = {
-  link: RecordRoute;
+  link: RecordRoute | VariableRecord;
 };
 
 const { link } = Astro.props;
 ---
 
-<ItemLink {link} />
+{
+  link.__typename === 'VariableRecord' ? (
+    <span>{link.value}</span>
+  ) : (
+    <ItemLink link={link as RecordRoute} />
+  )
+}
