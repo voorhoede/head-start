@@ -9,7 +9,7 @@ import type {
   VideoBlockFragment,
   VideoEmbedBlockFragment,
   GroupingBlockFragment,
-  CounterBlockFragment,
+  CounterBlockFragment
 } from '@lib/datocms/types';
 
 export type AnyBlock = Omit<
