@@ -115,7 +115,7 @@ export default async function (client: Client) {
       editor: 'integer',
       parameters: { placeholder: null },
     },
-    default_value: 0,
+    default_value: 1,
   });
 
   console.log(
