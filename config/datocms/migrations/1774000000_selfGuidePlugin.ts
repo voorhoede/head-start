@@ -17,6 +17,8 @@ export default async function (client: Client) {
 
   await client.plugins.update(plugin.id, {
     parameters: {
+      pageName: '',
+      pageEmbedUrl: '',
       pages: [
         {
           pageName: 'Guide',
