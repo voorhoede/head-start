@@ -12,7 +12,7 @@ const { link } = Astro.props;
 
 {
   link.__typename === 'VariableRecord' ? (
-    <span>{link.value}</span>
+     <span data-variable={link.title}>{link.value}</span>
   ) : (
     <ItemLink link={link as RecordRoute} />
   )
