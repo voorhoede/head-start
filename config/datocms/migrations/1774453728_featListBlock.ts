@@ -55,7 +55,12 @@ export default async function (client: Client) {
         on_publish_with_unpublished_references_strategy: 'fail',
         on_reference_unpublish_strategy: 'delete_references',
         on_reference_delete_strategy: 'delete_references',
-        item_types: [],
+        item_types: [
+          'GjWw8t-hTFaYYWyc53FeIg',
+          'LjXdkuCdQxCFT4hv8_ayew',
+          'Weqp1brXRkSS-jZE8Z3HTw',
+          'X_tZn3TxQY28ltSyjZUGHQ',
+        ],
       },
     },
     appearance: {
@@ -163,6 +168,7 @@ export default async function (client: Client) {
         item_types: [
           'GjWw8t-hTFaYYWyc53FeIg',
           'LjXdkuCdQxCFT4hv8_ayew',
+          'Weqp1brXRkSS-jZE8Z3HTw',
           'X_tZn3TxQY28ltSyjZUGHQ',
         ],
       },
@@ -237,6 +243,7 @@ export default async function (client: Client) {
         item_types: [
           'GjWw8t-hTFaYYWyc53FeIg',
           'LjXdkuCdQxCFT4hv8_ayew',
+          'Weqp1brXRkSS-jZE8Z3HTw',
           'X_tZn3TxQY28ltSyjZUGHQ',
         ],
       },
