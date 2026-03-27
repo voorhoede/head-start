@@ -1,0 +1,71 @@
+---
+import Text from '@blocks/TextBlock/Text.astro';
+import type { ListBlockFragment } from '@lib/datocms/types';
+import type { CdaStructuredTextValue } from 'datocms-structured-text-utils';
+
+interface Props {
+  block: ListBlockFragment;
+}
+const { block } = Astro.props as Props;
+
+const type = block.listType;
+const items = block.items;
+---
+
+{
+  type === 'ordered' ? (
+    <ol start={block.startNumber ?? 1}>
+      {items.map((item) => (
+        <li>
+          <Text data={item.listText as CdaStructuredTextValue} />
+        </li>
+      ))}
+    </ol>
+  ) : (
+    <ul>
+      {items.map((item) => (
+        <li>
+          <Text data={item.listText as CdaStructuredTextValue} />
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+<style>
+  ol,
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+
+  ol li,
+  ul li {
+    counter-increment: list-item;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  ol li::before,
+  ul li::before {
+    background-color: green;
+    color: white;
+    border-radius: 50%;
+    flex-shrink: 0;
+    width: 2em;
+    height: 2em;
+    vertical-align: middle;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  ol li::before {
+    content: counter(list-item);
+  }
+
+  ul li::before {
+    content: '✓';
+  }
+</style>

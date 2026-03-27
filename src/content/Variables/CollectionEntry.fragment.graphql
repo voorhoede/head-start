@@ -1,0 +1,6 @@
+fragment Variable on VariableRecord {
+  __typename
+  id
+  title
+  value
+}

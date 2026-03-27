@@ -4,6 +4,8 @@
 #import '@blocks/VideoBlock/VideoBlock.fragment.graphql'
 #import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
 #import '@blocks/CounterBlock/CounterBlock.fragment.graphql'
+#import '@blocks/ListBlock/ListBlockFragment.graphql'
+#import '@content/Variables/CollectionEntry.fragment.graphql'
 #import '@lib/routing/FileRoute.fragment.graphql'
 #import '@lib/routing/HomeRoute.fragment.graphql'
 #import '@lib/routing/PageRoute.fragment.graphql'
@@ -27,6 +29,9 @@ fragment TextBlock on TextBlockRecord {
       ... on VideoEmbedBlockRecord {
         ...VideoEmbedBlock
       }
+      ... on ListBlockRecord {
+        ...ListBlock
+      }
     }
     inlineBlocks {
       ... on CounterBlockRecord {
@@ -43,6 +48,9 @@ fragment TextBlock on TextBlockRecord {
       }
       ... on PageRecord {
         ...PageRoute
+      }
+      ... on VariableRecord {
+        ...Variable
       }
     }
     value

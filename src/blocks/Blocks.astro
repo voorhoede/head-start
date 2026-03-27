@@ -12,6 +12,7 @@ import VideoBlock from './VideoBlock/VideoBlock.astro';
 import VideoEmbedBlock from './VideoEmbedBlock/VideoEmbedBlock.astro';
 import GroupingBlock from './GroupingBlock/GroupingBlock.astro';
 import CounterBlock from './CounterBlock/CounterBlock.astro';
+import ListBlock from './ListBlock/ListBlock.astro';
 import { getEditorPaths } from './block-editor-utils';
 import Icon from '@components/Icon';
 
@@ -27,6 +28,7 @@ const blocksByTypename = {
   VideoEmbedBlockRecord: VideoEmbedBlock,
   GroupingBlockRecord: GroupingBlock,
   CounterBlockRecord: CounterBlock,
+  ListBlockRecord: ListBlock,
 };
 
 interface Props {
