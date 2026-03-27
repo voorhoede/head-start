@@ -45,7 +45,7 @@ Pages are built using **Content Blocks** - modular pieces of content that you ca
 
 To add a block, click the **+** button in the body blocks field and choose the type you need.
 
-![Body blocks](/self-guide/body-blocks.png)
+![Body blocks](/editor-guide/body-blocks.png)
 
 
 ### Available blocks

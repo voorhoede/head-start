@@ -1,7 +1,8 @@
 import type { Client } from '@datocms/cli/lib/cma-client-node';
 import pkg from '../../../package.json';
 
-const siteUrl = `https://${pkg.name}.pages.dev`;
+const siteUrl = process.env.HEAD_START_SITE_URL || `https://${pkg.name}.pages.dev`;
+const editorGuidePath = '/editor-guide/';
 
 export default async function (client: Client) {
   console.log('Install plugin "Custom Page"');
@@ -23,7 +24,7 @@ export default async function (client: Client) {
         {
           pageName: 'Guide',
           iconName: 'book',
-          pageEmbedUrl: `${siteUrl}/self-guide/`,
+          pageEmbedUrl: `${siteUrl}${editorGuidePath}`,
           pageType: { value: 'mainNavigationTabs', label: 'Top menu' },
           placement: { value: 'after', label: 'After menu item' },
           menuItemPlacement: { value: 'configuration', label: 'Configuration' },

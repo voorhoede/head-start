@@ -8,7 +8,7 @@ import PerfHead from '@layouts/PerfHead/PerfHead.astro';
 
 marked.use(gfmHeadingId());
 
-const markdown = await readFile(resolve('docs/self-guide.md'), 'utf-8');
+const markdown = await readFile(resolve('docs/editor-guide.md'), 'utf-8');
 const html = await marked(markdown);
 ---
 
@@ -110,3 +110,4 @@ const html = await marked(markdown);
     padding-left: 1.2em;
   }
 </style>
+

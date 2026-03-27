@@ -39,7 +39,7 @@ Inside of this project, you'll see the following folders and files:
 
 - `docs/` contains project documentation.
   - `decision-log/` lists all key decisions made during the project. Please read the log so you understand why decisions are made and document key decisions when you make them.
-  - `self-guide.md` is the content editor guide displayed inside the CMS via the [custom page plugin](https://www.datocms.com/marketplace/plugins/i/datocms-plugin-custom-page). Edit this file to update the guide. Images for the guide go in `public/self-guide/` and can be referenced as `![alt](/self-guide/filename.png)`. Preview changes locally at `http://localhost:4323/self-guide/`.
+  - The Editor Guide is displayed inside the CMS via the [custom page plugin](https://www.datocms.com/marketplace/plugins/i/datocms-plugin-custom-page). Edit `editor-guide.md` to update the guide and submit those changes through a PR for review. Images for the guide go in `public/editor-guide/` and can be referenced as `![alt](/editor-guide/filename.png)`. Preview changes locally at `http://localhost:4323/editor-guide/`.
 - `src/` contains all website source files that will be handled by Astro.
   - `pages/` - [Pages](https://docs.astro.build/en/core-concepts/astro-pages/) are organised by file system routing and are paired with GraphQL query files for data loading.
   - `pages/api/` - [API routes](https://docs.astro.build/en/core-concepts/endpoints/#server-endpoints-api-routes) are dynamic server endpoints with support for path & query params etc.
@@ -48,7 +48,7 @@ Inside of this project, you'll see the following folders and files:
   - `layouts/` - [Layouts](https://docs.astro.build/en/core-concepts/layouts/) are Astro components used to provide a reusable UI structure, such as a page template.
   - `lib/` - Shared logic and utility helpers, like `datocms`, `i18n` and `routing`.
   - `middleware` - intercept and (possibly) transform requests & responses. See [Astro middleware](https://docs.astro.build/en/guides/middleware/).
-  - `assets/` - is for assets that require a build step. See [Assets](./assets.md). 
+  - `assets/` - is for assets that require a build step. See [Assets](./assets.md).
 - `public/` is for any static assets that are served as-is. See [Assets](./assets.md).
 - `config/` bundles all our configuration files (like DatoCMS migrations), so the project root doesn't become too cluttered.
 - `scripts/` contains all our custom CLI scripts, typically available via `package.json` > `scripts`. Also see [Commands](../README.md#commands).

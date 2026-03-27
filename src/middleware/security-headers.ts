@@ -9,7 +9,8 @@ import { defineMiddleware } from 'astro:middleware';
  */
 export const securityheaders = defineMiddleware(async (context, next) => {
   const response = await next();
-  const isSelfGuide = context.url.pathname === '/self-guide/' || context.url.pathname === '/self-guide';
+  const isEditorGuide =
+    context.url.pathname === '/editor-guide/' || context.url.pathname === '/editor-guide';
   const headers: Record<string, string> = {
     'Referrer-Policy': 'no-referrer-when-downgrade',
     'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
@@ -18,8 +19,8 @@ export const securityheaders = defineMiddleware(async (context, next) => {
     'X-XSS-Protection': '1; mode=block',
   };
 
-  // Allow DatoCMS to embed the self-guide page in an iframe
-  if (isSelfGuide) {
+  // Allow DatoCMS to embed the editor-guide page in an iframe
+  if (isEditorGuide) {
     headers['X-Frame-Options'] = 'ALLOW-FROM https://*.datocms.com';
     headers['Content-Security-Policy'] = 'frame-ancestors \'self\' https://*.datocms.com';
   }
