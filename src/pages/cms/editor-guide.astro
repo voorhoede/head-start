@@ -1,17 +1,9 @@
 ---
-import { readFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
-import { marked } from 'marked';
-import { gfmHeadingId } from 'marked-gfm-heading-id';
 import { fontFamilyArchivo } from '@assets/fonts';
 import PerfHead from '@layouts/PerfHead/PerfHead.astro';
+import { Content } from '../../content/editor-guide.md';
 
 export const prerender = false;
-
-marked.use(gfmHeadingId());
-
-const markdown = await readFile(resolve('docs/editor-guide.md'), 'utf-8');
-const html = await marked(markdown);
 ---
 
 <!doctype html>
@@ -25,7 +17,9 @@ const html = await marked(markdown);
   </head>
   <body>
     <main>
-      <article class="guide" set:html={html} />
+      <article class="guide">
+        <Content />
+      </article>
     </main>
   </body>
 </html>
