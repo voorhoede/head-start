@@ -6,6 +6,8 @@ import { gfmHeadingId } from 'marked-gfm-heading-id';
 import { fontFamilyArchivo } from '@assets/fonts';
 import PerfHead from '@layouts/PerfHead/PerfHead.astro';
 
+export const prerender = false;
+
 marked.use(gfmHeadingId());
 
 const markdown = await readFile(resolve('docs/editor-guide.md'), 'utf-8');

@@ -2,7 +2,7 @@ import type { Client } from '@datocms/cli/lib/cma-client-node';
 import pkg from '../../../package.json';
 
 const siteUrl = process.env.HEAD_START_SITE_URL || `https://${pkg.name}.pages.dev`;
-const editorGuidePath = '/editor-guide/';
+const editorGuidePath = '/cms/editor-guide/';
 
 export default async function (client: Client) {
   console.log('Install plugin "Custom Page"');

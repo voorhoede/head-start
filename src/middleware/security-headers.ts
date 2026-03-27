@@ -10,7 +10,8 @@ import { defineMiddleware } from 'astro:middleware';
 export const securityheaders = defineMiddleware(async (context, next) => {
   const response = await next();
   const isEditorGuide =
-    context.url.pathname === '/editor-guide/' || context.url.pathname === '/editor-guide';
+    context.url.pathname === '/cms/editor-guide/' ||
+    context.url.pathname === '/cms/editor-guide';
   const headers: Record<string, string> = {
     'Referrer-Policy': 'no-referrer-when-downgrade',
     'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',

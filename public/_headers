@@ -13,7 +13,7 @@
   X-XSS-Protection: 1; mode=block
 
 # Allow DatoCMS to embed the editor-guide page in an iframe
-/editor-guide/
+/cms/editor-guide/
   X-Frame-Options: ALLOW-FROM https://*.datocms.com
   Content-Security-Policy: frame-ancestors 'self' https://*.datocms.com
   X-Robots-Tag: noindex
