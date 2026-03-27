@@ -24,10 +24,10 @@ Your website is built from **Pages**. Each page has:
 
 There are a few special page types:
 
-| Page type | Purpose |
-|-----------|---------|
-| **Home Page** | The landing page of your website. There is only one. |
-| **Page** | A regular content page. You can create as many as you need. |
+| Page type          | Purpose                                                           |
+| ------------------ | ----------------------------------------------------------------- |
+| **Home Page**      | The landing page of your website. There is only one.              |
+| **Page**           | A regular content page. You can create as many as you need.       |
 | **Not Found Page** | Shown when a visitor navigates to a URL that doesn't exist (404). |
 
 ### Creating a new page
@@ -47,22 +47,21 @@ To add a block, click the **+** button in the body blocks field and choose the t
 
 ![Body blocks](/editor-guide/body-blocks.png)
 
-
 ### Available blocks
 
-| Block | What it does |
-|-------|-------------|
-| **Text Block** | Rich text content: paragraphs, headings, lists, quotes, and inline media. The most common block for body copy. |
-| **Image Block** | Displays a single image with an optional caption. |
-| **Text Image Block** | Rich text alongside an image, side by side. The image can appear on the left or right. |
-| **Action Block** | One or more buttons or links. Supports internal pages, external URLs, email addresses, and phone numbers. |
-| **Video Block** | Plays a video uploaded directly to the CMS. Supports captions, autoplay, loop, and mute. |
-| **Video Embed Block** | Embeds a video from YouTube or Vimeo using a URL. Use this when the video is hosted externally. |
-| **Embed Block** | Embeds external content from a URL. Works with YouTube, Vimeo, Twitter/X, maps, and other providers. |
-| **Table Block** | Displays data in a table with optional header row and column. |
-| **Grouping Block** | Groups multiple blocks together. Choose a layout: stack, accordion, or tabs. |
-| **Page Partial Block** | Reuses a saved Page Partial - a shared set of blocks that can appear on multiple pages. |
-| **Counter Block** | Displays an animated counter that counts up to a target number. |
+| Block                  | What it does                                                                                                   |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **Text Block**         | Rich text content: paragraphs, headings, lists, quotes, and inline media. The most common block for body copy. |
+| **Image Block**        | Displays a single image with an optional caption.                                                              |
+| **Text Image Block**   | Rich text alongside an image, side by side. The image can appear on the left or right.                         |
+| **Action Block**       | One or more buttons or links. Supports internal pages, external URLs, email addresses, and phone numbers.      |
+| **Video Block**        | Plays a video uploaded directly to the CMS. Supports captions, autoplay, loop, and mute.                       |
+| **Video Embed Block**  | Embeds a video from YouTube or Vimeo using a URL. Use this when the video is hosted externally.                |
+| **Embed Block**        | Embeds external content from a URL. Works with YouTube, Vimeo, Twitter/X, maps, and other providers.           |
+| **Table Block**        | Displays data in a table with optional header row and column.                                                  |
+| **Grouping Block**     | Groups multiple blocks together. Choose a layout: stack, accordion, or tabs.                                   |
+| **Page Partial Block** | Reuses a saved Page Partial - a shared set of blocks that can appear on multiple pages.                        |
+| **Counter Block**      | Displays an animated counter that counts up to a target number.                                                |
 
 ### Tips for working with blocks
 
@@ -87,6 +86,8 @@ When you add an image or video to a block, you can either upload a new file or p
 
 > **Tip**: Always add descriptive **alt text** to images. This improves accessibility for visitors using screen readers and helps with SEO.
 
+For more detail, watch the DatoCMS video on [intro to the asset area](https://www.datocms.com/user-guides/the-basics/intro-to-the-asset-area)
+
 ## Multilingual content
 
 Your CMS supports multiple languages. When editing a record, you'll see a language switcher that lets you toggle between locales. Make sure to fill in content for each active language before publishing.
@@ -95,8 +96,6 @@ Your CMS supports multiple languages. When editing a record, you'll see a langua
 
 For more detailed guidance, check out these resources from DatoCMS:
 
-- [Creating and Managing Content](https://www.datocms.com/user-guides/content-creation-and-management) - how to create, edit, publish, and organise records.
 - [Deep dive into Structured Text](https://www.datocms.com/user-guides/content-management/deep-dive-into-structured-text-in-datocms) - essential video on working with rich text fields.
 - [Building pages with Modular Content](https://www.datocms.com/user-guides/content-management/building-pages-and-deep-dive-into-modular-content) - essential video on composing pages with blocks.
-- [Digital Asset Management](https://www.datocms.com/user-guides/digital-asset-management) - how to manage your images, videos, and files.
 - [Content Modelling](https://www.datocms.com/docs/content-modelling) - understand how models, fields, and blocks are structured (for advanced users).
