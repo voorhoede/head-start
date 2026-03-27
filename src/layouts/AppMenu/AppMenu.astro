@@ -29,7 +29,7 @@ const { items, pageUrls } = Astro.props;
               class:list="main-menu__item"
               data-menu-item
             >
-              {item.items?.length && (
+              {item.items?.length > 0 && (
                 <ul
                   popover
                   id={getItemPopoverId(item.id)}
