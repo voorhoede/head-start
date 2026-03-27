@@ -8,7 +8,11 @@
 #import '@blocks/VideoBlock/VideoBlock.fragment.graphql'
 #import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
 
-query NotFoundPage($locale: SiteLocale!) {
+query NotFoundPage(
+  $slug: String!, 
+  $locale: SiteLocale!, 
+  $fallbackLocales: [SiteLocale!]
+) {
   page: notFoundPage(locale: $locale) {
     __typename
     id

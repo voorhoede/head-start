@@ -7,9 +7,15 @@ vi.mock('@lib/datocms', () => ({
   datocmsAssetsOrigin: 'https://www.datocms-assets.com/',
 }));
 
-vi.mock('@lib/i18n', () => ({
-  getLocale: () => 'en',
-}));
+vi.mock('@lib/i18n', async () => {
+  const actual = await vi.importActual('@lib/i18n');
+  const defaultLocale = 'en' as SiteLocale;
+  return {
+    ...actual,
+    defaultLocale,
+    getLocale: () => defaultLocale,
+  };
+});
 
 const fileRecord: FileRouteFragment = { 
   __typename: 'FileRecord',

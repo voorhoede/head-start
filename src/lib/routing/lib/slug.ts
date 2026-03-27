@@ -1,16 +1,40 @@
 import type { SiteLocale } from '@lib/datocms/types';
+import { defaultLocale, getFallbackLocales } from '@lib/i18n';
 
 export const missingSlug = '-';
 export type MaybeSlug = string | undefined;
 
 type LocalizedSlugs = {
   _allSlugLocales?:
-    | {
-        locale?: SiteLocale | null;
-        value?: string;
-      }[]
-    | null;
+  | {
+    locale?: SiteLocale | null;
+    value?: string;
+  }[]
+  | null;
 };
+
+export type Slugs = LocalizedSlugs & { slug: string }
+
+export function getRecordLocale<T extends Slugs>({
+  locale,
+  record: {
+    slug,
+    _allSlugLocales
+  },
+}: {
+  locale: SiteLocale,
+  record: T
+}) {
+  const slugLocales = _allSlugLocales?.filter(({ value }) => value === slug);
+
+  const recordLocale = [
+    locale,
+    ...getFallbackLocales(locale)
+  ].find(
+    preferred => slugLocales?.some(({ locale }) => locale === preferred)
+  ) || defaultLocale;
+  return recordLocale;
+}
 
 export function getLocalizedSlug<T extends LocalizedSlugs>({
   locale,
