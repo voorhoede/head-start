@@ -16,6 +16,7 @@
 /editor-guide/
   X-Frame-Options: ALLOW-FROM https://*.datocms.com
   Content-Security-Policy: frame-ancestors 'self' https://*.datocms.com
+  X-Robots-Tag: noindex
 
 # Static assets are hashed and can therefore be cached forever
 /_astro/*

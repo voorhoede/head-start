@@ -23,6 +23,7 @@ export const securityheaders = defineMiddleware(async (context, next) => {
   if (isEditorGuide) {
     headers['X-Frame-Options'] = 'ALLOW-FROM https://*.datocms.com';
     headers['Content-Security-Policy'] = 'frame-ancestors \'self\' https://*.datocms.com';
+    headers['X-Robots-Tag'] = 'noindex';
   }
 
   // Apply security headers to the response if they are not already set
