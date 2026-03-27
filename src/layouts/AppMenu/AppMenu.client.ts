@@ -8,6 +8,7 @@ class AppMenu extends HTMLElement {
   #observer: ResizeObserver | undefined;
   #hoverTimeouts: Map<string, number> = new Map();
   #hoverCloseDelayMs = 150;
+  #supportsHover = false;
 
   #onMenuButtonClick = () => {
     this.open();
@@ -97,6 +98,7 @@ class AppMenu extends HTMLElement {
     this.#menuButton = this.querySelector('[data-menu-button]') as HTMLButtonElement;
     this.#dialog = this.querySelector('[data-menu-dialog]') as HTMLDialogElement;
     this.#menuList = this.querySelector('[data-menu-list]') as HTMLElement;
+    this.#supportsHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   }
 
   open() {
@@ -167,19 +169,21 @@ class AppMenu extends HTMLElement {
     // Position popovers on click
     this.#menuList.addEventListener('click', this.#onMenuListClick);
 
-    // Add hover support for menu items
-    const menuItems = this.#menuList.querySelectorAll('[data-menu-item]');
-    menuItems.forEach((item) => {
-      item.addEventListener('mouseenter', this.#onMenuItemMouseEnter);
-      item.addEventListener('mouseleave', this.#onMenuItemMouseLeave);
-    });
+    if (this.#supportsHover) {
+      // Add hover support for menu items
+      const menuItems = this.#menuList.querySelectorAll('[data-menu-item]');
+      menuItems.forEach((item) => {
+        item.addEventListener('mouseenter', this.#onMenuItemMouseEnter);
+        item.addEventListener('mouseleave', this.#onMenuItemMouseLeave);
+      });
 
-    // Keep popover open when hovering over it
-    const popovers = this.querySelectorAll('[popover]');
-    popovers.forEach((popover) => {
-      popover.addEventListener('mouseenter', this.#onPopoverMouseEnter);
-      popover.addEventListener('mouseleave', this.#onPopoverMouseLeave);
-    });
+      // Keep popover open when hovering over it
+      const popovers = this.querySelectorAll('[popover]');
+      popovers.forEach((popover) => {
+        popover.addEventListener('mouseenter', this.#onPopoverMouseEnter);
+        popover.addEventListener('mouseleave', this.#onPopoverMouseLeave);
+      });
+    }
 
     this.#observer = new ResizeObserver(() => this.#onResize());
     this.#observer.observe(this);
@@ -189,14 +193,16 @@ class AppMenu extends HTMLElement {
     this.#menuButton.removeEventListener('click', this.#onMenuButtonClick);
     this.#dialog.removeEventListener('click', this.#onDialogClick);
     this.#menuList.removeEventListener('click', this.#onMenuListClick);
-    this.#menuList.querySelectorAll('[data-menu-item]').forEach((item) => {
-      item.removeEventListener('mouseenter', this.#onMenuItemMouseEnter);
-      item.removeEventListener('mouseleave', this.#onMenuItemMouseLeave);
-    });
-    this.querySelectorAll('[popover]').forEach((popover) => {
-      popover.removeEventListener('mouseenter', this.#onPopoverMouseEnter);
-      popover.removeEventListener('mouseleave', this.#onPopoverMouseLeave);
-    });
+    if (this.#supportsHover) {
+      this.#menuList.querySelectorAll('[data-menu-item]').forEach((item) => {
+        item.removeEventListener('mouseenter', this.#onMenuItemMouseEnter);
+        item.removeEventListener('mouseleave', this.#onMenuItemMouseLeave);
+      });
+      this.querySelectorAll('[popover]').forEach((popover) => {
+        popover.removeEventListener('mouseenter', this.#onPopoverMouseEnter);
+        popover.removeEventListener('mouseleave', this.#onPopoverMouseLeave);
+      });
+    }
     this.#observer?.disconnect();
     this.#hoverTimeouts.forEach((timeout) => clearTimeout(timeout));
     this.#hoverTimeouts.clear();
