@@ -1,5 +1,5 @@
-#import '@lib/routing/HomeRoute.fragment.graphql'
-#import '@lib/routing/PageRoute.fragment.graphql'
+#import '~/lib/routing/HomeRoute.fragment.graphql'
+#import '~/lib/routing/PageRoute.fragment.graphql'
 
 fragment AppMenu on AppRecord {
   menuItems {

@@ -1,6 +1,6 @@
 import type { ValidRedirectStatus } from 'astro';
 import { parse, inject } from 'regexparam';
-import type { RedirectRule } from '@root/scripts/download-redirects';
+import type { RedirectRule } from '~root/scripts/download-redirects';
 import redirectConfiguration from './redirects.json';
 
 export const defaultRedirectStatus = 302;

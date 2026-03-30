@@ -1,8 +1,8 @@
-import { renderToFragment } from '@lib/renderer';
+import { renderToFragment } from '~/lib/renderer';
 import { describe, expect, test } from 'vitest';
 import InlineBlock, { type Props } from './ActionBlock.astro';
-import type { ActionBlockFragment, ExternalLinkFragment, InternalLinkFragment, SiteLocale } from '@lib/datocms/types';
-import { locales } from '@lib/i18n';
+import type { ActionBlockFragment, ExternalLinkFragment, InternalLinkFragment, SiteLocale } from '~/lib/datocms/types';
+import { locales } from '~/lib/i18n';
 
 type ActionBlockItem = 
   | InternalLinkFragment

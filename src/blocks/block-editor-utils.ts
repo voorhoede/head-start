@@ -1,5 +1,5 @@
 import { snakeCase } from 'scule';
-import itemTypesJson from '@lib/datocms/itemTypes.json';
+import itemTypesJson from '~/lib/datocms/itemTypes.json';
 
 const itemTypes = (itemTypesJson as { itemTypes?: Record<string, { id: string; name: string; focusField?: string }> }).itemTypes;
 

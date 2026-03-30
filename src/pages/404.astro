@@ -1,10 +1,10 @@
 ---
-import Blocks from '@blocks/Blocks.astro';
-import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
-import Layout from '@layouts/Default.astro';
-import { datocmsRequest } from '@lib/datocms';
-import type { NotFoundPageQuery, SiteLocale } from '@lib/datocms/types';
-import { noIndexTag, titleTag } from '@lib/seo';
+import Blocks from '~/blocks/Blocks.astro';
+import PreviewModeSubscription from '~/components/PreviewMode/PreviewModeSubscription.astro';
+import Layout from '~/layouts/Default.astro';
+import { datocmsRequest } from '~/lib/datocms';
+import type { NotFoundPageQuery, SiteLocale } from '~/lib/datocms/types';
+import { noIndexTag, titleTag } from '~/lib/seo';
 import query from './_404.query.graphql';
 
 export const prerender = false;

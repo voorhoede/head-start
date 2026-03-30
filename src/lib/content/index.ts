@@ -1,8 +1,8 @@
 import { getCollection as getAstroCollection, getEntry as getAstroCollectionEntry } from 'astro:content';
 import { HEAD_START_PREVIEW, PUBLIC_IS_PRODUCTION } from 'astro:env/server';
-import { getLocale, isLocale } from '@lib/i18n';
-import { SiteLocale } from '@lib/datocms/types';
-import { collectionMap } from '@content/config';
+import { getLocale, isLocale } from '~/lib/i18n';
+import { SiteLocale } from '~/lib/datocms/types';
+import { collectionMap } from '~/content/config';
 
 export type CollectionName = keyof typeof collectionMap;
 
