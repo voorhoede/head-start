@@ -1,14 +1,14 @@
 import { afterEach, describe, test, expect, vi } from 'vitest';
 import robotsParser from 'robots-parser';
-import { robotsTxt, siteName, titleSuffix, titleTag } from '@lib/seo';
-import { getLocale } from '@lib/i18n';
+import { robotsTxt, siteName, titleSuffix, titleTag } from '~/lib/seo';
+import { getLocale } from '~/lib/i18n';
 import aiRobotsTxt from './ai.robots.txt?raw';
 
-vi.mock('@lib/i18n', () => ({
+vi.mock('~/lib/i18n', () => ({
   getLocale: vi.fn(),
 }));
 
-vi.mock('@lib/site.json', () => ({
+vi.mock('~/lib/site.json', () => ({
   globalSeo: {
     en: {
       siteName: 'Test Site (English)',

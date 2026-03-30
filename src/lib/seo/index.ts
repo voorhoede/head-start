@@ -1,6 +1,6 @@
-import type { Tag } from '@lib/datocms/types';
-import { getLocale } from '@lib/i18n';
-import { globalSeo } from '@lib/site.json';
+import type { Tag } from '~/lib/datocms/types';
+import { getLocale } from '~/lib/i18n';
+import { globalSeo } from '~/lib/site.json';
 import aiRobotsTxt from './ai.robots.txt?raw';
 
 /** 

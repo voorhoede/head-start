@@ -9,7 +9,7 @@ import { registerRoute } from 'workbox-routing';
 import { setCacheNameDetails } from 'workbox-core';
 
 // be careful not to import the whole package.json, as it will be included in the final bundle
-import { name } from '@root/package.json';
+import { name } from '~root/package.json';
 
 const STATUS_CODES = {
   Opaque: 0,

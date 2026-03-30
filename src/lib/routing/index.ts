@@ -1,5 +1,5 @@
-import type { FileRouteFragment, HomeRouteFragment, PageRouteFragment, SiteLocale } from '@lib/datocms/types';
-import { getLocale } from '@lib/i18n';
+import type { FileRouteFragment, HomeRouteFragment, PageRouteFragment, SiteLocale } from '~/lib/datocms/types';
+import { getLocale } from '~/lib/i18n';
 import { getPagePath } from './page';
 import { getFileHref } from './file';
 

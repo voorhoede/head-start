@@ -1,5 +1,5 @@
 import { describe, expect, test, } from 'vitest';
-import { renderToFragment } from '@lib/renderer';
+import { renderToFragment } from '~/lib/renderer';
 import PerfHead from './PerfHead.astro';
 
 

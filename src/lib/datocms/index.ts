@@ -1,9 +1,9 @@
 import { Kind, parse, type DocumentNode, type FragmentDefinitionNode, type OperationDefinitionNode } from 'graphql';
 import { print } from 'graphql/language/printer';
-import type { SiteLocale } from '@lib/datocms/types';
-import { titleSuffix } from '@lib/seo';
-import { datocmsBuildTriggerId, datocmsEnvironment } from '@root/datocms-environment';
-import { output } from '@root/config/output';
+import type { SiteLocale } from '~/lib/datocms/types';
+import { titleSuffix } from '~/lib/seo';
+import { datocmsBuildTriggerId, datocmsEnvironment } from '~root/datocms-environment';
+import { output } from '~root/config/output';
 import { DATOCMS_READONLY_API_TOKEN, HEAD_START_PREVIEW } from 'astro:env/server';
 import { stripIndents } from 'proper-tags';
 
@@ -164,7 +164,7 @@ export async function datocmsCollection<CollectionType>({
     const data = await datocmsRequest<CollectionData<CollectionType>>({
       query: parse(/* graphql */`
         # Insert fragment definition from fragmentDocument, 
-        # which is either the fragment passed from an import from @lib/datocms/types.ts 
+        # which is either the fragment passed from an import from ~/lib/datocms/types.ts 
         # or the one created from a string;
         ${print(fragmentDocument)}
         

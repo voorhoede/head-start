@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { hashSecret, previewCookieName } from '@middleware/preview';
+import { hashSecret, previewCookieName } from '~/middleware/preview';
 import { PUBLIC_IS_PRODUCTION } from 'astro:env/server';
 
 export const prerender = false;
