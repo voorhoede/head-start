@@ -3,6 +3,7 @@ import type { CdaStructuredTextRecord } from 'datocms-structured-text-utils';
 import { type CdaStructuredTextValue } from 'datocms-structured-text-utils';
 import { StructuredText } from '@datocms/astro/StructuredText';
 import LinkToRecord from '../LinkToRecord/LinkToRecord.astro';
+import Code from './nodes/Code.astro';
 import Heading from './nodes/Heading.astro';
 import Paragraph from './nodes/Paragraph.astro';
 import Block from './nodes/Block.astro';
@@ -11,7 +12,6 @@ import ItemLink from './nodes/ItemLink.astro';
 interface Props {
   data: CdaStructuredTextValue;
 }
-// TODO CHECK language on code block -> we dont want it
 
 const { data } = Astro.props;
 
@@ -40,6 +40,7 @@ const inlineRecordComponents = Object.fromEntries(
   inlineRecordComponents={inlineRecordComponents}
   linkToRecordComponents={linkToRecordComponents}
   nodeOverrides={{
+    code: Code,
     heading: Heading,
     paragraph: Paragraph,
   }}
