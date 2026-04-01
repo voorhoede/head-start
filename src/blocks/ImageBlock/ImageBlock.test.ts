@@ -103,8 +103,8 @@ describe('ImageBlock', () => {
     });
 
     const img = fragment.querySelector('img');
-    expect(img?.width).toBe(150);
-    expect(img?.height).toBe(150);
+    expect(img?.style.maxWidth).toBe('150px');
+    expect(img?.style.aspectRatio).toBe('150 / 150');
     expect(img?.style.backgroundImage).toContain('base64');
   });
 });
