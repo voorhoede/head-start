@@ -5,6 +5,7 @@ import { t } from '~/lib/i18n';
 const { image, loading = 'lazy' } = Astro.props;
 const altText = image.alt ? image.alt : ''; // default to empty string for accessibility
 const imageUnavailableMessage = t('image_unavailable');
+const imgClass = 'image-block-image';
 
 const astroImageData = {
   src: image.url,
@@ -15,67 +16,68 @@ const astroImageData = {
   alt: altText,
   base64: image.responsiveImage?.base64 || '',
 };
-
 ---
+
 <image-component>
   <figure style={`--unavailable-message: "${imageUnavailableMessage}"`}>
     {
-      image.responsiveImage
-        ? // bitmap images have Imgix generated props (responsiveImage.*):
+      image.responsiveImage ? (
+        // bitmap images have Imgix generated props (responsiveImage.*):
         <AstroImage
-          data={ astroImageData }
-          imgClass='astro-image'
-          priority={ loading === 'eager' }
+          data={astroImageData}
+          imgClass={imgClass}
+          priority={loading === 'eager'}
         />
-        : // vector images do not have Imgix generated props, so using as is:
+      ) : (
+        // vector images do not have Imgix generated props, so using as is:
         <img
-          alt={ altText }
-          loading={ loading }
-          src={ image.url }
-          width={ image.width }
-          height={ image.height }
+          alt={altText}
+          loading={loading}
+          src={image.url}
+          width={image.width}
+          height={image.height}
+          class={imgClass}
         />
+      )
     }
-    { image.title && (
-      <figcaption>{ image.title }</figcaption>
-    )}
+    {image.title && <figcaption>{image.title}</figcaption>}
   </figure>
 </image-component>
 
 <style>
-/* functional styling */
+  /* functional styling */
 
-img, :global(.astro-image) {
-  display: block;
-  max-width: 100%;
-  height: auto;
-  background-size: cover;
-}
+  :global(.image-block-image) {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    background-size: cover;
+  }
 
-/**
+  /**
  * broken image styling, only applies when image fails to load
  * @see https://bitsofco.de/styling-broken-images/
  */
- img, :global(.astro-image) {
-  position: relative;
-  text-align: center;
- }
+  :global(.image-block-image) {
+    position: relative;
+    text-align: center;
+  }
 
- img:after, :global(.astro-image:after) {
-  content: attr(alt) " (" var(--unavailable-message) ")";
-  display: block;
-  position: absolute;
-  color: black;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  padding-top: calc(50% - 1em);
-  background-color: #f1f1f1;
- }
+  :global(.image-block-image:after) {
+    content: attr(alt) ' (' var(--unavailable-message) ')';
+    display: block;
+    position: absolute;
+    color: black;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding-top: calc(50% - 1em);
+    background-color: #f1f1f1;
+  }
 
- /* basic styling, can be removed */
- figcaption {
+  /* basic styling, can be removed */
+  figcaption {
     text-align: center;
   }
 </style>
