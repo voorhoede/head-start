@@ -11,6 +11,7 @@ describe('TextImageBlock', () => {
           layout: 'text-image',
           text: {
             blocks: [],
+            inlineBlocks: [],
             links: [],
             value: {
               schema: 'dast',
@@ -58,6 +59,7 @@ describe('TextImageBlock', () => {
           layout: 'image-text',
           text: {
             blocks: [],
+            inlineBlocks: [],
             links: [],
             value: {
               schema: 'dast',
