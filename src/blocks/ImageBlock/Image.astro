@@ -1,48 +1,31 @@
 ---
+import { Image as AstroImage } from '@datocms/astro'; 
 import { t } from '~/lib/i18n';
-
-const defaultSizes = [1280, 960, 640, 320];
-
-const getImageSrc = (url: string, params: Record<string, number|string> = {}) => {
-  const defaults: Record<string, number|string> = {
-    auto: 'format,compress',
-    q: 80,
-    w: Math.max(...defaultSizes),
-  };
-  const stringifyObjectValues = (obj: Record<string, number|string>) => {
-    return Object.entries(obj).reduce((acc, [key, value]) => ({ ...acc, [key]: value.toString() }), {});
-  };
-  const queryString = new URLSearchParams(stringifyObjectValues({ ...defaults, ...params })).toString();
-  return new URL(`${url}?${queryString}`).toString();
-};
-
-const getImageSrcSet = (url: string, sizes = defaultSizes, params = {}) => {
-  return sizes.map((size) => {
-    const src = getImageSrc(url, { ...params, w: size, fit: 'max' });
-    return `${src} ${size}w`;
-  }).join(', ');
-};
 
 const { image, loading = 'lazy' } = Astro.props;
 const altText = image.alt ? image.alt : ''; // default to empty string for accessibility
 const imageUnavailableMessage = t('image_unavailable');
+
+const astroImageData = {
+  src: image.url,
+  srcSet: image.responsiveImage?.srcSet ?? null,
+  title: image.title,
+  width: image.width,
+  height: image.height,
+  alt: altText,
+  base64: image.responsiveImage?.base64 || '',
+};
+
 ---
 <image-component>
-  <figure>
+  <figure style={`--unavailable-message: "${imageUnavailableMessage}"`}>
     {
       image.responsiveImage
         ? // bitmap images have Imgix generated props (responsiveImage.*):
-        <img
-          alt={ altText }
-          loading={ loading }
-          srcset={ getImageSrcSet(image.url) }
-          src={ getImageSrc(image.url) }
-          width={ image.width }
-          height={ image.height }
-          style={{
-            backgroundImage: `url(${image.responsiveImage.base64})`
-          }}
-          data-unavailable={ imageUnavailableMessage }
+        <AstroImage
+          data={ astroImageData }
+          imgClass='astro-image'
+          priority={ loading === 'eager' }
         />
         : // vector images do not have Imgix generated props, so using as is:
         <img
@@ -51,7 +34,6 @@ const imageUnavailableMessage = t('image_unavailable');
           src={ image.url }
           width={ image.width }
           height={ image.height }
-          data-unavailable={ imageUnavailableMessage }
         />
     }
     { image.title && (
@@ -60,12 +42,10 @@ const imageUnavailableMessage = t('image_unavailable');
   </figure>
 </image-component>
 
-<script src="./Image.client.ts"></script>
-
 <style>
 /* functional styling */
 
-img {
+img, :global(.astro-image) {
   display: block;
   max-width: 100%;
   height: auto;
@@ -76,14 +56,16 @@ img {
  * broken image styling, only applies when image fails to load
  * @see https://bitsofco.de/styling-broken-images/
  */
- img {
+ img, :global(.astro-image) {
   position: relative;
   text-align: center;
  }
- img:after {
-  content: attr(alt) " (" attr(data-unavailable) ")";
+
+ img:after, :global(.astro-image:after) {
+  content: attr(alt) " (" var(--unavailable-message) ")";
   display: block;
   position: absolute;
+  color: black;
   top: 0;
   left: 0;
   width: 100%;
