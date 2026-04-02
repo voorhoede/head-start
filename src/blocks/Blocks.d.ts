@@ -11,8 +11,7 @@ import type {
   GroupingBlockFragment,
   CounterBlockFragment,
   ListBlockFragment,
-  IconBlockFragment,
-} from '@lib/datocms/types';
+} from '~/lib/datocms/types';
 
 export type AnyBlock = Omit<
   ( // Add any new Block types here.

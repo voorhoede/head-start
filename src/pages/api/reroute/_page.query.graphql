@@ -1,4 +1,4 @@
-#import '@lib/routing/PageRoute.fragment.graphql'
+#import '~/lib/routing/PageRoute.fragment.graphql'
 
 query ReroutePage($locale: SiteLocale!, $slug: String!) {
   page(locale: $locale, filter: { slug: { eq: $slug } }) {
