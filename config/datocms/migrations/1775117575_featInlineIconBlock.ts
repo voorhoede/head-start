@@ -30,10 +30,7 @@ export default async function (client: Client) {
     label: 'Name',
     field_type: 'string',
     api_key: 'name',
-    validators: {
-      required: {},
-      enum: { values: ['external', 'download'] },
-    },
+    validators: { required: {}, enum: { values: ['external', 'download'] } },
     appearance: {
       addons: [],
       editor: 'single_line',
@@ -112,10 +109,7 @@ export default async function (client: Client) {
         ],
       },
       structured_text_inline_blocks: {
-        item_types: [
-          'O3-JKIJwTaiqdryVNiyBBA',
-          'Yj11fFgoThKqLyKcqIg2Gg',
-        ],
+        item_types: ['O3-JKIJwTaiqdryVNiyBBA', 'Yj11fFgoThKqLyKcqIg2Gg'],
       },
       structured_text_links: {
         on_publish_with_unpublished_references_strategy: 'fail',
@@ -137,6 +131,8 @@ export default async function (client: Client) {
   await client.itemTypes.update('O3-JKIJwTaiqdryVNiyBBA', {
     presentation_title_field: { id: 'YcplD7VvSKy7Rw7BGWeKIA', type: 'field' },
   });
+
+  console.log('Manage schema menu items');
 
   console.log(
     'Update block schema menu item for block model "\uD83D\uDE98 Icon Block" (`icon_block`)',
