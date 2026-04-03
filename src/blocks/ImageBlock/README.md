@@ -1,6 +1,6 @@
 # Image Block
 
-**Renders [DatoCMS image](https://www.datocms.com/docs/general-concepts/images) with optional caption.**
+**Renders [DatoCMS Astro image](https://www.datocms.com/docs/astro/managing-images) with optional caption.**
 
 ## Features
 
