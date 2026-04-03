@@ -1,180 +1,32 @@
 # Structured Text
 
-**Renders the content from a [DatoCMS Structured Text](https://www.datocms.com/docs/structured-text/dast) field, with configurable renderers per Structured Text node type.**
-
-> [!NOTE]
-> This component is based on the [`StructuredText` component from `@datocms/svelte`](https://github.com/datocms/datocms-svelte/tree/main/src/lib/components/StructuredText) (there currently is no official DatoCMS Astro package available). The documentation and examples below are also borrowed and adapted from the Svelte version.
-Changes have been added to support the [Custom Text Styles plugin](https://github.com/voorhoede/datocms-plugin-custom-text-styles).
+**Renders the content from a [DatoCMS Structured Text](https://www.datocms.com/docs/structured-text/dast) field using the [DatoCMS Astro StructuredText component](https://www.datocms.com/docs/astro/structured-text-fields).**
 
 ## Setup
 
-Import the component like this:
-
 ```astro
 ---
-import StructuredText from '~/components/StructuredText/StructuredText.astro';
+import Text from '~/components/Text/Text.astro';
 ---
+
+<Text data={block.text} />
 ```
 
-## Basic usage
-```astro
----
-import StructuredText from '~/components/StructuredText/StructuredText.astro';
+## Blocks and links
 
-const query = `
-  query {
-    blogPost {
-      title
-      content {
-        value
-      }
-    }
-  }
-`;
+A Structured Text field can reference other DatoCMS records as **blocks** (full-width embedded records), **inline blocks** (inline embedded records), **item links** (links to records), and **inline records** (inline record references).
 
-const response = await fetch('https://graphql.datocms.com/', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    Authorization: "Bearer faeb9172e232a75339242faafb9e56de8c8f13b735f7090964",
-  },
-  body: JSON.stringify({ query })
-})
+`Text.astro` automatically maps each `__typename` in `data.blocks`, `data.inlineBlocks`, and `data.links` to the right component, so you don't need to configure anything manually — just make sure the field's GraphQL fragment includes the relevant nested data.
 
-const { data } = await response.json()
----
 
-<article>
-  { data && (
-    <h1>{ data.blogPost.title }</h1>
-    <StructuredText data={data.blogPost.content} />
-  )}
-</article>
-```
+## Node overrides
 
-## Customization
+Some DAST node types are rendered with custom components instead of the defaults provided by `@datocms/astro`:
 
-The `<StructuredText />` component comes with a set of default components that are use to render all the nodes present in [DatoCMS Dast trees](https://www.datocms.com/docs/structured-text/dast). These default components are enough to cover most of the simple cases.
+| Node | Component | Reason |
+| --- | --- | --- |
+| `heading` | `nodes/Heading.astro` | Promotes `h1` to `h2` (page `<h1>` is reserved for the page title) and supports a `centered` style |
+| `paragraph` | `nodes/Paragraph.astro` | Supports a `centered` style from DatoCMS |
+| `code` | `nodes/Code.astro` | Renders a plain `<pre><code>` block to avoid unencoded characters from Shiki |
 
-You need to use custom components in the following cases:
-
-- you have to render blocks, inline items or item links: there's no conventional way of rendering theses nodes, so you must create and pass custom components;
-- you need to render a conventional node differently (e.g. you may want a custom render for blockquotes)
-
-### Custom components for blocks
-
-Here is an example using custom components for blocks, inline and item links. Take a look at the [test fixtures (Svelte)](https://github.com/datocms/datocms-svelte/tree/main/src/lib/components/StructuredText/__tests__/__fixtures__) to see examples on how to implement these components.
-
-```astro
----
-import { isBlock, isInlineItem, isItemLink } from 'datocms-structured-text-utils';
-
-import StructuredText from '~/components/StructuredText/StructuredText.astro';
-
-import Block from './Block.astro';
-import InlineItem from './InlineItem.astro';
-import ItemLink from './ItemLink.astro';
-
-const query = `
-  query {
-    blogPost {
-      title
-      content {
-        value
-        links {
-          __typename
-          ... on TeamMemberRecord {
-            id
-            firstName
-            slug
-          }
-        }
-        blocks {
-          __typename
-          ... on ImageRecord {
-            id
-            image {
-              responsiveImage(
-                imgixParams: { fit: crop, w: 300, h: 300, auto: format }
-              ) {
-                srcSet
-                webpSrcSet
-                sizes
-                src
-                width
-                height
-                aspectRatio
-                alt
-                title
-                base64
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-const response = await fetch('https://graphql.datocms.com/', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    Authorization: "Bearer faeb9172e232a75339242faafb9e56de8c8f13b735f7090964",
-  },
-  body: JSON.stringify({ query })
-})
-
-const { data } = await response.json()
----
-
-<article>
-{ data && (
-  <h1>{ data.blogPost.title }</h1>
-  <StructuredText
-    data={data.blogPost.content}
-    components={[
-      [isInlineItem, InlineItem],
-      [isItemLink, ItemLink],
-      [isBlock, Block]
-    ]}
-  />
-)}
-</article>
-```
-
-### Override default rendering of nodes
-
-`<StructuredText />` automatically renders all nodes (except for `inline_item`, `item_link` and `block`) using a set of default components, that you might want to customize. For example:
-
-- For `heading` nodes, you might want to add an anchor;
-- For `code` nodes, you might want to use a custom syntax highlighting component;
-
-In this case, you can easily override default rendering rules with the `components` props. See test fixtures for example implementations of custom components (e.g. [this special heading component (Svelte)](https://github.com/datocms/datocms-svelte/blob/main/src/lib/components/StructuredText/__tests__/__fixtures__/IncreasedLevelHeading.svelte)).
-
-```astro
----
-import { isHeading, isCode } from 'datocms-structured-text-utils';
-import StructuredText from '~/components/StructuredText/StructuredText.astro';
-
-import Heading from './Heading.astro';
-import Code from './Code.astro';
-
-const { data } = Astro.props;
----
-
-<StructuredText
-	data={data.blogPost.content}
-	components={[
-		[isHeading, Heading],
-		[isCode, Code]
-	]}
-/>
-```
-
-## Props
-
-| prop | type | required | description | default |
-| --- | --- | --- | --- | --- |
-| data | `StructuredText \| DastNode` | :white_check_mark: | The actual [field value](https://www.datocms.com/docs/structured-text/dast) you get from DatoCMS | |
-| components | [`PredicateComponentTuple[] \| null`](./StructuredText.d.ts) | Only required if data contain `block`, `inline_item` or `item_link` nodes | Array of tuples formed by a predicate function and custom component | `[]` |
+To add or change a node override, add a component to `nodes/` and register it in the `nodeOverrides` prop inside `Text.astro`.
