@@ -1,6 +1,6 @@
 ---
-import { datocmsAssetsOrigin, datocmsGraphqlOrigin } from '@lib/datocms';
-import { fonts, getFontFaceDeclaration } from '@assets/fonts';
+import { datocmsAssetsOrigin, datocmsGraphqlOrigin } from '~/lib/datocms';
+import { fonts, getFontFaceDeclaration } from '~/assets/fonts';
 
 const preConnectOrigins = [datocmsAssetsOrigin, datocmsGraphqlOrigin];
 const woff2urls = fonts.map((font) => font.woff2Url);

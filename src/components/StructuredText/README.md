@@ -12,14 +12,14 @@ Import the component like this:
 
 ```astro
 ---
-import StructuredText from '@components/StructuredText/StructuredText.astro';
+import StructuredText from '~/components/StructuredText/StructuredText.astro';
 ---
 ```
 
 ## Basic usage
 ```astro
 ---
-import StructuredText from '@components/StructuredText/StructuredText.astro';
+import StructuredText from '~/components/StructuredText/StructuredText.astro';
 
 const query = `
   query {
@@ -69,7 +69,7 @@ Here is an example using custom components for blocks, inline and item links. Ta
 ---
 import { isBlock, isInlineItem, isItemLink } from 'datocms-structured-text-utils';
 
-import StructuredText from '@components/StructuredText/StructuredText.astro';
+import StructuredText from '~/components/StructuredText/StructuredText.astro';
 
 import Block from './Block.astro';
 import InlineItem from './InlineItem.astro';
@@ -155,7 +155,7 @@ In this case, you can easily override default rendering rules with the `componen
 ```astro
 ---
 import { isHeading, isCode } from 'datocms-structured-text-utils';
-import StructuredText from '@components/StructuredText/StructuredText.astro';
+import StructuredText from '~/components/StructuredText/StructuredText.astro';
 
 import Heading from './Heading.astro';
 import Code from './Code.astro';

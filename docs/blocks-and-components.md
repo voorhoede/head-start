@@ -15,7 +15,9 @@ src/
 │       ├── SomeContentBlock.astro
 │       ├── SomeContentBlock.fragment.graphql
 │       ├── SomeContentBlock.client.ts
-│       └── SomeContentBlock.test.ts
+│       ├── SomeContentBlock.test.ts
+│       ├── SomeContentBlock.preview.txt
+│       └── SomeContentBlock.preview.png
 │
 └── components/
     └── SomeUiComponent/
@@ -49,13 +51,58 @@ Name: Test Block
 'Model ID': test_block
 ```
 
+## Block Previews
+
+Blocks can have preview files that are uploaded to DatoCMS as visual hints for CMS editors. When editors select blocks in modular content or structured text fields, these previews help them identify the right block.
+
+### Preview files
+
+Each block can have a text description and/or an image preview. Place them in the block's directory:
+
+```
+src/blocks/HeroBlock/
+├── HeroBlock.astro
+├── HeroBlock.fragment.graphql
+├── HeroBlock.preview.txt              ← short text description
+└── HeroBlock.preview.png              ← visual preview (jpg, png, or webp)
+```
+
+- The **text file** should contain a brief description of what the block does (one or two sentences).
+- The **image file** should be a screenshot or mockup showing how the block looks on the front end.
+
+> [!NOTE]
+> When you scaffold a new block with `npm run create:block`, a `.preview.txt` file is automatically created. You can add a preview image manually.
+
+### Uploading previews
+
+Run the upload command to sync preview files to DatoCMS:
+
+```shell
+npm run cms:upload-block-previews
+```
+
+The script automatically detects which preview files have changed (using file hashes) and only uploads those. It will show which blocks need updating and ask for confirmation before making changes:
+
+```
+Found 10 block(s) with preview files.
+2 block(s) to upload: HeroBlock, TextBlock
+? Upload block previews to DatoCMS? (Y/n)
+```
+
+### How it works
+
+- File hashes are stored in `src/lib/datocms/previewHashes.json` and should be committed to git so that all developers share the same sync state.
+- The preview text and image URL are combined into the item type's `hint` field in DatoCMS.
+- Preview files in `src/blocks/` are the **source of truth**. Avoid editing hints directly in the DatoCMS dashboard, as they will be overwritten the next time the script runs for that block.
+- No migration is needed. The script updates hints via the Management API directly.
+
 ## Block templates
 
 Head Start uses the same convention for props and types for every Block: the `Props` interface always contains a `block` property containing the type based on the CMS model. This `block` type is automatically generated based on a Block's GraphQL Fragment file (see [CMS Data Loading](./cms-data-loading.md#graphql-files)). This means a basic Block template looks like this:
 
 ```astro
 ---
-import type { SomeContentBlockFragment } from '@lib/datocms/types';
+import type { SomeContentBlockFragment } from '~/lib/datocms/types';
 
 interface Props {
   block: SomeContentBlockFragment
@@ -75,8 +122,8 @@ Pages and other templates can use the `<Blocks />` component to render a Modular
 
 ```astro
 ---
-import { datocmsRequest } from '@lib/datocms';
-import Blocks from '@blocks/Blocks.astro';
+import { datocmsRequest } from '~/lib/datocms';
+import Blocks from '~/blocks/Blocks.astro';
 import query from './_index.query.graphql';
 
 const { page } = await datocmsRequest({ query, variables: { locale: Astro.params.locale } });
@@ -122,7 +169,7 @@ import {
   // import new Block's Fragment:
   SomeContentBlockFragment,
   TextBlockFragment,
-} from '@lib/datocms/types';
+} from '~/lib/datocms/types';
 
 export type AnyBlock =
   | ImageBlockFragment
@@ -147,7 +194,7 @@ You probably want to use your block on certain pages. Depending on the block you
 #  Update the above file for the Page model
 #  Be sure to import your new block fragment
 
-#import '@blocks/TestBlock/TestBlock.fragment.graphql'
+#import '~/blocks/TestBlock/TestBlock.fragment.graphql'
 
 page(locale: $locale, filter: { slug: { eq: $slug } }) {
   # redacted content
@@ -177,7 +224,7 @@ Astro supports [client-side scripts inside components](https://docs.astro.build/
 ```ts
 // SomeComponent.test.ts
 import { describe, expect, test } from 'vitest';
-import { renderToFragment } from '@lib/renderer';
+import { renderToFragment } from '~/lib/renderer';
 import SomeComponent, { type Props } from './SomeComponent.astro';
 
 describe('Some Component', () => {

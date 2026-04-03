@@ -1,4 +1,4 @@
-import { renderToFragment } from '@lib/renderer';
+import { renderToFragment } from '~/lib/renderer';
 import { describe, expect, test } from 'vitest';
 import SkipLink from './SkipLink.astro';
 

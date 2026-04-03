@@ -1,4 +1,4 @@
-import { renderToFragment } from '@lib/renderer';
+import { renderToFragment } from '~/lib/renderer';
 import { describe, expect, test } from 'vitest';
 import TextBlock, { type Props } from './TextBlock.astro';
 
@@ -10,6 +10,7 @@ describe('TextBlock Component', () => {
           __typename: 'TextBlockRecord',
           text: {
             blocks: [],
+            inlineBlocks: [],
             links: [],
             value: {
               schema: 'dast',
@@ -54,6 +55,7 @@ describe('TextBlock Component', () => {
           __typename: 'TextBlockRecord',
           text: {
             blocks: [],
+            inlineBlocks: [],
             links: [],
             value: {
               schema: 'dast',
@@ -98,6 +100,7 @@ describe('TextBlock Component', () => {
           __typename: 'TextBlockRecord',
           text: {
             blocks: [],
+            inlineBlocks: [],
             links: [],
             value: {
               schema: 'dast',

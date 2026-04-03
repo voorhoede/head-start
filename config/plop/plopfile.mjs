@@ -46,6 +46,12 @@ export default function (plop) {
       },
       {
         type: 'confirm',
+        name: 'preview',
+        message: 'Add CMS preview hint (.preview.txt)?',
+        default: true,
+      },
+      {
+        type: 'confirm',
         name: 'test',
         message: 'Add test file (.test.ts)?',
         default: false,
@@ -67,6 +73,20 @@ export default function (plop) {
         type: 'add',
         path: '../../src/blocks/{{ pascalCase name }}/{{ pascalCase name }}.fragment.graphql',
         templateFile: 'templates/block/Block.fragment.graphql.hbs',
+      },
+      {
+        type: 'add',
+        path: '../../src/blocks/{{ pascalCase name }}/{{ pascalCase name }}.preview.txt',
+        templateFile: 'templates/block/Block.preview.txt.hbs',
+        skip: (data) => {
+          const name = plop.getHelper('pascalCase')(data.name);
+          if (!data.preview) return `Skipped. Add ${name}.preview.txt and optionally a ${name}.preview.{jpg,png,webp} image manually`;
+        },
+      },
+      (data) => {
+        if (!data.preview) return '';
+        const name = plop.getHelper('pascalCase')(data.name);
+        return `Optionally add a ${name}.preview.{jpg,png,webp} image for a visual block preview`;
       },
       {
         type: 'add',

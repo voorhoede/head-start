@@ -1,6 +1,6 @@
 ---
-import type { StructuredText } from 'datocms-structured-text-utils';
-import type { TextBlockFragment } from '@lib/datocms/types';
+import { type CdaStructuredTextValue } from 'datocms-structured-text-utils';
+import type { TextBlockFragment } from '~/lib/datocms/types';
 import Text from './Text.astro';
 
 export interface Props {
@@ -9,4 +9,4 @@ export interface Props {
 const { block } = Astro.props;
 ---
 
-<Text data={ block.text as StructuredText } />
+<Text data={ block.text as CdaStructuredTextValue } />

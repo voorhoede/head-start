@@ -1,10 +1,10 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
-import type { SiteLocale } from '@lib/datocms/types';
-import { getLocale } from '@lib/i18n';
-import { getHref, type RecordRoute } from '@lib/routing';
-import Link from '@components/Link/Link.astro';
-import LinkToFile from '@components/LinkToFile/LinkToFile.astro';
+import type { SiteLocale } from '~/lib/datocms/types';
+import { getLocale } from '~/lib/i18n';
+import { getHref, type RecordRoute } from '~/lib/routing';
+import Link from '~/components/Link/Link.astro';
+import LinkToFile from '~/components/LinkToFile/LinkToFile.astro';
 
 export type Props = Omit<HTMLAttributes<'a'>,'href'> & {
   openInNewTab?: boolean;

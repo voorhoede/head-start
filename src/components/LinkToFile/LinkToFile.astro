@@ -1,10 +1,10 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
-import type { FileRouteFragment } from '@lib/datocms/types';
+import type { FileRouteFragment } from '~/lib/datocms/types';
 import prettyBytes from 'pretty-bytes';
-import { getLocale } from '@lib/i18n';
-import { getFileHref } from '@lib/routing/';
-import Icon from '@components/Icon';
+import { getLocale } from '~/lib/i18n';
+import { getFileHref } from '~/lib/routing/';
+import Icon from '~/components/Icon';
 
 export type Props = HTMLAttributes<'a'> & {
   record: FileRouteFragment;

@@ -1,4 +1,4 @@
-import { renderToFragment } from '@lib/renderer';
+import { renderToFragment } from '~/lib/renderer';
 import { describe, expect, test } from 'vitest';
 import GroupingBlock, { type Props } from './GroupingBlock.astro';
 
@@ -13,6 +13,7 @@ export const items = [
       __typename: TEXT_BLOCK_RECORD,
       text: {
         blocks: [],
+        inlineBlocks: [],
         links: [],
         value: {
           schema: 'dast',

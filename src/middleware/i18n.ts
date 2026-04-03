@@ -1,5 +1,5 @@
 import { defineMiddleware } from 'astro:middleware';
-import { defaultLocale, isLocale, setLocale } from '@lib/i18n';
+import { defaultLocale, isLocale, setLocale } from '~/lib/i18n';
 
 /**
  * i18n middleware:
