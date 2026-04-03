@@ -14,8 +14,17 @@ class AppMenu extends HTMLElement {
     this.open();
   };
 
-  #onDialogClick = () => {
-    this.close();
+  #onDialogClick = (event: Event) => {
+    const target = event.target as HTMLElement | null;
+    if (!target) return;
+
+    const isBackdropClick = target === this.#dialog;
+    const isCloseButtonClick = !!target.closest('[data-menu-close]');
+    const isLinkClick = !!target.closest('a[href]');
+
+    if (isBackdropClick || isCloseButtonClick || isLinkClick) {
+      this.close();
+    }
   };
 
   #onMenuListClick = (event: Event) => {
