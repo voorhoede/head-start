@@ -37,6 +37,14 @@ fragment TextBlock on TextBlockRecord {
       ... on CounterBlockRecord {
         ...CounterBlock
       }
+      ... on VariableBlockRecord {
+        __typename
+        id
+        variable {
+          ...Variable
+        }
+      }
+
     }
     links {
       __typename
@@ -49,9 +57,7 @@ fragment TextBlock on TextBlockRecord {
       ... on PageRecord {
         ...PageRoute
       }
-      ... on VariableRecord {
-        ...Variable
-      }
+
     }
     value
   }
