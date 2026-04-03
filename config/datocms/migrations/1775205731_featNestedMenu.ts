@@ -88,7 +88,11 @@ export default async function (client: Client) {
     api_key: 'items',
     validators: {
       rich_text_blocks: {
-        item_types: ['FmR0GklXRq-7Ix8-5MaJjw', 'HK5FsUejSR-11KojiPoWbQ'],
+        item_types: [
+          'FmR0GklXRq-7Ix8-5MaJjw',
+          'HK5FsUejSR-11KojiPoWbQ',
+          'TolRinJHS4GC8C2mw2iiXQ',
+        ],
       },
     },
     appearance: {
@@ -127,7 +131,11 @@ export default async function (client: Client) {
     api_key: 'items',
     validators: {
       rich_text_blocks: {
-        item_types: ['FmR0GklXRq-7Ix8-5MaJjw', 'HK5FsUejSR-11KojiPoWbQ'],
+        item_types: [
+          'FmR0GklXRq-7Ix8-5MaJjw',
+          'HK5FsUejSR-11KojiPoWbQ',
+          'TolRinJHS4GC8C2mw2iiXQ',
+        ],
       },
       size: { min: 1 },
     },
@@ -149,7 +157,11 @@ export default async function (client: Client) {
     api_key: 'items',
     validators: {
       rich_text_blocks: {
-        item_types: ['FmR0GklXRq-7Ix8-5MaJjw', 'HK5FsUejSR-11KojiPoWbQ'],
+        item_types: [
+          'FmR0GklXRq-7Ix8-5MaJjw',
+          'HK5FsUejSR-11KojiPoWbQ',
+          'TolRinJHS4GC8C2mw2iiXQ',
+        ],
       },
     },
     appearance: {
@@ -178,6 +190,20 @@ export default async function (client: Client) {
   });
 
   console.log('Finalize models/block models');
+
+  console.log(
+    'Update block model "\uD83D\uDD3D Menu Item (External)" (`menu_item_external`)',
+  );
+  await client.itemTypes.update('HK5FsUejSR-11KojiPoWbQ', {
+    presentation_title_field: { id: 'I8HNHQLsTCuHpLxk3F3GPQ', type: 'field' },
+  });
+
+  console.log(
+    'Update block model "\uD83D\uDD3D Menu Item (Group)" (`menu_item_group`)',
+  );
+  await client.itemTypes.update('TolRinJHS4GC8C2mw2iiXQ', {
+    presentation_title_field: { id: 'SltvI6TZTpGS8EOpAnxqwQ', type: 'field' },
+  });
 
   console.log(
     'Update block model "\uD83D\uDD3D Menu Item (Internal)" (`menu_item_internal`)',
