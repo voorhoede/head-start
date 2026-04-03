@@ -8,6 +8,7 @@ import pkg from './package.json';
 import { isPreview } from './config/preview';
 import { output } from './config/output';
 import serviceWorker from './config/astro/service-worker-integration.ts';
+import { fontsConfig } from './src/assets/fonts';
 
 const isAnalyseMode = process.env.ANALYZE === 'true';
 const productionUrl = `https://${pkg.name}.pages.dev`; // overwrite if you have a custom domain
@@ -74,4 +75,7 @@ export default defineConfig({
       exclude: ['msw'],
     }
   },
+  experimental: {
+    fonts: fontsConfig,
+  }
 });

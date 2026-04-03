@@ -1,38 +1,17 @@
-// example use of custom fonts. Replace these with your own fonts:
-import archivo400url from '@fontsource/archivo/files/archivo-latin-400-normal.woff2?url';
-import archivo600url from '@fontsource/archivo/files/archivo-latin-600-normal.woff2?url';
+// // example use of custom fonts. Modify fontsConfig with your own fonts.
+// Based on https://docs.astro.build/en/guides/fonts/
 
-export type Font = {
-  family: string;
-  weight: number;
-  style: string;
-  woff2Url: string;
-}
+// @note still experimental in in this version of Astro,
+// its stable in astro v5.7 and gets improvements in v6.0
 
-export const fontFamilyArchivo = 'Archivo, sans-serif';
+import { fontProviders, type FontFamily } from 'astro/config';
 
-export const fonts: Font[] = [
+export const fontsConfig: FontFamily[] = [
   {
-    family: 'Archivo',
-    weight: 400,
-    style: 'normal',
-    woff2Url: archivo400url,
-  },
-  {
-    family: 'Archivo',
-    weight: 600,
-    style: 'normal',
-    woff2Url: archivo600url,
-  },
+    name: 'Archivo',
+    cssVariable: '--font-archivo',
+    provider: fontProviders.fontsource(),
+    weights: [400, 600],
+    styles: ['normal'],
+  }
 ];
-
-export const getFontFaceDeclaration = (font: Font) => {
-  return /* css */`
-    @font-face {
-      font-family: '${font.family}';
-      font-style: ${font.style};
-      font-weight: ${font.weight};
-      src: url('${font.woff2Url}') format('woff2');
-    }
-  `;
-};
