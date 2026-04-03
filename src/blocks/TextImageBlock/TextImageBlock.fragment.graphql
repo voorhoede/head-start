@@ -68,6 +68,7 @@ fragment TextImageBlock on TextImageBlockRecord {
     responsiveImage {
       aspectRatio
       base64
+      srcSet
     }
   }
   layout

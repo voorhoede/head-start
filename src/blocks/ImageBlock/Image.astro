@@ -18,31 +18,29 @@ const astroImageData = {
 };
 ---
 
-<image-component>
-  <figure style={`--unavailable-message: "${imageUnavailableMessage}"`}>
-    {
-      image.responsiveImage ? (
-        // bitmap images have Imgix generated props (responsiveImage.*):
-        <AstroImage
-          data={astroImageData}
-          imgClass={imgClass}
-          priority={loading === 'eager'}
-        />
-      ) : (
-        // vector images do not have Imgix generated props, so using as is:
-        <img
-          alt={altText}
-          loading={loading}
-          src={image.url}
-          width={image.width}
-          height={image.height}
-          class={imgClass}
-        />
-      )
-    }
-    {image.title && <figcaption>{image.title}</figcaption>}
-  </figure>
-</image-component>
+<figure style={`--unavailable-message: ${JSON.stringify(imageUnavailableMessage)}`}>
+  {
+    image.responsiveImage ? (
+      // bitmap images have Imgix generated props (responsiveImage.*):
+      <AstroImage
+        data={astroImageData}
+        imgClass={imgClass}
+        priority={loading === 'eager'}
+      />
+    ) : (
+      // vector images do not have Imgix generated props, so using as is:
+      <img
+        alt={altText}
+        loading={loading}
+        src={image.url}
+        width={image.width}
+        height={image.height}
+        class={imgClass}
+      />
+    )
+  }
+  {image.title && <figcaption>{image.title}</figcaption>}
+</figure>
 
 <style>
   /* functional styling */
