@@ -11,6 +11,9 @@ import query from '../../_robots.query.graphql';
 
 export const prerender = false;
 
+const cache = new Map<string, { md: string; timestamp: number }>();
+const CACHE_TTL = 60000 * 5;
+
 export const GET: APIRoute = async ({ params, site, locals }) => {
   const { app, site: datoSite } = await datocmsRequest<RobotsTxtQuery>({ query });
   const allowAll = !datoSite.noIndex && !locals.isPreview;
@@ -21,6 +24,16 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
   }
   
   params.path ||= '';
+  
+  const cached = cache.get(params.path);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return new Response(cached.md, {
+      headers: {
+        'Content-Type': 'text/markdown; charset=utf-8',
+        'Cache-Control': 'public, max-age=300',
+      },
+    });
+  }
 
   const pageUrl = new URL(`/${params.path}/`, site);
   const res = await fetch(pageUrl, {
@@ -44,6 +57,8 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
     .use(rehypeRemark)
     .use(remarkStringify)
     .process(html);
+  
+  cache.set(params.path, { md: String(md), timestamp: Date.now() });
 
   return new Response(String(md), {
     headers: {
