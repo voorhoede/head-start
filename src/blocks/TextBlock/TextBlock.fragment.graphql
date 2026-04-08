@@ -4,6 +4,7 @@
 #import '~/blocks/VideoBlock/VideoBlock.fragment.graphql'
 #import '~/blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
 #import '~/blocks/CounterBlock/CounterBlock.fragment.graphql'
+#import '~/blocks/IconBlock/IconBlock.fragment.graphql'
 #import '~/blocks/ListBlock/ListBlockFragment.graphql'
 #import '~/content/Variables/CollectionEntry.fragment.graphql'
 #import '~/lib/routing/FileRoute.fragment.graphql'
@@ -44,7 +45,9 @@ fragment TextBlock on TextBlockRecord {
           ...Variable
         }
       }
-
+      ... on IconBlockRecord {
+        ...IconBlock
+      }
     }
     links {
       __typename

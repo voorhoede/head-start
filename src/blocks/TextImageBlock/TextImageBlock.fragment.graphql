@@ -2,6 +2,7 @@
 #import '~/blocks/ImageBlock/ImageBlock.fragment.graphql'
 #import '~/blocks/TableBlock/TableBlock.fragment.graphql'
 #import '~/blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
+#import '~/blocks/IconBlock/IconBlock.fragment.graphql'
 #import '~/content/Variables/CollectionEntry.fragment.graphql'
 #import '~/lib/routing/FileRoute.fragment.graphql'
 #import '~/lib/routing/HomeRoute.fragment.graphql'
@@ -34,6 +35,14 @@ fragment TextImageBlock on TextImageBlockRecord {
         variable {
           ...Variable
         }
+      }
+      ... on IconBlockRecord {
+        ...IconBlock
+      }
+    }
+    inlineBlocks {
+      ... on IconBlockRecord {
+        ...IconBlock
       }
     }
     links {
