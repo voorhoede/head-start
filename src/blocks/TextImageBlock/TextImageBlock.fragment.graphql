@@ -27,6 +27,15 @@ fragment TextImageBlock on TextImageBlockRecord {
         ...ListBlock
       }
     }
+    inlineBlocks {
+      ... on VariableBlockRecord {
+        __typename
+        id
+        variable {
+          ...Variable
+        }
+      }
+    }
     links {
       __typename
       ... on FileRecord {
@@ -37,9 +46,6 @@ fragment TextImageBlock on TextImageBlockRecord {
       }
       ... on PageRecord {
         ...PageRoute
-      }
-      ... on VariableRecord {
-        ...Variable
       }
     }
     value
