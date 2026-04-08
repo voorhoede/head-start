@@ -1,0 +1,14 @@
+---
+type Props = {
+  allowAiBots?: boolean;
+};
+
+const { pathname } = Astro.url;
+const { allowAiBots } = Astro.props;
+
+const markdownUrl = new URL(`/api/content${pathname.replace(/\/$/, '')}.md`, Astro.site);
+---
+
+{ allowAiBots && (
+  <link rel="alternate" type="text/markdown" href={markdownUrl} />
+)}

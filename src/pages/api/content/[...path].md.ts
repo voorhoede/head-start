@@ -36,15 +36,20 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
   }
 
   const pageUrl = new URL(`/${params.path}/`, site);
-  const res = await fetch(pageUrl, {
+  const response = await fetch(pageUrl, {
     headers: { Accept: 'text/html' },
   });
   
-  if (res.status !== 200) {
-    return res;
+  if (response.status !== 200) {
+    return response;
+  }
+  
+  const contentType = response.headers.get('content-type') ?? '';
+  if (!contentType.includes('text/html')) {
+    return new Response(null, { status: 404 });
   }
 
-  const html = await res.text();
+  const html = await response.text();
 
   const md = await unified()
     .use(rehypeParse)
