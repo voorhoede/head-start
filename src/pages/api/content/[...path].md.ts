@@ -1,11 +1,10 @@
 import type { APIRoute } from 'astro';
-import type { RobotsTxtQuery } from '~/lib/datocms/types';
 import rehypeParse from 'rehype-parse';
 import rehypeRemark from 'rehype-remark';
 import remarkGfm from 'remark-gfm';
 import remarkStringify from 'remark-stringify';
 import { unified } from 'unified';
-import { datocmsRequest } from '~/lib/datocms';
+import { getEntry } from '~/lib/content';
 import { buildFrontmatter } from '~/lib/frontmatter';
 import type { Alternate } from '~/lib/frontmatter';
 import type { PageMeta } from '~/lib/rehype/rehype-extract-meta';
@@ -13,20 +12,17 @@ import rehypeExtractMeta from '~/lib/rehype/rehype-extract-meta';
 import rehypeExtractNoindex from '~/lib/rehype/rehype-extract-noindex';
 import rehypeExtractAlternates from '~/lib/rehype/rehype-extract-alternates';
 import rehypeExtractMain from '~/lib/rehype/rehype-extract-main';
-import query from '../../_robots.query.graphql';
 
 export const prerender = false;
+
+const entry = await getEntry('App', 'default');
 
 const cache = new Map<string, { md: string; noindex: boolean; timestamp: number }>();
 const CACHE_TTL = 60000 * 5;
 const MAX_CACHE_SIZE = 500;
 
-export const GET: APIRoute = async ({ params, site, locals }) => {
-  const { app, site: datoSite } = await datocmsRequest<RobotsTxtQuery>({ query });
-  const allowAll = !datoSite.noIndex && !locals.isPreview;
-  const allowAiBots = allowAll && Boolean(app?.allowAiBots);
-  
-  if (!allowAiBots) {
+export const GET: APIRoute = async ({ params, site }) => {
+  if (!entry?.data.allowAiBots) {
     return new Response(null, { status: 404, headers: { 'Cache-Control': 'no-store' } });
   }
   
@@ -97,8 +93,8 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
   
   if (cache.size >= MAX_CACHE_SIZE) {
     const now = Date.now();
-    for (const [key, entry] of cache) {
-      if (now - entry.timestamp >= CACHE_TTL) cache.delete(key);
+    for (const [key, cacheEntry] of cache) {
+      if (now - cacheEntry.timestamp >= CACHE_TTL) cache.delete(key);
     }
     if (cache.size >= MAX_CACHE_SIZE) {
       const firstKey = cache.keys().next().value;

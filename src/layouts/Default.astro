@@ -22,7 +22,6 @@ interface Props {
   breadcrumbs?: Breadcrumb[];
   pageUrls: PageUrl[];
   seoMetaTags: Tag[];
-  allowAiBots?: boolean;
 }
 
 const { locale = defaultLocale } = Astro.params as { locale?: SiteLocale };
@@ -30,7 +29,7 @@ const data = await datocmsRequest<DefaultLayoutQuery>({
   query,
   variables: { locale },
 });
-const { breadcrumbs = [], pageUrls, seoMetaTags, allowAiBots } = Astro.props;
+const { breadcrumbs = [], pageUrls, seoMetaTags } = Astro.props;
 const mainContentId = 'content';
 const menuItems = data.app?.menuItems ?? [];
 
@@ -51,7 +50,7 @@ const allowAiBots = allowAll && Boolean(app?.allowAiBots);
       tags={[...data.seo.faviconMetaTags, ...seoMetaTags]}
       allowAiBots={allowAiBots}
     />
-    <AiHead allowAiBots={allowAiBots} />
+    <AiHead />
     <StructuredData />
   </head>
   <body>

@@ -5,13 +5,16 @@ import { datocmsRequest } from '~/lib/datocms';
 import type { RobotsTxtQuery } from '~/lib/datocms/types';
 import { robotsTxt } from '~/lib/seo';
 import query from './_robots.query.graphql';
+import { getEntry } from '~/lib/content';
 
 export const prerender = true;
 
+const entry = await getEntry('App', 'default');
+
 export const GET: APIRoute = async (context) => {
-  const { app, site } = await datocmsRequest<RobotsTxtQuery>({ query });
+  const { site } = await datocmsRequest<RobotsTxtQuery>({ query });
   const allowAll = !site.noIndex && !context.locals.isPreview;
-  const allowAiBots = allowAll && Boolean(app?.allowAiBots);
+  const allowAiBots = allowAll && Boolean(entry?.data.allowAiBots);
 
   return new Response(robotsTxt({
     allowAiBots,
