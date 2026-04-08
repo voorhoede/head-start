@@ -77,7 +77,7 @@ export default async function (client: Client) {
           '0SxYNS2CR1it_5LHYWuEQg',
         ],
       },
-      structured_text_inline_blocks: { item_types: ['O3-JKIJwTaiqdryVNiyBBA'] },
+      structured_text_inline_blocks: { item_types: ['CNWKTKleQGeovku16xSa7A', 'O3-JKIJwTaiqdryVNiyBBA'] },
       structured_text_links: {
         on_publish_with_unpublished_references_strategy: 'fail',
         on_reference_unpublish_strategy: 'delete_references',
@@ -85,7 +85,6 @@ export default async function (client: Client) {
         item_types: [
           'GjWw8t-hTFaYYWyc53FeIg',
           'LjXdkuCdQxCFT4hv8_ayew',
-          'Weqp1brXRkSS-jZE8Z3HTw',
           'X_tZn3TxQY28ltSyjZUGHQ',
         ],
       },
@@ -109,7 +108,7 @@ export default async function (client: Client) {
         ],
       },
       structured_text_inline_blocks: {
-        item_types: ['O3-JKIJwTaiqdryVNiyBBA', 'Yj11fFgoThKqLyKcqIg2Gg'],
+        item_types: ['CNWKTKleQGeovku16xSa7A', 'Yj11fFgoThKqLyKcqIg2Gg', 'O3-JKIJwTaiqdryVNiyBBA'],
       },
       structured_text_links: {
         on_publish_with_unpublished_references_strategy: 'fail',
@@ -118,7 +117,6 @@ export default async function (client: Client) {
         item_types: [
           'GjWw8t-hTFaYYWyc53FeIg',
           'LjXdkuCdQxCFT4hv8_ayew',
-          'Weqp1brXRkSS-jZE8Z3HTw',
           'X_tZn3TxQY28ltSyjZUGHQ',
         ],
       },
