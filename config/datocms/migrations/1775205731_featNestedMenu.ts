@@ -1,6 +1,15 @@
 import { Client } from '@datocms/cli/lib/cma-client-node';
 
 export default async function (client: Client) {
+  // Check if migration was already applied (schema exists from before migration tracking)
+  try {
+    await client.itemTypes.find('HK5FsUejSR-11KojiPoWbQ');
+    console.log('Migration already applied, skipping');
+    return;
+  } catch {
+    // Model doesn't exist, run the migration
+  }
+
   console.log('Create new models/block models');
 
   console.log(
