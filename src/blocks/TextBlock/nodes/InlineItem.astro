@@ -1,19 +1,12 @@
 ---
 import type { RecordRoute } from '~/lib/routing';
-import type { VariableRecord } from '~/lib/datocms/types';
 import ItemLink from './ItemLink.astro';
 
 export type Props = {
-  link: RecordRoute | VariableRecord;
+  link: RecordRoute;
 };
 
 const { link } = Astro.props;
 ---
 
-{
-  link.__typename === 'VariableRecord' ? (
-    <span data-variable={link.title}>{link.value}</span>
-  ) : (
-    <ItemLink link={link as RecordRoute} />
-  )
-}
+<ItemLink link={link as RecordRoute} />

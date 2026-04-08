@@ -29,6 +29,18 @@ fragment TextImageBlock on TextImageBlockRecord {
       }
     }
     inlineBlocks {
+      ... on VariableBlockRecord {
+        __typename
+        id
+        variable {
+          ...Variable
+        }
+      }
+      ... on IconBlockRecord {
+        ...IconBlock
+      }
+    }
+    inlineBlocks {
       ... on IconBlockRecord {
         ...IconBlock
       }
@@ -43,9 +55,6 @@ fragment TextImageBlock on TextImageBlockRecord {
       }
       ... on PageRecord {
         ...PageRoute
-      }
-      ... on VariableRecord {
-        ...Variable
       }
     }
     value
