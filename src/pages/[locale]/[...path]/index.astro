@@ -3,7 +3,10 @@ import Blocks from '~/blocks/Blocks.astro';
 import PreviewModeSubscription from '~/components/PreviewMode/PreviewModeSubscription.astro';
 import Layout from '~/layouts/Default.astro';
 import { getCollection, getEntry } from '~/lib/content';
+import { datocmsRequest } from '~/lib/datocms';
+import query from '../../_robots.query.graphql';
 
+import type { RobotsTxtQuery } from '~/lib/datocms/types';
 export async function getStaticPaths() {
   // Fetch all locales by passing locale `null` and filter `undefined`.
   const pages = await getCollection('Pages', undefined, null);
@@ -11,6 +14,12 @@ export async function getStaticPaths() {
     params: { locale: page.meta.locale, path: page.meta.path },
   }));
 }
+
+const { isPreview } = Astro.locals;
+
+const { app, site: datoSite } = await datocmsRequest<RobotsTxtQuery>({ query });
+const allowAll = !datoSite.noIndex && !isPreview;
+const allowAiBots = allowAll && Boolean(app?.allowAiBots);
 
 // Load as an entry so this route can also be a server route in preview mode.
 // @see /docs/preview-mode.md
@@ -36,6 +45,7 @@ if (canonicalUrl && Astro.url.pathname !== canonicalUrl) {
   breadcrumbs={breadcrumbs}
   pageUrls={pageUrls}
   seoMetaTags={page._seoMetaTags}
+  allowAiBots={allowAiBots}
 >
   <PreviewModeSubscription
     {...subscription}

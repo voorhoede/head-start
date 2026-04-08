@@ -14,6 +14,7 @@ import SkipLink from '~/components/SkipLink/SkipLink.astro';
 import AppHeader from './AppHeader/AppHeader.astro';
 import PerfHead from './PerfHead/PerfHead.astro';
 import SeoHead from './SeoHead/SeoHead.astro';
+import AiHead from './AiHead/AiHead.astro';
 import { fontFamilyArchivo } from '~/assets/fonts';
 import '~/assets/a11y.css';
 
@@ -21,6 +22,7 @@ interface Props {
   breadcrumbs?: Breadcrumb[];
   pageUrls: PageUrl[];
   seoMetaTags: Tag[];
+  allowAiBots?: boolean;
 }
 
 const { locale = defaultLocale } = Astro.params as { locale?: SiteLocale };
@@ -28,7 +30,7 @@ const data = await datocmsRequest<DefaultLayoutQuery>({
   query,
   variables: { locale },
 });
-const { breadcrumbs = [], pageUrls, seoMetaTags } = Astro.props;
+const { breadcrumbs = [], pageUrls, seoMetaTags, allowAiBots } = Astro.props;
 const mainContentId = 'content';
 const menuItems = data.app?.menuItems ?? [];
 
@@ -49,6 +51,7 @@ const allowAiBots = allowAll && Boolean(app?.allowAiBots);
       tags={[...data.seo.faviconMetaTags, ...seoMetaTags]}
       allowAiBots={allowAiBots}
     />
+    <AiHead allowAiBots={allowAiBots} />
     <StructuredData />
   </head>
   <body>
