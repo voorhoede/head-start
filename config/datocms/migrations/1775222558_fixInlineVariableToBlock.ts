@@ -3,55 +3,70 @@ import { Client } from '@datocms/cli/lib/cma-client-node';
 export default async function (client: Client) {
   console.log('Create new models/block models');
 
-  console.log('Create model "\uD83D\uDD23 Variables" (`variable`)');
+  console.log(
+    'Create block model "\uD83D\uDD23 Variable Block" (`variable_block`)',
+  );
   await client.itemTypes.create(
     {
-      id: 'Weqp1brXRkSS-jZE8Z3HTw',
-      name: '\uD83D\uDD23 Variables',
-      api_key: 'variable',
-      draft_mode_active: false,
+      id: 'CNWKTKleQGeovku16xSa7A',
+      name: '\uD83D\uDD23 Variable Block',
+      api_key: 'variable_block',
+      modular_block: true,
       draft_saving_active: false,
-      collection_appearance: 'table',
+      hint: '',
       inverse_relationships_enabled: false,
     },
     {
       skip_menu_item_creation: true,
-      schema_menu_item_id: 'eEZ8k--GSZ2mI4oTffj3YA',
+      schema_menu_item_id: 'ZZL5mC51StWglS4FecsWgQ',
     },
   );
 
   console.log('Creating new fields/fieldsets');
 
   console.log(
-    'Create Single-line string field "Title" (`title`) in model "\uD83D\uDD23 Variables" (`variable`)',
+    'Create Single link field "Variable" (`variable`) in block model "\uD83D\uDD23 Variable Block" (`variable_block`)',
   );
-  await client.fields.create('Weqp1brXRkSS-jZE8Z3HTw', {
-    id: 'ILVOGJzmTpKPVHzRuNUhnA',
-    label: 'Title',
-    field_type: 'string',
-    api_key: 'title',
-    validators: { required: {} },
+  await client.fields.create('CNWKTKleQGeovku16xSa7A', {
+    id: 'Axr-8GliRJ6d-Vnca3LnAA',
+    label: 'Variable',
+    field_type: 'link',
+    api_key: 'variable',
+    validators: {
+      item_item_type: {
+        on_publish_with_unpublished_references_strategy: 'fail',
+        on_reference_unpublish_strategy: 'delete_references',
+        on_reference_delete_strategy: 'delete_references',
+        item_types: ['Weqp1brXRkSS-jZE8Z3HTw'],
+      },
+      required: {},
+    },
     appearance: {
       addons: [],
-      editor: 'single_line',
-      parameters: { heading: false, placeholder: null },
+      editor: 'link_select',
+      parameters: { filters: [] },
     },
     default_value: null,
   });
 
   console.log(
-    'Create Single-line string field "Value" (`value`) in model "\uD83D\uDD23 Variables" (`variable`)',
+    'Create Single-line string field "Display Title" (`display_title`) in model "\uD83D\uDD23 Variables" (`variable`)',
   );
   await client.fields.create('Weqp1brXRkSS-jZE8Z3HTw', {
-    id: 'DihXGTqXQoia4qtLLVmuQA',
-    label: 'Value',
+    id: 'WOwho0PRRZC86nvwy5vGDg',
+    label: 'Display Title',
     field_type: 'string',
-    api_key: 'value',
-    validators: { required: {} },
+    api_key: 'display_title',
     appearance: {
       addons: [],
-      editor: 'single_line',
-      parameters: { heading: false, placeholder: null },
+      editor: 'EiyZ3d0SSDCPCNbsKBIwWQ',
+      parameters: {
+        hideField: false,
+        editFunction: false,
+        defaultFunction:
+          'const titleValue = getFieldValue(datoCmsPlugin.formValues, \'title\');\nreturn `\uD83D\uDD23 ${titleValue}`;',
+      },
+      field_extension: 'computedFields',
     },
     default_value: null,
   });
@@ -67,12 +82,13 @@ export default async function (client: Client) {
       structured_text_blocks: {
         item_types: [
           'F60ZY1wFSW2qbvh99poj3g',
+          'Tv6MHewBS4evujN0EuSrwQ',
           'ZdBokLsWRgKKjHrKeJzdpw',
           'gezG9nO7SfaiWcWnp-HNqw',
           '0SxYNS2CR1it_5LHYWuEQg',
         ],
       },
-      structured_text_inline_blocks: { item_types: [] },
+      structured_text_inline_blocks: { item_types: ['CNWKTKleQGeovku16xSa7A'] },
       structured_text_links: {
         on_publish_with_unpublished_references_strategy: 'fail',
         on_reference_unpublish_strategy: 'delete_references',
@@ -80,7 +96,6 @@ export default async function (client: Client) {
         item_types: [
           'GjWw8t-hTFaYYWyc53FeIg',
           'LjXdkuCdQxCFT4hv8_ayew',
-          'Weqp1brXRkSS-jZE8Z3HTw',
           'X_tZn3TxQY28ltSyjZUGHQ',
         ],
       },
@@ -97,12 +112,15 @@ export default async function (client: Client) {
         item_types: [
           'F60ZY1wFSW2qbvh99poj3g',
           'QYfZyBzIRWKxA1MinIR0aQ',
+          'Tv6MHewBS4evujN0EuSrwQ',
           'ZdBokLsWRgKKjHrKeJzdpw',
           'gezG9nO7SfaiWcWnp-HNqw',
           '0SxYNS2CR1it_5LHYWuEQg',
         ],
       },
-      structured_text_inline_blocks: { item_types: ['Yj11fFgoThKqLyKcqIg2Gg'] },
+      structured_text_inline_blocks: {
+        item_types: ['CNWKTKleQGeovku16xSa7A', 'Yj11fFgoThKqLyKcqIg2Gg'],
+      },
       structured_text_links: {
         on_publish_with_unpublished_references_strategy: 'fail',
         on_reference_unpublish_strategy: 'delete_references',
@@ -110,27 +128,31 @@ export default async function (client: Client) {
         item_types: [
           'GjWw8t-hTFaYYWyc53FeIg',
           'LjXdkuCdQxCFT4hv8_ayew',
-          'Weqp1brXRkSS-jZE8Z3HTw',
           'X_tZn3TxQY28ltSyjZUGHQ',
         ],
       },
     },
   });
 
+  console.log(
+    'Update Single-line string field "Value" (`value`) in model "\uD83D\uDD23 Variables" (`variable`)',
+  );
+  await client.fields.update('DihXGTqXQoia4qtLLVmuQA', {
+    localized: true,
+    default_value: { en: null, nl: null },
+  });
+
   console.log('Finalize models/block models');
+
+  console.log(
+    'Update block model "\uD83D\uDD23 Variable Block" (`variable_block`)',
+  );
+  await client.itemTypes.update('CNWKTKleQGeovku16xSa7A', {
+    presentation_title_field: { id: 'Axr-8GliRJ6d-Vnca3LnAA', type: 'field' },
+  });
 
   console.log('Update model "\uD83D\uDD23 Variables" (`variable`)');
   await client.itemTypes.update('Weqp1brXRkSS-jZE8Z3HTw', {
-    presentation_title_field: { id: 'ILVOGJzmTpKPVHzRuNUhnA', type: 'field' },
-    title_field: { id: 'ILVOGJzmTpKPVHzRuNUhnA', type: 'field' },
-  });
-
-  console.log('Manage menu items');
-
-  console.log('Create menu item "\uD83D\uDD23 Variables"');
-  await client.menuItems.create({
-    id: 'WihwQIF2TrSA8LDraeRnRA',
-    label: '\uD83D\uDD23 Variables',
-    item_type: { id: 'Weqp1brXRkSS-jZE8Z3HTw', type: 'item_type' },
+    presentation_title_field: { id: 'WOwho0PRRZC86nvwy5vGDg', type: 'field' },
   });
 }
