@@ -22,7 +22,6 @@ export const securityheaders = defineMiddleware(async (context, next) => {
 
   // Allow DatoCMS to embed the editor-guide page in an iframe
   if (isEditorGuide) {
-    headers['X-Frame-Options'] = 'ALLOW-FROM https://*.datocms.com';
     headers['Content-Security-Policy'] = 'frame-ancestors \'self\' https://*.datocms.com';
     headers['X-Robots-Tag'] = 'noindex';
   }
