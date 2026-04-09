@@ -1,13 +1,13 @@
 import { describe, expect, test, vi } from 'vitest';
-import type { FileRouteFragment, HomeRouteFragment, PageRouteFragment, SiteLocale } from '@lib/datocms/types';
-import { datocmsAssetsOrigin } from '@lib/datocms';
+import type { FileRouteFragment, HomeRouteFragment, PageRouteFragment, SiteLocale } from '~/lib/datocms/types';
+import { datocmsAssetsOrigin } from '~/lib/datocms';
 import { getHref, getFileHref, getHomeHref, getPageHref } from './index';
 
-vi.mock('@lib/datocms', () => ({
+vi.mock('~/lib/datocms', () => ({
   datocmsAssetsOrigin: 'https://www.datocms-assets.com/',
 }));
 
-vi.mock('@lib/i18n', () => ({
+vi.mock('~/lib/i18n', () => ({
   getLocale: () => 'en',
 }));
 

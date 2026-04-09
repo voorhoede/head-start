@@ -12,6 +12,9 @@ import VideoBlock from './VideoBlock/VideoBlock.astro';
 import VideoEmbedBlock from './VideoEmbedBlock/VideoEmbedBlock.astro';
 import GroupingBlock from './GroupingBlock/GroupingBlock.astro';
 import CounterBlock from './CounterBlock/CounterBlock.astro';
+import ListBlock from './ListBlock/ListBlock.astro';
+import VariableBlock from './VariableBlock/VariableBlock.astro';
+import IconBlock from './IconBlock/IconBlock.astro';
 
 const blocksByTypename = {
   ActionBlockRecord: ActionBlock,
@@ -25,6 +28,9 @@ const blocksByTypename = {
   VideoEmbedBlockRecord: VideoEmbedBlock,
   GroupingBlockRecord: GroupingBlock,
   CounterBlockRecord: CounterBlock,
+  ListBlockRecord: ListBlock,
+  VariableBlockRecord: VariableBlock,
+  IconBlockRecord: IconBlock,
 };
 
 interface Props {

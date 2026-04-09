@@ -4,9 +4,9 @@ import {
   getSearchPathname,
   getOpenSearchName,
   getOpenSearchPathname,
-} from '@lib/search';
+} from '~/lib/search';
 
-vi.mock('@lib/site.json', () => ({
+vi.mock('~/lib/site.json', () => ({
   globalSeo: {
     en: { siteName: 'My Site' },
     nl: { siteName: 'Mijn Website' },

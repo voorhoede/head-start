@@ -1,21 +1,189 @@
-#import '@lib/routing/HomeRoute.fragment.graphql'
-#import '@lib/routing/PageRoute.fragment.graphql'
+#import '~/lib/routing/HomeRoute.fragment.graphql'
+#import '~/lib/routing/PageRoute.fragment.graphql'
 
 fragment AppMenu on AppRecord {
   menuItems {
     ... on MenuItemInternalRecord {
-      __typename
-      id
-      title
-      link {
+      ...MenuItemInternalFields
+      items {
         __typename
-        ... on HomePageRecord {
-          ...HomeRoute
+        ... on MenuItemInternalRecord {
+          ...MenuItemInternalFields
+          items {
+            __typename
+            ... on MenuItemInternalRecord {
+              ...MenuItemInternalFields
+            }
+            ... on MenuItemExternalRecord {
+              ...MenuItemExternalFields
+            }
+            ... on MenuItemGroupRecord {
+              ...MenuItemGroupFields
+            }
+          }
         }
-        ... on PageRecord {
-          ...PageRoute
+        ... on MenuItemExternalRecord {
+          ...MenuItemExternalFields
+          items {
+            __typename
+            ... on MenuItemInternalRecord {
+              ...MenuItemInternalFields
+            }
+            ... on MenuItemExternalRecord {
+              ...MenuItemExternalFields
+            }
+            ... on MenuItemGroupRecord {
+              ...MenuItemGroupFields
+            }
+          }
+        }
+        ... on MenuItemGroupRecord {
+          ...MenuItemGroupFields
+          items {
+            __typename
+            ... on MenuItemInternalRecord {
+              ...MenuItemInternalFields
+            }
+            ... on MenuItemExternalRecord {
+              ...MenuItemExternalFields
+            }
+            ... on MenuItemGroupRecord {
+              ...MenuItemGroupFields
+            }
+          }
+        }
+      }
+    }
+    ... on MenuItemExternalRecord {
+      ...MenuItemExternalFields
+      items {
+        __typename
+        ... on MenuItemInternalRecord {
+          ...MenuItemInternalFields
+          items {
+            __typename
+            ... on MenuItemInternalRecord {
+              ...MenuItemInternalFields
+            }
+            ... on MenuItemExternalRecord {
+              ...MenuItemExternalFields
+            }
+            ... on MenuItemGroupRecord {
+              ...MenuItemGroupFields
+            }
+          }
+        }
+        ... on MenuItemExternalRecord {
+          ...MenuItemExternalFields
+          items {
+            __typename
+            ... on MenuItemInternalRecord {
+              ...MenuItemInternalFields
+            }
+            ... on MenuItemExternalRecord {
+              ...MenuItemExternalFields
+            }
+            ... on MenuItemGroupRecord {
+              ...MenuItemGroupFields
+            }
+          }
+        }
+        ... on MenuItemGroupRecord {
+          ...MenuItemGroupFields
+          items {
+            __typename
+            ... on MenuItemInternalRecord {
+              ...MenuItemInternalFields
+            }
+            ... on MenuItemExternalRecord {
+              ...MenuItemExternalFields
+            }
+            ... on MenuItemGroupRecord {
+              ...MenuItemGroupFields
+            }
+          }
+        }
+      }
+    }
+    ... on MenuItemGroupRecord {
+      ...MenuItemGroupFields
+      items {
+        __typename
+        ... on MenuItemInternalRecord {
+          ...MenuItemInternalFields
+          items {
+            __typename
+            ... on MenuItemInternalRecord {
+              ...MenuItemInternalFields
+            }
+            ... on MenuItemExternalRecord {
+              ...MenuItemExternalFields
+            }
+            ... on MenuItemGroupRecord {
+              ...MenuItemGroupFields
+            }
+          }
+        }
+        ... on MenuItemExternalRecord {
+          ...MenuItemExternalFields
+          items {
+            __typename
+            ... on MenuItemInternalRecord {
+              ...MenuItemInternalFields
+            }
+            ... on MenuItemExternalRecord {
+              ...MenuItemExternalFields
+            }
+            ... on MenuItemGroupRecord {
+              ...MenuItemGroupFields
+            }
+          }
+        }
+        ... on MenuItemGroupRecord {
+          ...MenuItemGroupFields
+          items {
+            __typename
+            ... on MenuItemInternalRecord {
+              ...MenuItemInternalFields
+            }
+            ... on MenuItemExternalRecord {
+              ...MenuItemExternalFields
+            }
+            ... on MenuItemGroupRecord {
+              ...MenuItemGroupFields
+            }
+          }
         }
       }
     }
   }
+}
+
+fragment MenuItemInternalFields on MenuItemInternalRecord {
+  __typename
+  id
+  internalTitle: title
+  internalLink: link {
+    __typename
+    ... on HomePageRecord {
+      ...HomeRoute
+    }
+    ... on PageRecord {
+      ...PageRoute
+    }
+  }
+}
+
+fragment MenuItemExternalFields on MenuItemExternalRecord {
+  __typename
+  id
+  title
+  link
+}
+
+
+fragment MenuItemGroupFields on MenuItemGroupRecord {
+  __typename
+  id
+  title
 }

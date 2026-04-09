@@ -49,8 +49,8 @@ fragment ImageBlock on ImageBlockRecord {
 ```graphql
 # src/pages/[locale]/[slug]/_index.query.graphql
 
-#import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
-#import '@blocks/TextBlock/TextBlock.fragment.graphql'
+#import '~/blocks/ImageBlock/ImageBlock.fragment.graphql'
+#import '~/blocks/TextBlock/TextBlock.fragment.graphql'
 
 query Page($locale: SiteLocale!, $slug: String!) {
   page(locale: $locale, filter: { slug: { eq: $slug } }) {
@@ -81,7 +81,7 @@ console.log(typeof query) // DocumentNode
 Head Start automatically generates TypeScript types for all your GraphQL files, which you can import:
 
 ```ts
-import type { ImageBlockFragment, PageQuery, PageRecord } from '@lib/datocms/types';
+import type { ImageBlockFragment, PageQuery, PageRecord } from '~/lib/datocms/types';
 ```
 
 ## DatoCMS requests
@@ -92,8 +92,8 @@ Example usage:
 
 ```astro
 ---
-import { datocmsRequest } from '@lib/datocms';
-import type { PageQuery, PageRecord } from '@lib/datocms/types';
+import { datocmsRequest } from '~/lib/datocms';
+import type { PageQuery, PageRecord } from '~/lib/datocms/types';
 import query from './_index.query.graphql';
 
 const { page } = await datocmsRequest<PageQuery>({
@@ -128,7 +128,7 @@ Head Start provides a `datocmsCollection()` helper to retrieve all records of a 
 Simplified example without types:
 
 ```ts
-import { datocmsCollection } from '@lib/datocms';
+import { datocmsCollection } from '~/lib/datocms';
 
 const pages = await datocmsCollection({
   collection: 'Pages',
@@ -140,7 +140,7 @@ More realistic example with types:
 
 ```astro
 ---
-import { datocmsCollection } from '@lib/datocms';
+import { datocmsCollection } from '~/lib/datocms';
 
 export async function getStaticPaths() {
   interface PagesCollectionItem {

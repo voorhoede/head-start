@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { renderToFragment } from '@lib/renderer';
+import { renderToFragment } from '~/lib/renderer';
 import Link, { type Props as LinkProps } from './Link.astro';
 
 const props = { 

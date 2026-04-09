@@ -1,9 +1,9 @@
 ---
-import { getLocale, getLocaleName, locales, t } from '@lib/i18n';
-import type { SiteLocale } from '@lib/datocms/types';
-import type { PageUrl } from '@lib/routing';
-import UnstyledList from '@components/UnstyledList/UnstyledList.astro';
-import '@assets/a11y.css';
+import { getLocale, getLocaleName, locales, t } from '~/lib/i18n';
+import type { SiteLocale } from '~/lib/datocms/types';
+import type { PageUrl } from '~/lib/routing';
+import UnstyledList from '~/components/UnstyledList/UnstyledList.astro';
+import '~/assets/a11y.css';
 
 export interface Props {
   pageUrls: PageUrl[];

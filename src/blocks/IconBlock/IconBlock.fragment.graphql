@@ -1,0 +1,5 @@
+fragment IconBlock on IconBlockRecord {
+  __typename
+  id
+  name
+}

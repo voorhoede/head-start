@@ -1,4 +1,4 @@
-import { getLocale } from '@lib/i18n';
+import { getLocale } from '~/lib/i18n';
 
 class CounterBlock extends HTMLElement {
   #observer?: IntersectionObserver;

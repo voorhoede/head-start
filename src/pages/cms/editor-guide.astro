@@ -1,0 +1,109 @@
+---
+import { fontFamilyArchivo } from '~/assets/fonts';
+import PerfHead from '~/layouts/PerfHead/PerfHead.astro';
+import { Content } from '../../content/editor-guide.md';
+
+export const prerender = false;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Content Editor Guide</title>
+    <PerfHead />
+  </head>
+  <body>
+    <main>
+      <article class="guide">
+        <Content />
+      </article>
+    </main>
+  </body>
+</html>
+
+<style is:global define:vars={{ fontFamilyArchivo }}>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--fontFamilyArchivo);
+    background: #ffffff;
+    color: #1a1a1a;
+  }
+  figure {
+    margin: 0;
+  }
+  pre {
+    overflow-x: scroll;
+  }
+</style>
+<style>
+  main {
+    margin: auto;
+    padding: 2rem 1rem;
+    width: 800px;
+    max-width: calc(100% - 2rem);
+    font-size: 18px;
+    line-height: 1.6;
+  }
+  .guide :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1em 0;
+  }
+  .guide :global(th),
+  .guide :global(td) {
+    padding: 0.5em 0.75em;
+    border: 1px solid #e0e0e0;
+    text-align: left;
+    vertical-align: top;
+  }
+  .guide :global(th) {
+    background: #f5f5f5;
+    font-weight: 600;
+  }
+  .guide :global(blockquote) {
+    margin: 1em 0;
+    padding: 0.75em 1em;
+    border-left: 4px solid #d0d0d0;
+    background: #fafafa;
+  }
+  .guide :global(blockquote p) {
+    margin: 0;
+  }
+  .guide :global(code) {
+    background: #f0f0f0;
+    padding: 0.15em 0.4em;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }
+  .guide :global(img) {
+    max-width: 100%;
+    height: auto;
+  }
+  .guide :global(h2#table-of-contents) {
+    border-bottom: none;
+    font-size: 1.15em;
+    margin-bottom: 0.2em;
+  }
+  .guide :global(h2#table-of-contents + ul) {
+    background: #f8f8f8;
+    border: 1px solid #e8e8e8;
+    border-radius: 6px;
+    padding: 0.75em 0.75em 0.75em 2em;
+    list-style: none;
+    margin-bottom: 1.5em;
+  }
+  .guide :global(h2#table-of-contents + ul ul) {
+    padding-left: 1.2em;
+  }
+</style>
+

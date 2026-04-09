@@ -1,7 +1,7 @@
 ---
-import type { ActionBlockFragment } from '@lib/datocms/types';
-import Link from '@components/Link/Link.astro';
-import LinkToRecord from '@components/LinkToRecord/LinkToRecord.astro';
+import type { ActionBlockFragment } from '~/lib/datocms/types';
+import Link from '~/components/Link/Link.astro';
+import LinkToRecord from '~/components/LinkToRecord/LinkToRecord.astro';
 import EmailLink from './EmailLink.astro';
 import PhoneLink from './PhoneLink.astro';
 import { stripStega } from '@datocms/content-link';
@@ -11,7 +11,15 @@ export interface Props {
 }
 const { block } = Astro.props;
 const { items } = block;
-const actionClassList = (style: string) => ['action', `action--${stripStega(style)}`];
+
+let hasPrimary = false;
+const actionClassList = (style: string) => {
+  const resolved = stripStega(style);
+  if (hasPrimary && resolved === 'primary') return ['action', 'action--secondary'];
+  if (resolved === 'primary') hasPrimary = true;
+
+  return ['action', `action--${resolved}`];
+};
 ---
 
 <div class="action-block">

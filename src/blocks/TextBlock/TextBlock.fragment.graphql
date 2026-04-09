@@ -1,12 +1,15 @@
-#import '@blocks/ActionBlock/ActionBlock.fragment.graphql'
-#import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
-#import '@blocks/TableBlock/TableBlock.fragment.graphql'
-#import '@blocks/VideoBlock/VideoBlock.fragment.graphql'
-#import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
-#import '@blocks/CounterBlock/CounterBlock.fragment.graphql'
-#import '@lib/routing/FileRoute.fragment.graphql'
-#import '@lib/routing/HomeRoute.fragment.graphql'
-#import '@lib/routing/PageRoute.fragment.graphql'
+#import '~/blocks/ActionBlock/ActionBlock.fragment.graphql'
+#import '~/blocks/ImageBlock/ImageBlock.fragment.graphql'
+#import '~/blocks/TableBlock/TableBlock.fragment.graphql'
+#import '~/blocks/VideoBlock/VideoBlock.fragment.graphql'
+#import '~/blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
+#import '~/blocks/CounterBlock/CounterBlock.fragment.graphql'
+#import '~/blocks/IconBlock/IconBlock.fragment.graphql'
+#import '~/blocks/ListBlock/ListBlockFragment.graphql'
+#import '~/content/Variables/CollectionEntry.fragment.graphql'
+#import '~/lib/routing/FileRoute.fragment.graphql'
+#import '~/lib/routing/HomeRoute.fragment.graphql'
+#import '~/lib/routing/PageRoute.fragment.graphql'
 
 fragment TextBlock on TextBlockRecord {
   text {
@@ -27,10 +30,23 @@ fragment TextBlock on TextBlockRecord {
       ... on VideoEmbedBlockRecord {
         ...VideoEmbedBlock
       }
+      ... on ListBlockRecord {
+        ...ListBlock
+      }
     }
     inlineBlocks {
       ... on CounterBlockRecord {
         ...CounterBlock
+      }
+      ... on VariableBlockRecord {
+        __typename
+        id
+        variable {
+          ...Variable
+        }
+      }
+      ... on IconBlockRecord {
+        ...IconBlock
       }
     }
     links {
@@ -44,6 +60,7 @@ fragment TextBlock on TextBlockRecord {
       ... on PageRecord {
         ...PageRoute
       }
+
     }
     value
   }

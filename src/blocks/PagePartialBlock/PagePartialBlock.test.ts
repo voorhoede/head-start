@@ -1,4 +1,4 @@
-import { renderToFragment } from '@lib/renderer';
+import { renderToFragment } from '~/lib/renderer';
 import { describe, expect, test, vi } from 'vitest';
 import PagePartialBlock, { type Props as PagePartialBlockProps } from './PagePartialBlock.astro';
 import GroupingBlock, { type Props as GroupingBlockProps } from '../GroupingBlock/GroupingBlock.astro';

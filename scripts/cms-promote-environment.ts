@@ -8,7 +8,6 @@ import { getProjectName } from './lib/projects';
 import { color } from './lib/color';
 import { stripIndents } from 'proper-tags';
 import confirm from '@inquirer/confirm';
-import { deleteSandboxEnvironment } from './cms-destroy-environment';
 
 // ============================================================================
 // MAINTENANCE MODE OPERATIONS
@@ -40,14 +39,6 @@ const promoteEnvironment = async (targetEnvironment: string) => {
 // USER INTERACTION FUNCTIONS
 // ============================================================================
 
-const askConfirmationDeleteOldPrimaryEnvironment = async (environmentName: string) => {
-  const allow = await confirm({
-    message: stripIndents`
-      Do you want to delete the old primary environment ${color.blue(environmentName)}?`,
-    default: false,
-  });
-  return allow;
-};
 
 const askForConfirmationPromoteEnvironment = async (
   targetEnvironment: string,
@@ -64,7 +55,7 @@ const askForConfirmationPromoteEnvironment = async (
 // ============================================================================
 
 const handleError = async (error: unknown) => {
-  console.error('❌ Error occured while promoting environment .');
+  console.error('❌ Error occurred while promoting environment.');
   console.warn(
     '⚠️ Please check the project and turn off maintenance mode manually.',
   );
@@ -101,15 +92,7 @@ export default async function run() {
     await updateLocalEnvironment(targetEnvironment);
     await turnOffMaintenanceMode(projectName);
 
-    // Step 4: Optionally delete old environment
-    const isDeleteOldEnv = await askConfirmationDeleteOldPrimaryEnvironment(
-      formerPrimaryEnvironment,
-    );
-    if (isDeleteOldEnv) {
-      await deleteSandboxEnvironment(formerPrimaryEnvironment, true);
-    }
-
-    // Step 5: Success message
+    // Step 4: Success message
     console.log(
       `🎉 ${color.green('Promotion successful!')} The environment ${color.blue(targetEnvironment)} is now the primary environment.`,
     );

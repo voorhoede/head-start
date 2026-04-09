@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
-import { datocmsRequest } from '@lib/datocms';
-import type { ReroutePageQuery, SiteLocale } from '@lib/datocms/types';
-import { getPageHref } from '@lib/routing';
+import { datocmsRequest } from '~/lib/datocms';
+import type { ReroutePageQuery, SiteLocale } from '~/lib/datocms/types';
+import { getPageHref } from '~/lib/routing';
 import query from '../../_page.query.graphql';
 
 export const prerender = false;

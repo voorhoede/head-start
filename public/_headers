@@ -12,6 +12,11 @@
   Content-Security-Policy: frame-ancestors 'self' https://*.admin.datocms.com https://plugins-cdn.datocms.com
   X-XSS-Protection: 1; mode=block
 
+# Allow DatoCMS to embed the editor-guide page in an iframe
+/cms/editor-guide/
+  Content-Security-Policy: frame-ancestors 'self' https://*.datocms.com
+  X-Robots-Tag: noindex
+
 # Static assets are hashed and can therefore be cached forever
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable

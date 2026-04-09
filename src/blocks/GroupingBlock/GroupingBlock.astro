@@ -1,9 +1,9 @@
 ---
-import Blocks from '@blocks/Blocks.astro';
-import { Accordion, AccordionItem } from '@components/Accordion';
-import { Tabs, TabsPanel, TabsTab } from '@components/Tabs';
+import Blocks from '~/blocks/Blocks.astro';
+import { Accordion, AccordionItem } from '~/components/Accordion';
+import { Tabs, TabsPanel, TabsTab } from '~/components/Tabs';
 import { stripStega } from '@datocms/content-link';
-import type { GroupingBlockFragment } from '@lib/datocms/types';
+import type { GroupingBlockFragment } from '~/lib/datocms/types';
 
 export interface Props {
   block: GroupingBlockFragment;

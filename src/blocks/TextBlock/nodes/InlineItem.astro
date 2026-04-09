@@ -1,5 +1,5 @@
 ---
-import type { RecordRoute } from '@lib/routing';
+import type { RecordRoute } from '~/lib/routing';
 import ItemLink from './ItemLink.astro';
 
 export type Props = {
@@ -9,4 +9,4 @@ export type Props = {
 const { link } = Astro.props;
 ---
 
-<ItemLink {link} />
+<ItemLink link={link as RecordRoute} />

@@ -1,0 +1,12 @@
+---
+import type { VariableBlockRecord } from '~/lib/datocms/types';
+
+export interface Props {
+  block: VariableBlockRecord;
+}
+
+const { block } = Astro.props;
+const variable = block.variable;
+---
+
+{variable && <span data-variable={variable.value}>{variable.value}</span>}
