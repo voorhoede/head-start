@@ -59,9 +59,12 @@ To add a block, click the **+** button in the body blocks field and choose the t
 | **Video Embed Block**  | Embeds a video from YouTube or Vimeo using a URL. Use this when the video is hosted externally.                |
 | **Embed Block**        | Embeds external content from a URL. Works with YouTube, Vimeo, Twitter/X, maps, and other providers.           |
 | **Table Block**        | Displays data in a table with optional header row and column.                                                  |
+| **List Block**         | Renders an ordered or unordered list of items, each with rich text content.                                    |
 | **Grouping Block**     | Groups multiple blocks together. Choose a layout: stack, accordion, or tabs.                                   |
 | **Page Partial Block** | Reuses a saved Page Partial - a shared set of blocks that can appear on multiple pages.                        |
 | **Counter Block**      | Displays an animated counter that counts up to a target number.                                                |
+| **Variable Block**     | Inline block that inserts a reusable Variable (e.g. company name) inside a Text Block. Update the Variable once and it changes everywhere. |
+| **Icon Block**         | Inline block that inserts an icon inside a Text Block.                                                         |
 
 ### Tips for working with blocks
 
