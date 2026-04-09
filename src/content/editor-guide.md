@@ -123,13 +123,15 @@ You can add three types of menu items:
 | -------------------------- | ----------------------------------------------------------------------------------------------------------- |
 | **Menu Item (Internal)**   | Links to a page on this website. Pick the page from a dropdown.                                             |
 | **Menu Item (External)**   | Links to a page on another website. Paste the full URL.                                                     |
-| **Menu Item (Group)**      | A non-clickable label that groups other items together (used for dropdowns).                                |
+| **Menu Item (Group)**      | A non-clickable label that acts as a button for its nested items.                                           |
+
+Any of these item types can become a dropdown once you add nested items to it. The difference is that Internal and External items are still clickable links, while a Group only serves as a label to open the dropdown.
 
 To edit the navigation:
 
 1. Go to **Website** in the main menu and open the record.
 2. In **Menu Items**, drag items to reorder them, or click **+** to add a new one.
-3. Group items can have sub-items underneath them. You can nest up to **3 levels deep**.
+3. Any item can have sub-items underneath it. You can nest up to **3 levels deep**.
 4. **Save** and **Publish** when you're done.
 
 > **Tip**: For internal links, the page title is used automatically. Only fill in the **Title** field if you want the menu to show something different.
