@@ -27,11 +27,10 @@ export const proxyFiles = defineMiddleware(async ({ request }, next) => {
 
   // Astro forces the original 404 status unless we use `X-Astro-Rewrite: true`
   // @see https://github.com/withastro/roadmap/discussions/665#discussioncomment-6831528
+  const headers = new Headers(fileResponse.headers);
+  headers.set('X-Astro-Rewrite', 'true');
+
   return new Response(fileResponse.body, {
-    ...fileResponse,
-    headers: {
-      ...fileResponse.headers,
-      'X-Astro-Rewrite': 'true',
-    },
+    headers,
   });
 });
