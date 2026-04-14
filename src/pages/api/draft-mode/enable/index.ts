@@ -1,4 +1,4 @@
-import { hashSecret, previewCookieName } from '@middleware/preview';
+import { hashSecret, previewCookieName } from '~/middleware/preview';
 import type { APIRoute } from 'astro';
 import { HEAD_START_PREVIEW_SECRET } from 'astro:env/server';
 

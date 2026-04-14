@@ -1,13 +1,8 @@
 import { Client } from '@datocms/cli/lib/cma-client-node';
 
 // Visual editing runs against the `preview` branch deployment, which is where
-// draft mode is enabled. Override via HEAD_START_SITE_URL if you use a custom
-// domain for previews.
-const siteUrl = process.env.HEAD_START_SITE_URL || 'https://preview.head-start.pages.dev';
-// The token is the HEAD_START_PREVIEW_SECRET that the preview endpoints validate
-// (see src/pages/api/preview-links/index.ts). We don't commit the real value;
-// an operator replaces REPLACE_WITH_PREVIEW_SECRET in the DatoCMS plugin UI
-// after the migration runs, or sets HEAD_START_PREVIEW_SECRET when invoking it.
+// draft mode is enabled. 
+const siteUrl = 'https://preview.head-start.pages.dev';
 const token = process.env.HEAD_START_PREVIEW_SECRET || 'REPLACE_WITH_PREVIEW_SECRET';
 
 export default async function (client: Client) {
