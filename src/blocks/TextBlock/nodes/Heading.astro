@@ -1,5 +1,6 @@
 ---
 import type { Heading } from 'datocms-structured-text-utils';
+import HeadingComponent from '~/components/Heading/Heading.astro';
 
 interface Props {
   node: Heading;
@@ -11,11 +12,13 @@ const { style, level: nodeLevel } = node;
 // H1 is reserved for the page title, so we start at H2
 const minimumLevel = 2;
 const defaultLevel = 2;
-const level = Math.max(minimumLevel, (nodeLevel || defaultLevel));
-
-const Tag = `h${level}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+const level = Math.max(
+  minimumLevel,
+  nodeLevel || defaultLevel,
+) as Heading['level'];
 ---
-<Tag class={style}><slot /></Tag>
+
+<HeadingComponent level={level} class={style}><slot /></HeadingComponent>
 
 <style>
   .centered {

@@ -14,6 +14,7 @@
 query PageCollectionEntry($locale: SiteLocale!, $slug: String!) {
   record: page(locale: $locale, filter: { slug: { eq: $slug } }) {
     ...PageRoute
+    hasTableOfContents
     _seoMetaTags {
       attributes
       content
