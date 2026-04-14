@@ -38,7 +38,6 @@ async function saveHashes(hashes: PreviewHashes): Promise<void> {
 type ItemTypeEntry = {
   id: string;
   name: string;
-  focusField?: string;
 };
 
 type ItemTypesJson = {

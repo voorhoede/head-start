@@ -24,7 +24,7 @@ const {
   data: { meta, ...page },
   subscription,
 } = entry;
-const { breadcrumbs, pageUrls, recordId, recordType } = meta;
+const { breadcrumbs, pageUrls } = meta;
 
 const canonicalUrl = pageUrls.find((url) => url.locale === meta.locale)?.pathname;
 if (canonicalUrl && Astro.url.pathname !== canonicalUrl) {
@@ -40,7 +40,6 @@ if (canonicalUrl && Astro.url.pathname !== canonicalUrl) {
 >
   <PreviewModeSubscription
     {...subscription}
-    record={{ type: recordType, id: recordId }}
   />
   <h1>{page.title}</h1>
   <Blocks blocks={page.bodyBlocks} />

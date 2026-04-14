@@ -25,7 +25,7 @@ const pageUrls = locales.map((locale) => ({
   pageUrls={pageUrls}
   seoMetaTags={page._seoMetaTags}
 >
-  <PreviewModeSubscription query={query} variables={variables} record={{ type: page.__typename, id: page.id }} />
+  <PreviewModeSubscription query={query} variables={variables} />
   <h1>{page.title}</h1>
   <Blocks blocks={page.bodyBlocks} />
 </Layout>

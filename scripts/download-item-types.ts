@@ -1,5 +1,4 @@
 import { buildClient } from '@datocms/cma-client-node';
-import { mapLimit } from 'async';
 import dotenv from 'dotenv-safe';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
@@ -9,19 +8,6 @@ import { datocmsEnvironment } from '../datocms-environment';
 dotenv.config({ allowEmptyValues: Boolean(process.env.CI) });
 
 const filePath = './src/lib/datocms/itemTypes.json';
-const concurrentRequestsLimit = 6;
-
-const focusFieldOverrides: Record<string, string> = {
-  page_partial_block: 'items',
-};
-
-const metadataFields = new Set(['title', 'layout', 'style', 'slug', 'id', '_modelApiKey']);
-
-type DatoField = {
-  field_type: string;
-  api_key: string;
-  validators?: unknown;
-};
 
 type ItemTypeInfo = {
   id: string;
@@ -31,31 +17,6 @@ type ItemTypeInfo = {
 
 function convertApiKeyToTypename(apiKey: string): string {
   return `${pascalCase(apiKey)}Record`;
-}
-
-function hasLinkedItemTypes(field: DatoField): boolean {
-  if (field.field_type !== 'link') return false;
-  const validators = field.validators as { itemItemType?: { itemTypes?: unknown[] } } | undefined;
-  return Boolean(validators?.itemItemType?.itemTypes?.length);
-}
-
-function pickFocusField(fields: DatoField[]): DatoField | null {
-  const contentFields = fields.filter((field) => !metadataFields.has(field.api_key));
-
-  const fieldTypeMatchers: Array<(field: DatoField) => boolean> = [
-    (field) => field.field_type === 'rich_text' || field.field_type === 'structured_text',
-    (field) => field.field_type === 'file' || field.field_type === 'video',
-    (field) => field.field_type === 'json',
-    (field) => field.field_type === 'text' && field.api_key === 'url',
-    (field) => hasLinkedItemTypes(field),
-  ];
-
-  for (const matcher of fieldTypeMatchers) {
-    const matchingField = contentFields.find(matcher);
-    if (matchingField) return matchingField;
-  }
-
-  return null;
 }
 
 async function ensureDirAndWriteJson(path: string, data: unknown) {
@@ -86,30 +47,12 @@ async function downloadItemTypes() {
       name: (itemType.name as string) ?? '',
     }));
 
-  const blockFieldsMap: Record<string, string> = {};
-
-  await mapLimit(itemTypes, concurrentRequestsLimit, async (itemType: ItemTypeInfo) => {
-    const { id, apiKey } = itemType;
-    const manualOverride = focusFieldOverrides[apiKey];
-    if (manualOverride) {
-      blockFieldsMap[apiKey] = manualOverride;
-      return;
-    }
-
-    const fields = (await client.fields.list(id)) as DatoField[];
-    const focusField = pickFocusField(fields);
-    if (focusField?.api_key) {
-      blockFieldsMap[apiKey] = focusField.api_key;
-    }
-  });
-
-  const itemTypesMap: Record<string, { id: string; name: string; focusField?: string }> = {};
+  const itemTypesMap: Record<string, { id: string; name: string }> = {};
   for (const { id, apiKey, name } of itemTypes) {
     const typename = convertApiKeyToTypename(apiKey);
     itemTypesMap[typename] = {
       id,
       name: name || typename.replace(/Record$/, ''),
-      ...(blockFieldsMap[apiKey] && { focusField: blockFieldsMap[apiKey] }),
     };
   }
 
