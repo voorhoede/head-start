@@ -8,6 +8,11 @@ type SiteData = {
 const siteData = siteDataUntyped as SiteData;
 const { datocmsEnvironment, datocmsToken, isPreview } = Astro.locals;
 const projectName = siteData.internalDomain?.split('.')[0] || null;
+
+const veParam = Astro.url.searchParams.get('ve');
+const visualEditingOn = veParam !== '0';
+const toggleVisualEditingUrl = new URL(Astro.url);
+toggleVisualEditingUrl.searchParams.set('ve', visualEditingOn ? '0' : '1');
 ---
 <preview-mode
   data-datocms-environment={ datocmsEnvironment }
@@ -18,6 +23,9 @@ const projectName = siteData.internalDomain?.split('.')[0] || null;
     Preview mode
     <span role="presentation" data-status="closed" />
     <div class="preview-mode-actions">
+      <a href={toggleVisualEditingUrl.toString()}>
+        edit mode: {visualEditingOn ? 'on' : 'off'}
+      </a>
       <a href={ `/api/preview/exit/?location=${Astro.url}` }>exit preview</a>
     </div>
   </preview-mode-bar>

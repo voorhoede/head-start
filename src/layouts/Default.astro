@@ -31,6 +31,9 @@ const data = await datocmsRequest<DefaultLayoutQuery>({
 const { breadcrumbs = [], pageUrls, seoMetaTags } = Astro.props;
 const mainContentId = 'content';
 const menuItems = data.app?.menuItems ?? [];
+
+const veParam = Astro.url.searchParams.get('ve');
+const enableClickToEdit = veParam !== '0';
 ---
 
 <!doctype html>
@@ -46,7 +49,9 @@ const menuItems = data.app?.menuItems ?? [];
     <StructuredData />
   </head>
   <body>
-    {Astro.locals.isPreview && <ContentLink enableClickToEdit={{ hoverOnly: true }} />}
+    {Astro.locals.isPreview && (
+      <ContentLink enableClickToEdit={enableClickToEdit ? { hoverOnly: true } : undefined} />
+    )}
     <PreviewModeProvider>
       <SkipLink targetId={mainContentId} />
       <div {...datocmsNoIndex}>
