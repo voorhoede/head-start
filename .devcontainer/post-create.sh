@@ -5,8 +5,9 @@ echo "==> Installing project dependencies..."
 if [ -f "package-lock.json" ]; then
   npm ci
 else
-  echo "No package-lock.json found, running npm install..."
-  npm install
+  echo "Error: package-lock.json is required for deterministic devcontainer setup." >&2
+  echo "Please commit package-lock.json and rebuild the container." >&2
+  exit 1
 fi
 
 echo "==> Installing Claude Code..."
