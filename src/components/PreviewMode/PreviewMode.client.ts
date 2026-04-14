@@ -43,6 +43,9 @@ class PreviewMode extends HTMLElement {
 
     this.barElement = this.querySelector('preview-mode-bar') as PreviewModeBar;
     this.subscriptionElements = [...this.querySelectorAll('preview-mode-subscription')] as PreviewModeSubscription[];
+    if (window.self !== window.top) {
+      this.querySelector('[data-edit-mode-toggle]')?.remove();
+    }
 
     const { datocmsEnvironment, datocmsToken } = this.dataset;
     if (!datocmsEnvironment) {

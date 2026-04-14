@@ -23,7 +23,7 @@ toggleVisualEditingUrl.searchParams.set('ve', visualEditingOn ? '0' : '1');
     Preview mode
     <span role="presentation" data-status="closed" />
     <div class="preview-mode-actions">
-      <a href={toggleVisualEditingUrl.toString()}>
+      <a href={toggleVisualEditingUrl.toString()} data-edit-mode-toggle>
         edit mode: {visualEditingOn ? 'on' : 'off'}
       </a>
       <a href={ `/api/preview/exit/?location=${Astro.url}` }>exit preview</a>
