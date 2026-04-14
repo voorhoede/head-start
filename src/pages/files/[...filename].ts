@@ -10,7 +10,10 @@ export const GET: APIRoute = async ({ params }) => {
     if (!response.ok) {
       throw new Error(`Failed to fetch ${url}`);
     }
-    return response;
+    return new Response(response.body, {
+      status: response.status,
+      headers: response.headers,
+    });
   } catch(error) {
     console.error('Failed to fetch, redirecting instead', url, error);
     return new Response('',{
