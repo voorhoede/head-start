@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { HEAD_START_PREVIEW_SECRET } from 'astro:env/server';
-import { recordToWebsiteRoute } from '@lib/datocms/recordInfo';
+import { recordToWebsiteRoute } from '~/lib/datocms/recordInfo';
 
 export const prerender = false;
 
