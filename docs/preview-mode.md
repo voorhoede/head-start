@@ -227,3 +227,12 @@ When you add a new block or a component that renders CMS data directly:
 - [ ] **Does the component render a single CMS field (image, video, embed, link)?** → Add `data-datocms-content-link-source={label}` on the outer element, where `label` is a recognizable value from the field (alt, title, URL - something the editor will see in the sidebar).
 - [ ] **Does the component render a *list* of CMS items?** → Wrap in `data-datocms-content-link-group` and wrap each item in `data-datocms-content-link-boundary style="display:contents"`. Follow the pattern in [`Blocks.astro`](../src/blocks/Blocks.astro).
 - [ ] **Only rendering prose / a single scalar value?** → Nothing to add. `Blocks.astro` already provides the group/boundary wrapping when your block is rendered as part of a page's blocks list.
+
+### Toggling the overlay on a preview page
+
+When browsing a preview page **directly** (outside the DatoCMS iframe), the overlay's hover highlights and click-to-edit interception can get in the way of normal interaction. The preview bar includes an **edit mode: on/off** link that toggles the overlay via a `?ve=0` / `?ve=1` query parameter:
+
+- Default (no `ve` param, or `ve=1`): overlay active.
+- `?ve=0`: overlay disabled for that page view.
+
+Inside the DatoCMS iframe the toggle is hidden automatically (the overlay is controlled by DatoCMS there, so the inline toggle would be redundant).
