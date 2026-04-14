@@ -6,6 +6,7 @@ import { datocmsNoIndex } from '~/lib/search';
 import type { Breadcrumb, PageUrl } from '~/lib/routing';
 import query from './default.query.graphql';
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs.astro';
+import HtmlIdSlugProvider from '~/components/HtmlIdSlugProvider/HtmlIdSlugProvider.astro';
 import IconSprite from '~/components/Icon/IconSprite.astro';
 import PreviewModeProvider from '~/components/PreviewMode/PreviewModeProvider.astro';
 import StructuredData from '~/components/StructuredData/StructuredData.astro';
@@ -46,20 +47,22 @@ const menuItems = data.app?.menuItems ?? [];
   </head>
   <body>
     <PreviewModeProvider>
-      <SkipLink targetId={mainContentId} />
-      <div {...datocmsNoIndex}>
-        <AppHeader {menuItems} {pageUrls} />
-      </div>
-      {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
-      {
-        /* main element requires tabindex to be focusable, see SkipLink/README.md */
-      }
-      <main id={mainContentId} tabindex="-1">
-        <slot />
-      </main>
-      <footer {...datocmsNoIndex}>
-        <p>Footer</p>
-      </footer>
+      <HtmlIdSlugProvider>
+        <SkipLink targetId={mainContentId} />
+        <div {...datocmsNoIndex}>
+          <AppHeader {menuItems} {pageUrls} />
+        </div>
+        {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
+        {
+          /* main element requires tabindex to be focusable, see SkipLink/README.md */
+        }
+        <main id={mainContentId} tabindex="-1">
+          <slot />
+        </main>
+        <footer {...datocmsNoIndex}>
+          <p>Footer</p>
+        </footer>
+      </HtmlIdSlugProvider>
     </PreviewModeProvider>
     <IconSprite />
   </body>

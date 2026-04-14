@@ -1,0 +1,25 @@
+---
+import { t } from '~/lib/i18n';
+import { extractTocItemsFromHtml } from './index';
+import List from './List.astro';
+
+interface Props {
+  showToc?: boolean;
+}
+const { showToc = true } = Astro.props;
+
+const html = await Astro.slots.render('default');
+const items = showToc ? extractTocItemsFromHtml(html) : [];
+---
+
+{
+  items.length > 0 && (
+    <nav>
+      <details open>
+        <summary>{t('table_of_contents')}</summary>
+        <List items={items} />
+      </details>
+    </nav>
+  )
+}
+<Fragment set:html={html} />
