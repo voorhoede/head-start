@@ -64,17 +64,16 @@ The [Web Previews plugin](https://www.datocms.com/marketplace/plugins/i/datocms-
 
 ### Setup
 
-The plugin is installed automatically via migration ([`1773830634_webPreviewsPlugin.ts`](../config/datocms/migrations/1773830634_webPreviewsPlugin.ts)). After running the migration, configure the frontend URLs in the plugin settings in DatoCMS:
+The plugin is installed and configured automatically via the [`featVisualEditing`](../config/datocms/migrations/1776154900_featVisualEditing.ts) migration. The migration sets both URLs the plugin needs:
 
-| Setting | Value |
+| Setting | Value written by the migration |
 |---|---|
-| **Preview Links API endpoint** | `https://yoursite.com/api/preview-links?token=YOUR_SECRET` |
-| **Enable Draft Mode route** | `https://yoursite.com/api/draft-mode/enable?token=YOUR_SECRET` |
+| **Preview Links API endpoint** | `{siteUrl}/api/preview-links?token={token}` |
+| **Enable Draft Mode route** | `{siteUrl}/api/draft-mode/enable?token={token}` |
 
-Replace `yoursite.com` with your deployment URL and `YOUR_SECRET` with the value of `HEAD_START_PREVIEW_SECRET`.
+`siteUrl` is hardcoded in the migration to the deployment that hosts visual editing (the `preview` branch alias - `https://preview.head-start.pages.dev` in this template). If your project uses a different domain, change the `siteUrl` constant in the migration before running it.
 
-> [!NOTE]
-> The URLs must be configured manually per environment because they contain your deployment URL and secret, which differ between localhost, preview, and production.
+`token` is read from `HEAD_START_PREVIEW_SECRET` at migration time. If the env var is set when you run the migration, the real secret is baked into the plugin config. If it isn't, the literal string `REPLACE_WITH_PREVIEW_SECRET` is written instead.
 
 > [!NOTE]
 > The site's Content-Security-Policy allows embedding in the plugin iframe via `frame-ancestors 'self' https://*.admin.datocms.com https://plugins-cdn.datocms.com` (see [`security-headers.ts`](../src/middleware/security-headers.ts)).
@@ -250,3 +249,110 @@ const focusFieldOverrides: Record<string, string> = {
 - **Field API key**: Check DatoCMS field settings or `itemTypes[typename].focusField` in `itemTypes.json`
 
 Then regenerate: `npm run prep:download-item-types`
+
+## Visual Editing
+
+**Visual Editing** lets CMS editors hover the preview iframe and see which field produced each element, then click to jump straight to that field in DatoCMS. It is active **only in preview mode** (see [Enable preview mode](#enable-preview-mode)).
+
+It relies on two mechanisms that always work together:
+
+1. **Stega-encoded strings** - DatoCMS's GraphQL API injects invisible Unicode characters into every string returned in preview mode. Those markers encode the record id and field path. Rendered as text they are harmless, but used as a URL, `href`, phone number, or compared to an enum they break behavior. The `stripStega` helper removes them.
+2. **`data-datocms-content-link-*` attributes** - HTML hints that tell the in-iframe overlay which DOM elements map to which content, so hovering highlights the right thing and clicking focuses the right field.
+
+Both the helper and the attributes come from the [`@datocms/content-link`](https://github.com/datocms/content-link) library - refer to its README for the authoritative, up-to-date API reference.
+
+### When to use `stripStega`
+
+Import from the official package:
+
+```ts
+import { stripStega } from '@datocms/content-link';
+```
+
+Use it on any CMS string **whose value (not its displayed form) drives behavior**. 
+Rule of thumb: if the string goes into an `href`, a `tel:`/`mailto:`, a `new URL()`, a conditional comparison, a CSS class, a JSON key, or any API call - strip it. 
+If the string is only rendered as visible text, leave it alone (stripping removes the markers that make click-to-edit work).
+
+| Use case | Example | Reference |
+|---|---|---|
+| Link `href` | `const href = stripStega(rawHref);` | [`Link.astro`](../src/components/Link/Link.astro) |
+| Enum / layout comparison | `const layout = stripStega(block.layout);` | [`GroupingBlock.astro`](../src/blocks/GroupingBlock/GroupingBlock.astro) |
+| Style modifier (`primary` / `secondary`) | `if (stripStega(style) === 'primary') { ... }` | [`ActionBlock.astro`](../src/blocks/ActionBlock/ActionBlock.astro) |
+| Phone / mailto value | `const phoneNumber = stripStega(rawPhoneNumber);` | [`PhoneLink.astro`](../src/blocks/ActionBlock/PhoneLink.astro), [`EmailLink.astro`](../src/blocks/ActionBlock/EmailLink.astro) |
+| Image or video URL passed to Imgix/Mux | `const imageUrl = stripStega(image.url);` | [`Image.astro`](../src/blocks/ImageBlock/Image.astro) |
+| Provider name in oEmbed lookup | `const providerName = stripStega(data?.provider_name);` | [`EmbedBlock.astro`](../src/blocks/EmbedBlock/EmbedBlock.astro) |
+
+For a full list of usages in this codebase, search for `stripStega(`.
+
+> [!WARNING]
+> Do **not** wrap visible text in `stripStega`. You will disable click-to-edit for that field. `<h1>{page.title}</h1>` is correct; `<h1>{stripStega(page.title)}</h1>` is not.
+
+### Content link attributes
+
+Three data attributes, each with a distinct role:
+
+#### `data-datocms-content-link-source`
+
+Marks the element that renders **one specific field value**. The attribute's value is a human-readable label the editor will see in the overlay (usually the field's own text, alt, or title).
+
+```astro
+<figure data-datocms-content-link-source={image.alt || image.title}>
+  <img src={imageUrl} alt={altText} />
+</figure>
+```
+
+Use on the outermost element that "is" the field - e.g. a `<figure>` around an image or video, a `<div>` around an embed block. See examples in [`EmbedBlock.astro`](../src/blocks/EmbedBlock/EmbedBlock.astro), [`Image.astro`](../src/blocks/ImageBlock/Image.astro) and [`VideoEmbedBlock.astro`](../src/blocks/VideoEmbedBlock/VideoEmbedBlock.astro).
+
+#### `data-datocms-content-link-group`
+
+Marks a container whose direct children are a **list of sibling items** (blocks, structured-text children, etc.). Tells the overlay "these belong together" so arrow-key navigation and grouped highlighting work.
+
+```astro
+<div data-datocms-content-link-group>
+  {blocks.map(block => <Block block={block} />)}
+</div>
+```
+
+Used on the blocks wrapper in [`Blocks.astro`](../src/blocks/Blocks.astro) and around structured-text content in [`Text.astro`](../src/blocks/TextBlock/Text.astro).
+
+#### `data-datocms-content-link-boundary`
+
+Wraps **one child** inside a group to define the click region's edge. Use `style="display:contents"` so the wrapper does not affect CSS layout.
+
+```astro
+<div data-datocms-content-link-group>
+  {blocks.map(block => (
+    <div data-datocms-content-link-boundary style="display:contents">
+      <Block block={block} />
+    </div>
+  ))}
+</div>
+```
+
+See [`Blocks.astro`](../src/blocks/Blocks.astro).
+
+#### How the three compose
+
+```
+┌─ data-datocms-content-link-group ──────────────┐
+│  ┌─ boundary ────────────────────────────────┐ │
+│  │  <BlockA>                                 │ │
+│  │    <figure data-...-link-source="...">    │ │  ← one field inside this block
+│  │  </BlockA>                                │ │
+│  └───────────────────────────────────────────┘ │
+│  ┌─ boundary ────────────────────────────────┐ │
+│  │  <BlockB> ... </BlockB>                   │ │
+│  └───────────────────────────────────────────┘ │
+└────────────────────────────────────────────────┘
+```
+
+`group` = the list. `boundary` = one item in the list. `source` = one field inside the item.
+
+### Checklist: adding a new block or component
+
+When you add a new block or a component that renders CMS data directly:
+
+- [ ] **Any string used as a URL, enum, class, or comparison?** → `stripStega(value)` it. (Strings only rendered as text: leave alone.)
+- [ ] **Does the component render a single CMS field (image, video, embed, link)?** → Add `data-datocms-content-link-source={label}` on the outer element, where `label` is a recognizable value from the field (alt, title, URL - something the editor will see in the sidebar).
+- [ ] **Does the component render a *list* of CMS items?** → Wrap in `data-datocms-content-link-group` and wrap each item in `data-datocms-content-link-boundary style="display:contents"`. Follow the pattern in [`Blocks.astro`](../src/blocks/Blocks.astro).
+- [ ] **Only rendering prose / a single scalar value?** → Nothing to add. `Blocks.astro` already provides the group/boundary wrapping when your block is rendered as part of a page's blocks list.
