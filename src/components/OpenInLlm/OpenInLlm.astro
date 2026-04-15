@@ -1,0 +1,81 @@
+---
+import Icon from '~/components/Icon/Icon.astro';
+
+export type LlmOption = {
+  title: string;
+  url: string;
+  openInNewTab: boolean;
+  style: string;
+};
+
+export type Props = {
+  aiOptions: LlmOption[];
+  prompt: string;
+}
+
+const { aiOptions, prompt } = Astro.props;
+
+const popoverId = 'open-in-llm-popover';
+const pageUrl = Astro.url.href;
+
+let searchText = prompt.replace('{ pageUrl }', pageUrl);
+if(searchText === '') searchText = pageUrl;
+
+const llmLinks = aiOptions.map((option) => {
+  const href = new URL(option.url);
+  href.searchParams.set('q', searchText);
+  return { ...option, href: href.toString() };
+});
+---
+
+<open-in-llm>
+  <div data-button-group>
+    <button type="button" data-copy-url={pageUrl} aria-live="polite">
+      <Icon name="share" />
+      <!-- // TODO TRANSLATION -->
+      <span data-copy-label>Copy page</span>
+    </button>
+    {
+      llmLinks.length > 0 && (
+        // TODO TRANSLATION
+        // TODO aria-expanded state change
+        <button
+          type="button"
+          popovertarget={popoverId}
+          aria-label="Open page in LLM"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          <Icon name="chevron-down" />
+        </button>
+      )
+    }
+  </div>
+  {
+    llmLinks.length > 0 && (
+      <ul popover id={popoverId} data-placement="bottom-start">
+        {llmLinks.map((link) => (
+          <li>
+            <a href={link.href} {...(link.openInNewTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+              {link.title}
+              <Icon name="external" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</open-in-llm>
+
+<script src="./OpenInLlm.client.ts"></script>
+
+<style>
+  open-in-llm {
+    display: inline-flex;
+  }
+
+  [popover] {
+    margin: 0;
+    inset-inline-start: 0;
+  }
+</style>

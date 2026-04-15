@@ -10,6 +10,9 @@ import IconSprite from '~/components/Icon/IconSprite.astro';
 import PreviewModeProvider from '~/components/PreviewMode/PreviewModeProvider.astro';
 import StructuredData from '~/components/StructuredData/StructuredData.astro';
 import SkipLink from '~/components/SkipLink/SkipLink.astro';
+import OpenInLlm, {
+  type LlmOption,
+} from '~/components/OpenInLlm/OpenInLlm.astro';
 import AppHeader from './AppHeader/AppHeader.astro';
 import PerfHead from './PerfHead/PerfHead.astro';
 import SeoHead from './SeoHead/SeoHead.astro';
@@ -30,6 +33,9 @@ const data = await datocmsRequest<DefaultLayoutQuery>({
 const { breadcrumbs = [], pageUrls, seoMetaTags } = Astro.props;
 const mainContentId = 'content';
 const menuItems = data.app?.menuItems ?? [];
+const allowAiBots = Boolean(data.app?.allowAiBots);
+const prompt = data.app?.prompt || '';
+const aiOptions: LlmOption[] = data.app?.openInLlmOption ?? [];
 ---
 
 <!doctype html>
@@ -55,6 +61,7 @@ const menuItems = data.app?.menuItems ?? [];
         /* main element requires tabindex to be focusable, see SkipLink/README.md */
       }
       <main id={mainContentId} tabindex="-1">
+        {allowAiBots && <OpenInLlm {aiOptions} {prompt} />}
         <slot />
       </main>
       <footer {...datocmsNoIndex}>
