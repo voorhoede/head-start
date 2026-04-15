@@ -54,7 +54,9 @@ Note: the secret is configured as environment variable `HEAD_START_PREVIEW_SECRE
 
 ## Preview mode bar
 
-When in preview mode a bar in the user interface displays the status of the connection with the CMS, along with a link to exit preview mode. Depending on the layout of your project, you may want to move the preview mode bar to another position, for example if your project has a sticky header.
+When in preview mode a bar appears at the top of the page showing the connection status with DatoCMS, an edit mode toggle (for visual editing), and an exit link. The bar is rendered by [`PreviewMode.astro`](../src/components/PreviewMode/PreviewMode.astro) and included automatically in the [`Default.astro`](../src/layouts/Default.astro) layout.
+
+Depending on the layout of your project you may want to move the bar to a different position - for example if your project has a sticky header the bar may overlap it. Adjust the positioning in `PreviewMode.astro`.
 
 ## Preview mode subscriptions
 
@@ -102,7 +104,7 @@ The [Web Previews plugin](https://www.datocms.com/marketplace/plugins/i/datocms-
 ### How it works
 
 1. The plugin calls `/api/preview-links` to get the preview URL for the current record
-2. It opens `/api/draft-mode/enable` to set the preview cookie in the iframe
+2. It opens `/api/draft-mode/enable` to set the preview cookie in the iframe - this is a separate endpoint from `/api/preview/enter` because it needs to work cross-origin (the plugin iframe is served from `admin.datocms.com`, not your domain)
 3. The iframe loads the preview URL with draft content visible
 
 ### Setup
@@ -114,7 +116,8 @@ The plugin is installed and configured automatically via the [`featVisualEditing
 | **Preview Links API endpoint** | `{siteUrl}/api/preview-links?token={token}` |
 | **Enable Draft Mode route** | `{siteUrl}/api/draft-mode/enable?token={token}` |
 
-`siteUrl` is hardcoded in the migration to the deployment that hosts visual editing (the `preview` branch alias - `https://preview.head-start.pages.dev` in this template). If your project uses a different domain, change the `siteUrl` constant in the migration before running it.
+> [!WARNING]
+> `siteUrl` is hardcoded in the migration to `https://preview.head-start.pages.dev` (the `preview` branch alias in this template). If your project uses a different domain, update the `siteUrl` constant in the migration **before** running it - otherwise the plugin will point at the wrong deployment.
 
 `token` is read from `HEAD_START_PREVIEW_SECRET` at migration time. If the env var is set when you run the migration, the real secret is baked into the plugin config. If it isn't, the literal string `REPLACE_WITH_PREVIEW_SECRET` is written instead.
 
@@ -123,14 +126,14 @@ The plugin is installed and configured automatically via the [`featVisualEditing
 
 ## Visual Editing
 
-**Visual Editing** lets CMS editors hover the preview iframe and see which field produced each element, then click to jump straight to that field in DatoCMS. It is active **only in preview mode** (see [Enable preview mode](#enable-preview-mode)).
+**Visual Editing** is the overlay that runs inside the Web Previews iframe - it lets CMS editors hover over the page and see which field produced each element, then click to jump straight to that field in DatoCMS. It is active **only in preview mode** (see [Enable preview mode](#enable-preview-mode)).
 
 It relies on two mechanisms that always work together:
 
 1. **Stega-encoded strings** - DatoCMS's GraphQL API injects invisible Unicode characters into every string returned in preview mode. Those markers encode the record id and field path. Rendered as text they are harmless, but used as a URL, `href`, phone number, or compared to an enum they break behavior. The `stripStega` helper removes them.
 2. **`data-datocms-content-link-*` attributes** - HTML hints that tell the in-iframe overlay which DOM elements map to which content, so hovering highlights the right thing and clicking focuses the right field.
 
-Both the helper and the attributes come from the [`@datocms/content-link`](https://github.com/datocms/content-link) library - refer to its README for the authoritative, up-to-date API reference.
+Both the helper and the attributes come from the [`@datocms/content-link`](https://github.com/datocms/content-link) library - refer to its README for up-to-date API reference.
 
 ### When to use `stripStega`
 
