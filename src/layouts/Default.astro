@@ -34,8 +34,8 @@ const { breadcrumbs = [], pageUrls, seoMetaTags } = Astro.props;
 const mainContentId = 'content';
 const menuItems = data.app?.menuItems ?? [];
 const allowAiBots = Boolean(data.app?.allowAiBots);
-const prompt = data.app?.prompt || '';
-const aiOptions: LlmOption[] = data.app?.openInLlmOption ?? [];
+const prompt = data.app?.openPageInLlmPrompt || '';
+const aiOptions: LlmOption[] = data.app?.openPageInLlmOption ?? [];
 ---
 
 <!doctype html>
