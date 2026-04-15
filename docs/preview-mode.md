@@ -163,11 +163,23 @@ For a full list of usages in this codebase, search for `stripStega(`.
 
 ### Content link attributes
 
-Three data attributes, each with a distinct role:
+#### How click-to-edit gets triggered
+
+Before the attributes, the underlying mechanism:
+
+1. The library scans the DOM for stega-encoded strings. It finds them in two places:
+   - **Text content** - e.g. `<h1>{page.title}</h1>`, `<figcaption>{title}</figcaption>`
+   - **Attribute values** - e.g. `<img alt={image.alt}>`, `<iframe title={title}>`, `aria-label={...}`
+2. For each stega-encoded value it finds, the library stamps the surrounding element as clickable.
+3. When you click a stamped element, the library walks up the DOM:
+   - If it finds `data-datocms-content-link-group` → that group becomes the clickable target.
+   - If it finds `data-datocms-content-link-boundary` → the walk stops and only the clicked element stays clickable.
+
+So click-to-edit works automatically anywhere you render stega-encoded strings - no attributes required. The attributes below are only needed when the automatic detection misses an area you want clickable.
 
 #### `data-datocms-content-link-source`
 
-Marks the element that renders **one specific field value**. The attribute's value is a human-readable label the editor will see in the overlay (usually the field's own text, alt, or title).
+Attaches stega metadata to an element that doesn't otherwise have stega nearby. Use it on wrappers around **pure media** (images, videos, iframes) whose rendered content carries no stega strings.
 
 ```astro
 <figure data-datocms-content-link-source={image.alt || image.title}>
@@ -175,7 +187,9 @@ Marks the element that renders **one specific field value**. The attribute's val
 </figure>
 ```
 
-Use on the outermost element that "is" the field - e.g. a `<figure>` around an image or video, a `<div>` around an embed block. See examples in [`EmbedBlock.astro`](../src/blocks/EmbedBlock/EmbedBlock.astro), [`Image.astro`](../src/blocks/ImageBlock/Image.astro) and [`VideoEmbedBlock.astro`](../src/blocks/VideoEmbedBlock/VideoEmbedBlock.astro).
+The attribute **value** must itself be a stega-encoded string (pulled straight from the CMS field) - that's how the library knows which field to open. If the element already contains stega-carrying text or attributes in its subtree, `source` is redundant.
+
+See [`VideoBlock.astro`](../src/blocks/VideoBlock/VideoBlock.astro) and [`EmbedBlock.astro`](../src/blocks/EmbedBlock/EmbedBlock.astro) for examples where `source` is required because the rendered media carries no stega on its own.
 
 #### `data-datocms-content-link-group`
 
@@ -229,7 +243,13 @@ When you add a new block or a component that renders CMS data directly:
 - [ ] **Any string used as a URL, enum, class, or comparison?** → `stripStega(value)` it. (Strings only rendered as text: leave alone.)
 - [ ] **Does the component render a single CMS field (image, video, embed, link)?** → Add `data-datocms-content-link-source={label}` on the outer element, where `label` is a recognizable value from the field (alt, title, URL - something the editor will see in the sidebar).
 - [ ] **Does the component render a *list* of CMS items?** → Wrap in `data-datocms-content-link-group` and wrap each item in `data-datocms-content-link-boundary style="display:contents"`. Follow the pattern in [`Blocks.astro`](../src/blocks/Blocks.astro).
+- [ ] **Rendering a non-text field (number, boolean) or a URL passed straight to a third-party component?** → The stega-encoded strings won't help here. Add `data-datocms-content-link-url={field._editingUrl}` on the element so the click-to-edit overlay still picks it up.
 - [ ] **Only rendering prose / a single scalar value?** → Nothing to add. `Blocks.astro` already provides the group/boundary wrapping when your block is rendered as part of a page's blocks list.
+
+### Debugging visual editing
+
+- **Inspect the DOM.** Elements the library recognizes get a `data-datocms-contains-stega` attribute automatically. No attribute = no stega detected for that element.
+- **See where a click will go.** Use `revealStega` from `@datocms/content-link` in a console log - it replaces invisible markers with visible `[STEGA:/editor/...]` tags so you can see the edit URL a value resolves to.
 
 ### Toggling the overlay on a preview page
 
