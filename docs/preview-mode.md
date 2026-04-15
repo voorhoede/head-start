@@ -52,6 +52,49 @@ When authorised an encrypted cookie is set, to persist preview mode throughout a
 
 Note: the secret is configured as environment variable `HEAD_START_PREVIEW_SECRET`.
 
+## Preview mode bar
+
+When in preview mode a bar in the user interface displays the status of the connection with the CMS, along with a link to exit preview mode. Depending on the layout of your project, you may want to move the preview mode bar to another position, for example if your project has a sticky header.
+
+## Preview mode subscriptions
+
+In preview mode the web page listens for content changes and automatically reloads to re-render on updates. To configure which content changes to listen to you can add one or more `PreviewModeSubscription` components, which accept the same `query` and `variables` properties you use to request the initial data:
+
+```astro
+---
+import PreviewModeSubscription from '~/components/PreviewMode/PreviewModeSubscription.astro';
+// ...
+const variables = { locale, slug };
+const { page } = await datocmsRequest<PageQuery>({ query, variables });
+---
+
+<PreviewModeSubscription
+  query={query}
+  variables={variables}
+/>
+<h1>{page.title}</h1>
+```
+
+## Preview links from the CMS
+
+Head Start includes the [Model Deployment Links plugin](https://www.datocms.com/marketplace/plugins/i/datocms-plugin-model-deployment-links) which adds preview links to the CMS sidebar. This allows editors to preview any page directly from the CMS, including draft (unpublished) content.
+
+The plugin is configured automatically via migrations (see [`1750900000_previewLinks.ts`](../config/datocms/migrations/1750900000_previewLinks.ts)). It adds a "Preview" field to the Home, Page, and Not Found models with URL patterns for each.
+
+### How it works
+
+Each model has a different URL pattern:
+
+| Model | URL pattern | How it resolves |
+|---|---|---|
+| Home | `/{ locale }/` | Direct link to the home page |
+| Page | `/api/reroute/page/{ locale }/{ slug }` | Looks up the page by slug, 307 redirects to its canonical URL |
+| Not found | `/{ locale }/404` | Direct link to the 404 page |
+
+The **Page** model uses a reroute endpoint because the CMS only knows a page's slug, not its full nested path (e.g. a page with slug `my-page` might live at `/en/parent/my-page/`). The endpoint at `src/pages/api/reroute/page/[locale]/[slug].ts` queries DatoCMS for the page by slug and redirects to the correct canonical URL.
+
+The sidebar links are shown for each Build Trigger configured in DatoCMS (e.g. Localhost, Preview, Production).
+
 ## Web Previews plugin
 
 The [Web Previews plugin](https://www.datocms.com/marketplace/plugins/i/datocms-plugin-web-previews) enables side-by-side editing in DatoCMS: editors see a live preview of the website alongside the editing panel. The plugin loads the website in an iframe, so editors can see their changes reflected in real-time.
@@ -77,49 +120,6 @@ The plugin is installed and configured automatically via the [`featVisualEditing
 
 > [!NOTE]
 > The site's Content-Security-Policy allows embedding in the plugin iframe via `frame-ancestors 'self' https://*.admin.datocms.com https://plugins-cdn.datocms.com` (see [`security-headers.ts`](../src/middleware/security-headers.ts)).
-
-## Preview links from the CMS
-
-Head Start includes the [Model Deployment Links plugin](https://www.datocms.com/marketplace/plugins/i/datocms-plugin-model-deployment-links) which adds preview links to the CMS sidebar. This allows editors to preview any page directly from the CMS, including draft (unpublished) content.
-
-The plugin is configured automatically via migrations (see [`1750900000_previewLinks.ts`](../config/datocms/migrations/1750900000_previewLinks.ts)). It adds a "Preview" field to the Home, Page, and Not Found models with URL patterns for each.
-
-### How it works
-
-Each model has a different URL pattern:
-
-| Model | URL pattern | How it resolves |
-|---|---|---|
-| Home | `/{ locale }/` | Direct link to the home page |
-| Page | `/api/reroute/page/{ locale }/{ slug }` | Looks up the page by slug, 307 redirects to its canonical URL |
-| Not found | `/{ locale }/404` | Direct link to the 404 page |
-
-The **Page** model uses a reroute endpoint because the CMS only knows a page's slug, not its full nested path (e.g. a page with slug `my-page` might live at `/en/parent/my-page/`). The endpoint at `src/pages/api/reroute/page/[locale]/[slug].ts` queries DatoCMS for the page by slug and redirects to the correct canonical URL.
-
-The sidebar links are shown for each Build Trigger configured in DatoCMS (e.g. Localhost, Preview, Production).
-
-## Preview mode subscriptions
-
-In preview mode the web page listens for content changes and automatically reloads to re-render on updates. To configure which content changes to listen to you can add one or more `PreviewModeSubscription` components, which accept the same `query` and `variables` properties you use to request the initial data:
-
-```astro
----
-import PreviewModeSubscription from '~/components/PreviewMode/PreviewModeSubscription.astro';
-// ...
-const variables = { locale, slug };
-const { page } = await datocmsRequest<PageQuery>({ query, variables });
----
-
-<PreviewModeSubscription
-  query={query}
-  variables={variables}
-/>
-<h1>{page.title}</h1>
-```
-
-## Preview mode bar
-
-When in preview mode a bar in the user interface displays the status of the connection with the CMS, along with a link to exit preview mode. Depending on the layout of your project, you may want to move the preview mode bar to another position, for example if your project has a sticky header.
 
 ## Visual Editing
 
