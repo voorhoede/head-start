@@ -15,7 +15,6 @@ import AppHeader from './AppHeader/AppHeader.astro';
 import PerfHead from './PerfHead/PerfHead.astro';
 import SeoHead from './SeoHead/SeoHead.astro';
 import app from '~/lib/app';
-import { Font } from 'astro:assets';
 import '~/assets/a11y.css';
 
 interface Props {
@@ -51,7 +50,6 @@ const llmOptions = app.openPageInLlmOption ?? [];
       allowAiBots={allowAiBots}
     />
     <StructuredData />
-    <Font cssVariable="--font-archivo" />
   </head>
   <body>
     <PreviewModeProvider>
