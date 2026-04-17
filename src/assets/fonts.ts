@@ -6,7 +6,7 @@
 
 import { fontProviders, type FontFamily } from 'astro/config';
 
-export const fontsConfig: FontFamily[] = [
+export const fontConfig: FontFamily[] = [
   {
     name: 'Archivo',
     cssVariable: '--font-archivo',
