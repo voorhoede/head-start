@@ -1,14 +1,14 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
-import type { SiteLocale, VariableRecord } from '~/lib/datocms/types';
+import type { SiteLocale } from '~/lib/datocms/types';
 import { getLocale } from '~/lib/i18n';
 import { getHref, type RecordRoute } from '~/lib/routing';
 import Link from '~/components/Link/Link.astro';
 import LinkToFile from '~/components/LinkToFile/LinkToFile.astro';
 
-export type Props = Omit<HTMLAttributes<'a'>, 'href'> & {
+export type Props = Omit<HTMLAttributes<'a'>,'href'> & {
   openInNewTab?: boolean;
-  record: RecordRoute | VariableRecord;
+  record: RecordRoute;
 };
 
 const { record, openInNewTab, ...props } = Astro.props;
@@ -22,8 +22,6 @@ const href = getHref({ locale, record: record as RecordRoute });
     <LinkToFile {record} {...props}>
       <slot>{record.title}</slot>
     </LinkToFile>
-  ) : record.__typename === 'VariableRecord' ? (
-    <span data-variable={record.title}>{record.value}</span>
   ) : (
     <Link {href} {openInNewTab} {...props}>
       <slot>{record.title}</slot>
