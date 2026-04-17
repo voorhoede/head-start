@@ -15,10 +15,14 @@ describe('PerfHead', async () => {
     });
   });
 
-  test('inlines woff2 font references for fast font loading', () => {
-    const style = fragment.querySelector('style');
-    expect(style).not.toBeNull();
-    expect(style?.textContent).toMatch(/url\(["'].*\.woff2["']\)/);
+  test('preloads font files for faster font loading and page rendering', () => {
+    const links = fragment.querySelectorAll('link[rel="preload"][as="font"]');
+    expect(links.length).toBeGreaterThanOrEqual(1);
+    links.forEach((link) => {
+      expect(link.getAttribute('type')).toBe('font/woff2');
+      expect(link.getAttribute('href')).toMatch(/\.woff2$/);
+      expect(['anonymous', '']).toContain(link.getAttribute('crossorigin'));
+    });
   });
 
   test('inlines font declarations as critical CSS', () => {
