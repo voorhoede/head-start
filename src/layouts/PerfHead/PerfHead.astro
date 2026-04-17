@@ -7,8 +7,6 @@ const preConnectOrigins = [datocmsAssetsOrigin, datocmsGraphqlOrigin];
 
 {preConnectOrigins.map((origin) => <link rel="preconnect" href={origin} />)}
 
-<Font cssVariable="--font-archivo" />
-
 <script is:inline>
   window.addEventListener('load', () => {
     if ('serviceWorker' in navigator) {
@@ -22,3 +20,5 @@ const preConnectOrigins = [datocmsAssetsOrigin, datocmsGraphqlOrigin];
     }
   });
 </script>
+
+<Font cssVariable="--font-archivo" />
