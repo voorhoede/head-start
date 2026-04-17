@@ -1,4 +1,4 @@
-import { defineConfig, envField } from 'astro/config';
+import { defineConfig, envField, fontProviders } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import graphql from '@rollup/plugin-graphql';
 import sitemap from '@astrojs/sitemap';
@@ -73,5 +73,16 @@ export default defineConfig({
     optimizeDeps: {
       exclude: ['msw'],
     }
+  },
+  experimental: {
+    // @note this can be moved out of experimental when we updated astro to v6.0
+    fonts: [{
+      name: 'Archivo',
+      cssVariable: '--font-archivo',
+      provider: fontProviders.fontsource(),
+      weights: [400, 600],
+      styles: ['normal'],
+      subsets: ['latin'],
+    }]
   },
 });
