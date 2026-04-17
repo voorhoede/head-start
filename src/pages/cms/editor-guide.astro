@@ -1,4 +1,5 @@
 ---
+import { Font } from 'astro:assets';
 import PerfHead from '~/layouts/PerfHead/PerfHead.astro';
 import { Content } from '../../content/editor-guide.md';
 
@@ -13,6 +14,7 @@ export const prerender = false;
     <meta name="robots" content="noindex, nofollow" />
     <title>Content Editor Guide</title>
     <PerfHead />
+    <Font cssVariable="--font-archivo" />
   </head>
   <body>
     <main>

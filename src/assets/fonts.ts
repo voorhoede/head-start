@@ -1,4 +1,4 @@
-// // example use of custom fonts. Modify fontsConfig with your own fonts.
+// Example use of custom fonts. Modify fontsConfig with your own fonts.
 // Based on https://docs.astro.build/en/guides/fonts/
 
 import { fontProviders, type FontFamily } from 'astro/config';
