@@ -82,6 +82,7 @@ export default defineConfig({
       provider: fontProviders.fontsource(),
       weights: [400, 600],
       styles: ['normal'],
+      subsets: ['latin'],
     }]
   },
 });
