@@ -83,5 +83,5 @@ export default defineConfig({
       weights: [400, 600],
       styles: ['normal'],
     }]
-  }
+  },
 });

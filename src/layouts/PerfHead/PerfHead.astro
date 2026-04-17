@@ -1,10 +1,13 @@
 ---
 import { datocmsAssetsOrigin, datocmsGraphqlOrigin } from '~/lib/datocms';
+import { Font } from 'astro:assets';
 
 const preConnectOrigins = [datocmsAssetsOrigin, datocmsGraphqlOrigin];
 ---
 
 {preConnectOrigins.map((origin) => <link rel="preconnect" href={origin} />)}
+
+<Font cssVariable="--font-archivo" />
 
 <script is:inline>
   window.addEventListener('load', () => {
