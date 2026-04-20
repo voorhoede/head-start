@@ -22,7 +22,7 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
   const allowAiBots = allowAll && Boolean(app?.allowAiBots);
   
   if (!allowAiBots) {
-    return new Response(null, { status: 404 });
+    return new Response(null, { status: 404, headers: { 'Cache-Control': 'no-store' } });
   }
   
   params.path ||= '';
@@ -39,13 +39,20 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
     return new Response(cached.md, { headers });
   }
 
+  if (!site) {
+    return new Response('Site URL is not configured', {
+      status: 500,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    });
+  }
+
   const pageUrl = new URL(`/${params.path}/`, site);
   const response = await fetch(pageUrl, {
     headers: { Accept: 'text/html' },
   });
   
   if (response.status !== 200) {
-    return response;
+    return new Response(null, { status: response.status });
   }
   
   const contentType = response.headers.get('content-type') ?? '';
