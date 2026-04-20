@@ -1,13 +1,16 @@
 import type { APIRoute } from 'astro';
 import type { RobotsTxtQuery } from '~/lib/datocms/types';
-import type { Root } from 'hast';
 import rehypeParse from 'rehype-parse';
 import rehypeRemark from 'rehype-remark';
 import remarkGfm from 'remark-gfm';
 import remarkStringify from 'remark-stringify';
 import { unified } from 'unified';
-import { select } from 'hast-util-select';
 import { datocmsRequest } from '~/lib/datocms';
+import { extractFrontmatter } from '~/lib/frontmatter';
+import type { Alternate } from '~/lib/frontmatter';
+import rehypeExtractNoindex from '~/lib/rehype/rehype-extract-noindex';
+import rehypeExtractAlternates from '~/lib/rehype/rehype-extract-alternates';
+import rehypeExtractMain from '~/lib/rehype/rehype-extract-main';
 import query from '../../_robots.query.graphql';
 
 export const prerender = false;
@@ -69,27 +72,18 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
   try {
     const result = await unified()
       .use(rehypeParse)
-      .use(() => (tree: Root) => {
-        const robotsMeta = select('meta[name="robots"]', tree);
-        const robotsContent = robotsMeta?.properties?.content;
-        const contentStr = Array.isArray(robotsContent)
-          ? robotsContent.join(', ')
-          : typeof robotsContent === 'string' ? robotsContent : '';
-        if (contentStr.toLowerCase().includes('noindex')) {
-          noindex = true;
-        }
-
-        const main = select('main', tree);
-        if (main) {
-          tree.children = main.children;
-        }
-      })
+      .use(rehypeExtractNoindex)
+      .use(rehypeExtractAlternates)
+      .use(rehypeExtractMain)
       .use(rehypeRemark)
       .use(remarkGfm)
       .use(remarkStringify)
       .process(html);
 
-    md = String(result);
+    noindex = Boolean(result.data.noindex);
+    const alternates = (result.data.alternates ?? []) as Alternate[];
+    const frontmatter = await extractFrontmatter({ html, url: pageUrl.href, alternates });
+    md = frontmatter + String(result);
   } catch (error) {
     return new Response(`Unable to render markdown: ${error instanceof Error ? error.message : 'Unknown error'}`, {
       status: 500,
