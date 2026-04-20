@@ -16,7 +16,7 @@ export type AppCollectionEntry = AppQuery['app'] & {
 
 const name = 'App' as const;
 
-const loadEntry = async (id: 'default' = 'default', locale?: SiteLocale) => {
+const loadEntry = async (id: string = 'default', locale?: SiteLocale | null) => {
   const { app, site } = await datocmsRequest<AppQuery>({ query });
   if (!app) return undefined;
   return {
