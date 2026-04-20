@@ -3,21 +3,14 @@ import Blocks from '~/blocks/Blocks.astro';
 import PreviewModeSubscription from '~/components/PreviewMode/PreviewModeSubscription.astro';
 import Layout from '~/layouts/Default.astro';
 import { datocmsRequest } from '~/lib/datocms';
-import type { HomePageQuery, RobotsTxtQuery } from '~/lib/datocms/types';
+import type { HomePageQuery } from '~/lib/datocms/types';
 import { locales } from '~/lib/i18n';
 import { getHomeHref, type PageUrl } from '~/lib/routing';
 import query from './_index.query.graphql';
-import robotsQuery from '../_robots.query.graphql';
 
 export async function getStaticPaths() {
   return locales.map((locale) => ({ params: { locale } }));
 }
-
-const { isPreview } = Astro.locals;
-
-const { app, site: datoSite } = await datocmsRequest<RobotsTxtQuery>({ query: robotsQuery });
-const allowAll = !datoSite.noIndex && !isPreview;
-const allowAiBots = allowAll && Boolean(app?.allowAiBots);
 
 const { locale } = Astro.params;
 const variables = { locale };
@@ -31,7 +24,6 @@ const pageUrls = locales.map((locale) => ({
 <Layout
   pageUrls={pageUrls}
   seoMetaTags={page._seoMetaTags}
-  allowAiBots={allowAiBots}
 >
   <PreviewModeSubscription query={query} variables={variables} record={{ type: page.__typename, id: page.id }} />
   <h1>{page.title}</h1>
