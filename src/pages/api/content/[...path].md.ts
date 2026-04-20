@@ -20,7 +20,7 @@ const CACHE_TTL = 60000 * 5;
 const MAX_CACHE_SIZE = 500;
 
 export const GET: APIRoute = async ({ params, site, locals }) => {
-  if (!app.allowAiBots || locals.isPreview) {
+  if (!app.allowAiBots || app.noIndex || locals.isPreview) {
     return new Response(null, { status: 404, headers: { 'Cache-Control': 'no-store' } });
   }
   

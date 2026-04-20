@@ -1,6 +1,6 @@
 import { getEntry } from '~/lib/content';
 
-const entry = await getEntry('App', 'default');
+const entry = await getEntry('App', 'default', null);
 
 if (!entry) throw new Error('App entry not found');
 
