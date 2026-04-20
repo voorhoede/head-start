@@ -1,17 +1,11 @@
 ---
-import { getEntry } from '~/lib/content';
-
-type Props = {
-  allowAiBots?: boolean;
-};
+import app from '~/lib/app';
 
 const { pathname } = Astro.url;
-
-const entry = await getEntry('App', 'default');
 
 const markdownUrl = new URL(`/api/content${pathname.replace(/\/$/, '')}.md`, Astro.site);
 ---
 
-{ entry?.data.allowAiBots && (
+{ app.allowAiBots && !Astro.locals.isPreview && (
   <link rel="alternate" type="text/markdown" href={markdownUrl} />
 )}

@@ -4,7 +4,7 @@ import rehypeRemark from 'rehype-remark';
 import remarkGfm from 'remark-gfm';
 import remarkStringify from 'remark-stringify';
 import { unified } from 'unified';
-import { getEntry } from '~/lib/content';
+import app from '~/lib/app';
 import { buildFrontmatter } from '~/lib/frontmatter';
 import type { Alternate } from '~/lib/frontmatter';
 import type { PageMeta } from '~/lib/rehype/rehype-extract-meta';
@@ -15,14 +15,12 @@ import rehypeExtractMain from '~/lib/rehype/rehype-extract-main';
 
 export const prerender = false;
 
-const entry = await getEntry('App', 'default');
-
 const cache = new Map<string, { md: string; noindex: boolean; timestamp: number }>();
 const CACHE_TTL = 60000 * 5;
 const MAX_CACHE_SIZE = 500;
 
-export const GET: APIRoute = async ({ params, site }) => {
-  if (!entry?.data.allowAiBots) {
+export const GET: APIRoute = async ({ params, site, locals }) => {
+  if (!app.allowAiBots || locals.isPreview) {
     return new Response(null, { status: 404, headers: { 'Cache-Control': 'no-store' } });
   }
   
