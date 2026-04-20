@@ -6,6 +6,8 @@ const rehypeExtractMain: Plugin<[], Root> = () => (tree) => {
   const main = select('main', tree);
   if (main) {
     tree.children = main.children;
+  } else {
+    tree.children = [];
   }
 };
 

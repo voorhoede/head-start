@@ -1,5 +1,4 @@
-import ogs from 'open-graph-scraper';
-import type { ImageObject, TwitterImageObject } from 'open-graph-scraper/types';
+import type { PageMeta } from '~/lib/rehype/rehype-extract-meta';
 
 export interface Alternate {
   locale: string;
@@ -7,13 +6,18 @@ export interface Alternate {
 }
 
 export interface FrontmatterOptions {
-  html: string;
+  meta: PageMeta;
   url: string;
   alternates?: Alternate[];
 }
 
 function yamlQuote(value: string): string {
-  return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
+  const escaped = value
+    .replace(/\\/g, '\\\\')
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '\\r');
+  return `"${escaped}"`;
 }
 
 function addField(lines: string[], key: string, value: string | undefined) {
@@ -23,43 +27,37 @@ function addField(lines: string[], key: string, value: string | undefined) {
   }
 }
 
-function addImageFields(lines: string[], prefix: string, image: ImageObject | TwitterImageObject | undefined) {
-  if (!image) return;
-  addField(lines, prefix, image.url);
-  if (image.width) addField(lines, `${prefix}:width`, String(image.width));
-  if (image.height) addField(lines, `${prefix}:height`, String(image.height));
-  if (image.alt) addField(lines, `${prefix}:alt`, image.alt);
-}
-
-export async function extractFrontmatter({ html, url, alternates = [] }: FrontmatterOptions): Promise<string> {
-  const { result } = await ogs({ html });
+export function buildFrontmatter({ meta, url, alternates = [] }: FrontmatterOptions): string {
   const lines: string[] = [];
 
   // Core
-  addField(lines, 'title', result.ogTitle || result.twitterTitle || result.dcTitle);
-  addField(lines, 'description', result.ogDescription || result.twitterDescription || result.dcDescription);
-  addField(lines, 'url', result.ogUrl || url);
+  addField(lines, 'title', meta['og:title'] || meta['twitter:title'] || meta['dc.title']);
+  addField(lines, 'description', meta['og:description'] || meta['twitter:description'] || meta['dc.description']);
+  addField(lines, 'url', meta['og:url'] || url);
 
   // Open Graph
-  addField(lines, 'og:title', result.ogTitle);
-  addField(lines, 'og:description', result.ogDescription);
-  addImageFields(lines, 'og:image', result.ogImage?.[0]);
-  addField(lines, 'og:type', result.ogType);
-  addField(lines, 'og:site_name', result.ogSiteName);
-  addField(lines, 'og:locale', result.ogLocale);
+  addField(lines, 'og:title', meta['og:title']);
+  addField(lines, 'og:description', meta['og:description']);
+  addField(lines, 'og:image', meta['og:image']);
+  addField(lines, 'og:image:width', meta['og:image:width']);
+  addField(lines, 'og:image:height', meta['og:image:height']);
+  addField(lines, 'og:image:alt', meta['og:image:alt']);
+  addField(lines, 'og:type', meta['og:type']);
+  addField(lines, 'og:site_name', meta['og:site_name']);
+  addField(lines, 'og:locale', meta['og:locale']);
 
   // Twitter Card
-  addField(lines, 'twitter:card', result.twitterCard);
-  addField(lines, 'twitter:site', result.twitterSite);
-  addField(lines, 'twitter:title', result.twitterTitle);
-  addField(lines, 'twitter:description', result.twitterDescription);
-  addImageFields(lines, 'twitter:image', result.twitterImage?.[0]);
+  addField(lines, 'twitter:card', meta['twitter:card']);
+  addField(lines, 'twitter:site', meta['twitter:site']);
+  addField(lines, 'twitter:title', meta['twitter:title']);
+  addField(lines, 'twitter:description', meta['twitter:description']);
+  addField(lines, 'twitter:image', meta['twitter:image']);
 
   // Article
-  addField(lines, 'article:modified_time', result.articleModifiedTime);
-  addField(lines, 'article:published_time', result.articlePublishedTime);
-  addField(lines, 'article:publisher', result.articlePublisher);
-  addField(lines, 'article:author', result.articleAuthor);
+  addField(lines, 'article:modified_time', meta['article:modified_time']);
+  addField(lines, 'article:published_time', meta['article:published_time']);
+  addField(lines, 'article:publisher', meta['article:publisher']);
+  addField(lines, 'article:author', meta['article:author']);
 
   // Alternates
   if (alternates.length > 0) {

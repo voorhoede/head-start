@@ -6,8 +6,10 @@ import remarkGfm from 'remark-gfm';
 import remarkStringify from 'remark-stringify';
 import { unified } from 'unified';
 import { datocmsRequest } from '~/lib/datocms';
-import { extractFrontmatter } from '~/lib/frontmatter';
+import { buildFrontmatter } from '~/lib/frontmatter';
 import type { Alternate } from '~/lib/frontmatter';
+import type { PageMeta } from '~/lib/rehype/rehype-extract-meta';
+import rehypeExtractMeta from '~/lib/rehype/rehype-extract-meta';
 import rehypeExtractNoindex from '~/lib/rehype/rehype-extract-noindex';
 import rehypeExtractAlternates from '~/lib/rehype/rehype-extract-alternates';
 import rehypeExtractMain from '~/lib/rehype/rehype-extract-main';
@@ -72,6 +74,7 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
   try {
     const result = await unified()
       .use(rehypeParse)
+      .use(rehypeExtractMeta)
       .use(rehypeExtractNoindex)
       .use(rehypeExtractAlternates)
       .use(rehypeExtractMain)
@@ -82,7 +85,8 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
 
     noindex = Boolean(result.data.noindex);
     const alternates = (result.data.alternates ?? []) as Alternate[];
-    const frontmatter = await extractFrontmatter({ html, url: pageUrl.href, alternates });
+    const meta = (result.data.meta ?? {}) as PageMeta;
+    const frontmatter = buildFrontmatter({ meta, url: pageUrl.href, alternates });
     md = frontmatter + String(result);
   } catch (error) {
     return new Response(`Unable to render markdown: ${error instanceof Error ? error.message : 'Unknown error'}`, {
