@@ -16,12 +16,12 @@ export type AppCollectionEntry = AppQuery['app'] & {
 
 const name = 'App' as const;
 
-const loadEntry = async (_id?: string, locale?: SiteLocale) => {
+const loadEntry = async (id: 'default' = 'default', locale?: SiteLocale) => {
   const { app, site } = await datocmsRequest<AppQuery>({ query });
   if (!app) return undefined;
   return {
     ...app,
-    id: 'default',
+    id,
     meta: {
       locale: locale ?? locales[0],
     },
