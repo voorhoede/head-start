@@ -1,23 +1,30 @@
 import { defineCollection, z } from 'astro:content';
 import { type AppQuery, App as query, type SiteLocale } from '~/lib/datocms/types';
 import { datocmsRequest } from '~/lib/datocms';
+import { locales } from '~/lib/i18n';
+
+type Meta = {
+  locale: SiteLocale;
+};
 
 export type AppCollectionEntry = AppQuery['app'] & {
   id: string;
-  meta: Record<string, never>;
+  meta: Meta;
   noIndex: boolean;
   subscription: { variables: Record<string, string> };
 };
 
 const name = 'App' as const;
 
-const loadEntry = async (_id?: string, _locale?: SiteLocale | null) => {
+const loadEntry = async (_id?: string, locale?: SiteLocale) => {
   const { app, site } = await datocmsRequest<AppQuery>({ query });
   if (!app) return undefined;
   return {
     ...app,
     id: 'default',
-    meta: {},
+    meta: {
+      locale: locale ?? locales[0],
+    },
     noIndex: site.noIndex ?? false,
     subscription: { variables: {} },
   } satisfies AppCollectionEntry;
