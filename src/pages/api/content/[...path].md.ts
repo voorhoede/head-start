@@ -14,6 +14,7 @@ export const prerender = false;
 
 const cache = new Map<string, { md: string; noindex: boolean; timestamp: number }>();
 const CACHE_TTL = 60000 * 5;
+const MAX_CACHE_SIZE = 500;
 
 export const GET: APIRoute = async ({ params, site, locals }) => {
   const { app, site: datoSite } = await datocmsRequest<RobotsTxtQuery>({ query });
@@ -63,7 +64,10 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
       .use(() => (tree: Root) => {
         const robotsMeta = select('meta[name="robots"]', tree);
         const robotsContent = robotsMeta?.properties?.content;
-        if (typeof robotsContent === 'string' && robotsContent.includes('noindex')) {
+        const contentStr = Array.isArray(robotsContent)
+          ? robotsContent.join(', ')
+          : typeof robotsContent === 'string' ? robotsContent : '';
+        if (contentStr.toLowerCase().includes('noindex')) {
           noindex = true;
         }
 
@@ -85,6 +89,16 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
     });
   }
   
+  if (cache.size >= MAX_CACHE_SIZE) {
+    const now = Date.now();
+    for (const [key, entry] of cache) {
+      if (now - entry.timestamp >= CACHE_TTL) cache.delete(key);
+    }
+    if (cache.size >= MAX_CACHE_SIZE) {
+      const firstKey = cache.keys().next().value;
+      if (firstKey !== undefined) cache.delete(firstKey);
+    }
+  }
   cache.set(params.path, { md, noindex, timestamp: Date.now() });
 
   const headers: Record<string, string> = {
