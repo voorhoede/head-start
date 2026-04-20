@@ -5,7 +5,7 @@ import { datocmsRequest } from '~/lib/datocms';
 export type AppCollectionEntry = AppQuery['app'] & {
   id: string;
   meta: Record<string, never>;
-  subscription: { variables: Record<string, never> };
+  subscription: { variables: Record<string, string> };
 };
 
 const name = 'App' as const;
