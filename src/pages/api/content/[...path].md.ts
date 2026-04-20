@@ -46,7 +46,8 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
     });
   }
 
-  const pageUrl = new URL(`/${params.path}/`, site);
+  const pageUrl = new URL(site);
+  pageUrl.pathname = params.path ? `/${params.path}/` : '/';
   const response = await fetch(pageUrl, {
     headers: { Accept: 'text/html' },
   });
