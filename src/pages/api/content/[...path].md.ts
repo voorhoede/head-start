@@ -7,11 +7,9 @@ import remarkStringify from 'remark-stringify';
 import { unified } from 'unified';
 import { datocmsRequest } from '~/lib/datocms';
 import { buildFrontmatter } from '~/lib/frontmatter';
-import type { Alternate } from '~/lib/frontmatter';
 import type { PageMeta } from '~/lib/rehype/rehype-extract-meta';
 import rehypeExtractMeta from '~/lib/rehype/rehype-extract-meta';
 import rehypeExtractNoindex from '~/lib/rehype/rehype-extract-noindex';
-import rehypeExtractAlternates from '~/lib/rehype/rehype-extract-alternates';
 import rehypeExtractMain from '~/lib/rehype/rehype-extract-main';
 import query from '../../_robots.query.graphql';
 
@@ -76,7 +74,6 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
       .use(rehypeParse)
       .use(rehypeExtractMeta)
       .use(rehypeExtractNoindex)
-      .use(rehypeExtractAlternates)
       .use(rehypeExtractMain)
       .use(rehypeRemark)
       .use(remarkGfm)
@@ -84,9 +81,12 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
       .process(html);
 
     noindex = Boolean(result.data.noindex);
-    const alternates = (result.data.alternates ?? []) as Alternate[];
     const meta = (result.data.meta ?? {}) as PageMeta;
-    const frontmatter = buildFrontmatter({ meta, url: pageUrl.href, alternates });
+    const localeCode = params.path.split('/')[0] || undefined;
+    const language = localeCode
+      ? new Intl.DisplayNames(['en'], { type: 'language' }).of(localeCode)
+      : undefined;
+    const frontmatter = buildFrontmatter({ meta, url: pageUrl.href, language });
     md = frontmatter + String(result);
   } catch (error) {
     return new Response(`Unable to render markdown: ${error instanceof Error ? error.message : 'Unknown error'}`, {
