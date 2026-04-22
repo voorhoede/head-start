@@ -37,6 +37,7 @@ Inside of this project, you'll see the following folders and files:
 └── package.json
 ```
 
+- `.agents/skills/` contains project-specific agent skills — reusable capability bundles loaded by AI agents on demand. See [Working with AI](./working-with-ai.md).
 - `docs/` contains project documentation.
   - `decision-log/` lists all key decisions made during the project. Please read the log so you understand why decisions are made and document key decisions when you make them.
   - The Editor Guide is displayed inside the CMS via the [custom page plugin](https://www.datocms.com/marketplace/plugins/i/datocms-plugin-custom-page). Edit `editor-guide.md` to update the guide and submit those changes through a PR for review. Images for the guide go in `public/editor-guide/` and can be referenced as `![alt](/editor-guide/filename.png)`. Preview changes locally at `http://localhost:4323/cms/editor-guide/`.
