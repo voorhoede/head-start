@@ -22,7 +22,7 @@ class OpenInLlm extends HTMLElement {
     popover?.addEventListener('toggle', (event) => {
       this.#dropdownButton?.setAttribute(
         'aria-expanded',
-        (event as ToggleEvent).newState === 'open' ? 'true' : 'false',
+        event.newState === 'open' ? 'true' : 'false',
       );
     });
 
