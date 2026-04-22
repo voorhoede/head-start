@@ -18,8 +18,7 @@ export const siteName: () => string = () => localeSeo().siteName;
 export const titleSuffix: () => string = () => localeSeo().titleSuffix;
 
 export const noIndexTag: Tag = {
-  attributes: { name: 'robots' },
-  content: 'noindex',
+  attributes: { name: 'robots', content: 'noindex' },
   tag: 'meta',
 };
 
