@@ -26,11 +26,23 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
     const allowAll = !datoSite.noIndex && !locals.isPreview;
     allowAiBots = allowAll && Boolean(app?.allowAiBots);
   } catch {
-    return new Response(null, { status: 503, headers: { 'Cache-Control': 'no-store' } });
+    return new Response('Service unavailable', {
+      status: 503,
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Cache-Control': 'no-store',
+      },
+    });
   }
 
   if (!allowAiBots) {
-    return new Response(null, { status: 404, headers: { 'Cache-Control': 'no-store' } });
+    return new Response('Not found', {
+      status: 404,
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Cache-Control': 'no-store',
+      },
+    });
   }
   
   params.path ||= '';
@@ -39,7 +51,7 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
   if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
     const headers: Record<string, string> = {
       'Content-Type': 'text/markdown; charset=utf-8',
-      'Cache-Control': 'private, max-age=300',
+      'Cache-Control': `private, max-age=${CACHE_TTL / 1000}`,
     };
     if (cached.noindex) {
       headers['X-Robots-Tag'] = 'noindex';
@@ -64,16 +76,26 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
       redirect: 'manual',
     });
   } catch {
-    return new Response(null, { status: 504 });
+    return new Response('Upstream timeout', {
+      status: 504,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    });
   }
 
   if (response.status !== 200) {
-    return new Response(null, { status: response.type === 'opaqueredirect' ? 404 : response.status });
+    const status = response.type === 'opaqueredirect' ? 404 : response.status;
+    return new Response(status === 404 ? 'Not found' : 'Upstream error', {
+      status,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    });
   }
   
   const contentType = response.headers.get('content-type') ?? '';
   if (!contentType.includes('text/html')) {
-    return new Response(null, { status: 404 });
+    return new Response('Not found', {
+      status: 404,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    });
   }
 
   const html = await response.text();
@@ -118,8 +140,8 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
       if (now - entry.timestamp >= CACHE_TTL) cache.delete(key);
     }
     if (cache.size >= MAX_CACHE_SIZE) {
-      const firstKey = cache.keys().next().value;
-      if (firstKey !== undefined) cache.delete(firstKey);
+      const oldestKey = cache.keys().next().value;
+      if (oldestKey !== undefined) cache.delete(oldestKey);
     }
   }
 
@@ -138,7 +160,7 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
   return new Response(md, {
     headers: {
       'Content-Type': 'text/markdown; charset=utf-8',
-      'Cache-Control': 'private, max-age=300',
+      'Cache-Control': `private, max-age=${CACHE_TTL / 1000}`,
     },
   });
 };
