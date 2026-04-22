@@ -11,7 +11,13 @@ function yamlQuote(value: string): string {
     .replace(/\\/g, '\\\\')
     .replace(/"/g, '\\"')
     .replace(/\n/g, '\\n')
-    .replace(/\r/g, '\\r');
+    .replace(/\r/g, '\\r')
+    .split('')
+    .filter(ch => {
+      const c = ch.charCodeAt(0);
+      return c > 8 && c !== 11 && c !== 12 && (c < 14 || c > 31) && c !== 127;
+    })
+    .join('');
   return `"${escaped}"`;
 }
 

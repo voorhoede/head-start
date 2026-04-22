@@ -11,7 +11,7 @@ import type { PageMeta } from '~/lib/rehype/rehype-extract-meta';
 import rehypeExtractMeta from '~/lib/rehype/rehype-extract-meta';
 import rehypeExtractNoindex from '~/lib/rehype/rehype-extract-noindex';
 import rehypeExtractMain from '~/lib/rehype/rehype-extract-main';
-import query from '../../_robots.query.graphql';
+import query from '~/pages/_robots.query.graphql';
 
 export const prerender = false;
 
@@ -20,10 +20,15 @@ const CACHE_TTL = 60000 * 5;
 const MAX_CACHE_SIZE = 500;
 
 export const GET: APIRoute = async ({ params, site, locals }) => {
-  const { app, site: datoSite } = await datocmsRequest<RobotsTxtQuery>({ query });
-  const allowAll = !datoSite.noIndex && !locals.isPreview;
-  const allowAiBots = allowAll && Boolean(app?.allowAiBots);
-  
+  let allowAiBots = false;
+  try {
+    const { app, site: datoSite } = await datocmsRequest<RobotsTxtQuery>({ query });
+    const allowAll = !datoSite.noIndex && !locals.isPreview;
+    allowAiBots = allowAll && Boolean(app?.allowAiBots);
+  } catch {
+    return new Response(null, { status: 503, headers: { 'Cache-Control': 'no-store' } });
+  }
+
   if (!allowAiBots) {
     return new Response(null, { status: 404, headers: { 'Cache-Control': 'no-store' } });
   }
@@ -34,7 +39,7 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
   if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
     const headers: Record<string, string> = {
       'Content-Type': 'text/markdown; charset=utf-8',
-      'Cache-Control': 'public, max-age=300',
+      'Cache-Control': 'private, max-age=300',
     };
     if (cached.noindex) {
       headers['X-Robots-Tag'] = 'noindex';
@@ -51,12 +56,19 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
 
   const pageUrl = new URL(site);
   pageUrl.pathname = params.path ? `/${params.path}/` : '/';
-  const response = await fetch(pageUrl, {
-    headers: { Accept: 'text/html' },
-  });
-  
+  let response: Response;
+  try {
+    response = await fetch(pageUrl, {
+      headers: { Accept: 'text/html' },
+      signal: AbortSignal.timeout(10_000),
+      redirect: 'manual',
+    });
+  } catch {
+    return new Response(null, { status: 504 });
+  }
+
   if (response.status !== 200) {
-    return new Response(null, { status: response.status });
+    return new Response(null, { status: response.type === 'opaqueredirect' ? 404 : response.status });
   }
   
   const contentType = response.headers.get('content-type') ?? '';
@@ -83,13 +95,18 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
     noindex = Boolean(result.data.noindex);
     const meta = (result.data.meta ?? {}) as PageMeta;
     const localeCode = params.path.split('/')[0] || undefined;
-    const language = localeCode
-      ? new Intl.DisplayNames(['en'], { type: 'language' }).of(localeCode)
-      : undefined;
+    let language: string | undefined;
+    if (localeCode) {
+      try {
+        language = new Intl.DisplayNames(['en'], { type: 'language' }).of(localeCode);
+      } catch {
+        language = undefined;
+      }
+    }
     const frontmatter = buildFrontmatter({ meta, url: pageUrl.href, language });
     md = frontmatter + String(result);
-  } catch (error) {
-    return new Response(`Unable to render markdown: ${error instanceof Error ? error.message : 'Unknown error'}`, {
+  } catch {
+    return new Response('Unable to process page content', {
       status: 500,
       headers: { 'Content-Type': 'text/plain; charset=utf-8' },
     });
@@ -105,15 +122,23 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
       if (firstKey !== undefined) cache.delete(firstKey);
     }
   }
-  cache.set(params.path, { md, noindex, timestamp: Date.now() });
 
-  const headers: Record<string, string> = {
-    'Content-Type': 'text/markdown; charset=utf-8',
-    'Cache-Control': 'public, max-age=300',
-  };
   if (noindex) {
-    headers['X-Robots-Tag'] = 'noindex';
+    return new Response(md, {
+      headers: {
+        'Content-Type': 'text/markdown; charset=utf-8',
+        'Cache-Control': 'no-store',
+        'X-Robots-Tag': 'noindex',
+      },
+    });
   }
 
-  return new Response(md, { headers });
+  cache.set(params.path, { md, noindex, timestamp: Date.now() });
+
+  return new Response(md, {
+    headers: {
+      'Content-Type': 'text/markdown; charset=utf-8',
+      'Cache-Control': 'private, max-age=300',
+    },
+  });
 };
