@@ -5,13 +5,26 @@ class OpenInLlm extends HTMLElement {
   #copyButton: HTMLButtonElement | null = null;
   #dropdownButton: HTMLButtonElement | null = null;
   #buttonGroup: HTMLElement | null = null;
-  #originalLabel = 'Copy page';
+  #originalLabel = '';
 
   connectedCallback() {
     this.#copyButton = this.querySelector<HTMLButtonElement>('[data-copy-url]');
     this.#dropdownButton =
       this.querySelector<HTMLButtonElement>('[popovertarget]');
     this.#buttonGroup = this.querySelector<HTMLElement>('[data-button-group]');
+    this.#originalLabel =
+      this.#copyButton?.querySelector('[data-copy-label]')?.textContent ?? '';
+
+    const popoverId = this.#dropdownButton?.getAttribute('popovertarget');
+    const popover = popoverId
+      ? this.querySelector<HTMLElement>(`#${popoverId}`)
+      : null;
+    popover?.addEventListener('toggle', (event) => {
+      this.#dropdownButton?.setAttribute(
+        'aria-expanded',
+        (event as ToggleEvent).newState === 'open' ? 'true' : 'false',
+      );
+    });
 
     this.#copyButton?.addEventListener('click', this.#handleCopy);
     this.#dropdownButton?.addEventListener('click', this.#handleDropdown);
@@ -46,33 +59,27 @@ class OpenInLlm extends HTMLElement {
     const url = this.#copyButton?.dataset.copyUrl;
     if (!url) return;
 
-    const text = await this.#buildCopyText(url);
-
     try {
+      const text = await this.#buildCopyText(url);
       await navigator.clipboard.writeText(text);
-      this.#setLabel('Copied!'); // TODO TRANSLATION
+      this.#setLabel(this.#copyButton?.dataset.labelCopied ?? '');
     } catch {
-      this.#setLabel('Could not copy'); // TODO TRANSLATION
+      this.#setLabel(this.#copyButton?.dataset.labelError ?? '');
     }
     setTimeout(() => this.#setLabel(this.#originalLabel), 2000);
   };
 
   #buildCopyText = async (pageUrl: string): Promise<string> => {
-    // const mdUrl = `${pageUrl.replace(/\/$/, '')}.md`; // TODO markdown version of this page
-    const mdUrl =
-      'https://nextjs.org/docs/app/getting-started/fetching-data.md'; // --- testing url ---
+    const alternateLink = document.querySelector<HTMLLinkElement>(
+      'link[rel="alternate"][type="text/markdown"]',
+    );
+    if (!alternateLink) throw new Error('No markdown alternate link found');
 
-    try {
-      const response = await fetch(mdUrl);
-      if (response.ok) {
-        const markdown = await response.text();
-        // TODO pageUrl should be mdUrl, with extra text?
-        return `${pageUrl}\n\n${markdown}`;
-      }
-    } catch {
-      // markdown alternative not available, fall back to page URL
-    }
-    return pageUrl;
+    const response = await fetch(alternateLink.href);
+    if (!response.ok) throw new Error('Failed to fetch markdown');
+
+    const markdown = await response.text();
+    return `${pageUrl}\n\n${markdown}`;
   };
 
   #setLabel(text: string) {

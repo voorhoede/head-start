@@ -1,5 +1,6 @@
 ---
 import Icon from '~/components/Icon/Icon.astro';
+import { t } from '~/lib/i18n';
 
 export type LlmOption = {
   title: string;
@@ -11,7 +12,7 @@ export type LlmOption = {
 export type Props = {
   aiOptions: LlmOption[];
   prompt: string;
-}
+};
 
 const { aiOptions, prompt } = Astro.props;
 
@@ -19,7 +20,7 @@ const popoverId = 'open-in-llm-popover';
 const pageUrl = Astro.url.href;
 
 let searchText = prompt.replace('{ pageUrl }', pageUrl);
-if(searchText === '') searchText = pageUrl;
+if (searchText === '') searchText = pageUrl;
 
 const llmLinks = aiOptions.map((option) => {
   const href = new URL(option.url);
@@ -30,19 +31,22 @@ const llmLinks = aiOptions.map((option) => {
 
 <open-in-llm>
   <div data-button-group>
-    <button type="button" data-copy-url={pageUrl} aria-live="polite">
+    <button
+      type="button"
+      data-copy-url={pageUrl}
+      data-label-copied={t('copy_page_copied')}
+      data-label-error={t('copy_page_error')}
+      aria-live="polite"
+    >
       <Icon name="share" />
-      <!-- // TODO TRANSLATION -->
-      <span data-copy-label>Copy page</span>
+      <span data-copy-label>{t('copy_page')}</span>
     </button>
     {
       llmLinks.length > 0 && (
-        // TODO TRANSLATION
-        // TODO aria-expanded state change
         <button
           type="button"
           popovertarget={popoverId}
-          aria-label="Open page in LLM"
+          aria-label={t('open_in_llm')}
           aria-haspopup="true"
           aria-expanded="false"
         >
@@ -56,7 +60,12 @@ const llmLinks = aiOptions.map((option) => {
       <ul popover id={popoverId} data-placement="bottom-start">
         {llmLinks.map((link) => (
           <li>
-            <a href={link.href} {...(link.openInNewTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+            <a
+              href={link.href}
+              {...(link.openInNewTab
+                ? { target: '_blank', rel: 'noopener noreferrer' }
+                : {})}
+            >
               {link.title}
               <Icon name="external" />
             </a>
