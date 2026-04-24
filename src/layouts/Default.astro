@@ -8,6 +8,7 @@ import query from './default.query.graphql';
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs.astro';
 import IconSprite from '~/components/Icon/IconSprite.astro';
 import PreviewModeProvider from '~/components/PreviewMode/PreviewModeProvider.astro';
+import { ContentLink } from '@datocms/astro/ContentLink';
 import StructuredData from '~/components/StructuredData/StructuredData.astro';
 import SkipLink from '~/components/SkipLink/SkipLink.astro';
 import AppHeader from './AppHeader/AppHeader.astro';
@@ -30,6 +31,9 @@ const data = await datocmsRequest<DefaultLayoutQuery>({
 const { breadcrumbs = [], pageUrls, seoMetaTags } = Astro.props;
 const mainContentId = 'content';
 const menuItems = data.app?.menuItems ?? [];
+
+const veParam = Astro.url.searchParams.get('ve');
+const enableClickToEdit = veParam !== '0';
 ---
 
 <!doctype html>
@@ -45,6 +49,9 @@ const menuItems = data.app?.menuItems ?? [];
     <StructuredData />
   </head>
   <body>
+    {Astro.locals.isPreview && (
+      <ContentLink enableClickToEdit={enableClickToEdit ? { hoverOnly: true } : undefined} />
+    )}
     <PreviewModeProvider>
       <SkipLink targetId={mainContentId} />
       <div {...datocmsNoIndex}>

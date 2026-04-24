@@ -11,6 +11,7 @@ src/
 ├── blocks/
 │   ├── Blocks.astro
 │   ├── Blocks.d.ts
+│   ├── blocksByTypename.ts
 │   └── SomeContentBlock/
 │       ├── SomeContentBlock.astro
 │       ├── SomeContentBlock.fragment.graphql
@@ -132,31 +133,24 @@ const { page } = await datocmsRequest({ query, variables: { locale: Astro.params
 <Blocks blocks={page.bodyBlocks} />
 ```
 
-When you create a new Block, you need to register it in [`blocks/Blocks.astro`](../src/blocks/Blocks.astro) (using the CMS model's typename) and add its type to [`blocks/Blocks.d.ts`](../src/blocks/Blocks.d.ts):
+When you create a new Block, you need to register it in [`blocks/blocksByTypename.ts`](../src/blocks/blocksByTypename.ts) (using the CMS model's typename) and add its type to [`blocks/Blocks.d.ts`](../src/blocks/Blocks.d.ts):
 
 Register a new Block's template:
 
-```astro
----
-// src/Blocks/Blocks.astro:
+```ts
+// src/blocks/blocksByTypename.ts:
 
-import type { AnyBlock } from './Blocks';
 import ImageBlock from './ImageBlock/ImageBlock.astro';
 // import your new Block template (order imports A to Z):
 import SomeContentBlock from './SomeContentBlock/SomeContentBlock.astro';
 import TextBlock from './TextBlock/TextBlock.astro';
 
-const blocksByTypename = {
+export const blocksByTypename = {
   ImageBlockRecord: ImageBlock,
   // register your new Block using its CMS model's typename (order A to Z):
   SomeContentBlockRecord: SomeContentBlock,
   TextBlockRecord: TextBlock,
 };
-
-interface Props {
-  blocks: AnyBlock[];
-}
-const { blocks } = Astro.props;
 ```
 
 Register a new Block's type:

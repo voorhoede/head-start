@@ -1,12 +1,15 @@
 ---
 import { type CdaStructuredTextRecord } from 'datocms-structured-text-utils';
-import Blocks from '~/blocks/Blocks.astro';
+import { blocksByTypename } from '~/blocks/blocksByTypename';
 
 interface Props {
   block: CdaStructuredTextRecord;
 }
 
 const { block } = Astro.props;
+const Block = blocksByTypename[block.__typename as keyof typeof blocksByTypename];
 ---
 
-<Blocks blocks={[block]} hideEditorLabels />
+{/* render without <Blocks> wrapper: its block-level <div> would invalidate the parent <p> */}
+{/* @ts-expect-error - since block can be any block its type is conflated to `never`. */}
+{Block && <Block block={block} />}

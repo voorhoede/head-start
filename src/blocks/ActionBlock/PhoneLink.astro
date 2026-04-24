@@ -1,13 +1,17 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
 import type { PhoneLinkFragment } from '~/lib/datocms/types';
+import { stripStega } from '@datocms/content-link';
 
 type PhoneLinkProps = Pick<
   PhoneLinkFragment,
   'action' | 'phoneNumber' | 'text'
 >;
 export type Props = HTMLAttributes<'a'> & PhoneLinkProps;
-const { action, phoneNumber, text, ...props } = Astro.props;
+const { action: rawAction, phoneNumber: rawPhoneNumber, text: rawText, ...props } = Astro.props;
+const action = stripStega(rawAction);
+const phoneNumber = stripStega(rawPhoneNumber);
+const text = rawText ? stripStega(rawText) : rawText;
 
 const formatPhoneNumber = (phoneNumber: string) => {
   return phoneNumber.replace(/\s/g, '');

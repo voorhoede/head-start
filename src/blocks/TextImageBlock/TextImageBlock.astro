@@ -1,6 +1,7 @@
 ---
 import { type CdaStructuredTextValue } from 'datocms-structured-text-utils';
 import type { TextImageBlockFragment } from '~/lib/datocms/types';
+import { stripStega } from '@datocms/content-link';
 import Text from '~/blocks/TextBlock/Text.astro';
 import Image from '~/blocks/ImageBlock/Image.astro';
 
@@ -8,10 +9,11 @@ interface Props {
   block: TextImageBlockFragment
 }
 const { block } = Astro.props;
+const layout = stripStega(block.layout);
 ---
 
 <div class="component">
-  <div class:list={['layout', `layout--${block.layout}`]}>
+  <div class:list={['layout', `layout--${layout}`]}>
     <div class="layout__item">
       <Text data={ block.text as CdaStructuredTextValue } />
     </div>

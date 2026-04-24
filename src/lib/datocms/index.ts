@@ -6,6 +6,7 @@ import { datocmsBuildTriggerId, datocmsEnvironment } from '~root/datocms-environ
 import { output } from '~root/config/output';
 import { DATOCMS_READONLY_API_TOKEN, HEAD_START_PREVIEW } from 'astro:env/server';
 import { stripIndents } from 'proper-tags';
+import siteData from '~/lib/site.json';
 
 const wait = (milliSeconds: number) => new Promise((resolve) => setTimeout(resolve, milliSeconds));
 
@@ -56,6 +57,13 @@ export async function datocmsRequest<
   });
   if (HEAD_START_PREVIEW) {
     headers.append('X-Include-Drafts', 'true');
+    // Enable stega encoding for visual editing (click-to-edit overlays)
+    // @see https://www.datocms.com/docs/astro/visual-editing
+    headers.append('X-Visual-Editing', 'v1');
+    const baseEditingUrl = (siteData as { internalDomain?: string }).internalDomain;
+    if (baseEditingUrl) {
+      headers.append('X-Base-Editing-Url', `https://${baseEditingUrl}`);
+    }
   }
 
   const response = await fetch(datocmsGraphqlOrigin, {

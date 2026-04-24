@@ -7,18 +7,19 @@ import DefaultEmbed from './embeds/Default.astro';
 import TwitterEmbed from './embeds/Twitter.astro';
 import VimeoEmbed from './embeds/Vimeo.astro';
 import YouTubeEmbed from './embeds/YouTube.astro';
+import { stripStega } from '@datocms/content-link';
 
 export interface Props {
   block: EmbedBlockFragment;
 }
 const { block } = Astro.props;
 const { data, url }: { data: OEmbedAny; url: string } = block as { data: OEmbedAny; url: string };
-const providerName = (data || getOEmbedProvider(url))?.provider_name;
+const providerName = stripStega((data || getOEmbedProvider(url))?.provider_name);
 const isProvider = (name: string) =>
   providerName?.toLowerCase() === name.toLowerCase();
 ---
 
-<div class='embed-block'>
+<div class='embed-block' data-datocms-content-link-source={block.url}>
   {
     data && data.html ? (
       isProvider('Twitter') ? (

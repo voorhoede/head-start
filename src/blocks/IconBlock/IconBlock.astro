@@ -1,6 +1,7 @@
 ---
 import type { IconBlockFragment } from '~/lib/datocms/types';
 import type { IconName } from '~/assets/icon-sprite';
+import { stripStega } from '@datocms/content-link';
 import Icon, { iconNames } from '~/components/Icon';
 
 export interface Props {
@@ -8,14 +9,15 @@ export interface Props {
 }
 
 const { block } = Astro.props;
+const name = stripStega(block.name);
 
-const isIconName = (name: string): name is IconName =>
-  (iconNames as readonly string[]).includes(name);
+const isIconName = (value: string): value is IconName =>
+  (iconNames as readonly string[]).includes(value);
 ---
 
 {
-  isIconName(block.name) && (
-    <Icon name={block.name} aria-label={block.name} class="icon-block" />
+  isIconName(name) && (
+    <Icon name={name} aria-label={block.name} class="icon-block" />
   )
 }
 
