@@ -92,7 +92,7 @@ export const isIframeHtml = (html: string): boolean => {
   return /<iframe[^>]*>/gi.test(html);
 };
 
-export const sanatizeHtml = (html: string): string => {
+export const sanitizeHtml = (html: string): string => {
   /**
    * Remove deprecated attributes to resolve HTML violations
    * https://html-validate.org/rules/no-deprecated-attr.html
