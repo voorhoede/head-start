@@ -4,14 +4,23 @@ import { recordToWebsiteRoute } from '~/lib/datocms/recordInfo';
 
 export const prerender = false;
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-};
+const ALLOWED_ORIGIN = /^https:\/\/[a-z0-9-]+\.admin\.datocms\.com$/;
 
-export const OPTIONS: APIRoute = () => {
-  return new Response(null, { status: 204, headers: corsHeaders });
+function corsHeaders(request: Request): Record<string, string> {
+  const origin = request.headers.get('Origin') ?? '';
+  const headers: Record<string, string> = {
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Vary': 'Origin',
+  };
+  if (ALLOWED_ORIGIN.test(origin)) {
+    headers['Access-Control-Allow-Origin'] = origin;
+  }
+  return headers;
+}
+
+export const OPTIONS: APIRoute = ({ request }) => {
+  return new Response(null, { status: 204, headers: corsHeaders(request) });
 };
 
 type PreviewLink = {
@@ -31,7 +40,7 @@ export const POST: APIRoute = async ({ url, request }) => {
   if (!token || token !== HEAD_START_PREVIEW_SECRET) {
     return new Response(JSON.stringify({ error: 'Invalid token' }), {
       status: 401,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      headers: { 'Content-Type': 'application/json', ...corsHeaders(request) },
     });
   }
 
@@ -41,7 +50,7 @@ export const POST: APIRoute = async ({ url, request }) => {
   } catch {
     return new Response(JSON.stringify({ error: 'Invalid JSON' }), {
       status: 400,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      headers: { 'Content-Type': 'application/json', ...corsHeaders(request) },
     });
   }
 
@@ -77,6 +86,6 @@ export const POST: APIRoute = async ({ url, request }) => {
 
   return new Response(JSON.stringify({ previewLinks }), {
     status: 200,
-    headers: { 'Content-Type': 'application/json', ...corsHeaders },
+    headers: { 'Content-Type': 'application/json', ...corsHeaders(request) },
   });
 };
