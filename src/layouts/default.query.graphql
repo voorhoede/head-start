@@ -9,5 +9,15 @@ query DefaultLayout($locale: SiteLocale!) {
   }
   app(locale: $locale) {
     ...AppMenu
+    allowAiBots
+    openPageInLlmPrompt
+    openPageInLlmOption {
+      __typename
+      id
+      title
+      url
+      openInNewTab
+      style
+    }
   }
 }

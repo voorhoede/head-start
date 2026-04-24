@@ -1,0 +1,84 @@
+---
+import type { ExternalLinkFragment } from '~/lib/datocms/types';
+import Icon from '~/components/Icon/Icon.astro';
+import { t } from '~/lib/i18n';
+
+export type Props = {
+  llmOptions: ExternalLinkFragment[];
+  prompt: string;
+};
+
+const { llmOptions, prompt } = Astro.props;
+
+const popoverId = 'open-in-llm-popover';
+const pageUrl = Astro.url.href;
+
+let searchText = prompt.replace('{ pageUrl }', pageUrl);
+if (searchText === '') searchText = pageUrl;
+
+const llmLinks = llmOptions.map((option) => {
+  const href = new URL(option.url);
+  href.searchParams.set('q', searchText);
+  return { ...option, href: href.toString() };
+});
+---
+
+<open-in-llm>
+  <div data-button-group>
+    <button
+      type="button"
+      data-copy-url={pageUrl}
+      data-label-copied={t('copy_page_copied')}
+      data-label-error={t('copy_page_error')}
+      aria-live="polite"
+    >
+      <Icon name="share" />
+      <span data-copy-label>{t('copy_page')}</span>
+    </button>
+    {
+      llmLinks.length > 0 && (
+        <button
+          type="button"
+          popovertarget={popoverId}
+          aria-label={t('open_in_llm')}
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          <Icon name="chevron-down" />
+        </button>
+      )
+    }
+  </div>
+  {
+    llmLinks.length > 0 && (
+      <ul popover id={popoverId} data-placement="bottom-start">
+        {llmLinks.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              {...(link.openInNewTab
+                ? { target: '_blank', rel: 'noopener noreferrer' }
+                : {})}
+            >
+              {link.title}
+              <Icon name="external" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</open-in-llm>
+
+<script src="./OpenInLlm.client.ts"></script>
+
+<style>
+  open-in-llm {
+    display: inline-flex;
+  }
+
+  [popover] {
+    margin: 0;
+    inset-inline-start: 0;
+  }
+</style>
