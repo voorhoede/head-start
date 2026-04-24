@@ -95,7 +95,13 @@ describe('ImageBlock', () => {
             width: 150,
             responsiveImage: {
               base64: 'data:image/jpeg;base64,...',
-              srcSet: 'https://example.com/test.jpg 1x, https://example.com/test.jpg 2x'
+              srcSet: 'https://example.com/test.jpg 150w',
+              src: 'https://example.com/test.jpg',
+              alt: 'A responsive test image',
+              title: null,
+              width: 150,
+              height: 150,
+              sizes: '(max-width: 150px) 100vw, 150px',
             }
           }
         }
