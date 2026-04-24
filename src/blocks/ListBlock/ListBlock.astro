@@ -2,13 +2,14 @@
 import Text from '~/blocks/TextBlock/Text.astro';
 import type { ListBlockFragment } from '~/lib/datocms/types';
 import type { CdaStructuredTextValue } from 'datocms-structured-text-utils';
+import { stripStega } from '@datocms/content-link';
 
 interface Props {
   block: ListBlockFragment;
 }
 const { block } = Astro.props as Props;
 
-const type = block.listType;
+const type = stripStega(block.listType);
 const items = block.items;
 ---
 
