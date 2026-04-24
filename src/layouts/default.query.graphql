@@ -12,6 +12,8 @@ query DefaultLayout($locale: SiteLocale!) {
     allowAiBots
     openPageInLlmPrompt
     openPageInLlmOption {
+      __typename
+      id
       title
       url
       openInNewTab

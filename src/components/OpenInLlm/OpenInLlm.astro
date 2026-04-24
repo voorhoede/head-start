@@ -1,20 +1,14 @@
 ---
+import type { ExternalLinkFragment } from '~/lib/datocms/types';
 import Icon from '~/components/Icon/Icon.astro';
 import { t } from '~/lib/i18n';
 
-export type LlmOption = {
-  title: string;
-  url: string;
-  openInNewTab: boolean;
-  style: string;
-};
-
 export type Props = {
-  aiOptions: LlmOption[];
+  llmOptions: ExternalLinkFragment[];
   prompt: string;
 };
 
-const { aiOptions, prompt } = Astro.props;
+const { llmOptions, prompt } = Astro.props;
 
 const popoverId = 'open-in-llm-popover';
 const pageUrl = Astro.url.href;
@@ -22,7 +16,7 @@ const pageUrl = Astro.url.href;
 let searchText = prompt.replace('{ pageUrl }', pageUrl);
 if (searchText === '') searchText = pageUrl;
 
-const llmLinks = aiOptions.map((option) => {
+const llmLinks = llmOptions.map((option) => {
   const href = new URL(option.url);
   href.searchParams.set('q', searchText);
   return { ...option, href: href.toString() };
