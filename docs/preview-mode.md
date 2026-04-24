@@ -144,7 +144,7 @@ import { stripStega } from '@datocms/content-link';
 ```
 
 Use it on any CMS string **whose value (not its displayed form) drives behavior**. 
-Rule of thumb: if the string goes into an `href`, a `tel:`/`mailto:`, a `new URL()`, a conditional comparison, a CSS class, a JSON key, or any API call - strip it. 
+Rule of thumb: if the string goes into an `href`, a `tel:`/`mailto:`, a `new URL()`, a built-in strict parser (e.g. `Intl.*`), a conditional comparison, an identifier whitelist check, a CSS class, a JSON key, or any API call - strip it. 
 If the string is only rendered as visible text, leave it alone (stripping removes the markers that make click-to-edit work).
 
 | Use case | Example | Reference |
