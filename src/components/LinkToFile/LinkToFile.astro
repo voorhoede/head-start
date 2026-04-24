@@ -1,6 +1,7 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
 import type { FileRouteFragment } from '~/lib/datocms/types';
+import { stripStega } from '@datocms/content-link';
 import prettyBytes from 'pretty-bytes';
 import { getLocale } from '~/lib/i18n';
 import { getFileHref } from '~/lib/routing/';
@@ -11,7 +12,8 @@ export type Props = HTMLAttributes<'a'> & {
 };
 
 const { record, ...props } = Astro.props;
-const { file, locale: fileLocale, title } = record;
+const { file, locale: rawFileLocale, title } = record;
+const fileLocale = stripStega(rawFileLocale);
 const pageLocale = getLocale();
 const localeText =
   fileLocale && fileLocale !== pageLocale
