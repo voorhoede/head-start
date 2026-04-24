@@ -18,13 +18,7 @@ const href = getHref({ locale, record });
 ---
 
 {
-  record.__typename === 'FileRecord' ? (
-    <LinkToFile {record} {...props}>
-      <slot>{record.title}</slot>
-    </LinkToFile>
-  ) : (
-    <Link {href} {openInNewTab} {...props}>
-      <slot>{record.title}</slot>
-    </Link>
-  )
+  (record.__typename === 'FileRecord')
+    ? <LinkToFile {record} {...props}><slot>{record.title}</slot></LinkToFile>
+    : <Link {href} {openInNewTab} {...props}><slot>{record.title}</slot></Link>
 }

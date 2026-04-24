@@ -6,6 +6,7 @@ interface Props {
 }
 
 const { node } = Astro.props;
+const { code, language } = node;
 ---
 
-<pre data-language={node.language || undefined}><code>{node.code}</code></pre>
+<pre data-language={language || undefined}><code>{code}</code></pre>
