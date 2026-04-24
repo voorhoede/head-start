@@ -14,7 +14,7 @@ export type Props = Omit<HTMLAttributes<'a'>,'href'> & {
 const { record, openInNewTab, ...props } = Astro.props;
 
 const locale = getLocale() as SiteLocale;
-const href = getHref({ locale, record: record as RecordRoute });
+const href = getHref({ locale, record });
 ---
 
 {
