@@ -1,12 +1,15 @@
 ---
-import { extractScripts, getEmbedText, isIframeHtml, sanatizeHtml } from '../index';
+import { extractScripts, getEmbedText, isIframeHtml, sanitizeHtml } from '../index';
+import { t } from '~/lib/i18n';
+import Icon from '~/components/Icon';
 
 const { data, url, class: classList, ...props } = Astro.props;
 const { noscriptHtml, scripts } = extractScripts(data.html);
-const html = sanatizeHtml(noscriptHtml);
+const html = sanitizeHtml(noscriptHtml);
 const placeholderText = getEmbedText(data);
 const aspectRatio = data.width && data.height ? data.width / data.height : null;
 const maxWidth = data.width ? `${data.width}px` : '100%';
+const needsConsent = isIframeHtml(html) || scripts.length > 0;
 ---
 
 <default-embed 
@@ -34,6 +37,27 @@ const maxWidth = data.width ? `${data.width}px` : '100%';
       <script is:inline data-src={ src } {...attributes} />
     )) }
   </slot>
+  { needsConsent && (
+    <div class="consent-alert" role="alert" hidden>
+      <p class="consent-alert__text">
+        {t('consent_message_service', { service: data.provider_name })}
+      </p>
+      <div class="consent-alert__actions">
+        <button type="button" class="action--primary">
+          {t('allow_service', { service: data.provider_name })}
+        </button>
+        <a
+          href={url}
+          class="action--secondary"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t('watch_video_on_provider', { provider: data.provider_name })}
+          <Icon name="external" />
+        </a>
+      </div>
+    </div>
+  )}
 </default-embed>
 
 <script src="./Default.client.ts"></script>
@@ -45,6 +69,7 @@ const maxWidth = data.width ? `${data.width}px` : '100%';
     max-width: var(--maxWidth);
     overflow: hidden;
     background-color: #ebebeb;
+    position: relative;
   }
 
   .embed-placeholder img {
@@ -54,7 +79,7 @@ const maxWidth = data.width ? `${data.width}px` : '100%';
     object-fit: cover;
     object-position: center;
   }
-  default-embed[data-enhanced="false"] .embed-placeholder {
+  default-embed[data-enhanced="false"] .embed-placeholder:not([hidden]) {
     display: block;
     width: 100%;
     height: 100%;
@@ -73,5 +98,26 @@ const maxWidth = data.width ? `${data.width}px` : '100%';
   default-embed :global(img) {
     max-width: 100% !important;
     height: auto !important;
+  }
+
+  .consent-alert:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+    position: absolute;
+    inset: 0;
+    background-color: inherit;
+    z-index: 1;
+  }
+
+  .consent-alert__text {
+    max-width: 400px;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .consent-alert__actions {
+    text-align: center;
   }
 </style>
