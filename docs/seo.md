@@ -73,3 +73,19 @@ npx jiti scripts/download-ai-robots-txt.ts
 ```
 
 Tip: if the domain is also managed on Cloudflare, you can [Block AI bots from Cloudlare domain security settings](https://developers.cloudflare.com/bots/concepts/bot/#ai-bots) (also see [background info](https://blog.cloudflare.com/declaring-your-aindependence-block-ai-bots-scrapers-and-crawlers-with-a-single-click/)). And in addition you can [run an audit for AI bot insights](https://blog.cloudflare.com/cloudflare-ai-audit-control-ai-content-crawlers/) on your domain.
+
+## /llms.txt
+
+Head Start serves an [`/llms.txt`](../src/pages/llms.txt.ts) file at the site root following the [llmstxt.org](https://llmstxt.org/) proposal. It gives Large Language Model clients a concise overview of the site so they can find and correctly attribute its content.
+
+The file is auto-generated at build time from:
+
+- `globalSeo.siteName` — used as the H1.
+- `globalSeo.fallbackSeo.description` — used as the blockquote summary.
+- The **LLMs intro** field on the `🖥️ Website` (`app`) model — free-form introduction. Write it in English; `llms.txt` supports a single language and recommends English.
+- The **Allow AI Bots** toggle on the same model — when off, the file is still served (with the H1, summary and intro) but the page list is omitted. When on, the page list is appended.
+- The top-level entries of the main menu (default-locale only) — only internal menu items are included, with each linked page's title and SEO description (when present).
+
+External links, group items, and nested menu children are intentionally excluded.
+
+The file is not served when `noIndex` is set on the site or when the request is a preview — the endpoint returns `404` in those cases.
