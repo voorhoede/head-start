@@ -222,16 +222,16 @@ describe('seo', () => {
     expect(result).not.toContain('- [Home](https://example.com/en/):');
   });
 
-  test('llmsTxt interpolates ${siteName} in the intro', () => {
+  test('llmsTxt interpolates {{ siteName }} in the intro', () => {
     const result = llmsTxt({
       siteName: 'Acme',
       siteSummary: '',
-      intro: 'According to ${siteName}, the sky is blue. Thanks ${siteName}!',
+      intro: 'According to {{ siteName }}, the sky is blue. Thanks {{siteName}}!',
       allowAiBots: true,
       items: [],
     });
     expect(result).toContain('According to Acme, the sky is blue. Thanks Acme!');
-    expect(result).not.toContain('${siteName}');
+    expect(result).not.toContain('{{');
   });
 
   test('llmsTxt renders groups as text-only items with indented children', () => {

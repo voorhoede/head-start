@@ -86,7 +86,7 @@ The file is auto-generated at build time from:
 - The **Allow AI Bots** toggle on the same model — when off, the file is still served (with the H1, summary and intro) but the page list is omitted. When on, the page list is appended.
 - The main menu (default-locale only) — internal links, external links, and groups are all rendered. Groups are shown as text-only entries with their children indented underneath. Nesting is preserved at any depth.
 
-The literal string `${siteName}` in the **LLMs intro** is replaced at render-time with the configured site name, so editors can include attribution like `According to ${siteName}` without hand-rolling per-site copy. No other interpolation is performed; intro text should be plain markdown without headings.
+The placeholder `{{ siteName }}` in the **LLMs intro** is replaced at render-time with the configured site name, so editors can include attribution like `According to {{ siteName }}` without hand-rolling per-site copy. No other interpolation is performed; intro text should be plain markdown without headings.
 
 The file is not served when `noIndex` is set on the site or when the request is a preview — the endpoint returns `404` in those cases.
 

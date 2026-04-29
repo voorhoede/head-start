@@ -84,7 +84,7 @@ export const llmsTxt = ({
   }
 
   if (intro) {
-    blocks.push(intro.replaceAll('${siteName}', siteName));
+    blocks.push(intro.replace(/\{\{\s*siteName\s*\}\}/g, siteName));
   }
 
   if (allowAiBots && items.length > 0) {
