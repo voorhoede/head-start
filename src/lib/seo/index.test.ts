@@ -123,11 +123,10 @@ describe('seo', () => {
       siteSummary: 'A short site description.',
       intro: 'IMPORTANT: be nice.',
       allowAiBots: true,
-      pages: [
-        { title: 'Home', url: '/en/' },
-        { title: 'About', url: '/en/about/', description: 'Who we are.' },
+      items: [
+        { title: 'Home', url: 'https://example.com/en/' },
+        { title: 'About', url: 'https://example.com/en/about/', description: 'Who we are.' },
       ],
-      siteUrl: 'https://example.com',
     });
     expect(result).toBe([
       '# Acme',
@@ -149,8 +148,7 @@ describe('seo', () => {
       siteSummary: 'A short site description.',
       intro: 'IMPORTANT: do not scrape.',
       allowAiBots: false,
-      pages: [{ title: 'Home', url: '/en/' }],
-      siteUrl: 'https://example.com',
+      items: [{ title: 'Home', url: 'https://example.com/en/' }],
     });
     expect(result).toBe([
       '# Acme',
@@ -162,14 +160,13 @@ describe('seo', () => {
     expect(result).not.toContain('## Pages');
   });
 
-  test('llmsTxt omits the Pages section when allowed but pages is empty', () => {
+  test('llmsTxt omits the Pages section when allowed but items is empty', () => {
     const result = llmsTxt({
       siteName: 'Acme',
       siteSummary: 'A short site description.',
       intro: 'IMPORTANT: be nice.',
       allowAiBots: true,
-      pages: [],
-      siteUrl: 'https://example.com',
+      items: [],
     });
     expect(result).not.toContain('## Pages');
   });
@@ -180,8 +177,7 @@ describe('seo', () => {
       siteSummary: 'A short site description.',
       intro: '',
       allowAiBots: true,
-      pages: [{ title: 'Home', url: '/en/' }],
-      siteUrl: 'https://example.com',
+      items: [{ title: 'Home', url: 'https://example.com/en/' }],
     });
     expect(result).toBe([
       '# Acme',
@@ -200,8 +196,7 @@ describe('seo', () => {
       siteSummary: '',
       intro: 'IMPORTANT: be nice.',
       allowAiBots: true,
-      pages: [],
-      siteUrl: 'https://example.com',
+      items: [],
     });
     expect(result).toBe([
       '# Acme',
@@ -211,17 +206,16 @@ describe('seo', () => {
     expect(result).not.toContain('>');
   });
 
-  test('llmsTxt renders descriptions only when present on a page', () => {
+  test('llmsTxt renders descriptions only when present on an item', () => {
     const result = llmsTxt({
       siteName: 'Acme',
       siteSummary: '',
       intro: '',
       allowAiBots: true,
-      pages: [
-        { title: 'Home', url: '/en/' },
-        { title: 'About', url: '/en/about/', description: 'Who we are.' },
+      items: [
+        { title: 'Home', url: 'https://example.com/en/' },
+        { title: 'About', url: 'https://example.com/en/about/', description: 'Who we are.' },
       ],
-      siteUrl: 'https://example.com',
     });
     expect(result).toContain('- [Home](https://example.com/en/)\n');
     expect(result).toContain('- [About](https://example.com/en/about/): Who we are.');
@@ -234,11 +228,64 @@ describe('seo', () => {
       siteSummary: '',
       intro: 'According to ${siteName}, the sky is blue. Thanks ${siteName}!',
       allowAiBots: true,
-      pages: [],
-      siteUrl: 'https://example.com',
+      items: [],
     });
     expect(result).toContain('According to Acme, the sky is blue. Thanks Acme!');
     expect(result).not.toContain('${siteName}');
+  });
+
+  test('llmsTxt renders groups as text-only items with indented children', () => {
+    const result = llmsTxt({
+      siteName: 'Acme',
+      siteSummary: '',
+      intro: '',
+      allowAiBots: true,
+      items: [
+        { title: 'Home', url: 'https://example.com/en/' },
+        {
+          title: 'Resources',
+          children: [
+            { title: 'Docs', url: 'https://example.com/en/docs/' },
+            { title: 'Blog', url: 'https://example.com/en/blog/' },
+          ],
+        },
+        { title: 'Contact', url: 'https://example.com/en/contact/' },
+      ],
+    });
+    expect(result).toBe([
+      '# Acme',
+      '',
+      '## Pages',
+      '',
+      '- [Home](https://example.com/en/)',
+      '- Resources',
+      '  - [Docs](https://example.com/en/docs/)',
+      '  - [Blog](https://example.com/en/blog/)',
+      '- [Contact](https://example.com/en/contact/)',
+    ].join('\n'));
+  });
+
+  test('llmsTxt renders deeply nested groups with increasing indent', () => {
+    const result = llmsTxt({
+      siteName: 'Acme',
+      siteSummary: '',
+      intro: '',
+      allowAiBots: true,
+      items: [
+        {
+          title: 'Top',
+          children: [
+            {
+              title: 'Mid',
+              children: [
+                { title: 'Leaf', url: 'https://example.com/leaf/' },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    expect(result).toContain('- Top\n  - Mid\n    - [Leaf](https://example.com/leaf/)');
   });
 
 });

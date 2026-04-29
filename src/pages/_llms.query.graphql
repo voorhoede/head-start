@@ -1,6 +1,34 @@
 #import '~/lib/routing/HomeRoute.fragment.graphql'
 #import '~/lib/routing/PageRoute.fragment.graphql'
 
+fragment LlmsTxtMenuInternal on MenuItemInternalRecord {
+  __typename
+  internalTitle: title
+  internalLink: link {
+    __typename
+    ... on HomePageRecord {
+      ...HomeRoute
+    }
+    ... on PageRecord {
+      ...PageRoute
+      seo {
+        description
+      }
+    }
+  }
+}
+
+fragment LlmsTxtMenuExternal on MenuItemExternalRecord {
+  __typename
+  title
+  link
+}
+
+fragment LlmsTxtMenuGroup on MenuItemGroupRecord {
+  __typename
+  title
+}
+
 query LlmsTxt($locale: SiteLocale!) {
   site: _site(locale: $locale) {
     noIndex
@@ -17,16 +45,52 @@ query LlmsTxt($locale: SiteLocale!) {
     menuItems {
       __typename
       ... on MenuItemInternalRecord {
-        title
-        internalLink: link {
+        ...LlmsTxtMenuInternal
+        items {
           __typename
-          ... on HomePageRecord {
-            ...HomeRoute
+          ... on MenuItemInternalRecord { ...LlmsTxtMenuInternal }
+          ... on MenuItemExternalRecord { ...LlmsTxtMenuExternal }
+          ... on MenuItemGroupRecord {
+            ...LlmsTxtMenuGroup
+            items {
+              __typename
+              ... on MenuItemInternalRecord { ...LlmsTxtMenuInternal }
+              ... on MenuItemExternalRecord { ...LlmsTxtMenuExternal }
+              ... on MenuItemGroupRecord { ...LlmsTxtMenuGroup }
+            }
           }
-          ... on PageRecord {
-            ...PageRoute
-            seo {
-              description
+        }
+      }
+      ... on MenuItemExternalRecord {
+        ...LlmsTxtMenuExternal
+        items {
+          __typename
+          ... on MenuItemInternalRecord { ...LlmsTxtMenuInternal }
+          ... on MenuItemExternalRecord { ...LlmsTxtMenuExternal }
+          ... on MenuItemGroupRecord {
+            ...LlmsTxtMenuGroup
+            items {
+              __typename
+              ... on MenuItemInternalRecord { ...LlmsTxtMenuInternal }
+              ... on MenuItemExternalRecord { ...LlmsTxtMenuExternal }
+              ... on MenuItemGroupRecord { ...LlmsTxtMenuGroup }
+            }
+          }
+        }
+      }
+      ... on MenuItemGroupRecord {
+        ...LlmsTxtMenuGroup
+        items {
+          __typename
+          ... on MenuItemInternalRecord { ...LlmsTxtMenuInternal }
+          ... on MenuItemExternalRecord { ...LlmsTxtMenuExternal }
+          ... on MenuItemGroupRecord {
+            ...LlmsTxtMenuGroup
+            items {
+              __typename
+              ... on MenuItemInternalRecord { ...LlmsTxtMenuInternal }
+              ... on MenuItemExternalRecord { ...LlmsTxtMenuExternal }
+              ... on MenuItemGroupRecord { ...LlmsTxtMenuGroup }
             }
           }
         }

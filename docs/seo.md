@@ -84,9 +84,7 @@ The file is auto-generated at build time from:
 - `globalSeo.fallbackSeo.description` — used as the blockquote summary.
 - The **LLMs intro** field on the `🖥️ Website` (`app`) model — free-form introduction. Write it in English; `llms.txt` supports a single language and recommends English. The seeded default is a scraping warning suitable when bots are disallowed; editors should switch to attribution guidance when toggling **Allow AI Bots** on.
 - The **Allow AI Bots** toggle on the same model — when off, the file is still served (with the H1, summary and intro) but the page list is omitted. When on, the page list is appended.
-- The top-level entries of the main menu (default-locale only) — only internal menu items are included, with each linked page's title and SEO description (when present).
-
-External links, group items, and nested menu children are intentionally excluded.
+- The main menu (default-locale only) — internal links, external links, and groups are all rendered. Groups are shown as text-only entries with their children indented underneath. Nesting is preserved at any depth.
 
 The literal string `${siteName}` in the **LLMs intro** is replaced at render-time with the configured site name, so editors can include attribution like `According to ${siteName}` without hand-rolling per-site copy. No other interpolation is performed; intro text should be plain markdown without headings.
 
@@ -118,4 +116,7 @@ For commercial use, contact partnerships@yoursite.com
 
 - [Demos](https://example.com/en/demos/): Interactive demos of all content blocks
 - [Docs](https://example.com/en/documentation/)
+- Resources
+  - [GitHub](https://github.com/voorhoede)
+  - [Website](https://voorhoede.nl/)
 ```

@@ -44,10 +44,11 @@ Sitemap: ${siteUrl}/sitemap-index.xml
 
 `.trim();
 
-export type LlmsTxtPage = {
+export type LlmsTxtItem = {
   title: string;
-  url: string;
+  url?: string;
   description?: string;
+  children?: LlmsTxtItem[];
 };
 
 export type LlmsTxtProps = {
@@ -55,8 +56,18 @@ export type LlmsTxtProps = {
   siteSummary: string;
   intro: string;
   allowAiBots: boolean;
-  pages: LlmsTxtPage[];
-  siteUrl: string;
+  items: LlmsTxtItem[];
+};
+
+const renderItems = (items: LlmsTxtItem[], depth = 0): string[] => {
+  return items.flatMap((item) => {
+    const indent = '  '.repeat(depth);
+    const label = item.url ? `[${item.title}](${item.url})` : item.title;
+    const line = item.description
+      ? `${indent}- ${label}: ${item.description}`
+      : `${indent}- ${label}`;
+    return [line, ...renderItems(item.children ?? [], depth + 1)];
+  });
 };
 
 export const llmsTxt = ({
@@ -64,8 +75,7 @@ export const llmsTxt = ({
   siteSummary,
   intro,
   allowAiBots,
-  pages,
-  siteUrl,
+  items,
 }: LlmsTxtProps): string => {
   const blocks: string[] = [`# ${siteName}`];
 
@@ -77,14 +87,8 @@ export const llmsTxt = ({
     blocks.push(intro.replaceAll('${siteName}', siteName));
   }
 
-  if (allowAiBots && pages.length > 0) {
-    const lines = pages.map((page) => {
-      const href = `${siteUrl}${page.url}`;
-      return page.description
-        ? `- [${page.title}](${href}): ${page.description}`
-        : `- [${page.title}](${href})`;
-    });
-    blocks.push(['## Pages', '', ...lines].join('\n'));
+  if (allowAiBots && items.length > 0) {
+    blocks.push(['## Pages', '', ...renderItems(items)].join('\n'));
   }
 
   return blocks.join('\n\n');

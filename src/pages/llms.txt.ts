@@ -3,10 +3,45 @@ import { datocmsRequest } from '~/lib/datocms';
 import type { LlmsTxtQuery } from '~/lib/datocms/types';
 import { defaultLocale } from '~/lib/i18n';
 import { getHref } from '~/lib/routing';
-import { llmsTxt, type LlmsTxtPage } from '~/lib/seo';
+import { llmsTxt, type LlmsTxtItem } from '~/lib/seo';
 import query from './_llms.query.graphql';
 
 export const prerender = true;
+
+type RawMenuItem = {
+  __typename?: string;
+  internalTitle?: string | null;
+  internalLink?: {
+    __typename?: string;
+    title?: string;
+    seo?: { description?: string | null } | null;
+  } | null;
+  title?: string;
+  link?: string;
+  items?: RawMenuItem[];
+};
+
+const buildItem = (raw: RawMenuItem, siteUrl: string): LlmsTxtItem | null => {
+  if (raw.__typename === 'MenuItemInternalRecord') {
+    const link = raw.internalLink;
+    if (!link) return null;
+    const url = `${siteUrl}${getHref({ locale: defaultLocale, record: link as Parameters<typeof getHref>[0]['record'] })}`;
+    const description = link.seo?.description ?? undefined;
+    const title = raw.internalTitle || link.title || '';
+    return { title, url, description };
+  }
+  if (raw.__typename === 'MenuItemExternalRecord') {
+    if (!raw.link) return null;
+    return { title: raw.title ?? '', url: raw.link };
+  }
+  if (raw.__typename === 'MenuItemGroupRecord') {
+    const children = (raw.items ?? [])
+      .map((child) => buildItem(child, siteUrl))
+      .filter((c): c is LlmsTxtItem => c !== null);
+    return { title: raw.title ?? '', children };
+  }
+  return null;
+};
 
 export const GET: APIRoute = async (context) => {
   const { app, site } = await datocmsRequest<LlmsTxtQuery>({
@@ -20,19 +55,9 @@ export const GET: APIRoute = async (context) => {
   }
 
   const siteUrl = context.site!.origin;
-  const pages: LlmsTxtPage[] = [];
-  for (const item of app?.menuItems ?? []) {
-    if (item.__typename !== 'MenuItemInternalRecord') continue;
-    const link = item.internalLink;
-    if (!link) continue;
-    const url = getHref({ locale: defaultLocale, record: link });
-    const description =
-      link.__typename === 'PageRecord' && link.seo?.description
-        ? link.seo.description
-        : undefined;
-    const title = item.title || ('title' in link ? link.title : '') || '';
-    pages.push({ title, url, description });
-  }
+  const items: LlmsTxtItem[] = (app?.menuItems ?? [])
+    .map((item) => buildItem(item as RawMenuItem, siteUrl))
+    .filter((i): i is LlmsTxtItem => i !== null);
 
   return new Response(
     llmsTxt({
@@ -40,8 +65,7 @@ export const GET: APIRoute = async (context) => {
       siteSummary: site.globalSeo?.fallbackSeo?.description ?? '',
       intro: app?.llmsIntro ?? '',
       allowAiBots: Boolean(app?.allowAiBots),
-      pages,
-      siteUrl,
+      items,
     }),
     { headers: { 'content-type': 'text/plain; charset=utf-8' } },
   );
