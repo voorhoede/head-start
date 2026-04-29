@@ -228,4 +228,17 @@ describe('seo', () => {
     expect(result).not.toContain('- [Home](https://example.com/en/):');
   });
 
+  test('llmsTxt interpolates ${siteName} in the intro', () => {
+    const result = llmsTxt({
+      siteName: 'Acme',
+      siteSummary: '',
+      intro: 'According to ${siteName}, the sky is blue. Thanks ${siteName}!',
+      allowAiBots: true,
+      pages: [],
+      siteUrl: 'https://example.com',
+    });
+    expect(result).toContain('According to Acme, the sky is blue. Thanks Acme!');
+    expect(result).not.toContain('${siteName}');
+  });
+
 });

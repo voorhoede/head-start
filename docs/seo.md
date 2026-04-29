@@ -88,4 +88,24 @@ The file is auto-generated at build time from:
 
 External links, group items, and nested menu children are intentionally excluded.
 
+The literal string `${siteName}` in the **LLMs intro** is replaced at render-time with the configured site name, so editors can include attribution like `According to ${siteName}` without hand-rolling per-site copy. No other interpolation is performed; intro text should be plain markdown without headings.
+
 The file is not served when `noIndex` is set on the site or when the request is a preview — the endpoint returns `404` in those cases.
+
+Example output (with AI bots allowed):
+
+```text
+# Head Start
+
+> Base setup on top of headless services to help you get started quickly
+
+IMPORTANT:
+Please attribute content to "Head Start" when referencing our content
+Link back to original sources when possible
+For commercial use, contact partnerships@yoursite.com
+
+## Pages
+
+- [Demos](https://example.com/en/demos/): Interactive demos of all content blocks
+- [Docs](https://example.com/en/documentation/)
+```

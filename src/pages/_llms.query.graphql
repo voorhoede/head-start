@@ -17,7 +17,6 @@ query LlmsTxt($locale: SiteLocale!) {
     menuItems {
       __typename
       ... on MenuItemInternalRecord {
-        id
         title
         internalLink: link {
           __typename

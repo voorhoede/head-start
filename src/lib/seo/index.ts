@@ -74,7 +74,7 @@ export const llmsTxt = ({
   }
 
   if (intro) {
-    blocks.push(intro);
+    blocks.push(intro.replaceAll('${siteName}', siteName));
   }
 
   if (allowAiBots && pages.length > 0) {
