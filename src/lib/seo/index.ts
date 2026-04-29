@@ -43,3 +43,49 @@ ${allowAll ? 'Allow: /' : 'Disallow: /'}
 Sitemap: ${siteUrl}/sitemap-index.xml
 
 `.trim();
+
+export type LlmsTxtPage = {
+  title: string;
+  url: string;
+  description?: string;
+};
+
+export type LlmsTxtProps = {
+  siteName: string;
+  siteSummary: string;
+  intro: string;
+  allowAiBots: boolean;
+  pages: LlmsTxtPage[];
+  siteUrl: string;
+};
+
+export const llmsTxt = ({
+  siteName,
+  siteSummary,
+  intro,
+  allowAiBots,
+  pages,
+  siteUrl,
+}: LlmsTxtProps): string => {
+  const blocks: string[] = [`# ${siteName}`];
+
+  if (siteSummary) {
+    blocks.push(`> ${siteSummary}`);
+  }
+
+  if (intro) {
+    blocks.push(intro);
+  }
+
+  if (allowAiBots && pages.length > 0) {
+    const lines = pages.map((page) => {
+      const href = `${siteUrl}${page.url}`;
+      return page.description
+        ? `- [${page.title}](${href}): ${page.description}`
+        : `- [${page.title}](${href})`;
+    });
+    blocks.push(['## Pages', '', ...lines].join('\n'));
+  }
+
+  return blocks.join('\n\n');
+};
