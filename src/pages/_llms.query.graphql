@@ -1,0 +1,36 @@
+#import '~/lib/routing/HomeRoute.fragment.graphql'
+#import '~/lib/routing/PageRoute.fragment.graphql'
+
+query LlmsTxt($locale: SiteLocale!) {
+  site: _site(locale: $locale) {
+    noIndex
+    globalSeo {
+      siteName
+      fallbackSeo {
+        description
+      }
+    }
+  }
+  app(locale: $locale) {
+    allowAiBots
+    llmsIntro
+    menuItems {
+      ... on MenuItemInternalRecord {
+        id
+        title
+        internalLink: link {
+          __typename
+          ... on HomePageRecord {
+            ...HomeRoute
+          }
+          ... on PageRecord {
+            ...PageRoute
+            seo {
+              description
+            }
+          }
+        }
+      }
+    }
+  }
+}
