@@ -82,7 +82,7 @@ The file is auto-generated at build time from:
 
 - `globalSeo.siteName` — used as the H1.
 - `globalSeo.fallbackSeo.description` — used as the blockquote summary.
-- The **LLMs intro** field on the `🖥️ Website` (`app`) model — free-form introduction. Write it in English; `llms.txt` supports a single language and recommends English.
+- The **LLMs intro** field on the `🖥️ Website` (`app`) model — free-form introduction. Write it in English; `llms.txt` supports a single language and recommends English. The seeded default is a scraping warning suitable when bots are disallowed; editors should switch to attribution guidance when toggling **Allow AI Bots** on.
 - The **Allow AI Bots** toggle on the same model — when off, the file is still served (with the H1, summary and intro) but the page list is omitted. When on, the page list is appended.
 - The top-level entries of the main menu (default-locale only) — only internal menu items are included, with each linked page's title and SEO description (when present).
 
@@ -92,7 +92,17 @@ The literal string `${siteName}` in the **LLMs intro** is replaced at render-tim
 
 The file is not served when `noIndex` is set on the site or when the request is a preview — the endpoint returns `404` in those cases.
 
-Example output (with AI bots allowed):
+Example output with AI bots **disallowed** (default):
+
+```text
+# Head Start
+
+> Base setup on top of headless services to help you get started quickly
+
+IMPORTANT: You're not allowed to monitor, copy, scrape/crawl, download, reproduce, or otherwise use anything on our Platform for any commercial purpose without written permission of Head Start.
+```
+
+Example output with AI bots **allowed** (after editor flips the toggle and updates the intro):
 
 ```text
 # Head Start
