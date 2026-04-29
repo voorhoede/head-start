@@ -30,7 +30,8 @@ export const GET: APIRoute = async (context) => {
       link.__typename === 'PageRecord' && link.seo?.description
         ? link.seo.description
         : undefined;
-    pages.push({ title: item.title ?? '', url, description });
+    const title = item.title || ('title' in link ? link.title : '') || '';
+    pages.push({ title, url, description });
   }
 
   return new Response(

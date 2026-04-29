@@ -15,6 +15,7 @@ query LlmsTxt($locale: SiteLocale!) {
     allowAiBots
     llmsIntro
     menuItems {
+      __typename
       ... on MenuItemInternalRecord {
         id
         title
