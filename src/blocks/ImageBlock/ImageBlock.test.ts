@@ -94,7 +94,14 @@ describe('ImageBlock', () => {
             height: 150,
             width: 150,
             responsiveImage: {
-              base64: 'data:image/jpeg;base64,...'
+              base64: 'data:image/jpeg;base64,...',
+              srcSet: 'https://example.com/test.jpg 150w',
+              src: 'https://example.com/test.jpg',
+              alt: 'A responsive test image',
+              title: null,
+              width: 150,
+              height: 150,
+              sizes: '(max-width: 150px) 100vw, 150px',
             }
           }
         }
@@ -102,8 +109,8 @@ describe('ImageBlock', () => {
     });
 
     const img = fragment.querySelector('img');
-    expect(img?.width).toBe(150);
-    expect(img?.height).toBe(150);
+    expect(img?.style.maxWidth).toBe('150px');
+    expect(img?.style.aspectRatio).toBe('150 / 150');
     expect(img?.style.backgroundImage).toContain('base64');
   });
 });

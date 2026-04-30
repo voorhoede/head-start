@@ -6,8 +6,15 @@ fragment ImageBlock on ImageBlockRecord {
     width
     height
     url
-    responsiveImage {
+    responsiveImage( imgixParams: { auto: [format, compress] } ) {
+      srcSet
+      src
       base64
+      alt
+      title
+      width
+      height
+      sizes
     }
   }
 }
