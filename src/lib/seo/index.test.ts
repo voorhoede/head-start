@@ -234,7 +234,7 @@ describe('seo', () => {
     expect(result).not.toContain('{{');
   });
 
-  test('llmsTxt renders groups as text-only items with indented children', () => {
+  test('llmsTxt promotes top-level groups to their own H2 sections', () => {
     const result = llmsTxt({
       siteName: 'Acme',
       siteSummary: '',
@@ -258,14 +258,39 @@ describe('seo', () => {
       '## Pages',
       '',
       '- [Home](https://example.com/en/)',
-      '- Resources',
-      '  - [Docs](https://example.com/en/docs/)',
-      '  - [Blog](https://example.com/en/blog/)',
       '- [Contact](https://example.com/en/contact/)',
+      '',
+      '## Resources',
+      '',
+      '- [Docs](https://example.com/en/docs/)',
+      '- [Blog](https://example.com/en/blog/)',
     ].join('\n'));
   });
 
-  test('llmsTxt renders deeply nested groups with increasing indent', () => {
+  test('llmsTxt omits the Pages section when only groups are present', () => {
+    const result = llmsTxt({
+      siteName: 'Acme',
+      siteSummary: '',
+      intro: '',
+      allowAiBots: true,
+      items: [
+        {
+          title: 'Resources',
+          children: [{ title: 'Docs', url: 'https://example.com/en/docs/' }],
+        },
+      ],
+    });
+    expect(result).toBe([
+      '# Acme',
+      '',
+      '## Resources',
+      '',
+      '- [Docs](https://example.com/en/docs/)',
+    ].join('\n'));
+    expect(result).not.toContain('## Pages');
+  });
+
+  test('llmsTxt renders nested groups inside an H2 section as text-only with indent', () => {
     const result = llmsTxt({
       siteName: 'Acme',
       siteSummary: '',
@@ -285,7 +310,7 @@ describe('seo', () => {
         },
       ],
     });
-    expect(result).toContain('- Top\n  - Mid\n    - [Leaf](https://example.com/leaf/)');
+    expect(result).toContain('## Top\n\n- Mid\n  - [Leaf](https://example.com/leaf/)');
   });
 
 });

@@ -88,7 +88,17 @@ export const llmsTxt = ({
   }
 
   if (allowAiBots && items.length > 0) {
-    blocks.push(['## Pages', '', ...renderLlmsTxtItems(items)].join('\n'));
+    const isGroup = (item: LlmsTxtItem) => !item.url && (item.children?.length ?? 0) > 0;
+    const pages = items.filter((item) => !isGroup(item));
+    const groups = items.filter(isGroup);
+
+    if (pages.length > 0) {
+      blocks.push(['## Pages', '', ...renderLlmsTxtItems(pages)].join('\n'));
+    }
+
+    for (const group of groups) {
+      blocks.push([`## ${group.title}`, '', ...renderLlmsTxtItems(group.children ?? [])].join('\n'));
+    }
   }
 
   return blocks.join('\n\n');
