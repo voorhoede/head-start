@@ -1,17 +1,15 @@
 import type { APIRoute } from 'astro';
-import type { RobotsTxtQuery } from '~/lib/datocms/types';
 import rehypeParse from 'rehype-parse';
 import rehypeRemark from 'rehype-remark';
 import remarkGfm from 'remark-gfm';
 import remarkStringify from 'remark-stringify';
 import { unified } from 'unified';
-import { datocmsRequest } from '~/lib/datocms';
+import app from '~/lib/app';
 import { buildFrontmatter } from '~/lib/frontmatter';
 import type { PageMeta } from '~/lib/rehype/rehype-extract-meta';
 import rehypeExtractMeta from '~/lib/rehype/rehype-extract-meta';
 import rehypeExtractNoindex from '~/lib/rehype/rehype-extract-noindex';
 import rehypeExtractMain from '~/lib/rehype/rehype-extract-main';
-import query from '~/pages/_robots.query.graphql';
 
 export const prerender = false;
 
@@ -20,22 +18,7 @@ const CACHE_TTL = 60000 * 5;
 const MAX_CACHE_SIZE = 500;
 
 export const GET: APIRoute = async ({ params, site, locals }) => {
-  let allowAiBots = false;
-  try {
-    const { app, site: datoSite } = await datocmsRequest<RobotsTxtQuery>({ query });
-    const allowAll = !datoSite.noIndex && !locals.isPreview;
-    allowAiBots = allowAll && Boolean(app?.allowAiBots);
-  } catch {
-    return new Response('Service unavailable', {
-      status: 503,
-      headers: {
-        'Content-Type': 'text/plain; charset=utf-8',
-        'Cache-Control': 'no-store',
-      },
-    });
-  }
-
-  if (!allowAiBots) {
+  if (!app.allowAiBots || app.noIndex || locals.isPreview) {
     return new Response('Not found', {
       status: 404,
       headers: {
@@ -44,9 +27,9 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
       },
     });
   }
-  
+
   params.path ||= '';
-  
+
   const cached = cache.get(params.path);
   if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
     const headers: Record<string, string> = {
@@ -89,7 +72,7 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
       headers: { 'Content-Type': 'text/plain; charset=utf-8' },
     });
   }
-  
+
   const contentType = response.headers.get('content-type') ?? '';
   if (!contentType.includes('text/html')) {
     return new Response('Not found', {
@@ -133,7 +116,7 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
       headers: { 'Content-Type': 'text/plain; charset=utf-8' },
     });
   }
-  
+
   if (cache.size >= MAX_CACHE_SIZE) {
     const now = Date.now();
     for (const [key, entry] of cache) {
