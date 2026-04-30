@@ -1,10 +1,11 @@
 ---
-import type { DefaultLayoutQuery, SiteLocale, Tag } from '~/lib/datocms/types';
+import type { DefaultLayoutQuery, RobotsTxtQuery, SiteLocale, Tag } from '~/lib/datocms/types';
 import { datocmsRequest } from '~/lib/datocms';
 import { defaultLocale } from '~/lib/i18n';
 import { datocmsNoIndex } from '~/lib/search';
 import type { Breadcrumb, PageUrl } from '~/lib/routing';
 import query from './default.query.graphql';
+import robotsQuery from '~/pages/_robots.query.graphql';
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs.astro';
 import IconSprite from '~/components/Icon/IconSprite.astro';
 import PreviewModeProvider from '~/components/PreviewMode/PreviewModeProvider.astro';
@@ -30,6 +31,11 @@ const data = await datocmsRequest<DefaultLayoutQuery>({
 const { breadcrumbs = [], pageUrls, seoMetaTags } = Astro.props;
 const mainContentId = 'content';
 const menuItems = data.app?.menuItems ?? [];
+
+const { isPreview } = Astro.locals;
+const { app, site: datoSite } = await datocmsRequest<RobotsTxtQuery>({ query: robotsQuery });
+const allowAll = !datoSite.noIndex && !isPreview;
+const allowAiBots = allowAll && Boolean(app?.allowAiBots);
 ---
 
 <!doctype html>
@@ -41,6 +47,7 @@ const menuItems = data.app?.menuItems ?? [];
     <SeoHead
       pageUrls={pageUrls}
       tags={[...data.seo.faviconMetaTags, ...seoMetaTags]}
+      allowAiBots={allowAiBots}
     />
     <StructuredData />
   </head>
