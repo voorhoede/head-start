@@ -49,11 +49,6 @@ export const GET: APIRoute = async (context) => {
     variables: { locale: defaultLocale },
   });
 
-  const allowAll = !site.noIndex && !context.locals.isPreview;
-  if (!allowAll) {
-    return new Response('Not Found', { status: 404 });
-  }
-
   const siteUrl = context.site!.origin;
   const items: LlmsTxtItem[] = (app?.menuItems ?? [])
     .map((item) => buildItem(item as RawMenuItem, siteUrl))

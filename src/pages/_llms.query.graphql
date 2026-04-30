@@ -31,7 +31,6 @@ fragment LlmsTxtMenuGroup on MenuItemGroupRecord {
 
 query LlmsTxt($locale: SiteLocale!) {
   site: _site(locale: $locale) {
-    noIndex
     globalSeo {
       siteName
       fallbackSeo {

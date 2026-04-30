@@ -84,11 +84,11 @@ The file is auto-generated at build time from:
 - `globalSeo.fallbackSeo.description` — used as the blockquote summary.
 - The **LLMs intro** field on the `🖥️ Website` (`app`) model — free-form introduction. Write it in English; `llms.txt` supports a single language and recommends English. The seeded default is a scraping warning suitable when bots are disallowed; editors should switch to attribution guidance when toggling **Allow AI Bots** on.
 - The **Allow AI Bots** toggle on the same model — when off, the file is still served (with the H1, summary and intro) but the page list is omitted. When on, the page list is appended.
-- The main menu (default-locale only) — internal links, external links, and groups are all rendered. Groups are shown as text-only entries with their children indented underneath. Nesting is preserved at any depth.
+- The main menu (default-locale only) — internal links, external links, and groups are all rendered. Top-level groups are promoted to their own `## GroupName` H2 section to satisfy the spec requirement that list items are markdown links. Groups nested deeper render as text-only entries with their children indented underneath.
 
 The placeholder `{{ siteName }}` in the **LLMs intro** is replaced at render-time with the configured site name, so editors can include attribution like `According to {{ siteName }}` without hand-rolling per-site copy. No other interpolation is performed; intro text should be plain markdown without headings.
 
-The file is not served when `noIndex` is set on the site or when the request is a preview — the endpoint returns `404` in those cases.
+The file is always served. When **Allow AI Bots** is off, only the H1, summary and intro are rendered — the page list is omitted, leaving the intro (a scraping warning by default) as the file's body.
 
 Example output with AI bots **disallowed** (default):
 
@@ -116,7 +116,9 @@ For commercial use, contact partnerships@yoursite.com
 
 - [Demos](https://example.com/en/demos/): Interactive demos of all content blocks
 - [Docs](https://example.com/en/documentation/)
-- Resources
-  - [GitHub](https://github.com/voorhoede)
-  - [Website](https://voorhoede.nl/)
+
+## Resources
+
+- [GitHub](https://github.com/voorhoede)
+- [Website](https://voorhoede.nl/)
 ```
