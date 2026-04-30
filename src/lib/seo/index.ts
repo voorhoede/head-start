@@ -59,14 +59,14 @@ export type LlmsTxtProps = {
   items: LlmsTxtItem[];
 };
 
-const renderItems = (items: LlmsTxtItem[], depth = 0): string[] => {
+const renderLlmsTxtItems = (items: LlmsTxtItem[], depth = 0): string[] => {
   return items.flatMap((item) => {
     const indent = '  '.repeat(depth);
     const label = item.url ? `[${item.title}](${item.url})` : item.title;
     const line = item.description
       ? `${indent}- ${label}: ${item.description}`
       : `${indent}- ${label}`;
-    return [line, ...renderItems(item.children ?? [], depth + 1)];
+    return [line, ...renderLlmsTxtItems(item.children ?? [], depth + 1)];
   });
 };
 
@@ -88,7 +88,7 @@ export const llmsTxt = ({
   }
 
   if (allowAiBots && items.length > 0) {
-    blocks.push(['## Pages', '', ...renderItems(items)].join('\n'));
+    blocks.push(['## Pages', '', ...renderLlmsTxtItems(items)].join('\n'));
   }
 
   return blocks.join('\n\n');
