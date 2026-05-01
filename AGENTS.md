@@ -28,13 +28,12 @@ Project-specific skills live in [`.agents/skills/`](./.agents/skills/). Each ski
 
 ## MCP servers
 
-A [`.mcp.json`](./.mcp.json) at the repo root configures four MCP servers picked up automatically by Claude Code, Cursor, and other compatible agents:
+A [`.mcp.json`](./.mcp.json) at the repo root configures three MCP servers picked up automatically by Claude Code, Cursor, and other compatible agents:
 
 | Server | Transport | Purpose |
 | --- | --- | --- |
 | `datocms` | stdio (`@datocms/mcp-server`) | Query and manage CMS schema, records, environments, and assets directly. Requires `DATOCMS_API_TOKEN` in env. |
 | `astro-docs` | HTTP (`mcp.docs.astro.build`) | Live access to Astro documentation — ensures up-to-date API references without hallucinating outdated APIs. |
-| `cloudflare-docs` | HTTP (`docs.mcp.cloudflare.com`) | Live access to Cloudflare documentation — covers Pages, Workers, and `wrangler` config. |
 | `chrome-devtools` | stdio (`chrome-devtools-mcp`) | Drive a real browser for visual QA — navigate pages, inspect the DOM, take screenshots, check console errors. The server launches its own Chrome; point it at the dev server (<http://127.0.0.1:4323>) via the `navigate_page` tool, so run `npm run dev` first. |
 
 > The `DATOCMS_API_TOKEN` env var is read from your shell — never hardcode a token in `.mcp.json`.
