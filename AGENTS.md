@@ -24,16 +24,7 @@ Skim these before making non-trivial changes:
 
 ## Agent skills
 
-Project-specific skills live in [`.agents/skills/`](./.agents/skills/). Each skill is a `SKILL.md` file with focused, executable guidance for a domain. Load the relevant skill before working in that area — they contain decisions and patterns already validated for this project.
-
-| Skill | Path | When to load |
-| --- | --- | --- |
-| `astro` | [`.agents/skills/astro/SKILL.md`](./.agents/skills/astro/SKILL.md) | Working with `.astro` files, SSR config, integrations, or Astro CLI. |
-| `datocms` | [`.agents/skills/datocms/SKILL.md`](./.agents/skills/datocms/SKILL.md) | CMS schema, migrations, GraphQL queries, structured text (DAST), webhooks, or environment management. |
-| `frontend-design` | [`.agents/skills/frontend-design/SKILL.md`](./.agents/skills/frontend-design/SKILL.md) | Building or styling UI components and pages — follows project aesthetics over generic AI defaults. **Default to Astro components and web standards.** Only use a client-side framework (React, Vue, etc.) or framework-specific library (e.g. Motion for React) if the component being worked on already uses that framework — never introduce one that isn't already present in the surrounding code. |
-| `cloudflare` | [`.agents/skills/cloudflare/SKILL.md`](./.agents/skills/cloudflare/SKILL.md) | Working with Cloudflare Pages, Workers, or the Cloudflare adapter. General Cloudflare platform reference. |
-| `wrangler` | [`.agents/skills/wrangler/SKILL.md`](./.agents/skills/wrangler/SKILL.md) | Running `wrangler` CLI commands — local preview (`wrangler pages dev`), secrets, deployments, or editing `wrangler.toml`. |
-| `web-perf` | [`.agents/skills/web-perf/SKILL.md`](./.agents/skills/web-perf/SKILL.md) | Auditing Core Web Vitals and performance — uses the `chrome-devtools` MCP server. Run `npm run dev` first. |
+Project-specific skills live in [`.agents/skills/`](./.agents/skills/). Each skill is a `SKILL.md` file with focused, executable guidance for a domain — its frontmatter `description` declares when to load it. Browse the directory and load the relevant skill before working in that area.
 
 ## MCP servers
 

@@ -8,7 +8,7 @@ Head Start ships with first-class support for AI coding agents. This covers the 
 
 - Project overview and philosophy
 - Required reading (key docs to load before making changes)
-- Available skills and when to use them
+- A pointer to project skills (`.agents/skills/`)
 - MCP servers that are pre-configured
 - Environment setup, build/run/test commands
 - Code style guidelines and GraphQL/CMS workflow
@@ -24,48 +24,11 @@ Skills are reusable capability bundles that give agents focused, project-validat
 
 ### Where they live
 
-Project skills are vendored into `.agents/skills/`, one directory per skill:
+Project skills are vendored into [`.agents/skills/`](../.agents/skills/), one directory per skill. Each contains a `SKILL.md` whose frontmatter `description` declares its trigger — agents discover and load them on demand.
 
-```
-.agents/skills/
-├── astro/
-├── cloudflare/
-├── datocms/
-├── frontend-design/
-├── web-perf/
-└── wrangler/
-```
+Sources are pinned in [`skills-lock.json`](../skills-lock.json). It is auto-managed by the `skills` CLI — don't edit it by hand.
 
-Each skill directory contains a `SKILL.md` with focused guidance the agent loads on demand. The skills are listed in `AGENTS.md` alongside their trigger conditions so the agent knows when to load each one.
-
-### Where skills come from
-
-Skill sources are pinned in [`skills-lock.json`](../skills-lock.json). Each entry records the GitHub repository the skill was pulled from and a hash to detect upstream changes:
-
-| Skill | Source |
-| --- | --- |
-| `astro` | `astrolicious/agent-skills` |
-| `datocms` | `jodusnodus/datocms-skill` |
-| `frontend-design` | `anthropics/skills` |
-| `cloudflare` | `cloudflare/skills` |
-| `wrangler` | `cloudflare/skills` |
-| `web-perf` | `cloudflare/skills` |
-
-### Updating skills
-
-Use `npx skills` to add or refresh skills from their upstream source:
-
-```bash
-# Re-install all skills from their locked sources
-npx skills add astrolicious/agent-skills
-npx skills add cloudflare/skills
-npx skills add jodusnodus/datocms-skill
-npx skills add anthropics/skills
-```
-
-After running this, review any changes to the skill files in `.agents/skills/` before committing — treat upstream skill updates the same way you would a dependency update.
-
-### Adding a new skill
+### Adding or updating a skill
 
 Browse available skills at [skills.sh](https://skills.sh/), then:
 
@@ -73,7 +36,11 @@ Browse available skills at [skills.sh](https://skills.sh/), then:
 npx skills add <owner/repo>
 ```
 
-This downloads the skill into `.agents/skills/` and updates `skills-lock.json`. Then register the skill in `AGENTS.md` under the **Agent skills** table so the agent knows when to load it.
+This vendors the skill into `.agents/skills/` and updates `skills-lock.json`. No further documentation is needed — the `SKILL.md` is the source of truth for when to load it.
+
+To refresh installed skills, re-run `npx skills add` against their source. Review the diff in `.agents/skills/` before committing — treat upstream skill updates the same as a dependency bump.
+
+To remove a skill, run `npx skills remove <name>` and verify `skills-lock.json` is updated.
 
 ## MCP servers
 
