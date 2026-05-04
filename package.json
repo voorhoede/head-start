@@ -64,7 +64,7 @@
     "@nanostores/persistent": "^0.10.1",
     "@rollup/plugin-graphql": "^2.0.3",
     "accept-language-parser": "^1.5.0",
-    "astro": "^5.13.5",
+    "astro": "^6.1.6",
     "async": "^3.2.6",
     "datocms-listen": "^0.1.15",
     "datocms-structured-text-utils": "^5.1.7",
