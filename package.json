@@ -92,7 +92,7 @@
     "workbox-strategies": "^7.3.0"
   },
   "devDependencies": {
-    "@astrojs/ts-plugin": "^1.10.4",
+    "@astrojs/ts-plugin": "^1.10.7",
     "@datocms/cli": "^3.0.1",
     "@datocms/cma-client-node": "^3.4.0",
     "@eslint/js": "^9.31.0",
