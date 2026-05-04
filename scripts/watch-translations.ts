@@ -2,7 +2,7 @@ import { exec } from 'node:child_process';
 import { subscribeToQuery } from 'datocms-listen';
 import EventSource from 'eventsource';
 import dotenv from 'dotenv-safe';
-import { datocmsEnvironment } from '../datocms-environment';
+import { datocmsEnvironment } from '../datocms-environment.ts';
 
 dotenv.config();
 

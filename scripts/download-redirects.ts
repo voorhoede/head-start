@@ -1,7 +1,7 @@
 import { writeFile } from 'node:fs/promises';
 import { buildClient } from '@datocms/cma-client-node';
 import dotenv from 'dotenv-safe';
-import { datocmsEnvironment } from '../datocms-environment';
+import { datocmsEnvironment } from '../datocms-environment.ts';
 
 dotenv.config({
   allowEmptyValues: Boolean(process.env.CI),
