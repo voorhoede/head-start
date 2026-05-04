@@ -71,7 +71,7 @@
     "get-video-id": "^3.6.5",
     "globby": "^13.2.2",
     "hast-util-select": "^6.0.4",
-    "hls.js": "^1.5.2",
+    "hls.js": "^1.6.16",
     "html-validate": "^9.2.0",
     "jiti": "^1.20.0",
     "nanostores": "^0.9.5",
