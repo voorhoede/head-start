@@ -42,3 +42,63 @@ ${allowAll ? 'Allow: /' : 'Disallow: /'}
 Sitemap: ${siteUrl}/sitemap-index.xml
 
 `.trim();
+
+export type LlmsTxtItem = {
+  title: string;
+  url?: string;
+  description?: string;
+  children?: LlmsTxtItem[];
+};
+
+export type LlmsTxtProps = {
+  siteName: string;
+  siteSummary: string;
+  intro: string;
+  allowAiBots: boolean;
+  items: LlmsTxtItem[];
+};
+
+const renderLlmsTxtItems = (items: LlmsTxtItem[], depth = 0): string[] => {
+  return items.flatMap((item) => {
+    const indent = '  '.repeat(depth);
+    const label = item.url ? `[${item.title}](${item.url})` : item.title;
+    const line = item.description
+      ? `${indent}- ${label}: ${item.description}`
+      : `${indent}- ${label}`;
+    return [line, ...renderLlmsTxtItems(item.children ?? [], depth + 1)];
+  });
+};
+
+export const llmsTxt = ({
+  siteName,
+  siteSummary,
+  intro,
+  allowAiBots,
+  items,
+}: LlmsTxtProps): string => {
+  const blocks: string[] = [`# ${siteName}`];
+
+  if (siteSummary) {
+    blocks.push(`> ${siteSummary}`);
+  }
+
+  if (intro) {
+    blocks.push(intro.replace(/\{\{\s*siteName\s*\}\}/g, siteName));
+  }
+
+  if (allowAiBots && items.length > 0) {
+    const isGroup = (item: LlmsTxtItem) => !item.url && (item.children?.length ?? 0) > 0;
+    const pages = items.filter((item) => !isGroup(item));
+    const groups = items.filter(isGroup);
+
+    if (pages.length > 0) {
+      blocks.push(['## Pages', '', ...renderLlmsTxtItems(pages)].join('\n'));
+    }
+
+    for (const group of groups) {
+      blocks.push([`## ${group.title}`, '', ...renderLlmsTxtItems(group.children ?? [])].join('\n'));
+    }
+  }
+
+  return blocks.join('\n\n');
+};
