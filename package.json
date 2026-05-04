@@ -59,7 +59,7 @@
     "@astrojs/cloudflare": "^12.6.7",
     "@astrojs/sitemap": "^3.5.1",
     "@floating-ui/dom": "^1.7.6",
-    "@fontsource/archivo": "^5.1.0",
+    "@fontsource/archivo": "^5.2.8",
     "@inquirer/prompts": "^7.5.3",
     "@nanostores/persistent": "^0.10.1",
     "@rollup/plugin-graphql": "^2.0.3",
