@@ -75,7 +75,7 @@
     "html-validate": "^9.2.0",
     "jiti": "^1.20.0",
     "nanostores": "^0.9.5",
-    "oembed-providers": "^1.0.20230906",
+    "oembed-providers": "^1.0.20260407",
     "pretty-bytes": "^6.1.1",
     "promise-all-props": "^3.0.0",
     "regexparam": "^3.0.0",
