@@ -1,11 +1,8 @@
 {
   "mcpServers": {
     "datocms": {
-      "command": "npx",
-      "args": ["-y", "@datocms/mcp-server"],
-      "env": {
-        "DATOCMS_API_TOKEN": "${DATOCMS_API_TOKEN}"
-      }
+      "type": "http",
+      "url": "https://mcp.datocms.com"
     },
     "astro-docs": {
       "type": "http",

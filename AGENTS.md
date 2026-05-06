@@ -30,7 +30,7 @@ Project-specific skills live in [`.agents/skills/`](./.agents/skills/). Each ski
 
 MCP servers are configured in [`.mcp.json`](./.mcp.json) at the repo root and picked up automatically by Claude Code, Cursor, and other compatible agents. Read the file for the current list — each entry's `command`/`url` is self-documenting.
 
-> The `DATOCMS_API_TOKEN` env var is read from your shell — never hardcode a token in `.mcp.json`. For visual QA via `chrome-devtools`, run `npm run dev` first and point the agent at <http://localhost:4323>.
+> The hosted `datocms` server authenticates via OAuth in your browser the first time you use it — no token in `.mcp.json`. For visual QA via `chrome-devtools`, run `npm run dev` first and point the agent at <http://localhost:4323>. If you ever add a stdio server that needs a secret, read it from your shell via `${VAR}` interpolation — never hardcode.
 
 ## Environment
 

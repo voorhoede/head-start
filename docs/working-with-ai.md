@@ -34,4 +34,4 @@ To remove a skill, run `npx skills remove <name>` and verify `skills-lock.json` 
 
 `stdio`-based servers are launched on demand via `npx` — no global install needed. HTTP-based servers connect to remote endpoints directly.
 
-> **Security:** secret tokens (e.g. `DATOCMS_API_TOKEN`) are read from your shell environment via `${VAR}` interpolation. Never hardcode tokens in `.mcp.json` — it is committed to the repository.
+> **Security:** the hosted `datocms` server authenticates via OAuth in your browser — no token in config. If you add a stdio server that needs a secret, read it from your shell environment via `${VAR}` interpolation. Never hardcode tokens in `.mcp.json` — it is committed to the repository.
