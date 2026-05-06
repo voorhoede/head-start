@@ -10,6 +10,9 @@
     "astro-docs": {
       "url": "https://mcp.docs.astro.build/mcp"
     },
+    "cloudflare-docs": {
+      "url": "https://docs.mcp.cloudflare.com/mcp"
+    },
     "chrome-devtools": {
       "command": "npx",
       "args": ["-y", "chrome-devtools-mcp@latest"]

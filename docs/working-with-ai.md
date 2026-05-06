@@ -44,14 +44,15 @@ To remove a skill, run `npx skills remove <name>` and verify `skills-lock.json` 
 
 ## MCP servers
 
-[Model Context Protocol (MCP)](https://modelcontextprotocol.io/) servers give agents live access to external tools and data sources beyond their training knowledge. The project pre-configures three servers in [`.mcp.json`](../.mcp.json), which is picked up automatically by Claude Code, Cursor, and other compatible agents.
+[Model Context Protocol (MCP)](https://modelcontextprotocol.io/) servers give agents live access to external tools and data sources beyond their training knowledge. The project pre-configures four servers in [`.mcp.json`](../.mcp.json), which is picked up automatically by Claude Code, Cursor, and other compatible agents.
 
 | Server | Purpose |
 | --- | --- |
 | `datocms` | Query and manage the CMS schema, records, environments, and assets directly. Requires `DATOCMS_API_TOKEN` in your shell environment. |
 | `astro-docs` | Live Astro documentation — prevents hallucinating outdated APIs. |
+| `cloudflare-docs` | Live Cloudflare documentation — covers Pages, Workers, and `wrangler` config. |
 | `chrome-devtools` | Drive a real browser for visual QA: navigate pages, inspect the DOM, take screenshots, check console errors. Run `npm run dev` first and point the agent at `http://localhost:4323`. |
 
-The `stdio`-based servers (`datocms`, `chrome-devtools`) are launched on demand via `npx` — no global install needed. The HTTP-based server (`astro-docs`) connects to a remote endpoint directly.
+The `stdio`-based servers (`datocms`, `chrome-devtools`) are launched on demand via `npx` — no global install needed. The HTTP-based servers (`astro-docs`, `cloudflare-docs`) connect to remote endpoints directly.
 
 > **Security:** `DATOCMS_API_TOKEN` is read from your shell environment. Never hardcode tokens in `.mcp.json` — it is committed to the repository.
