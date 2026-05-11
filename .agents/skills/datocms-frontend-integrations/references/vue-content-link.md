@@ -1,0 +1,468 @@
+# Vue Content Link — `<ContentLink>` for Visual Editing
+
+Vue-specific wiring for `vue-datocms` Content Link in Vue and Nuxt projects.
+
+## Contents
+
+- Shared Concepts
+- Setup
+- Framework Integrations
+- Enabling Click-to-Edit
+- `<ContentLink>` Props
+- `useContentLink` Composable
+- Data Attributes Reference
+- Group & Boundary Resolution Rules
+- Structured Text Integration
+- Low-Level Utilities
+- Troubleshooting
+
+## Shared Concepts
+
+Read [content-link-concepts.md](./content-link-concepts.md) first for the shared model:
+
+- stega encoding and draft-only query changes
+- `baseEditingUrl` semantics
+- shared data attributes, grouping rules, low-level controller utilities, and common troubleshooting
+
+Use this file for Vue-only component API, router wiring, and Structured Text integration details.
+
+## Setup
+
+First, make sure your shared query layer already enables Content Link for draft requests. See [Query Function Changes](./content-link-concepts.md#query-function-changes).
+
+Then mount the Vue component in a root layout or app shell (it renders no visible UI):
+
+```vue
+<script setup>
+import { ContentLink } from 'vue-datocms';
+</script>
+
+<template>
+  <ContentLink />
+  <!-- Your content -->
+</template>
+```
+
+## Framework Integrations
+
+For full [Web Previews plugin](https://www.datocms.com/marketplace/plugins/i/datocms-plugin-web-previews) integration, provide `on-navigate-to` and `current-path` to sync preview navigation with the CMS:
+
+### Vue Router
+
+```vue
+<script setup>
+import { ContentLink } from 'vue-datocms';
+import { useRouter, useRoute } from 'vue-router';
+
+const router = useRouter();
+const route = useRoute();
+</script>
+
+<template>
+  <ContentLink
+    :on-navigate-to="(path) => router.push(path)"
+    :current-path="route.path"
+  />
+</template>
+```
+
+### Nuxt
+
+```vue
+<script setup>
+import { ContentLink } from 'vue-datocms';
+
+const router = useRouter();
+const route = useRoute();
+</script>
+
+<template>
+  <ContentLink
+    :on-navigate-to="(path) => router.push(path)"
+    :current-path="route.path"
+  />
+</template>
+```
+
+Or create a reusable component:
+
+```vue
+<!-- components/DatoContentLink.vue -->
+<script setup>
+import { ContentLink as DatoContentLink } from 'vue-datocms';
+
+const router = useRouter();
+const route = useRoute();
+</script>
+
+<template>
+  <DatoContentLink
+    :on-navigate-to="(path) => router.push(path)"
+    :current-path="route.path"
+  />
+</template>
+```
+
+Then use it in your layout:
+
+```vue
+<template>
+  <div>
+    <DatoContentLink />
+    <slot />
+  </div>
+</template>
+```
+
+## Enabling Click-to-Edit
+
+### Via Prop (Persistent)
+
+```vue
+<ContentLink :enable-click-to-edit="true" />
+```
+
+With options:
+
+```vue
+<!-- Scroll to nearest editable element if none visible -->
+<ContentLink :enable-click-to-edit="{ scrollToNearestTarget: true }" />
+
+<!-- Only on devices with hover capability (non-touch) -->
+<ContentLink :enable-click-to-edit="{ hoverOnly: true }" />
+
+<!-- Both -->
+<ContentLink :enable-click-to-edit="{ hoverOnly: true, scrollToNearestTarget: true }" />
+```
+
+| Option | Type | Default | Description |
+| - | - | - | - |
+| `scrollToNearestTarget` | boolean | false | Auto-scroll to nearest editable element if none visible |
+| `hoverOnly` | boolean | false | Only enable on hover-capable devices; touch users can still toggle with Alt/Option |
+
+### Via Keyboard Shortcut (Temporary)
+
+Hold **Alt** (Windows/Linux) or **Option** (Mac) to temporarily show click-to-edit overlays. Releasing the key hides them.
+
+## `<ContentLink>` Props
+
+| Prop | Type | Default | Description |
+| - | - | - | - |
+| `on-navigate-to` | `(path: string) => void` | — | Callback when Web Previews plugin requests navigation |
+| `current-path` | string | — | Current pathname to sync with Web Previews plugin |
+| `enable-click-to-edit` | `boolean \| { scrollToNearestTarget?: boolean, hoverOnly?: boolean }` | — | Enable click-to-edit overlays persistently |
+| `strip-stega` | boolean | — | Remove stega encoding from text nodes after processing |
+| `root` | `Ref<ParentNode \| null \| undefined>` | — | Limit scanning to a root element instead of entire document |
+
+## `useContentLink` Composable
+
+For programmatic control over Visual Editing behavior:
+
+```ts
+import { useContentLink } from 'vue-datocms';
+
+const {
+  controller,           // Ref<Controller | null> — underlying controller instance
+  enableClickToEdit,    // (options?) => void — enable overlays
+  disableClickToEdit,   // () => void — disable overlays
+  isClickToEditEnabled, // () => boolean — check state
+  flashAll,             // (scrollToNearestTarget?) => void — highlight all editable areas
+  setCurrentPath,       // (path: string) => void — notify Web Previews of current path
+} = useContentLink({
+  enabled: true,        // true | false | { stripStega: true }
+  onNavigateTo: (path) => router.push(path),
+  root: elementRef,
+});
+```
+
+**`enabled` options:**
+
+- `true` (default): Controller active, stega encoding preserved in DOM
+- `false`: Controller disabled
+- `{ stripStega: true }`: Controller active, permanently removes stega encoding from text nodes
+
+### Custom Editing Toolbar Example
+
+```vue
+<script setup>
+import { ref, watch } from 'vue';
+import { useContentLink } from 'vue-datocms';
+import { useRouter, useRoute } from 'vue-router';
+
+const router = useRouter();
+const route = useRoute();
+
+const isEditing = ref(false);
+
+const {
+  enableClickToEdit,
+  disableClickToEdit,
+  isClickToEditEnabled,
+  flashAll,
+  setCurrentPath,
+} = useContentLink({
+  enabled: true,
+  onNavigateTo: (path) => router.push(path),
+});
+
+function toggleEditing() {
+  if (isClickToEditEnabled()) {
+    disableClickToEdit();
+    isEditing.value = false;
+  } else {
+    enableClickToEdit({ scrollToNearestTarget: true });
+    isEditing.value = true;
+  }
+}
+
+watch(() => route.path, (newPath) => {
+  setCurrentPath(newPath);
+}, { immediate: true });
+</script>
+
+<template>
+  <div class="editing-toolbar">
+    <button @click="toggleEditing">
+      {{ isEditing ? 'Disable' : 'Enable' }} Editing
+    </button>
+    <button @click="flashAll(true)">
+      Show Editable Areas
+    </button>
+  </div>
+</template>
+```
+
+## Data Attributes Reference
+
+### Developer-Specified Attributes
+
+#### `data-datocms-content-link-url`
+
+Marks an element as editable with an explicit edit URL. Use for **non-text fields** (booleans, numbers, dates, JSON) that cannot contain stega encoding. Use the `_editingUrl` field:
+
+```graphql
+query {
+  product {
+    price
+    isActive
+    _editingUrl
+  }
+}
+```
+
+```vue
+<span :data-datocms-content-link-url="product._editingUrl">
+  {{ product.price }}
+</span>
+```
+
+#### `data-datocms-content-link-source`
+
+Attaches stega metadata without rendering it as content. For elements that can't contain text (`<video>`, `<audio>`, `<iframe>`, etc.):
+
+```vue
+<div :data-datocms-content-link-source="video.alt">
+  <video :src="video.url" :poster="video.posterImage.url" controls />
+</div>
+```
+
+The value must be a stega-encoded string (any text field from the API works).
+
+#### `data-datocms-content-link-group`
+
+Expands the clickable area to a parent element. By default, only the immediate parent of stega text is clickable. This makes a larger ancestor clickable instead:
+
+```vue
+<article data-datocms-content-link-group>
+  <h2>{{ product.title }}</h2>  <!-- stega-encoded -->
+  <p>{{ product.price }}</p>
+</article>
+```
+
+Clicking anywhere in `<article>` opens the editor.
+
+**Important:** A group should contain only one stega-encoded source. Multiple sources in the same group cause a collision warning (last URL wins).
+
+#### `data-datocms-content-link-boundary`
+
+Stops the upward DOM traversal for group resolution. Creates an independent editable region:
+
+```vue
+<div data-datocms-content-link-group>
+  <h1>{{ page.title }}</h1>         <!-- opens page title editor -->
+  <section data-datocms-content-link-boundary>
+    <span>{{ page.author }}</span>  <!-- opens author editor (not page title) -->
+  </section>
+</div>
+```
+
+Without the boundary, clicking `page.author` would open the outer group's URL.
+
+### Library-Managed Attributes (Automatic)
+
+| Attribute | Description |
+| - | - |
+| `data-datocms-contains-stega` | Added to elements with stega content (only when `stripStega` is false) |
+| `data-datocms-auto-content-link-url` | Added to elements identified as editable targets; contains the resolved edit URL |
+
+## Group & Boundary Resolution Rules
+
+When stega content is found, the library walks up the DOM from that element:
+
+1. **Finds `data-datocms-content-link-group`** — stamps that element as clickable target
+2. **Finds `data-datocms-content-link-boundary`** — stops traversal, stamps the starting element as clickable target
+3. **Reaches root without finding either** — stamps the starting element
+
+## Structured Text Integration
+
+Structured Text fields need special handling:
+
+**Rule 1:** Always wrap `<StructuredText>` in a group:
+
+```vue
+<div data-datocms-content-link-group>
+  <StructuredText :data="page.content" />
+</div>
+```
+
+**Rule 2:** Add boundary on `renderBlock`, `renderInlineRecord`, and `renderInlineBlock` — but **NOT** on `renderLinkToRecord`:
+
+```vue
+<template>
+  <div data-datocms-content-link-group>
+    <StructuredText
+      :data="data.blogPost.content"
+      :renderBlock="renderBlock"
+      :renderInlineRecord="renderInlineRecord"
+      :renderLinkToRecord="renderLinkToRecord"
+      :renderInlineBlock="renderInlineBlock"
+    />
+  </div>
+</template>
+
+<script setup>
+import { StructuredText, Image } from 'vue-datocms';
+import { h } from 'vue';
+
+const props = defineProps<{ data: any }>();
+
+function renderBlock({ record }) {
+  switch (record.__typename) {
+    case 'ImageBlockRecord':
+      return h(
+        'div',
+        { 'data-datocms-content-link-boundary': '' },
+        [h(Image, { data: record.image.responsiveImage })],
+      );
+    default:
+      return null;
+  }
+}
+
+function renderInlineRecord({ record }) {
+  switch (record.__typename) {
+    case 'TeamMemberRecord':
+      return h(
+        'span',
+        { 'data-datocms-content-link-boundary': '' },
+        [h('a', { href: `/team/${record.slug}` }, record.firstName)],
+      );
+    default:
+      return null;
+  }
+}
+
+function renderLinkToRecord({ record, children, transformedMeta }) {
+  switch (record.__typename) {
+    case 'TeamMemberRecord':
+      return h(
+        'a',
+        { ...transformedMeta, href: `/team/${record.slug}` },
+        children,
+      );
+    default:
+      return null;
+  }
+}
+
+function renderInlineBlock({ record }) {
+  switch (record.__typename) {
+    case 'MentionRecord':
+      return h(
+        'span',
+        { 'data-datocms-content-link-boundary': '' },
+        [h('code', `@${record.username}`)],
+      );
+    default:
+      return null;
+  }
+}
+</script>
+```
+
+**Why `renderLinkToRecord` doesn't need a boundary:** Record links are `<a>` tags wrapping text that belongs to the surrounding structured text — no separate editing target, no collision.
+
+## Low-Level Utilities
+
+### `stripStega`
+
+Removes stega encoding from any data type:
+
+```ts
+import { stripStega } from 'vue-datocms';
+
+stripStega("Hello world")           // clean string
+stripStega({ name: "John", age: 30 }) // clean object
+stripStega(["First", "Second"])      // clean array
+```
+
+### `decodeStega`
+
+Extracts editing metadata from stega-encoded content:
+
+```ts
+import { decodeStega } from 'vue-datocms';
+
+const decoded = decodeStega(text);
+if (decoded) {
+  console.log('Editing URL:', decoded.url);
+  console.log('Clean text:', decoded.cleanText);
+}
+```
+
+### `revealStega` (debugging)
+
+Replaces each invisible stega segment with a visible `[STEGA:/editor/...]` marker. Preserves the input shape — strings stay strings, objects/arrays keep their structure. Use this whenever a stega-related bug is suspected, since `console.log` alone shows nothing (the encoding is zero-width Unicode):
+
+```ts
+import { revealStega } from 'vue-datocms';
+
+console.log(revealStega(page.title));        // "Hello[STEGA:/editor/...]"
+console.log(revealStega(graphqlResponse));   // same object shape, markers visible inside strings
+```
+
+See [content-link-concepts.md → When to Strip Stega](./content-link-concepts.md#when-to-strip-stega) for the full rule on when to wrap values in `stripStega()` (string comparisons, SEO/meta, analytics, slug/URL generation, anything other than direct render). Note: DatoCMS `slug` field types are never stega-encoded and don't need stripping.
+
+## Troubleshooting
+
+### Click-to-edit overlays not appearing
+
+1. Verify `contentLink: 'v1'` and `baseEditingUrl` are set in API calls
+2. Check that `<ContentLink>` is mounted in your component tree
+3. Enable click-to-edit: `:enable-click-to-edit="true"` or hold Alt/Option
+4. Check browser console for errors
+
+### Navigation not syncing with Web Previews plugin
+
+1. Provide both `on-navigate-to` and `current-path` props
+2. Verify `current-path` updates on route changes
+
+### StructuredText blocks not clickable
+
+1. Wrap with `data-datocms-content-link-group`
+2. Add `data-datocms-content-link-boundary` to `renderBlock` and `renderInlineBlock`
+
+### Layout issues from stega encoding
+
+1. Use `strip-stega` prop: `<ContentLink :strip-stega="true" />`
+2. Or CSS fix: `[data-datocms-contains-stega] { letter-spacing: 0 !important; }`

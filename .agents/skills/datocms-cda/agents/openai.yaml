@@ -1,0 +1,8 @@
+# synced_from_name: datocms-cda
+# synced_from_description_sha256: 8a0566296147dc879ce7cf61a86cd9f18c03071fd2e9ad32d1284b9e57aa73a4
+interface:
+  display_name: "DatoCMS CDA"
+  short_description: "Query DatoCMS GraphQL reads, media, and SEO"
+  default_prompt: "Use $datocms-cda to build or review a DatoCMS GraphQL read for content, images, SEO, localization, or preview."
+policy:
+  allow_implicit_invocation: true

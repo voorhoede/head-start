@@ -1,0 +1,8 @@
+# synced_from_name: datocms-frontend-integrations
+# synced_from_description_sha256: dc23b6f2080d564d3a43a79303a5f3146ce9ef7f2c2b074a49559931512c4e9d
+interface:
+  display_name: "DatoCMS Front-End Integrations"
+  short_description: "Wire DatoCMS previews, visual editing, and site wiring"
+  default_prompt: "Use $datocms-frontend-integrations to patch or explain DatoCMS draft mode, visual editing, previews, images, SEO, search, realtime, or site integration wiring in this app."
+policy:
+  allow_implicit_invocation: true

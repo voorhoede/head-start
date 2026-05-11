@@ -1,0 +1,8 @@
+# synced_from_name: datocms-cma
+# synced_from_description_sha256: 065b6c944395fab6ae954c9cdfbbf91cf0ab5002b16a31b3b4c23c24028a7ba7
+interface:
+  display_name: "DatoCMS CMA"
+  short_description: "Write DatoCMS management API scripts and typed record flows"
+  default_prompt: "Use $datocms-cma to write or update DatoCMS management API scripts for records, uploads, schema, environments, webhooks, or typed record operations."
+policy:
+  allow_implicit_invocation: true

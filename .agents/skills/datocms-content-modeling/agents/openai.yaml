@@ -1,0 +1,8 @@
+# synced_from_name: datocms-content-modeling
+# synced_from_description_sha256: f6a0334ded3b454842a2e1215dd7ccc6b6aa91839d5b9e7dd67200153a04d349
+interface:
+  display_name: "DatoCMS Content Modeling"
+  short_description: "Design DatoCMS schemas: models vs blocks, reuse, taxonomy"
+  default_prompt: "Use $datocms-content-modeling to decide model vs block, pick the right block-bearing field, design reuse and taxonomies, or refactor a presentation-shaped schema."
+policy:
+  allow_implicit_invocation: true
