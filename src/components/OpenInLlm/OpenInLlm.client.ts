@@ -29,7 +29,6 @@ class OpenInLlm extends HTMLElement {
   disconnectedCallback() {
     this.#copyButton?.removeEventListener('click', this.#handleCopy);
     this.#popover?.removeEventListener('toggle', this.#handleToggle);
-    window.removeEventListener('scroll', this.#handleScroll, true);
     this.#stopAutoUpdate?.();
     this.#stopAutoUpdate = null;
   }
@@ -43,33 +42,40 @@ class OpenInLlm extends HTMLElement {
 
     this.#stopAutoUpdate?.();
     this.#stopAutoUpdate = null;
-    window.removeEventListener('scroll', this.#handleScroll, true);
 
     if (!isOpen || !this.#popover || !this.#buttonGroup) return;
 
     const placement = (this.#popover.getAttribute('data-placement') ??
       'bottom-start') as Placement;
+    const initialScrollY = window.scrollY;
+    const initialScrollX = window.scrollX;
+    this.#popover.style.visibility = 'hidden';
     this.#stopAutoUpdate = autoUpdate(
       this.#buttonGroup,
       this.#popover,
       () => {
         if (!this.#popover || !this.#buttonGroup) return;
+        if (
+          window.scrollY !== initialScrollY ||
+          window.scrollX !== initialScrollX
+        ) {
+          this.#popover.hidePopover();
+          return;
+        }
         computePosition(this.#buttonGroup, this.#popover, {
+          strategy: 'fixed',
           placement,
           middleware: [flip(), shift({ padding: 8 })],
         }).then(({ x, y }) => {
-          Object.assign(this.#popover!.style, {
+          if (!this.#popover) return;
+          Object.assign(this.#popover.style, {
             left: `${x}px`,
             top: `${y}px`,
+            visibility: 'visible',
           });
         });
       },
     );
-    window.addEventListener('scroll', this.#handleScroll, true);
-  };
-
-  #handleScroll = () => {
-    this.#popover?.hidePopover();
   };
 
   #handleCopy = async () => {
