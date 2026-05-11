@@ -4,7 +4,7 @@ import dotenv from 'dotenv-safe';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { pascalCase } from 'scule';
-import { datocmsEnvironment } from '../datocms-environment';
+import { datocmsEnvironment } from '../datocms-environment.ts';
 
 dotenv.config({ allowEmptyValues: Boolean(process.env.CI) });
 
