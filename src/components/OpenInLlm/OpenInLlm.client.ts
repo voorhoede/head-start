@@ -1,11 +1,13 @@
-import { computePosition, flip, shift } from '@floating-ui/dom';
+import { autoUpdate, computePosition, flip, shift } from '@floating-ui/dom';
 import type { Placement } from '@floating-ui/dom';
 
 class OpenInLlm extends HTMLElement {
   #copyButton: HTMLButtonElement | null = null;
   #dropdownButton: HTMLButtonElement | null = null;
   #buttonGroup: HTMLElement | null = null;
+  #popover: HTMLElement | null = null;
   #originalLabel = '';
+  #stopAutoUpdate: (() => void) | null = null;
 
   connectedCallback() {
     this.#copyButton = this.querySelector<HTMLButtonElement>('[data-copy-url]');
@@ -16,43 +18,51 @@ class OpenInLlm extends HTMLElement {
       this.#copyButton?.querySelector('[data-copy-label]')?.textContent ?? '';
 
     const popoverId = this.#dropdownButton?.getAttribute('popovertarget');
-    const popover = popoverId
+    this.#popover = popoverId
       ? this.querySelector<HTMLElement>(`#${popoverId}`)
       : null;
-    popover?.addEventListener('toggle', (event) => {
-      this.#dropdownButton?.setAttribute(
-        'aria-expanded',
-        (event as ToggleEvent).newState === 'open' ? 'true' : 'false',
-      );
-    });
+    this.#popover?.addEventListener('toggle', this.#handleToggle);
 
     this.#copyButton?.addEventListener('click', this.#handleCopy);
-    this.#dropdownButton?.addEventListener('click', this.#handleDropdown);
   }
 
   disconnectedCallback() {
     this.#copyButton?.removeEventListener('click', this.#handleCopy);
-    this.#dropdownButton?.removeEventListener('click', this.#handleDropdown);
+    this.#popover?.removeEventListener('toggle', this.#handleToggle);
+    this.#stopAutoUpdate?.();
+    this.#stopAutoUpdate = null;
   }
 
-  #handleDropdown = () => {
-    const popoverId = this.#dropdownButton?.getAttribute('popovertarget');
-    const popover = popoverId
-      ? this.querySelector<HTMLElement>(`#${popoverId}`)
-      : null;
-    if (!popover || !this.#buttonGroup) return;
+  #handleToggle = (event: Event) => {
+    const isOpen = (event as ToggleEvent).newState === 'open';
+    this.#dropdownButton?.setAttribute(
+      'aria-expanded',
+      isOpen ? 'true' : 'false',
+    );
 
-    const placement = (popover.getAttribute('data-placement') ??
+    this.#stopAutoUpdate?.();
+    this.#stopAutoUpdate = null;
+
+    if (!isOpen || !this.#popover || !this.#buttonGroup) return;
+
+    const placement = (this.#popover.getAttribute('data-placement') ??
       'bottom-start') as Placement;
-    computePosition(this.#buttonGroup, popover, {
-      placement,
-      middleware: [flip(), shift({ padding: 8 })],
-    }).then(({ x, y }) => {
-      Object.assign(popover.style, {
-        left: `${x}px`,
-        top: `${y}px`,
-      });
-    });
+    this.#stopAutoUpdate = autoUpdate(
+      this.#buttonGroup,
+      this.#popover,
+      () => {
+        if (!this.#popover || !this.#buttonGroup) return;
+        computePosition(this.#buttonGroup, this.#popover, {
+          placement,
+          middleware: [flip(), shift({ padding: 8 })],
+        }).then(({ x, y }) => {
+          Object.assign(this.#popover!.style, {
+            left: `${x}px`,
+            top: `${y}px`,
+          });
+        });
+      },
+    );
   };
 
   #handleCopy = async () => {
