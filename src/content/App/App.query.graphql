@@ -1,0 +1,8 @@
+query App {
+  app {
+    allowAiBots
+  }
+  site: _site {
+    noIndex
+  }
+}
