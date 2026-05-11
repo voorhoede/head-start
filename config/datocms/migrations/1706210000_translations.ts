@@ -75,6 +75,10 @@ export default async function (client: Client) {
     'main_menu': 'main menu',
     'open_menu': 'open menu',
     'close_menu': 'close menu',
+    'copy_page': 'Copy page',
+    'copy_page_copied': 'Copied',
+    'copy_page_error': 'Failed to copy page',
+    'open_in_llm': 'Open page in a large language model',
   };
 
   console.log('Create required translation content');
