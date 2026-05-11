@@ -13,7 +13,7 @@ const { llmOptions, prompt } = Astro.props;
 const popoverId = 'open-in-llm-popover';
 const pageUrl = Astro.url.href;
 
-let searchText = prompt.replace('{ pageUrl }', pageUrl);
+let searchText = prompt.replaceAll(/\{\s*pageUrl\s*\}/g, pageUrl);
 if (searchText === '') searchText = pageUrl;
 
 const llmLinks = llmOptions.map((option) => {

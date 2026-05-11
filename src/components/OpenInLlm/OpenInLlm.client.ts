@@ -1,4 +1,4 @@
-import { computePosition } from '@floating-ui/dom';
+import { computePosition, flip, shift } from '@floating-ui/dom';
 import type { Placement } from '@floating-ui/dom';
 
 class OpenInLlm extends HTMLElement {
@@ -44,15 +44,15 @@ class OpenInLlm extends HTMLElement {
 
     const placement = (popover.getAttribute('data-placement') ??
       'bottom-start') as Placement;
-    computePosition(this.#buttonGroup, popover, { placement }).then(
-      ({ x, y }) => {
-        Object.assign(popover.style, {
-          left: `${x}px`,
-          top: `${y}px`,
-          width: `${this.#buttonGroup!.offsetWidth}px`,
-        });
-      },
-    );
+    computePosition(this.#buttonGroup, popover, {
+      placement,
+      middleware: [flip(), shift({ padding: 8 })],
+    }).then(({ x, y }) => {
+      Object.assign(popover.style, {
+        left: `${x}px`,
+        top: `${y}px`,
+      });
+    });
   };
 
   #handleCopy = async () => {
@@ -63,7 +63,8 @@ class OpenInLlm extends HTMLElement {
       const text = await this.#buildCopyText(url);
       await navigator.clipboard.writeText(text);
       this.#setLabel(this.#copyButton?.dataset.labelCopied ?? '');
-    } catch {
+    } catch (error) {
+      console.error('OpenInLlm: failed to copy page', error);
       this.#setLabel(this.#copyButton?.dataset.labelError ?? '');
     }
     setTimeout(() => this.#setLabel(this.#originalLabel), 2000);
