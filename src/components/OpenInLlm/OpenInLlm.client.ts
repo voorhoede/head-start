@@ -29,6 +29,7 @@ class OpenInLlm extends HTMLElement {
   disconnectedCallback() {
     this.#copyButton?.removeEventListener('click', this.#handleCopy);
     this.#popover?.removeEventListener('toggle', this.#handleToggle);
+    window.removeEventListener('scroll', this.#handleScroll, true);
     this.#stopAutoUpdate?.();
     this.#stopAutoUpdate = null;
   }
@@ -42,6 +43,7 @@ class OpenInLlm extends HTMLElement {
 
     this.#stopAutoUpdate?.();
     this.#stopAutoUpdate = null;
+    window.removeEventListener('scroll', this.#handleScroll, true);
 
     if (!isOpen || !this.#popover || !this.#buttonGroup) return;
 
@@ -63,6 +65,11 @@ class OpenInLlm extends HTMLElement {
         });
       },
     );
+    window.addEventListener('scroll', this.#handleScroll, true);
+  };
+
+  #handleScroll = () => {
+    this.#popover?.hidePopover();
   };
 
   #handleCopy = async () => {
