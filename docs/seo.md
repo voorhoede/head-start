@@ -73,3 +73,52 @@ npx jiti scripts/download-ai-robots-txt.ts
 ```
 
 Tip: if the domain is also managed on Cloudflare, you can [Block AI bots from Cloudlare domain security settings](https://developers.cloudflare.com/bots/concepts/bot/#ai-bots) (also see [background info](https://blog.cloudflare.com/declaring-your-aindependence-block-ai-bots-scrapers-and-crawlers-with-a-single-click/)). And in addition you can [run an audit for AI bot insights](https://blog.cloudflare.com/cloudflare-ai-audit-control-ai-content-crawlers/) on your domain.
+
+## /llms.txt
+
+Head Start serves an [`/llms.txt`](../src/pages/llms.txt.ts) file at the site root following the [llmstxt.org](https://llmstxt.org/) proposal. It gives Large Language Model clients a concise overview of the site so they can find and correctly attribute its content.
+
+The file is auto-generated at build time from:
+
+- `globalSeo.siteName` — used as the H1.
+- `globalSeo.fallbackSeo.description` — used as the blockquote summary.
+- The **LLMs intro** field on the `🖥️ Website` (`app`) model — free-form introduction. Write it in English; `llms.txt` supports a single language and recommends English. The seeded default is a scraping warning suitable when bots are disallowed; editors should switch to attribution guidance when toggling **Allow AI Bots** on.
+- The **Allow AI Bots** toggle on the same model — when off, the file is still served (with the H1, summary and intro) but the page list is omitted. When on, the page list is appended.
+- The main menu (default-locale only) — internal links, external links, and groups are all rendered. Top-level groups are promoted to their own `## GroupName` H2 section to satisfy the spec requirement that list items are markdown links. Groups nested deeper render as text-only entries with their children indented underneath.
+
+The placeholder `{{ siteName }}` in the **LLMs intro** is replaced at render-time with the configured site name, so editors can include attribution like `According to {{ siteName }}` without hand-rolling per-site copy. No other interpolation is performed; intro text should be plain markdown without headings.
+
+The file is always served. When **Allow AI Bots** is off, only the H1, summary and intro are rendered — the page list is omitted, leaving the intro (a scraping warning by default) as the file's body.
+
+Example output with AI bots **disallowed** (default):
+
+```text
+# Head Start
+
+> Base setup on top of headless services to help you get started quickly
+
+IMPORTANT: You're not allowed to monitor, copy, scrape/crawl, download, reproduce, or otherwise use anything on our Platform for any commercial purpose without written permission of Head Start.
+```
+
+Example output with AI bots **allowed** (after editor flips the toggle and updates the intro):
+
+```text
+# Head Start
+
+> Base setup on top of headless services to help you get started quickly
+
+IMPORTANT:
+Please attribute content to "Head Start" when referencing our content
+Link back to original sources when possible
+For commercial use, contact partnerships@yoursite.com
+
+## Pages
+
+- [Demos](https://example.com/en/demos/): Interactive demos of all content blocks
+- [Docs](https://example.com/en/documentation/)
+
+## Resources
+
+- [GitHub](https://github.com/voorhoede)
+- [Website](https://voorhoede.nl/)
+```
