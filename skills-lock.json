@@ -43,12 +43,6 @@
       "skillPath": "skills/datocms-setup/SKILL.md",
       "computedHash": "95e6fc7d947a4cff8a0693334aa78e438144b1756f3f3406106632adb45a27d8"
     },
-    "frontend-design": {
-      "source": "anthropics/skills",
-      "sourceType": "github",
-      "skillPath": "skills/frontend-design/SKILL.md",
-      "computedHash": "063a0e6448123cd359ad0044cc46b0e490cc7964d45ef4bb9fd842bd2ffbca67"
-    },
     "web-perf": {
       "source": "cloudflare/skills",
       "sourceType": "github",

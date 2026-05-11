@@ -51,6 +51,7 @@ export default defineConfig([
   },
   globalIgnores([
     '**/.astro/**',
+    '.agents/skills/**',
     'dist/*',
     'functions/*',
     'src/lib/datocms/types.ts',
