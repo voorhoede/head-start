@@ -1,0 +1,603 @@
+{
+  "skill": "datocms-setup",
+  "discovery_mode_groups": [
+    "frontend-foundation",
+    "frontend-features",
+    "migrations",
+    "onboarding",
+    "platform"
+  ],
+  "recipes": [
+    {
+      "id": "responsive-images",
+      "group": "frontend-features",
+      "summary": "Add responsive image querying and framework-specific rendering helpers.",
+      "prerequisites": [],
+      "shared_references": [
+        "../datocms-cda/references/client-and-config.md",
+        "../datocms-cda/references/images-and-videos.md",
+        "../datocms-frontend-integrations/references/astro-image.md",
+        "../datocms-frontend-integrations/references/astro.md",
+        "../datocms-frontend-integrations/references/image-concepts.md",
+        "../datocms-frontend-integrations/references/nextjs.md",
+        "../datocms-frontend-integrations/references/nuxt.md",
+        "../datocms-frontend-integrations/references/react-image.md",
+        "../datocms-frontend-integrations/references/svelte-image.md",
+        "../datocms-frontend-integrations/references/sveltekit.md",
+        "../datocms-frontend-integrations/references/vue-image.md"
+      ],
+      "assets": [],
+      "scripts": [],
+      "path": "recipes/frontend-features/responsive-images/recipe.md",
+      "triggers": [
+        "responsive images",
+        "srcset",
+        "datocms image"
+      ]
+    },
+    {
+      "id": "robots-sitemaps",
+      "group": "frontend-features",
+      "summary": "Generate robots.txt and sitemap wiring for DatoCMS-backed routes.",
+      "prerequisites": [],
+      "shared_references": [
+        "../datocms-frontend-integrations/references/robots-and-sitemaps.md"
+      ],
+      "assets": [],
+      "scripts": [],
+      "path": "recipes/frontend-features/robots-sitemaps/recipe.md",
+      "triggers": [
+        "robots",
+        "sitemap",
+        "sitemaps"
+      ]
+    },
+    {
+      "id": "seo",
+      "group": "frontend-features",
+      "summary": "Add DatoCMS SEO metadata queries and framework-specific rendering helpers.",
+      "prerequisites": [],
+      "shared_references": [
+        "../datocms-cda/references/seo-and-meta.md",
+        "../datocms-frontend-integrations/references/astro-seo.md",
+        "../datocms-frontend-integrations/references/content-link-concepts.md",
+        "../datocms-frontend-integrations/references/react-seo.md",
+        "../datocms-frontend-integrations/references/seo-concepts.md",
+        "../datocms-frontend-integrations/references/svelte-seo.md",
+        "../datocms-frontend-integrations/references/vue-seo.md"
+      ],
+      "assets": [],
+      "scripts": [],
+      "path": "recipes/frontend-features/seo/recipe.md",
+      "triggers": [
+        "seo",
+        "meta tags",
+        "metadata"
+      ]
+    },
+    {
+      "id": "site-search",
+      "group": "frontend-features",
+      "summary": "Set up DatoCMS Site Search tokens, endpoints, and UI wiring.",
+      "prerequisites": [],
+      "shared_references": [
+        "../datocms-cma/references/access-control.md",
+        "../datocms-cma/references/client-types-and-behaviors.md",
+        "../datocms-frontend-integrations/references/react-site-search.md",
+        "../datocms-frontend-integrations/references/site-search-api.md",
+        "../datocms-frontend-integrations/references/site-search-concepts.md",
+        "../datocms-frontend-integrations/references/vue-site-search.md"
+      ],
+      "assets": [],
+      "scripts": [],
+      "path": "recipes/frontend-features/site-search/recipe.md",
+      "triggers": [
+        "site search",
+        "search index"
+      ]
+    },
+    {
+      "id": "structured-text",
+      "group": "frontend-features",
+      "summary": "Add Structured Text query shapes and rendering helpers.",
+      "prerequisites": [],
+      "shared_references": [
+        "../datocms-cda/references/client-and-config.md",
+        "../datocms-cda/references/structured-text.md",
+        "../datocms-frontend-integrations/references/astro-content-link.md",
+        "../datocms-frontend-integrations/references/astro-structured-text.md",
+        "../datocms-frontend-integrations/references/astro.md",
+        "../datocms-frontend-integrations/references/nextjs.md",
+        "../datocms-frontend-integrations/references/nuxt.md",
+        "../datocms-frontend-integrations/references/react-content-link.md",
+        "../datocms-frontend-integrations/references/react-structured-text.md",
+        "../datocms-frontend-integrations/references/svelte-content-link.md",
+        "../datocms-frontend-integrations/references/svelte-structured-text.md",
+        "../datocms-frontend-integrations/references/sveltekit.md",
+        "../datocms-frontend-integrations/references/vue-content-link.md",
+        "../datocms-frontend-integrations/references/vue-structured-text.md"
+      ],
+      "assets": [],
+      "scripts": [],
+      "path": "recipes/frontend-features/structured-text/recipe.md",
+      "triggers": [
+        "structured text",
+        "dast"
+      ]
+    },
+    {
+      "id": "video-player",
+      "group": "frontend-features",
+      "summary": "Add Dato video query shapes and framework-specific player wiring.",
+      "prerequisites": [],
+      "shared_references": [
+        "../datocms-cda/references/client-and-config.md",
+        "../datocms-cda/references/images-and-videos.md",
+        "../datocms-frontend-integrations/references/astro.md",
+        "../datocms-frontend-integrations/references/nextjs.md",
+        "../datocms-frontend-integrations/references/nuxt.md",
+        "../datocms-frontend-integrations/references/react-content-link.md",
+        "../datocms-frontend-integrations/references/react-video-player.md",
+        "../datocms-frontend-integrations/references/svelte-content-link.md",
+        "../datocms-frontend-integrations/references/svelte-video-player.md",
+        "../datocms-frontend-integrations/references/sveltekit.md",
+        "../datocms-frontend-integrations/references/video-player-concepts.md",
+        "../datocms-frontend-integrations/references/vue-content-link.md",
+        "../datocms-frontend-integrations/references/vue-video-player.md"
+      ],
+      "assets": [],
+      "scripts": [],
+      "path": "recipes/frontend-features/video-player/recipe.md",
+      "triggers": [
+        "video player",
+        "mux",
+        "video playback"
+      ]
+    },
+    {
+      "id": "cache-tags",
+      "group": "frontend-foundation",
+      "summary": "Wire granular cache invalidation for DatoCMS content changes.",
+      "prerequisites": [
+        "cda-client"
+      ],
+      "shared_references": [
+        "../datocms-cda/references/draft-caching-environments.md",
+        "../datocms-frontend-integrations/references/astro.md",
+        "../datocms-frontend-integrations/references/nextjs.md",
+        "../datocms-frontend-integrations/references/nuxt.md",
+        "../datocms-frontend-integrations/references/sveltekit.md"
+      ],
+      "assets": [],
+      "scripts": [],
+      "path": "recipes/frontend-foundation/cache-tags/recipe.md",
+      "triggers": [
+        "cache tags",
+        "cache invalidation",
+        "revalidateTag",
+        "purge"
+      ]
+    },
+    {
+      "id": "cda-client",
+      "group": "frontend-foundation",
+      "summary": "Scaffold a minimal published-content CDA query utility.",
+      "prerequisites": [],
+      "shared_references": [
+        "../datocms-cda/references/client-and-config.md",
+        "../datocms-frontend-integrations/references/astro.md",
+        "../datocms-frontend-integrations/references/nextjs.md",
+        "../datocms-frontend-integrations/references/nuxt.md",
+        "../datocms-frontend-integrations/references/sveltekit.md"
+      ],
+      "assets": [],
+      "scripts": [],
+      "path": "recipes/frontend-foundation/cda-client/recipe.md",
+      "triggers": [
+        "cda client",
+        "query utility",
+        "published token"
+      ]
+    },
+    {
+      "id": "content-link",
+      "group": "frontend-foundation",
+      "summary": "Enable website click-to-edit overlays on draft pages.",
+      "prerequisites": [
+        "draft-mode"
+      ],
+      "shared_references": [
+        "../datocms-frontend-integrations/references/astro-content-link.md",
+        "../datocms-frontend-integrations/references/astro.md",
+        "../datocms-frontend-integrations/references/content-link-concepts.md",
+        "../datocms-frontend-integrations/references/nextjs.md",
+        "../datocms-frontend-integrations/references/nuxt.md",
+        "../datocms-frontend-integrations/references/react-content-link.md",
+        "../datocms-frontend-integrations/references/svelte-content-link.md",
+        "../datocms-frontend-integrations/references/sveltekit.md",
+        "../datocms-frontend-integrations/references/vue-content-link.md"
+      ],
+      "assets": [],
+      "scripts": [],
+      "path": "recipes/frontend-foundation/content-link/recipe.md",
+      "triggers": [
+        "content link",
+        "click-to-edit",
+        "click to edit",
+        "website click-to-edit",
+        "website click-to-edit only",
+        "stega"
+      ]
+    },
+    {
+      "id": "draft-mode",
+      "group": "frontend-foundation",
+      "summary": "Enable preview reads and draft-mode endpoints with a shared executeQuery wrapper.",
+      "prerequisites": [],
+      "shared_references": [
+        "../datocms-frontend-integrations/references/astro.md",
+        "../datocms-frontend-integrations/references/draft-mode-concepts.md",
+        "../datocms-frontend-integrations/references/nextjs.md",
+        "../datocms-frontend-integrations/references/nuxt.md",
+        "../datocms-frontend-integrations/references/sveltekit.md"
+      ],
+      "assets": [],
+      "scripts": [],
+      "path": "recipes/frontend-foundation/draft-mode/recipe.md",
+      "triggers": [
+        "draft mode",
+        "preview mode",
+        "preview endpoints"
+      ]
+    },
+    {
+      "id": "graphql-types",
+      "group": "frontend-foundation",
+      "summary": "Configure GraphQL query type generation for DatoCMS content reads.",
+      "prerequisites": [],
+      "shared_references": [
+        "../datocms-cda/references/type-generation.md"
+      ],
+      "assets": [],
+      "scripts": [],
+      "path": "recipes/frontend-foundation/graphql-types/recipe.md",
+      "triggers": [
+        "graphql types",
+        "gql.tada",
+        "codegen",
+        "typed queries"
+      ]
+    },
+    {
+      "id": "realtime",
+      "group": "frontend-foundation",
+      "summary": "Add optional live preview updates over SSE on top of draft mode.",
+      "prerequisites": [
+        "draft-mode"
+      ],
+      "shared_references": [
+        "../datocms-frontend-integrations/references/astro-realtime.md",
+        "../datocms-frontend-integrations/references/astro.md",
+        "../datocms-frontend-integrations/references/nextjs.md",
+        "../datocms-frontend-integrations/references/nuxt.md",
+        "../datocms-frontend-integrations/references/react-realtime.md",
+        "../datocms-frontend-integrations/references/realtime-concepts.md",
+        "../datocms-frontend-integrations/references/svelte-realtime.md",
+        "../datocms-frontend-integrations/references/sveltekit.md",
+        "../datocms-frontend-integrations/references/vue-realtime.md"
+      ],
+      "assets": [],
+      "scripts": [],
+      "path": "recipes/frontend-foundation/realtime/recipe.md",
+      "triggers": [
+        "realtime",
+        "real-time",
+        "live preview",
+        "sse"
+      ]
+    },
+    {
+      "id": "visual-editing",
+      "group": "frontend-foundation",
+      "summary": "Scaffold the full visual-editing bundle: draft mode, Content Link, Web Previews, and optional real-time updates.",
+      "prerequisites": [],
+      "shared_references": [
+        "../datocms-frontend-integrations/references/visual-editing-concepts.md"
+      ],
+      "assets": [],
+      "scripts": [],
+      "path": "recipes/frontend-foundation/visual-editing/recipe.md",
+      "triggers": [
+        "visual editing",
+        "visual mode",
+        "preview workflow",
+        "preview editor workflows",
+        "live preview workflow",
+        "editor preview",
+        "side-by-side editing in datocms",
+        "edit mode"
+      ]
+    },
+    {
+      "id": "web-previews",
+      "group": "frontend-foundation",
+      "summary": "Add preview-links routing and Web Previews handoff for side-by-side editing in DatoCMS.",
+      "prerequisites": [
+        "draft-mode"
+      ],
+      "shared_references": [
+        "../datocms-frontend-integrations/references/astro.md",
+        "../datocms-frontend-integrations/references/nextjs.md",
+        "../datocms-frontend-integrations/references/nuxt.md",
+        "../datocms-frontend-integrations/references/sveltekit.md",
+        "../datocms-frontend-integrations/references/web-previews-concepts.md"
+      ],
+      "assets": [],
+      "scripts": [],
+      "path": "recipes/frontend-foundation/web-previews/recipe.md",
+      "triggers": [
+        "web previews",
+        "preview-links",
+        "preview links",
+        "side-by-side editing",
+        "visual tab"
+      ]
+    },
+    {
+      "id": "blueprint-sync",
+      "group": "migrations",
+      "summary": "Share one migration history across multiple DatoCMS projects.",
+      "prerequisites": [
+        "migrations"
+      ],
+      "shared_references": [
+        "../datocms-cli/references/blueprint-sync.md",
+        "../datocms-cli/references/cli-setup.md",
+        "../datocms-cli/references/running-migrations.md"
+      ],
+      "assets": [
+        "recipes/migrations/blueprint-sync/assets/datocms-sync.github-actions.yml"
+      ],
+      "scripts": [
+        "recipes/migrations/blueprint-sync/scripts/datocms-sync-projects.mjs"
+      ],
+      "path": "recipes/migrations/blueprint-sync/recipe.md",
+      "triggers": [
+        "blueprint sync",
+        "shared migration history"
+      ]
+    },
+    {
+      "id": "cli-profiles",
+      "group": "migrations",
+      "summary": "Add named CLI profiles when the repo manages multiple DatoCMS projects (blueprint + clients). Not for separating environments of the same project — use DatoCMS environments for that.",
+      "prerequisites": [
+        "cli-bootstrap"
+      ],
+      "shared_references": [
+        "../datocms-cli/references/cli-setup.md",
+        "../datocms-cli/references/environment-commands.md"
+      ],
+      "assets": [],
+      "scripts": [],
+      "path": "recipes/migrations/cli-profiles/recipe.md",
+      "triggers": [
+        "cli profiles",
+        "named profiles"
+      ]
+    },
+    {
+      "id": "migration-autogenerate",
+      "group": "migrations",
+      "summary": "Generate migration files from environment diffs.",
+      "prerequisites": [
+        "migrations"
+      ],
+      "shared_references": [
+        "../datocms-cli/references/cli-setup.md",
+        "../datocms-cli/references/creating-migrations.md",
+        "../datocms-cli/references/running-migrations.md"
+      ],
+      "assets": [],
+      "scripts": [
+        "recipes/migrations/migration-autogenerate/scripts/datocms-autogenerate-migration.mjs"
+      ],
+      "path": "recipes/migrations/migration-autogenerate/recipe.md",
+      "triggers": [
+        "autogenerate migration",
+        "environment diff"
+      ]
+    },
+    {
+      "id": "migration-release-workflow",
+      "group": "migrations",
+      "summary": "Add a repeatable promotion and release workflow on top of CLI migrations.",
+      "prerequisites": [
+        "migrations"
+      ],
+      "shared_references": [
+        "../datocms-cli/references/cli-setup.md",
+        "../datocms-cli/references/deployment-workflow.md",
+        "../datocms-cli/references/environment-commands.md",
+        "../datocms-cli/references/running-migrations.md"
+      ],
+      "assets": [
+        "recipes/migrations/migration-release-workflow/assets/datocms-release.github-actions.yml"
+      ],
+      "scripts": [
+        "recipes/migrations/migration-release-workflow/scripts/datocms-release.mjs"
+      ],
+      "path": "recipes/migrations/migration-release-workflow/recipe.md",
+      "triggers": [
+        "migration release",
+        "promote sandbox",
+        "maintenance mode"
+      ]
+    },
+    {
+      "id": "migrations",
+      "group": "migrations",
+      "summary": "Scaffold the baseline DatoCMS CLI migrations workflow on top of a linked project.",
+      "prerequisites": [
+        "cli-bootstrap"
+      ],
+      "shared_references": [
+        "../datocms-cli/references/cli-setup.md",
+        "../datocms-cli/references/creating-migrations.md",
+        "../datocms-cli/references/running-migrations.md"
+      ],
+      "assets": [],
+      "scripts": [],
+      "path": "recipes/migrations/migrations/recipe.md",
+      "triggers": [
+        "migrations",
+        "migration baseline"
+      ]
+    },
+    {
+      "id": "sandbox-iteration",
+      "group": "migrations",
+      "summary": "Add a sandbox reset loop for local migration development.",
+      "prerequisites": [
+        "migrations"
+      ],
+      "shared_references": [
+        "../datocms-cli/references/cli-setup.md",
+        "../datocms-cli/references/deployment-workflow.md",
+        "../datocms-cli/references/environment-commands.md",
+        "../datocms-cli/references/running-migrations.md"
+      ],
+      "assets": [],
+      "scripts": [
+        "recipes/migrations/sandbox-iteration/scripts/datocms-reset-sandbox.mjs"
+      ],
+      "path": "recipes/migrations/sandbox-iteration/recipe.md",
+      "triggers": [
+        "sandbox iteration",
+        "sandbox reset"
+      ]
+    },
+    {
+      "id": "contentful-import",
+      "group": "onboarding",
+      "summary": "Scaffold a lean one-shot Contentful import helper.",
+      "prerequisites": [
+        "cli-bootstrap"
+      ],
+      "shared_references": [
+        "../datocms-cli/references/cli-setup.md",
+        "../datocms-cli/references/importing-content.md"
+      ],
+      "assets": [],
+      "scripts": [
+        "recipes/onboarding/contentful-import/scripts/datocms-import-contentful.mjs"
+      ],
+      "path": "recipes/onboarding/contentful-import/recipe.md",
+      "triggers": [
+        "contentful import"
+      ]
+    },
+    {
+      "id": "wordpress-import",
+      "group": "onboarding",
+      "summary": "Scaffold a lean one-shot WordPress import helper.",
+      "prerequisites": [
+        "cli-bootstrap"
+      ],
+      "shared_references": [
+        "../datocms-cli/references/cli-setup.md",
+        "../datocms-cli/references/importing-content.md"
+      ],
+      "assets": [],
+      "scripts": [
+        "recipes/onboarding/wordpress-import/scripts/datocms-import-wordpress.mjs"
+      ],
+      "path": "recipes/onboarding/wordpress-import/recipe.md",
+      "triggers": [
+        "wordpress import"
+      ]
+    },
+    {
+      "id": "cli-bootstrap",
+      "group": "platform",
+      "summary": "Install datocms and link this repo to a DatoCMS project via OAuth (no CMA token in env).",
+      "prerequisites": [],
+      "shared_references": [
+        "../datocms-cli/references/cli-setup.md"
+      ],
+      "assets": [],
+      "scripts": [],
+      "path": "recipes/platform/cli-bootstrap/recipe.md",
+      "triggers": [
+        "datocms cli bootstrap",
+        "link datocms project",
+        "datocms link",
+        "install datocms cli"
+      ]
+    },
+    {
+      "id": "build-triggers",
+      "group": "platform",
+      "summary": "Manage DatoCMS build triggers declaratively from project code.",
+      "prerequisites": [],
+      "shared_references": [
+        "../datocms-cma/references/access-control.md",
+        "../datocms-cma/references/client-types-and-behaviors.md",
+        "../datocms-cma/references/resource-gotchas.md"
+      ],
+      "assets": [],
+      "scripts": [
+        "recipes/platform/build-triggers/scripts/datocms-build-triggers-smoke.mjs",
+        "recipes/platform/build-triggers/scripts/datocms-sync-build-triggers.mjs"
+      ],
+      "path": "recipes/platform/build-triggers/recipe.md",
+      "triggers": [
+        "build triggers",
+        "build trigger sync"
+      ]
+    },
+    {
+      "id": "cma-types",
+      "group": "platform",
+      "summary": "Generate typed CMA schema definitions for record operations.",
+      "prerequisites": [
+        "cli-bootstrap"
+      ],
+      "shared_references": [
+        "../datocms-cli/references/cli-setup.md",
+        "../datocms-cma/references/type-generation.md"
+      ],
+      "assets": [],
+      "scripts": [],
+      "path": "recipes/platform/cma-types/recipe.md",
+      "triggers": [
+        "cma types",
+        "schema types"
+      ]
+    },
+    {
+      "id": "webhooks",
+      "group": "platform",
+      "summary": "Manage DatoCMS webhooks declaratively from project code.",
+      "prerequisites": [],
+      "shared_references": [
+        "../datocms-cma/references/access-control.md",
+        "../datocms-cma/references/client-types-and-behaviors.md",
+        "../datocms-cma/references/resource-gotchas.md",
+        "../datocms-frontend-integrations/references/astro.md",
+        "../datocms-frontend-integrations/references/nextjs.md",
+        "../datocms-frontend-integrations/references/nuxt.md",
+        "../datocms-frontend-integrations/references/sveltekit.md"
+      ],
+      "assets": [],
+      "scripts": [
+        "recipes/platform/webhooks/scripts/datocms-sync-webhooks.mjs"
+      ],
+      "path": "recipes/platform/webhooks/recipe.md",
+      "triggers": [
+        "webhooks",
+        "webhook sync"
+      ]
+    }
+  ]
+}

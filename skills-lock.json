@@ -4,32 +4,62 @@
     "astro": {
       "source": "astrolicious/agent-skills",
       "sourceType": "github",
+      "skillPath": "skills/astro/SKILL.md",
       "computedHash": "ebefe26b231d32379c14e41a46c2de7b4b0184543bedab7febdabe4fb21fba4e"
     },
-    "cloudflare": {
-      "source": "cloudflare/skills",
+    "datocms-cda": {
+      "source": "datocms/agent-skills",
       "sourceType": "github",
-      "computedHash": "f87ea54de1ad7d8197a21640888af6ccb2e912682710658a9bafb5df0093df61"
+      "skillPath": "skills/datocms-cda/SKILL.md",
+      "computedHash": "5000e4b0171fc81ddd7765adf7d08abb82b63c69248180d39914d2bd046d406f"
     },
-    "datocms": {
-      "source": "jodusnodus/datocms-skill",
+    "datocms-cli": {
+      "source": "datocms/agent-skills",
       "sourceType": "github",
-      "computedHash": "b1768ec8960363458ce00dd4a3045499d5facdddbf1c2bc1f4bd12253bcf6caf"
+      "skillPath": "skills/datocms-cli/SKILL.md",
+      "computedHash": "2aa954865fb4202c071067dd72dbcc60c66a8b5e5aa69a4dba3933f383b04b36"
+    },
+    "datocms-cma": {
+      "source": "datocms/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/datocms-cma/SKILL.md",
+      "computedHash": "333d9205ba9a080f4ba892958f5d93e13f7f60be05154ab4b3d2c56d42097b3c"
+    },
+    "datocms-content-modeling": {
+      "source": "datocms/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/datocms-content-modeling/SKILL.md",
+      "computedHash": "b8ec8bde07fa5243162cf46ad06f7710df29876612b60423adc709acf5c6611b"
+    },
+    "datocms-frontend-integrations": {
+      "source": "datocms/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/datocms-frontend-integrations/SKILL.md",
+      "computedHash": "1d2bcaf98d622a0f269ee391e06b551c75cea0eb623f77b824fcd46ae83efbe5"
+    },
+    "datocms-setup": {
+      "source": "datocms/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/datocms-setup/SKILL.md",
+      "computedHash": "95e6fc7d947a4cff8a0693334aa78e438144b1756f3f3406106632adb45a27d8"
     },
     "frontend-design": {
       "source": "anthropics/skills",
       "sourceType": "github",
+      "skillPath": "skills/frontend-design/SKILL.md",
       "computedHash": "063a0e6448123cd359ad0044cc46b0e490cc7964d45ef4bb9fd842bd2ffbca67"
     },
     "web-perf": {
       "source": "cloudflare/skills",
       "sourceType": "github",
+      "skillPath": "skills/web-perf/SKILL.md",
       "computedHash": "7ae53856c320574f7440f50aef7892f96837eec9fd49d329d049d432fb4b299a"
     },
     "wrangler": {
       "source": "cloudflare/skills",
       "sourceType": "github",
-      "computedHash": "a27fded44ce73b7ef69b1b52fcdf0cdde9c2b17f345b761bf11ca32d37da2220"
+      "skillPath": "skills/wrangler/SKILL.md",
+      "computedHash": "11edeb37eedb91deedde694b2bb1cc4ff4e8b5a8f1836c217a8c871fe39abcb5"
     }
   }
 }
