@@ -9,13 +9,18 @@ import DynamicTag from '~/components/DynamicTag.astro';
 interface Props {
   pageUrls: PageUrl[];
   tags: Tag[];
+  allowAiBots?: boolean;
 }
 
-const { pageUrls, tags } = Astro.props;
+const { pageUrls, tags, allowAiBots } = Astro.props;
 
 const locale = getLocale();
 const metaTags = tags.filter((tag) => tag.tag !== 'title');
 const titleTag = tags.find((tag) => tag.tag === 'title');
+
+const trailingSlashPattern = /\/$/;
+const { pathname } = Astro.url;
+const markdownUrl = new URL(`/api/content${pathname.replace(trailingSlashPattern, '')}.md`, Astro.site);
 ---
 
 {titleTag && <title>{titleTag.content}</title>}
@@ -53,3 +58,7 @@ const titleTag = tags.find((tag) => tag.tag === 'title');
   title={getOpenSearchName(locale)}
   href={getOpenSearchPathname(locale)}
 />
+
+{ allowAiBots && (
+  <link rel="alternate" type="text/markdown" href={markdownUrl} />
+)}
