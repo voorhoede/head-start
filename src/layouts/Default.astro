@@ -58,12 +58,26 @@ const llmOptions = app.openPageInLlmOption ?? [];
       <div {...datocmsNoIndex}>
         <AppHeader {menuItems} {pageUrls} />
       </div>
-      {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
+      {
+        (breadcrumbs.length > 0 || allowAiBots) && (
+          <div class="page-context">
+            {breadcrumbs.length > 0 ? (
+              <Breadcrumbs items={breadcrumbs} />
+            ) : (
+              <span />
+            )}
+            {allowAiBots && (
+              <div {...datocmsNoIndex} data-nosnippet>
+                <OpenInLlm {llmOptions} {prompt} />
+              </div>
+            )}
+          </div>
+        )
+      }
       {
         /* main element requires tabindex to be focusable, see SkipLink/README.md */
       }
       <main id={mainContentId} tabindex="-1">
-        {allowAiBots && <OpenInLlm {llmOptions} {prompt} />}
         <slot />
       </main>
       <footer {...datocmsNoIndex}>
@@ -113,6 +127,16 @@ const llmOptions = app.openPageInLlmOption ?? [];
     max-width: calc(100% - 2rem);
     font-size: 20px;
     line-height: 1.6;
+  }
+  .page-context {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: auto;
+    padding: 0 1rem;
+    width: 800px;
+    max-width: calc(100% - 2rem);
   }
   footer {
     padding: 1rem;
