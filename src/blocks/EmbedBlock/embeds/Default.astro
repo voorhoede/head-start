@@ -40,7 +40,7 @@ const needsConsent = isIframeHtml(html) || scripts.length > 0;
   { needsConsent && (
     <div class="consent-alert" role="alert" hidden>
       <p class="consent-alert__text">
-        {t('consent_message_service', { service: data.provider_name })}
+        {t('consent_message_embed_service', { service: data.provider_name })}
       </p>
       <div class="consent-alert__actions">
         <button type="button" class="action--primary">
