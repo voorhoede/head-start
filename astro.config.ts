@@ -8,6 +8,7 @@ import pkg from './package.json';
 import { isPreview } from './config/preview';
 import { output } from './config/output';
 import serviceWorker from './config/astro/service-worker-integration.ts';
+import aiSearch from './config/astro/ai-search-integration.ts';
 
 const isAnalyseMode = process.env.ANALYZE === 'true';
 const productionUrl = `https://${pkg.name}.pages.dev`; // overwrite if you have a custom domain
@@ -48,12 +49,44 @@ export default defineConfig({
         context: 'server',
         access: 'public',
         default: process.env.NODE_ENV === 'production'
+      }),
+      CLOUDFLARE_ACCOUNT_ID: envField.string({
+        context: 'server',
+        access: 'secret',
+        optional: true,
+        default: process.env.CLOUDFLARE_ACCOUNT_ID
+      }),
+      CLOUDFLARE_API_TOKEN: envField.string({
+        context: 'server',
+        access: 'secret',
+        optional: true,
+        default: process.env.CLOUDFLARE_API_TOKEN
+      }),
+      CLOUDFLARE_AI_SEARCH_INSTANCE_NAME: envField.string({
+        context: 'server',
+        access: 'secret',
+        optional: true,
+        default: process.env.CLOUDFLARE_AI_SEARCH_INSTANCE_NAME
       })
     }
   },
   integrations: [
     serviceWorker(),
     sitemap(),
+    aiSearch({
+      accountId: process.env.CLOUDFLARE_ACCOUNT_ID,
+      apiToken: process.env.CLOUDFLARE_API_TOKEN,
+      instanceName: process.env.CLOUDFLARE_AI_SEARCH_INSTANCE_NAME,
+      kvNamespaceId: process.env.CLOUDFLARE_AI_SEARCH_KV_NAMESPACE_ID,
+      // Prototype scope: 5 representative pages. Drop or expand once the flow is verified.
+      paths: [
+        'en',
+        'en/documentation/getting-started',
+        'en/documentation/routing',
+        'en/documentation/cms-content-modelling',
+        'en/documentation/search',
+      ],
+    }),
     Sonda({
       enabled: isAnalyseMode,
       filename: 'reports/sonda-report-[env].html',
