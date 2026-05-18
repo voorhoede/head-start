@@ -1,6 +1,7 @@
 import type { Root } from 'hast';
 import type { Plugin } from 'unified';
 import { selectAll } from 'hast-util-select';
+import { htmlToMarkdownPath } from '~/lib/routing/markdown';
 
 export interface Options {
   siteUrl: string;
@@ -23,16 +24,9 @@ const rehypeRewriteLinksToMarkdown: Plugin<[Options], Root> = ({ siteUrl }) => {
         continue;
       }
 
-      const [pathQuery, hash = ''] = pathname.split('#');
-      const [path, query = ''] = pathQuery.split('?');
+      if (pathname.startsWith('/api/')) continue;
 
-      if (path.startsWith('/api/')) continue;
-
-      const trimmed = path.replace(/^\/+|\/+$/g, '');
-      const mdPath = trimmed ? `/api/content/${trimmed}.md` : '/api/content/.md';
-      const suffix =
-        (query ? `?${query}` : '') + (hash ? `#${hash}` : '');
-      node.properties!.href = `${origin}${mdPath}${suffix}`;
+      node.properties!.href = `${origin}${htmlToMarkdownPath(pathname)}`;
     }
   };
 };

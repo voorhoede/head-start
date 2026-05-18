@@ -10,7 +10,7 @@ class OpenInLlm extends HTMLElement {
   #stopAutoUpdate: (() => void) | null = null;
 
   connectedCallback() {
-    this.#copyButton = this.querySelector<HTMLButtonElement>('[data-copy-url]');
+    this.#copyButton = this.querySelector<HTMLButtonElement>('[data-copy-button]');
     this.#dropdownButton =
       this.querySelector<HTMLButtonElement>('[popovertarget]');
     this.#buttonGroup = this.querySelector<HTMLElement>('[data-button-group]');
