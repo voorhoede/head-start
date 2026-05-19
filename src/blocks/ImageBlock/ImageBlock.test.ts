@@ -123,21 +123,21 @@ describe('ImageBlock', () => {
   });
 
   describe('broken image fallback (::after pseudo)', () => {
-    const baseProps: Props = {
-      block: {
-        id: '123',
-        image: {
-          url: 'https://example.com/test.jpg',
-          alt: 'A test image',
-          height: 150,
-          width: 150,
-        },
-      },
-    };
-
     test('exposes the unavailable-message as a CSS string literal (quoted)', async () => {
-      const fragment = await renderToFragment<Props>(ImageBlock, { props: baseProps });
-      const figure = fragment.querySelector('figure.image-block');
+      const fragment = await renderToFragment<Props>(ImageBlock, {
+        props: {
+          block: {
+            id: '123',
+            image: {
+              url: 'https://example.com/test.jpg',
+              alt: 'A test image',
+              height: 150,
+              width: 150,
+            },
+          },
+        },
+      });
+      const figure = fragment.querySelector<HTMLElement>('figure.image-block');
       const message = figure?.style.getPropertyValue('--unavailable-message').trim();
 
       // Must be wrapped in quotes - otherwise `content: var(...)` is invalid
