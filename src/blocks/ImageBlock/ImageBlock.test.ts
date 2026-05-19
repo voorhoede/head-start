@@ -121,4 +121,49 @@ describe('ImageBlock', () => {
     expect(img?.style.aspectRatio).toBe('150 / 150');
     expect(img?.style.backgroundImage).toContain('base64');
   });
+
+  describe('broken image fallback (::after pseudo)', () => {
+    const baseProps: Props = {
+      block: {
+        id: '123',
+        image: {
+          url: 'https://example.com/test.jpg',
+          alt: 'A test image',
+          height: 150,
+          width: 150,
+        },
+      },
+    };
+
+    test('exposes the unavailable-message as a CSS string literal (quoted)', async () => {
+      const fragment = await renderToFragment<Props>(ImageBlock, { props: baseProps });
+      const figure = fragment.querySelector('figure.image-block');
+      const message = figure?.style.getPropertyValue('--unavailable-message').trim();
+
+      // Must be wrapped in quotes - otherwise `content: var(...)` is invalid
+      // and the ::after pseudo is silently dropped by the browser.
+      expect(message).toBeTruthy();
+      expect(message?.startsWith('"')).toBe(true);
+      expect(message?.endsWith('"')).toBe(true);
+    });
+
+    test('falls back to an empty alt when the image alt is missing', async () => {
+      const fragment = await renderToFragment<Props>(ImageBlock, {
+        props: {
+          block: {
+            id: '123',
+            image: {
+              url: 'https://example.com/test.jpg',
+              alt: null as unknown as string,
+              height: 150,
+              width: 150,
+            },
+          },
+        },
+      });
+
+      const img = fragment.querySelector('img');
+      expect(img?.getAttribute('alt')).toBe('');
+    });
+  });
 });
