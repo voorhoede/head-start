@@ -47,8 +47,7 @@ const alt = image.alt ?? '';
   {image.title && <figcaption class="image-block__caption">{image.title}</figcaption>}
 </figure>
 
-<style define:vars={{ 'unavailable-message': t('image_unavailable') }}>
-
+<style define:vars={{ 'unavailable-message': JSON.stringify(t('image_unavailable')) }}>
   /**
    * functional styling + broken image styling (only applies when image fails to load)
    * @see https://bitsofco.de/styling-broken-images/
@@ -57,21 +56,21 @@ const alt = image.alt ?? '';
     display: block;
     position: relative;
     text-align: center;
-  }
 
-  .image-block :global(.image-block__image::after) {
-    content: attr(alt) ' (' var(--unavailable-message) ')';
-    display: block;
-    position: absolute;
-    color: black;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    padding-top: calc(50% - 1em);
-    background-color: #f1f1f1;
+    &::after {
+      content: attr(alt) ' (' var(--unavailable-message) ')';
+      display: block;
+      position: absolute;
+      color: black;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding-top: calc(50% - 1em);
+      background-color: #f1f1f1;
+    }
   }
-
+  
   /* basic styling, can be removed */
   .image-block__caption {
     text-align: center;
