@@ -152,9 +152,9 @@ describe('ImageBlock', () => {
         props: {
           block: {
             id: '123',
+            // @ts-expect-error - alt intentionally omitted to exercise the runtime fallback
             image: {
               url: 'https://example.com/test.jpg',
-              alt: null as unknown as string,
               height: 150,
               width: 150,
             },
