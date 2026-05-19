@@ -12,10 +12,10 @@ type Node = {
 
 export type Props = HTMLAttributes<'a'> & {
   node?: Node;
-  link: RecordRoute;
+  record: RecordRoute;
 };
 
-const { link: record, node, ...props } = Astro.props;
+const { record, node, ...props } = Astro.props;
 
 const openInNewTab = Boolean(node?.meta?.find(entry => entry.id === 'target' && entry.value === '_blank'));
 ---
