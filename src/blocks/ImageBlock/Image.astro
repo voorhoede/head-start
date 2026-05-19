@@ -54,8 +54,8 @@ const alt = image.alt ?? '';
    */
   .image-block :global(.image-block__image) {
     display: block;
-    max-width: 100%;
-    height: auto;
+    max-inline-size: 100%;
+    block-size: auto;
     position: relative;
     text-align: center;
 
@@ -64,11 +64,11 @@ const alt = image.alt ?? '';
       display: block;
       position: absolute;
       color: black;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      padding-top: calc(50% - 1em);
+      inset-block-start: 0;
+      inset-inline-start: 0;
+      inline-size: 100%;
+      block-size: 100%;
+      padding-block-start: calc(50% - 1em);
       background-color: #f1f1f1;
     }
   }
