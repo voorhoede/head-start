@@ -55,7 +55,7 @@
     "cms:upload-block-previews": "jiti scripts/upload-block-previews.ts"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.4",
+    "@astrojs/check": "^0.9.9",
     "@astrojs/cloudflare": "^12.6.7",
     "@astrojs/sitemap": "^3.7.2",
     "@floating-ui/dom": "^1.7.6",
