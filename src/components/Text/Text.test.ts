@@ -1,6 +1,6 @@
 import { renderToFragment } from '~/lib/renderer';
 import { describe, expect, test } from 'vitest';
-import StructuredText from './StructuredText.astro';
+import StructuredText from './Text.astro';
 
 const fragment = await renderToFragment(StructuredText);
 

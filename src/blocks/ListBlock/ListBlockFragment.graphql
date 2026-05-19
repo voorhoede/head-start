@@ -11,6 +11,21 @@ fragment ListBlock on ListBlockRecord {
 }
 fragment ListItem on ListItemRecord {
   listText: text {
+   links {
+      __typename
+      ... on FileRecord {
+        ...FileRoute
+      }
+      ... on HomePageRecord {
+        ...HomeRoute
+      }
+      ... on PageRecord {
+        ...PageRoute
+      }
+      ... on VariableRecord {
+        ...Variable
+      }
+    }
     value
   }
 }
