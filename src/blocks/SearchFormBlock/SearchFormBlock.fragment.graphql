@@ -1,0 +1,6 @@
+fragment SearchFormBlock on SearchFormBlockRecord {
+  __typename
+  id
+  title
+  query
+}

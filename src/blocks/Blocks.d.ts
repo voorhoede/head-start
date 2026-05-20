@@ -3,6 +3,7 @@ import type {
   EmbedBlockFragment,
   ImageBlockFragment,
   PagePartialBlockFragment,
+  SearchFormBlockFragment,
   TableBlockFragment,
   TextBlockFragment,
   TextImageBlockFragment,
@@ -28,6 +29,7 @@ export type AnyBlock = Omit<
     | VideoEmbedBlockFragment
     | CounterBlockFragment
     | ListBlockFragment
+    | SearchFormBlockFragment
     | VariableBlockRecord
     | IconBlockFragment
   ), '__typename' // Allow for any __typename so that missing blocks can be reported on.
