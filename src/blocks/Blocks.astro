@@ -15,6 +15,7 @@ import CounterBlock from './CounterBlock/CounterBlock.astro';
 import ListBlock from './ListBlock/ListBlock.astro';
 import VariableBlock from './VariableBlock/VariableBlock.astro';
 import IconBlock from './IconBlock/IconBlock.astro';
+import SearchFormBlock from './SearchFormBlock/SearchFormBlock.astro';
 import { getEditorPaths } from './block-editor-utils';
 import Icon from '~/components/Icon';
 
@@ -33,6 +34,7 @@ const blocksByTypename = {
   ListBlockRecord: ListBlock,
   VariableBlockRecord: VariableBlock,
   IconBlockRecord: IconBlock,
+  SearchFormBlockRecord: SearchFormBlock,
 };
 
 interface Props {

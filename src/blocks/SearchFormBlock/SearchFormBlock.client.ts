@@ -1,5 +1,5 @@
-import { getLocale } from '@lib/i18n';
-import { queryParamName } from '@lib/search';
+import { getLocale } from '~/lib/i18n';
+import { queryParamName } from '~/lib/search';
 
 class SearchFormBlock extends HTMLElement {
   #input: HTMLInputElement;

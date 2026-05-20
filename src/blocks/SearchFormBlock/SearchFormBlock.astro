@@ -1,19 +1,20 @@
 ---
-// import type { SearchFormBlockFragment } from '@lib/datocms/types';
-import SearchForm from '@components/SearchForm/SearchForm.astro';
-
-type SearchFormBlockFragment = { // @todo: replace with actual fragment from DatoCMS
-  query: string;
-};
+import type { SearchFormBlockFragment } from '~/lib/datocms/types';
+import SearchForm from '~/components/SearchForm/SearchForm.astro';
 
 export interface Props {
   block: SearchFormBlockFragment;
 }
-const { block } = Astro.props as Props;
+const { block } = Astro.props;
 ---
 
 <search-form-block>
-  <SearchForm query={ block.query ?? '' } />
+  {block.title && <h2>{block.title}</h2>}
+  <SearchForm query={ block.query ?? '' } blockId={ block.id } />
 </search-form-block>
 
 <script src="./SearchFormBlock.client.ts"></script>
+<script define:vars={{ block }}>
+  console.log('SearchFormBlock rendered', 'title', block.title); // For debugging purposes, to confirm the component is rendering
+  console.log('id', 'title', block.id); // For debugging purposes, to confirm the component is rendering
+</script>
