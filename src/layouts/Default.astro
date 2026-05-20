@@ -15,7 +15,7 @@ import OpenInLlm from '~/components/OpenInLlm/OpenInLlm.astro';
 import AppHeader from './AppHeader/AppHeader.astro';
 import PerfHead from './PerfHead/PerfHead.astro';
 import SeoHead from './SeoHead/SeoHead.astro';
-import app from '~/lib/app';
+import { getApp } from '~/lib/app';
 import '~/assets/a11y.css';
 
 interface Props {
@@ -25,6 +25,7 @@ interface Props {
 }
 
 const { locale = defaultLocale } = Astro.params as { locale?: SiteLocale };
+const app = await getApp();
 const data = await datocmsRequest<DefaultLayoutQuery>({
   query,
   variables: { locale },
