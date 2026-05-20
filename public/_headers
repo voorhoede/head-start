@@ -9,7 +9,7 @@
   Referrer-Policy: no-referrer-when-downgrade
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   X-Content-Type-Options: nosniff
-  X-Frame-Options: SAMEORIGIN
+  Content-Security-Policy: frame-ancestors 'self' https://*.admin.datocms.com https://plugins-cdn.datocms.com
   X-XSS-Protection: 1; mode=block
 
 # Allow DatoCMS to embed the editor-guide page in an iframe

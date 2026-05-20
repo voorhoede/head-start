@@ -29,7 +29,7 @@ const videoAttributes = {
   data-mp4-url={ video.mp4Url }
   data-streaming-url={ video.streamingUrl }
 >
-  <figure>
+  <figure data-datocms-content-link-source={block.title || block.videoAsset.alt}>
     { /* We use 2 video elements:
       - The first is enhanced in the client-side script to use streaming with adaptive bitrate.
       - The second is fallback native video element that works without JS or custom elmenet support.

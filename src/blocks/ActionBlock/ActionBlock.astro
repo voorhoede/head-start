@@ -4,6 +4,7 @@ import Link from '~/components/Link/Link.astro';
 import LinkToRecord from '~/components/LinkToRecord/LinkToRecord.astro';
 import EmailLink from './EmailLink.astro';
 import PhoneLink from './PhoneLink.astro';
+import { stripStega } from '@datocms/content-link';
 
 export interface Props {
   block: ActionBlockFragment;
@@ -13,10 +14,11 @@ const { items } = block;
 
 let hasPrimary = false;
 const actionClassList = (style: string) => {
-  if (hasPrimary && style === 'primary') style = 'secondary';
-  else if (style === 'primary') hasPrimary = true;
+  const resolved = stripStega(style);
+  if (hasPrimary && resolved === 'primary') return ['action', 'action--secondary'];
+  if (resolved === 'primary') hasPrimary = true;
 
-  return ['action', `action--${style}`];
+  return ['action', `action--${resolved}`];
 };
 ---
 

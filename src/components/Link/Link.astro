@@ -1,16 +1,18 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
+import { stripStega } from '@datocms/content-link';
 
 export type Props = HTMLAttributes<'a'> & {
   href: string;
   openInNewTab?: boolean;
 }
 
-const { href, openInNewTab, ...props } = Astro.props;
+const { href: rawHref, openInNewTab, ...props } = Astro.props;
+const href = stripStega(rawHref);
 
 const target = openInNewTab ? '_blank' : null;
 
-const external = (() => { 
+const external = (() => {
   try {
     return new URL(href).origin !== new URL(Astro.url).origin;
   } catch {
