@@ -39,6 +39,7 @@ jobs:
       CLOUDFLARE_ACCOUNT_ID: '' # required but unused in this workflow
       CLOUDFLARE_API_TOKEN: '' # required but unused in this workflow
       CLOUDFLARE_AI_SEARCH_INSTANCE_NAME: '' # required but unused in this workflow
+      CLOUDFLARE_AI_SEARCH_KV_NAMESPACE_ID: '' # required but unused in this workflow
 
     steps:
       - uses: actions/checkout@v4
@@ -77,6 +78,7 @@ jobs:
       CLOUDFLARE_ACCOUNT_ID: '' # required but unused in this workflow
       CLOUDFLARE_API_TOKEN: '' # required but unused in this workflow
       CLOUDFLARE_AI_SEARCH_INSTANCE_NAME: '' # required but unused in this workflow
+      CLOUDFLARE_AI_SEARCH_KV_NAMESPACE_ID: '' # required but unused in this workflow
 
     steps:
       - uses: actions/checkout@v4
@@ -110,6 +112,7 @@ jobs:
       CLOUDFLARE_ACCOUNT_ID: '' # required but unused in this workflow
       CLOUDFLARE_API_TOKEN: '' # required but unused in this workflow
       CLOUDFLARE_AI_SEARCH_INSTANCE_NAME: '' # required but unused in this workflow
+      CLOUDFLARE_AI_SEARCH_KV_NAMESPACE_ID: '' # required but unused in this workflow
 
     steps:
       - uses: actions/checkout@v4
