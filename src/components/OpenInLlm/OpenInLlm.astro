@@ -2,6 +2,7 @@
 import type { ExternalLinkFragment } from '~/lib/datocms/types';
 import Icon from '~/components/Icon/Icon.astro';
 import { t } from '~/lib/i18n';
+import { htmlToMarkdownPath } from '~/lib/routing/markdown';
 
 export type Props = {
   llmOptions: ExternalLinkFragment[];
@@ -12,6 +13,7 @@ const { llmOptions, prompt } = Astro.props;
 
 const popoverId = 'open-in-llm-popover';
 const pageUrl = Astro.url.href;
+const markdownHref = `${Astro.url.origin}${htmlToMarkdownPath(Astro.url.pathname)}`;
 
 let searchText = prompt.replaceAll(/\{\s*pageUrl\s*\}/g, pageUrl);
 if (searchText === '') searchText = pageUrl;
@@ -21,13 +23,15 @@ const llmLinks = llmOptions.map((option) => {
   href.searchParams.set('q', searchText);
   return { ...option, href: href.toString() };
 });
+
+const hasDropdown = true;
 ---
 
 <open-in-llm>
   <div data-button-group>
     <button
       type="button"
-      data-copy-url={pageUrl}
+      data-copy-button
       data-label-copied={t('copy_page_copied')}
       data-label-error={t('copy_page_error')}
       aria-live="polite"
@@ -36,7 +40,7 @@ const llmLinks = llmOptions.map((option) => {
       <span data-copy-label>{t('copy_page')}</span>
     </button>
     {
-      llmLinks.length > 0 && (
+      hasDropdown && (
         <button
           type="button"
           popovertarget={popoverId}
@@ -50,8 +54,14 @@ const llmLinks = llmOptions.map((option) => {
     }
   </div>
   {
-    llmLinks.length > 0 && (
+    hasDropdown && (
       <ul popover id={popoverId} data-placement="bottom-start">
+        <li>
+          <a href={markdownHref}>
+            {t('open_as_markdown')}
+            <Icon name="external" />
+          </a>
+        </li>
         {llmLinks.map((link) => (
           <li>
             <a

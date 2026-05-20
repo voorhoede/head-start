@@ -1,4 +1,5 @@
 #import './AppMenu/AppMenu.fragment.graphql'
+#import '~/blocks/ActionBlock/ExternalLink.fragment.graphql'
 
 query DefaultLayout($locale: SiteLocale!) {
   seo: _site(locale: $locale) {
@@ -9,5 +10,9 @@ query DefaultLayout($locale: SiteLocale!) {
   }
   app(locale: $locale) {
     ...AppMenu
+    openPageInLlmPrompt
+    openPageInLlmOption {
+      ...ExternalLink
+    }
   }
 }

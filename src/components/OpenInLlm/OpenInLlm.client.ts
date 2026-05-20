@@ -10,7 +10,7 @@ class OpenInLlm extends HTMLElement {
   #stopAutoUpdate: (() => void) | null = null;
 
   connectedCallback() {
-    this.#copyButton = this.querySelector<HTMLButtonElement>('[data-copy-url]');
+    this.#copyButton = this.querySelector<HTMLButtonElement>('[data-copy-button]');
     this.#dropdownButton =
       this.querySelector<HTMLButtonElement>('[popovertarget]');
     this.#buttonGroup = this.querySelector<HTMLElement>('[data-button-group]');
@@ -79,21 +79,20 @@ class OpenInLlm extends HTMLElement {
   };
 
   #handleCopy = async () => {
-    const url = this.#copyButton?.dataset.copyUrl;
-    if (!url) return;
+    if (!this.#copyButton) return;
 
     try {
-      const text = await this.#buildCopyText(url);
+      const text = await this.#buildCopyText();
       await navigator.clipboard.writeText(text);
-      this.#setLabel(this.#copyButton?.dataset.labelCopied ?? '');
+      this.#setLabel(this.#copyButton.dataset.labelCopied ?? '');
     } catch (error) {
       console.error('OpenInLlm: failed to copy page', error);
-      this.#setLabel(this.#copyButton?.dataset.labelError ?? '');
+      this.#setLabel(this.#copyButton.dataset.labelError ?? '');
     }
     setTimeout(() => this.#setLabel(this.#originalLabel), 2000);
   };
 
-  #buildCopyText = async (pageUrl: string): Promise<string> => {
+  #buildCopyText = async (): Promise<string> => {
     const alternateLink = document.querySelector<HTMLLinkElement>(
       'link[rel="alternate"][type="text/markdown"]',
     );
@@ -102,8 +101,7 @@ class OpenInLlm extends HTMLElement {
     const response = await fetch(alternateLink.href);
     if (!response.ok) throw new Error('Failed to fetch markdown');
 
-    const markdown = await response.text();
-    return `${pageUrl}\n\n${markdown}`;
+    return response.text();
   };
 
   #setLabel(text: string) {

@@ -10,6 +10,7 @@ import type { PageMeta } from '~/lib/rehype/rehype-extract-meta';
 import rehypeExtractMeta from '~/lib/rehype/rehype-extract-meta';
 import rehypeExtractNoindex from '~/lib/rehype/rehype-extract-noindex';
 import rehypeExtractMain from '~/lib/rehype/rehype-extract-main';
+import rehypeRewriteLinksToMarkdown from '~/lib/rehype/rehype-rewrite-links-to-markdown';
 
 export const prerender = false;
 
@@ -92,6 +93,7 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
       .use(rehypeExtractMeta)
       .use(rehypeExtractNoindex)
       .use(rehypeExtractMain)
+      .use(rehypeRewriteLinksToMarkdown, { siteUrl: site.origin })
       .use(rehypeRemark)
       .use(remarkGfm)
       .use(remarkStringify)
