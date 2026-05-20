@@ -12,12 +12,12 @@ type RedirectRuleRecord = {
   to: string;
   status_code: string;
   [key: string]: string | object;
-}
+};
 export type RedirectRule = {
   from: string;
   to: string;
   statusCode: '301'|'302';
-}
+};
 
 async function fetchRedirectRules() {
   // use client instead of http api for pagination support

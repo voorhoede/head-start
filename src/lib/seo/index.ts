@@ -31,7 +31,7 @@ export type RobotsTxtProps = {
   allowAiBots: boolean,
   allowAll: boolean,
   siteUrl: string,
-}
+};
 
 export const robotsTxt = ({ allowAiBots, allowAll, siteUrl }: RobotsTxtProps) => `
 ${allowAiBots ? '' : aiRobotsTxt}
