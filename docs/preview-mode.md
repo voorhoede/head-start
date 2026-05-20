@@ -201,7 +201,7 @@ Marks a container whose direct children are a **list of sibling items** (blocks,
 </div>
 ```
 
-Used on the blocks wrapper in [`Blocks.astro`](../src/blocks/Blocks.astro).
+Used on the blocks wrapper in [`Blocks.astro`](../src/blocks/Blocks.astro) and around structured-text content in [`Text.astro`](../src/components/Text/Text.astro).
 
 #### `data-datocms-content-link-boundary`
 

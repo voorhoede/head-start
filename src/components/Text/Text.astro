@@ -33,15 +33,17 @@ const inlineRecordComponents = Object.fromEntries(
 );
 ---
 
-<StructuredText
-  data={data}
-  blockComponents={blockComponents}
-  inlineBlockComponents={inlineBlockComponents}
-  inlineRecordComponents={inlineRecordComponents}
-  linkToRecordComponents={linkToRecordComponents}
-  nodeOverrides={{
-    code: Code,
-    heading: Heading,
-    paragraph: Paragraph,
-  }}
-/>
+<div data-datocms-content-link-group>
+  <StructuredText
+    data={data}
+    blockComponents={blockComponents}
+    inlineBlockComponents={inlineBlockComponents}
+    inlineRecordComponents={inlineRecordComponents}
+    linkToRecordComponents={linkToRecordComponents}
+    nodeOverrides={{
+      code: Code,
+      heading: Heading,
+      paragraph: Paragraph,
+    }}
+  />
+</div>
