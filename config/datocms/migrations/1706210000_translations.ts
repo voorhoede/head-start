@@ -69,6 +69,9 @@ export default async function (client: Client) {
     'select_language': 'Select language',
     'consent_message_service':
       '{{ service }} uses cookies to show this video. This requires your permission.',
+    'consent_message_embed_service':
+      '{{ service }} uses cookies to show this content. This requires your permission.',
+    'load_embed_service': 'Load {{ service }} content',
     'skip_to_content': 'Skip to content',
     'not_found': 'The page you requested could not be found.',
     'watch_video_on_provider': 'watch on {{provider}}',

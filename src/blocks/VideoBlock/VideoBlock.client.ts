@@ -53,6 +53,7 @@ class VideoBlock extends HTMLElement {
       this.addEventListener('click', this.#onClick.bind(this), { once: true });
     }
     videoBlockObserver.observe(this);
+    this.#initChapters();
   }
 
   disconnectedCallback() {
@@ -65,12 +66,36 @@ class VideoBlock extends HTMLElement {
     this.play({ focus: true });
   }
 
+  #initChapters() {
+    const chaptersTrack = [...this.#video.textTracks].find(t => t.kind === 'chapters');
+    if (!chaptersTrack) return;
+
+    const render = () => {
+      chaptersTrack.mode = 'hidden';
+      [...(chaptersTrack.cues ?? [])].forEach(cue => {
+        const btn = document.createElement('button');
+        btn.textContent = (cue as VTTCue).text;
+        btn.addEventListener('click', () => { this.#video.currentTime = cue.startTime; });
+        this.appendChild(btn);
+      });
+    };
+
+    if (chaptersTrack.cues?.length) {
+      render();
+    } else {
+      this.querySelector('track[kind="chapters"]')?.addEventListener('load', render, { once: true });
+    }
+  }
+
   /**
    * HLS stream ignores <track default> attribute, so we enable it manually:
    */
   showTextTrack() {
-    const defaultTrack = [...this.#video.textTracks]
-      .find((track) => track.language === getLocale());
+    const tracks = [...this.#video.textTracks].filter(t => t.kind === 'subtitles');
+    const alreadyShowing = tracks.some(t => t.mode === 'showing');
+    if (alreadyShowing) return;
+
+    const defaultTrack = tracks.find(t => t.language === getLocale());
     if (defaultTrack) {
       defaultTrack.mode = 'showing';
     }
