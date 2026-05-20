@@ -15,6 +15,10 @@ Before spending a lot of your time developing something in code, it's probably a
 
 You can follow the [getting started instructions](../docs/getting-started.md). Instead of using this repository as a template, you should fork it as explained in [first-contributions](https://github.com/firstcontributions/first-contributions).
 
+## Issues
+
+When opening an issue, pick the [bug report](./ISSUE_TEMPLATE/bug_report.yml) or [feature request](./ISSUE_TEMPLATE/feature_request.yml) form. The structured fields help us triage and respond faster - especially the reproduction link on bugs.
+
 ## Pull requests
 
 When creating a pull request, the description field will be prefilled with our [pull request template](./PULL_REQUEST_TEMPLATE.md). Please use it to make it easier for others to review your contribution and get it merged as smoothly as possible.
