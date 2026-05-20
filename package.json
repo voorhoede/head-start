@@ -70,7 +70,7 @@
     "datocms-listen": "^0.1.15",
     "datocms-structured-text-utils": "^5.1.16",
     "get-video-id": "^3.6.5",
-    "globby": "^13.2.2",
+    "globby": "^16.2.0",
     "hast-util-select": "^6.0.4",
     "hls.js": "^1.6.16",
     "html-validate": "^9.2.0",
