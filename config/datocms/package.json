@@ -4,7 +4,7 @@
     "seed:docs": "jiti ./scripts/seed-docs.ts"
   },
   "dependencies": {
-    "@datocms/cma-client-node": "^3.4.0",
+    "@datocms/cma-client-node": "^5.4.18",
     "datocms-html-to-structured-text": "^4.0.1",
     "datocms-structured-text-utils": "^5.1.16",
     "dotenv-safe": "^9.1.0",
