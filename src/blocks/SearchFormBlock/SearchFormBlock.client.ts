@@ -6,7 +6,9 @@ class SearchFormBlock extends HTMLElement {
 
   constructor() {
     super();
-    this.#input = this.querySelector('input[type="search"]') as HTMLInputElement;
+    this.#input = this.querySelector(
+      'input[type="search"]',
+    ) as HTMLInputElement;
   }
 
   #prefillInput() {
@@ -14,7 +16,7 @@ class SearchFormBlock extends HTMLElement {
     if (this.#input.value) {
       return;
     }
-  
+
     // if URL has a query parameter, prefill the input with that value:
     const urlParams = new URLSearchParams(window.location.search);
     const query = urlParams.get(queryParamName);
