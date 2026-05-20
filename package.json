@@ -95,7 +95,7 @@
   "devDependencies": {
     "@astrojs/ts-plugin": "^1.10.7",
     "@datocms/cli": "^3.0.1",
-    "@datocms/cma-client-node": "^3.4.0",
+    "@datocms/cma-client-node": "^5.4.3",
     "@eslint/js": "^9.31.0",
     "@graphql-codegen/cli": "^5.0.0",
     "@graphql-codegen/introspection": "^4.0.0",
