@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
+import { parseFrontmatter } from '../src/lib/frontmatter.ts';
 
 try {
   process.loadEnvFile();
@@ -82,29 +83,6 @@ const mdUrlFor = (pageUrl: string): { url: string; key: string } => {
   return { url: u.toString(), key: path || 'index' };
 };
 
-// First YAML frontmatter block as written by buildFrontmatter: `key: "value"` per line, quoted values.
-const extractFrontmatter = (md: string): Record<string, string> => {
-  const match = md.match(/^---\n([\s\S]+?)\n---\n/);
-  if (!match) return {};
-  const result: Record<string, string> = {};
-  for (const line of match[1].split('\n')) {
-    const sep = line.indexOf(': ');
-    if (sep < 0) continue;
-    const key = line.slice(0, sep);
-    let val = line.slice(sep + 2);
-    if (val.startsWith('"') && val.endsWith('"')) {
-      val = val
-        .slice(1, -1)
-        .replace(/\\n/g, '\n')
-        .replace(/\\r/g, '\r')
-        .replace(/\\"/g, '"')
-        .replace(/\\\\/g, '\\');
-    }
-    result[key] = val;
-  }
-  return result;
-};
-
 const sha256 = (input: string): string =>
   createHash('sha256').update(input).digest('hex');
 
@@ -184,95 +162,102 @@ const kvListKeys = async (): Promise<Set<string>> => {
   return keys;
 };
 
-const pageUrls = await collectSitemapUrls();
-console.log(`Found ${pageUrls.length} URL(s) in ${siteUrl}/sitemap-index.xml`);
-console.log(cacheEnabled ? 'Cache: enabled (KV hash-skip)' : 'Cache: disabled (re-uploading every page)');
+async function indexAiSearch(): Promise<void> {
+  const pageUrls = await collectSitemapUrls();
+  console.log(`Found ${pageUrls.length} URL(s) in ${siteUrl}/sitemap-index.xml`);
+  console.log(cacheEnabled ? 'Cache: enabled (KV hash-skip)' : 'Cache: disabled (re-uploading every page)');
 
-const knownKeys = cacheEnabled ? await kvListKeys() : new Set<string>();
-const currentKeys = new Set<string>();
+  const knownKeys = cacheEnabled ? await kvListKeys() : new Set<string>();
+  const currentKeys = new Set<string>();
 
-let added = 0;
-let updated = 0;
-let unchanged = 0;
-let skipped = 0;
+  let added = 0;
+  let updated = 0;
+  let unchanged = 0;
+  let skipped = 0;
 
-for (const pageUrl of pageUrls) {
-  const { url: md, key } = mdUrlFor(pageUrl);
-  const res = await fetch(md, { headers: { Accept: 'text/markdown' }, redirect: 'follow' });
+  for (const pageUrl of pageUrls) {
+    const { url: md, key } = mdUrlFor(pageUrl);
+    const res = await fetch(md, { headers: { Accept: 'text/markdown' }, redirect: 'follow' });
 
-  if (res.status === 404) {
-    console.log(`skip 404: ${pageUrl}`);
-    skipped++;
-    continue;
-  }
-  if (!res.ok) fail(`Markdown fetch failed (${res.status}) for ${md}`);
+    if (res.status === 404) {
+      console.log(`skip 404: ${pageUrl}`);
+      skipped++;
+      continue;
+    }
+    if (!res.ok) fail(`Markdown fetch failed (${res.status}) for ${md}`);
 
-  if (res.headers.get('X-Robots-Tag')?.includes('noindex')) {
-    console.log(`skip noindex: ${pageUrl}`);
-    skipped++;
-    continue;
-  }
+    if (res.headers.get('X-Robots-Tag')?.includes('noindex')) {
+      console.log(`skip noindex: ${pageUrl}`);
+      skipped++;
+      continue;
+    }
 
-  const markdown = await res.text();
-  currentKeys.add(key);
-  const hash = sha256(markdown);
-  const prev = cacheEnabled ? await kvGet(key) : null;
+    const markdown = await res.text();
+    currentKeys.add(key);
+    const hash = sha256(markdown);
+    const prev = cacheEnabled ? await kvGet(key) : null;
 
-  if (prev && prev.hash === hash) {
-    console.log(`unchanged: ${pageUrl}`);
-    unchanged++;
-    continue;
-  }
+    if (prev && prev.hash === hash) {
+      console.log(`unchanged: ${pageUrl}`);
+      unchanged++;
+      continue;
+    }
 
-  if (prev?.itemId) {
-    await deleteItem(prev.itemId);
-  }
+    if (prev?.itemId) {
+      await deleteItem(prev.itemId);
+    }
 
-  const fm = extractFrontmatter(markdown);
-  const itemId = await uploadItem(key, markdown, {
-    url: fm.url || pageUrl,
-    title: fm.title || '',
-    description: fm.description || '',
-    language: fm.language || '',
-  });
-  if (!itemId) {
-    skipped++;
-    continue;
-  }
+    const fm = parseFrontmatter(markdown);
+    const itemId = await uploadItem(key, markdown, {
+      url: fm.url || pageUrl,
+      title: fm.title || '',
+      description: fm.description || '',
+      language: fm.language || '',
+    });
+    if (!itemId) {
+      skipped++;
+      continue;
+    }
 
-  if (cacheEnabled) {
-    await kvPut(key, { hash, itemId });
-  }
+    if (cacheEnabled) {
+      await kvPut(key, { hash, itemId });
+    }
 
-  if (prev) {
-    console.log(`updated: ${pageUrl} (item ${itemId})`);
-    updated++;
-  } else {
-    console.log(`added: ${pageUrl} (item ${itemId})`);
-    added++;
-  }
-}
-
-let pruned = 0;
-if (cacheEnabled) {
-  const stale = [...knownKeys].filter((k) => !currentKeys.has(k));
-  if (stale.length > 0) {
-    if (pruneEnabled) {
-      for (const key of stale) {
-        const entry = await kvGet(key);
-        if (entry?.itemId) await deleteItem(entry.itemId);
-        await kvDelete(key);
-        console.log(`pruned: ${key}`);
-        pruned++;
-      }
+    if (prev) {
+      console.log(`updated: ${pageUrl} (item ${itemId})`);
+      updated++;
     } else {
-      console.log(
-        `dry-run: ${stale.length} stale entrie(s) would be pruned (set AI_SEARCH_PRUNE_STALE=1 to delete): ${stale.join(', ')}`,
-      );
+      console.log(`added: ${pageUrl} (item ${itemId})`);
+      added++;
     }
   }
+
+  let pruned = 0;
+  if (cacheEnabled) {
+    const stale = [...knownKeys].filter((k) => !currentKeys.has(k));
+    if (stale.length > 0) {
+      if (pruneEnabled) {
+        for (const key of stale) {
+          const entry = await kvGet(key);
+          if (entry?.itemId) await deleteItem(entry.itemId);
+          await kvDelete(key);
+          console.log(`pruned: ${key}`);
+          pruned++;
+        }
+      } else {
+        console.log(
+          `dry-run: ${stale.length} stale entrie(s) would be pruned (set AI_SEARCH_PRUNE_STALE=1 to delete): ${stale.join(', ')}`,
+        );
+      }
+    }
+  }
+
+  console.log(
+    `Done. +${added} added, ~${updated} updated, =${unchanged} unchanged, !${skipped} skipped, -${pruned} pruned.`,
+  );
 }
 
-console.log(
-  `Done. +${added} added, ~${updated} updated, =${unchanged} unchanged, !${skipped} skipped, -${pruned} pruned.`,
-);
+indexAiSearch().catch((error) => {
+  console.error('AI Search indexing failed:', error);
+  process.exit(1);
+});
