@@ -36,9 +36,9 @@ class VideoEmbed extends HTMLElement {
 
   constructor() {
     super();
-    this.#consentAlert = this.querySelector('[role="alert"]') as HTMLElement;
+    this.#consentAlert = this.querySelector('[role="dialog"]') as HTMLElement;
     this.#consentButton = this.querySelector(
-      '[role="alert"] button'
+      '[role="dialog"] button'
     ) as HTMLButtonElement;
     this.#anchor = this.querySelector('a') as HTMLAnchorElement;
     this.#iframe = this.querySelector('iframe') as HTMLIFrameElement;
@@ -105,6 +105,7 @@ class VideoEmbed extends HTMLElement {
     } else {
       this.#consentAlert.removeAttribute('hidden');
       this.#anchor.setAttribute('hidden', '');
+      this.#consentButton.focus();
     }
   }
 

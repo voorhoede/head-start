@@ -3,7 +3,7 @@ import { extractScripts, getEmbedText, isIframeHtml, sanitizeHtml } from '../ind
 import { t } from '~/lib/i18n';
 import Icon from '~/components/Icon';
 
-const { data, url, class: classList, ...props } = Astro.props;
+const { data, url, blockId, class: classList, ...props } = Astro.props;
 const { noscriptHtml, scripts } = extractScripts(data.html);
 const html = sanitizeHtml(noscriptHtml);
 const placeholderText = getEmbedText(data);
@@ -43,8 +43,8 @@ const needsConsent = isIframeHtml(html) || scripts.length > 0;
     )) }
   </slot>
   { needsConsent && (
-    <div class="consent-alert" role="alert" hidden>
-      <p class="consent-alert__text">
+    <div class="consent-alert" role="dialog" aria-modal="true" aria-labelledby={`consent-text-${blockId}`} hidden>
+      <p id={`consent-text-${blockId}`} class="consent-alert__text">
         {t('consent_message_embed_service', { service: data.provider_name })}
       </p>
       <div class="consent-alert__actions">

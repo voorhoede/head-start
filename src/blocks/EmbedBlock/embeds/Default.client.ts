@@ -40,8 +40,8 @@ class DefaultEmbed extends HTMLElement {
     this.#provider = this.dataset.provider || '';
     this.#template = this.querySelector('template') || undefined;
     this.#scriptTags = Array.from(this.querySelectorAll('script[data-src]'));
-    this.#consentAlert = (this.querySelector('[role="alert"]') as HTMLElement) ?? undefined;
-    this.#consentButton = (this.querySelector('[role="alert"] button') as HTMLButtonElement) ?? undefined;
+    this.#consentAlert = (this.querySelector('[role="dialog"]') as HTMLElement) ?? undefined;
+    this.#consentButton = (this.querySelector('[role="dialog"] button') as HTMLButtonElement) ?? undefined;
     this.#placeholder = (this.querySelector('.embed-placeholder') as HTMLAnchorElement) ?? undefined;
     this.#boundGrantConsent = this.#grantConsent.bind(this);
     this.#boundOnPlaceholderClick = this.#onPlaceholderClick.bind(this);
@@ -77,6 +77,7 @@ class DefaultEmbed extends HTMLElement {
     } else {
       this.#placeholder?.setAttribute('hidden', '');
       this.#consentAlert.removeAttribute('hidden');
+      this.#consentButton?.focus();
     }
   }
 
@@ -88,6 +89,7 @@ class DefaultEmbed extends HTMLElement {
 
     if (!this.#hasConsent()) {
       this.#consentAlert?.removeAttribute('hidden');
+      this.#consentButton?.focus();
       return;
     }
 

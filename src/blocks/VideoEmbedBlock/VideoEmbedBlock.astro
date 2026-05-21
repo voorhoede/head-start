@@ -118,8 +118,8 @@ function getVideoUrl({
       />
     </PlayButton>
 
-    <div class="consent-alert" role="alert" hidden>
-      <p class="consent-alert__text">
+    <div class="consent-alert" role="dialog" aria-modal="true" aria-labelledby={`consent-text-${block.id}`} hidden>
+      <p id={`consent-text-${block.id}`} class="consent-alert__text">
         {t('consent_message_service', { service: providerName })}
       </p>
       <div class="consent-alert__actions">
