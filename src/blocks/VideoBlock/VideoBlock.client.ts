@@ -91,11 +91,13 @@ class VideoBlock extends HTMLElement {
    * HLS stream ignores <track default> attribute, so we enable it manually:
    */
   showTextTrack() {
-    const tracks = [...this.#video.textTracks].filter(t => t.kind === 'subtitles');
+    const tracks = [...this.#video.textTracks].filter(t => t.kind === 'subtitles' || t.kind === 'captions');
     const alreadyShowing = tracks.some(t => t.mode === 'showing');
     if (alreadyShowing) return;
 
-    const defaultTrack = tracks.find(t => t.language === getLocale());
+    const locale = getLocale();
+    const defaultTrack = tracks.find(t => t.language === locale && t.kind === 'subtitles')
+      ?? tracks.find(t => t.language === locale);
     if (defaultTrack) {
       defaultTrack.mode = 'showing';
     }
