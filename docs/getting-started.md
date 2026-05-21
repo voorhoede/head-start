@@ -164,7 +164,10 @@ CLOUDFLARE_ACCOUNT_ID=your-account-id
 CLOUDFLARE_API_TOKEN=your-token
 CLOUDFLARE_AI_SEARCH_INSTANCE_NAME=your-instance-name
 CLOUDFLARE_AI_SEARCH_KV_NAMESPACE_ID=your-kv-namespace-id
+SITE_URL=https://your-project.pages.dev
 ```
+
+`SITE_URL` is the deployed site the indexer crawls. Point it at your production URL, or a preview branch URL to index that deploy instead. The GitHub workflow sets it automatically from the deploy URL, so it's only needed in your local `.env`.
 
 ### 5. Add Cloudflare Pages environment variables
 
@@ -197,7 +200,7 @@ If you want to confirm your `.env` is correct before pushing (or seed the index 
 npm run index:ai-search
 ```
 
-By default this crawls `https://<your-pages-project>.pages.dev/sitemap-index.xml`. Override with `SITE_URL=...` in your `.env` to point at a custom domain or a preview branch.
+This crawls the sitemap at the `SITE_URL` you set in step 4. Point it at a preview branch URL if you want to index that deploy instead of production.
 
 On a fresh KV namespace, expect a log line per page (`added:`) and a summary like `Done. +N added, ~0 updated, =0 unchanged, !M skipped, -0 pruned.` Run it a second time. Every page should now log `unchanged:`, confirming the cache works.
 
