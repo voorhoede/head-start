@@ -1,0 +1,27 @@
+---
+import { locales } from '~/lib/i18n';
+import { noIndexTag, titleTag } from '~/lib/seo';
+import type { SiteLocale } from '~/lib/datocms/types';
+import type { Breadcrumb } from '~/lib/routing';
+import Layout from '~/layouts/Default.astro';
+import AiSearch from '~/components/AiSearch/AiSearch.astro';
+
+export const prerender = false;
+
+const { locale } = Astro.params as { locale: SiteLocale };
+
+// Hardcoded English for now; needs a DatoCMS translation entry to use t().
+const pageTitle = 'Ask AI';
+
+const getAskPathname = (locale: SiteLocale) => `/${locale}/ask/`;
+const pageUrls = locales.map((locale) => ({ locale, pathname: getAskPathname(locale) }));
+const breadcrumbs: Breadcrumb[] = [{ text: pageTitle, href: getAskPathname(locale) }];
+---
+
+<Layout
+  breadcrumbs={breadcrumbs}
+  pageUrls={pageUrls}
+  seoMetaTags={[noIndexTag, titleTag(pageTitle)]}
+>
+  <AiSearch />
+</Layout>
