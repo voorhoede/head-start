@@ -59,7 +59,7 @@ export const GET: APIRoute = async () => {
     sourcemap: false,
   });
 
-  return new Response(output.outputFiles[0].contents, {
+  return new Response(output.outputFiles[0].text, {
     status: 200,
     headers: {
       'Content-Type': 'application/javascript',

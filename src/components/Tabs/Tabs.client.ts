@@ -252,26 +252,26 @@ class TabsComponent extends HTMLElement {
     let newTab;
 
     switch (event.key) {
-    case 'ArrowLeft':
-    case 'ArrowUp':
-      newTab = this.#prevTab();
-      break;
+      case 'ArrowLeft':
+      case 'ArrowUp':
+        newTab = this.#prevTab();
+        break;
 
-    case 'ArrowRight':
-    case 'ArrowDown':
-      newTab = this.#nextTab();
-      break;
+      case 'ArrowRight':
+      case 'ArrowDown':
+        newTab = this.#nextTab();
+        break;
 
-    case 'Home':
-      newTab = this.#firstTab();
-      break;
+      case 'Home':
+        newTab = this.#firstTab();
+        break;
 
-    case 'End':
-      newTab = this.#lastTab();
-      break;
+      case 'End':
+        newTab = this.#lastTab();
+        break;
       // Any other key press is ignored and passed back to the browser.
-    default:
-      return;
+      default:
+        return;
     }
 
     // The browser might have some native functionality bound to the arrow

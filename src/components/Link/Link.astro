@@ -5,7 +5,7 @@ import { stripStega } from '@datocms/content-link';
 export type Props = HTMLAttributes<'a'> & {
   href: string;
   openInNewTab?: boolean;
-}
+};
 
 const { href: rawHref, openInNewTab, ...props } = Astro.props;
 const href = stripStega(rawHref);

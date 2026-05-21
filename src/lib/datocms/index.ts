@@ -107,7 +107,7 @@ export async function datocmsRequest<
 
 type CollectionData<CollectionType> = {
   [key: string]: CollectionType[];
-}
+};
 
 export type CollectionInfo = {
   meta: { count: number };

@@ -64,16 +64,16 @@ async function readDoc(directory: string, filename: string) {
 
 type Model = {
   id: string;
-}
+};
 type Document = {
   slug: string;
   title: string;
   text: string;
-}
+};
 type Page = {
   id: string;
   [key: string]: unknown;
-}
+};
 async function upsertRecord ({ model, document, parent }: { model: Model, document: Document, parent?: Page }) {
   const record = await findRecordBySlug(document.slug);
   const note = `!Note: this page is auto-generated from [docs/${document.slug}.md](${mainBranchUrl}docs/${document.slug}.md).`;

@@ -8,11 +8,11 @@ export type CollectionName = keyof typeof collectionMap;
 
 type BareCollectionEntry<K extends CollectionName> = NormalizedEntry<
   Awaited<ReturnType<typeof collectionMap[K]['loadCollection']>>[number]
->
+>;
 type CollectionSubscription<K extends CollectionName> = {
   query: typeof collectionMap[K]['subscription']['query']; // The GraphQL query for the subscription
   variables: CollectionEntry<K>['data']['subscription']['variables']; // Variables for the subscription
-}
+};
 /**
  * CollectionEntry is a type that represents a single entry in a collection.
  */ 

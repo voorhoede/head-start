@@ -4,14 +4,14 @@ import DynamicTag from '~/components/DynamicTag.astro';
 
 type TableRow = {
   [key: string]: string
-}
+};
 type Table = {
   columns: string[],
   data: TableRow[]
-}
+};
 type Block = Omit<TableBlockFragment, 'table'> & {
   table: Table
-}
+};
 export type Props = {
   block: Block
 };

@@ -84,7 +84,7 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
 
   const html = await response.text();
 
-  let noindex = false;
+  let noindex: boolean;
   let md: string;
 
   try {

@@ -62,12 +62,9 @@ export default async function run() {
     isRunAllMigrations,
   };
 
-  let result = false;
-  if (isRunAllMigrations) {
-    result = await runAllMigrations(environmentDetails);
-  } else {
-    result = await runCreateEnvironment(environmentDetails);
-  }
+  const result = isRunAllMigrations
+    ? await runAllMigrations(environmentDetails)
+    : await runCreateEnvironment(environmentDetails);
   if (result) {
     await updateLocalEnvironment(targetEnvironment);
     console.log(
