@@ -31,6 +31,8 @@ class VideoEmbed extends HTMLElement {
   #isPlaying = false;
   #provider: ConsentKey;
   #videoUrl: string;
+  #boundOnClick: (event: MouseEvent) => void;
+  #boundConsentAndPlay: () => void;
 
   constructor() {
     super();
@@ -43,6 +45,8 @@ class VideoEmbed extends HTMLElement {
     this.#autoplay = this.dataset.autoplay === 'true';
     this.#provider = this.dataset.provider as ConsentKey;
     this.#videoUrl = this.dataset.videoUrl as string;
+    this.#boundOnClick = this.#onClick.bind(this);
+    this.#boundConsentAndPlay = this.#consentAndPlay.bind(this);
   }
 
   connectedCallback() {
@@ -69,11 +73,8 @@ class VideoEmbed extends HTMLElement {
       return;
     }
 
-    this.#anchor.addEventListener('click', this.#onClick.bind(this));
-    this.#consentButton.addEventListener(
-      'click',
-      this.#consentAndPlay.bind(this)
-    );
+    this.#anchor.addEventListener('click', this.#boundOnClick);
+    this.#consentButton.addEventListener('click', this.#boundConsentAndPlay);
 
     const useReducedMotion = window.matchMedia(
       '(prefers-reduced-motion: reduce)'
@@ -84,11 +85,8 @@ class VideoEmbed extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.#anchor.removeEventListener('click', this.#onClick.bind(this));
-    this.#consentButton.removeEventListener(
-      'click',
-      this.#consentAndPlay.bind(this)
-    );
+    this.#anchor.removeEventListener('click', this.#boundOnClick);
+    this.#consentButton.removeEventListener('click', this.#boundConsentAndPlay);
   }
 
   #consentAndPlay() {

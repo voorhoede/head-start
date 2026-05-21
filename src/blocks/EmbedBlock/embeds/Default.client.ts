@@ -32,6 +32,8 @@ class DefaultEmbed extends HTMLElement {
   #consentAlert?: HTMLElement;
   #consentButton?: HTMLButtonElement;
   #placeholder?: HTMLAnchorElement;
+  #boundGrantConsent: () => void;
+  #boundOnPlaceholderClick: (event: MouseEvent) => void;
 
   constructor() {
     super();
@@ -41,17 +43,20 @@ class DefaultEmbed extends HTMLElement {
     this.#consentAlert = (this.querySelector('[role="alert"]') as HTMLElement) ?? undefined;
     this.#consentButton = (this.querySelector('[role="alert"] button') as HTMLButtonElement) ?? undefined;
     this.#placeholder = (this.querySelector('.embed-placeholder') as HTMLAnchorElement) ?? undefined;
+    this.#boundGrantConsent = this.#grantConsent.bind(this);
+    this.#boundOnPlaceholderClick = this.#onPlaceholderClick.bind(this);
   }
 
   connectedCallback() {
-    this.#consentButton?.addEventListener('click', this.#grantConsent.bind(this));
-    this.#placeholder?.addEventListener('click', this.#onPlaceholderClick.bind(this));
+    this.#consentButton?.addEventListener('click', this.#boundGrantConsent);
+    this.#placeholder?.addEventListener('click', this.#boundOnPlaceholderClick);
     observer.observe(this);
   }
 
   disconnectedCallback() {
-    this.#consentButton?.removeEventListener('click', this.#grantConsent.bind(this));
-    this.#placeholder?.removeEventListener('click', this.#onPlaceholderClick.bind(this));
+    this.#consentButton?.removeEventListener('click', this.#boundGrantConsent);
+    this.#placeholder?.removeEventListener('click', this.#boundOnPlaceholderClick);
+    observer.unobserve(this);
   }
 
   #hasConsent() {
