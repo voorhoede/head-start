@@ -34,9 +34,7 @@ const { breadcrumbs = [], pageUrls, seoMetaTags } = Astro.props;
 const mainContentId = 'content';
 const menuItems = data.app?.menuItems ?? [];
 
-const veParam = Astro.url.searchParams.get('ve');
-const enableClickToEdit = veParam !== '0';
-const { isPreview } = Astro.locals;
+const { isPreview, editModeOn } = Astro.locals;
 const allowAiBots = !app.noIndex && !isPreview && Boolean(app.allowAiBots);
 const prompt = app.openPageInLlmPrompt || '';
 const llmOptions = app.openPageInLlmOption ?? [];
@@ -57,7 +55,7 @@ const llmOptions = app.openPageInLlmOption ?? [];
   </head>
   <body>
     {Astro.locals.isPreview && (
-      <ContentLink enableClickToEdit={enableClickToEdit ? { hoverOnly: true } : undefined} />
+      <ContentLink enableClickToEdit={editModeOn ? { hoverOnly: true } : undefined} />
     )}
     <PreviewModeProvider>
       <SkipLink targetId={mainContentId} />
