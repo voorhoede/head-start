@@ -28,7 +28,7 @@ const breadcrumbs = [
   seoMetaTags={[ noIndexTag, titleTag(pageTitle) ]}
 >
   <h1>{ pageTitle }</h1>
-  <SearchForm query={ query } />
+  <SearchForm query={ query } blockId={ queryParamName } />
   { hasValidQuery(query) && (
     <section>
       <h2>{
