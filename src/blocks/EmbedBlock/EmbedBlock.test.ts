@@ -30,7 +30,7 @@ describe('EmbedBlock', () => {
     expect(fragment.querySelector('[data-provider="Twitter"]')).toBeTruthy();
   });
 
-  test('renders a Flickr embed block correctly', async () => {
+  test('renders a Flickr embed block correctly and shows consent alert for script-based embeds', async () => {
     const fragment = await renderToFragment<Props>(EmbedBlock, {
       props: {
         block: {
@@ -47,7 +47,8 @@ describe('EmbedBlock', () => {
             width: 1024,
             height: 683,
             web_page: 'https://www.flickr.com/photos/danielcheong/50416691972/',
-            thumbnail_url: 'https://live.staticflickr.com/65535/50416691972_d17d04862f_q.jpg',
+            thumbnail_url:
+              'https://live.staticflickr.com/65535/50416691972_d17d04862f_q.jpg',
             thumbnail_width: 150,
             thumbnail_height: 150,
             web_page_short_url: 'https://flic.kr/p/2jP9J2S',
@@ -64,9 +65,10 @@ describe('EmbedBlock', () => {
 
     expect(fragment.querySelector('default-embed')).toBeTruthy();
     expect(fragment.querySelector('[data-provider="Flickr"]')).toBeTruthy();
+    expect(fragment.querySelector('.consent-alert')).toBeTruthy();
   });
 
-  test('renders a CodePen embed block correctly', async () => {
+  test('renders a CodePen embed block correctly, shows consent alert and load button for iframe embeds with thumbnail', async () => {
     const fragment = await renderToFragment<Props>(EmbedBlock, {
       props: {
         block: {
@@ -86,8 +88,9 @@ describe('EmbedBlock', () => {
             width: '800',
             thumbnail_width: '384',
             thumbnail_height: '225',
-            thumbnail_url: 'https://shots.codepen.io/username/pen/epQNqN-512.jpg?version=1447132171',
-            html: '<iframe id="cp_embed_epQNqN" src="https://codepen.io/mattdesl/embed/preview/epQNqN?default-tabs=js%2Cresult&amp;height=300&amp;host=https%3A%2F%2Fcodepen.io&amp;slug-hash=epQNqN" title="Junk Pile - #codevember" scrolling="no" frameborder="0" height="300" allowtransparency="true" class="cp_embed_iframe" style="width: 100%; overflow: hidden;"></iframe>'
+            thumbnail_url:
+              'https://shots.codepen.io/username/pen/epQNqN-512.jpg?version=1447132171',
+            html: '<iframe id="cp_embed_epQNqN" src="https://codepen.io/mattdesl/embed/preview/epQNqN?default-tabs=js%2Cresult&amp;height=300&amp;host=https%3A%2F%2Fcodepen.io&amp;slug-hash=epQNqN" title="Junk Pile - #codevember" scrolling="no" frameborder="0" height="300" allowtransparency="true" class="cp_embed_iframe" style="width: 100%; overflow: hidden;"></iframe>',
           },
         },
       },
@@ -95,6 +98,34 @@ describe('EmbedBlock', () => {
 
     expect(fragment.querySelector('default-embed')).toBeTruthy();
     expect(fragment.querySelector('[data-provider="CodePen"]')).toBeTruthy();
+    expect(fragment.querySelector('.consent-alert')).toBeTruthy();
+    expect(fragment.querySelector('.load-button')).toBeTruthy();
+  });
+
+  test('omits consent alert for plain HTML embeds without iframe or scripts', async () => {
+    const fragment = await renderToFragment<Props>(EmbedBlock, {
+      props: {
+        block: {
+          id: '123',
+          url: 'https://example.com/quote',
+          data: {
+            provider_name: 'Example',
+            url: 'https://example.com/quote',
+            type: 'rich',
+            version: '1.0',
+            title: 'A quote',
+            author_name: 'Author',
+            author_url: 'https://example.com',
+            width: 400,
+            height: 200,
+            provider_url: 'https://example.com',
+            html: '<blockquote><p>Some content without tracking.</p></blockquote>',
+          },
+        },
+      },
+    });
+
+    expect(fragment.querySelector('.consent-alert')).toBeNull();
   });
 
   test('renders a YouTube embed block correctly', async () => {
@@ -117,7 +148,7 @@ describe('EmbedBlock', () => {
             thumbnail_height: 360,
             thumbnail_width: 480,
             thumbnail_url: 'https://i.ytimg.com/vi/feylP4p1-KU/hqdefault.jpg',
-            html: '<iframe width="200" height="113" src="https://www.youtube.com/embed/feylP4p1-KU?feature=oembed" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen title="Green Caravan pitch (NL)"></iframe>'
+            html: '<iframe width="200" height="113" src="https://www.youtube.com/embed/feylP4p1-KU?feature=oembed" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen title="Green Caravan pitch (NL)"></iframe>',
           },
         },
       },
@@ -148,14 +179,17 @@ describe('EmbedBlock', () => {
             width: 372,
             height: 360,
             duration: 35,
-            description: 'Companion article: https://www.voorhoede.nl/en/blog/enriching-rich-text-with-inline-components-datocms-react/',
-            thumbnail_url: 'https://i.vimeocdn.com/video/1290514162-5999b7e95c88cad3fe8cfcff2a3e1bd3a6e6cf4fe322cb95a_295x166',
+            description:
+              'Companion article: https://www.voorhoede.nl/en/blog/enriching-rich-text-with-inline-components-datocms-react/',
+            thumbnail_url:
+              'https://i.vimeocdn.com/video/1290514162-5999b7e95c88cad3fe8cfcff2a3e1bd3a6e6cf4fe322cb95a_295x166',
             thumbnail_width: 295,
             thumbnail_height: 286,
-            thumbnail_url_with_play_button: 'https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F1290514162-5999b7e95c88cad3fe8cfcff2a3e1bd3a6e6cf4fe322cb95a_295x166&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png',
+            thumbnail_url_with_play_button:
+              'https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F1290514162-5999b7e95c88cad3fe8cfcff2a3e1bd3a6e6cf4fe322cb95a_295x166&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png',
             upload_date: '2021-11-02 10:17:54',
             video_id: 641535920,
-            uri: '/videos/641535920'
+            uri: '/videos/641535920',
           },
         },
       },
