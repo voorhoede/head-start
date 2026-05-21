@@ -17,6 +17,7 @@ const getHlsPlayer = () => import('hls.js');
 
 class VideoBlock extends HTMLElement {
   #autoplay = false;
+  #chaptersRendered = false;
   #mp4Url?: string;
   #streamingUrl?: string;
   #useReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -67,13 +68,17 @@ class VideoBlock extends HTMLElement {
   }
 
   #initChapters() {
+    if (this.#chaptersRendered) return;
     const chaptersTrack = [...this.#video.textTracks].find(t => t.kind === 'chapters');
     if (!chaptersTrack) return;
 
     const render = () => {
+      if (this.#chaptersRendered) return;
+      this.#chaptersRendered = true;
       chaptersTrack.mode = 'hidden';
       [...(chaptersTrack.cues ?? [])].forEach(cue => {
         const btn = document.createElement('button');
+        btn.type = 'button';
         btn.textContent = (cue as VTTCue).text;
         btn.addEventListener('click', () => { this.#video.currentTime = cue.startTime; });
         this.appendChild(btn);
