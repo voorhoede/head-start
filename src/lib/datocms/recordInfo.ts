@@ -16,16 +16,16 @@ export function recordToWebsiteRoute(
   locale: string,
 ): string | null {
   switch (itemTypeApiKey) {
-  case 'home_page':
-    return `/${locale}/`;
-  case 'not_found_page':
-    return `/${locale}/404`;
-  case 'page': {
-    const slug = item.attributes?.slug;
-    if (typeof slug !== 'string' || !slug) return null;
-    return `/api/reroute/page/${locale}/${encodeURIComponent(slug)}`;
-  }
-  default:
-    return null;
+    case 'home_page':
+      return `/${locale}/`;
+    case 'not_found_page':
+      return `/${locale}/404`;
+    case 'page': {
+      const slug = item.attributes?.slug;
+      if (typeof slug !== 'string' || !slug) return null;
+      return `/api/reroute/page/${locale}/${encodeURIComponent(slug)}`;
+    }
+    default:
+      return null;
   }
 }
