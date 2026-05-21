@@ -1,4 +1,3 @@
-import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { parseFrontmatter } from '../src/lib/frontmatter.ts';
 
@@ -7,8 +6,6 @@ try {
 } catch {
   // No .env in cwd. Rely on already-set process.env (CI, shell exports).
 }
-
-const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')) as { name: string };
 
 const {
   CLOUDFLARE_ACCOUNT_ID,
@@ -23,12 +20,13 @@ const missing: string[] = [];
 if (!CLOUDFLARE_ACCOUNT_ID) missing.push('CLOUDFLARE_ACCOUNT_ID');
 if (!CLOUDFLARE_API_TOKEN) missing.push('CLOUDFLARE_API_TOKEN');
 if (!CLOUDFLARE_AI_SEARCH_INSTANCE_NAME) missing.push('CLOUDFLARE_AI_SEARCH_INSTANCE_NAME');
+if (!SITE_URL) missing.push('SITE_URL');
 if (missing.length > 0) {
   console.error(`Missing required env: ${missing.join(', ')}`);
   process.exit(1);
 }
 
-const siteUrl = (SITE_URL || `https://${pkg.name}.pages.dev`).replace(/\/$/, '');
+const siteUrl = SITE_URL!.replace(/\/$/, '');
 const cfBase = `https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}`;
 const itemsUrl = `${cfBase}/ai-search/instances/${CLOUDFLARE_AI_SEARCH_INSTANCE_NAME}/items`;
 const itemUrl = (id: string) =>
