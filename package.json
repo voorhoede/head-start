@@ -123,7 +123,7 @@
     "plop": "^4.0.5",
     "proper-tags": "^2.0.2",
     "robots-parser": "^3.0.1",
-    "sonda": "^0.7.1",
+    "sonda": "^0.11.1",
     "svg-sprite": "^2.0.2",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.59.1",
