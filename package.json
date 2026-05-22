@@ -99,7 +99,7 @@
     "@graphql-codegen/cli": "^5.0.0",
     "@graphql-codegen/introspection": "^4.0.0",
     "@graphql-codegen/typescript": "^4.0.1",
-    "@graphql-codegen/typescript-document-nodes": "^4.0.11",
+    "@graphql-codegen/typescript-document-nodes": "^6.0.0",
     "@graphql-codegen/typescript-operations": "^4.0.1",
     "@stylistic/eslint-plugin": "^5.10.0",
     "@types/accept-language-parser": "^1.5.6",
