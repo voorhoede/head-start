@@ -10,7 +10,6 @@ export const prerender = false;
 
 const { locale } = Astro.params as { locale: SiteLocale };
 
-// Hardcoded English for now; needs a DatoCMS translation entry to use t().
 const pageTitle = 'Ask AI';
 
 const getAskPathname = (locale: SiteLocale) => `/${locale}/ask/`;
