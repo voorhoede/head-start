@@ -10,7 +10,7 @@ export interface Props {
 }
 
 const { block, editorFieldPath, hideEditorLabels } = Astro.props;
-const items = block.items;
+const items = block.items as StackBlockFragment['items'];
 ---
 
 { items.map((item, itemIndex) => (
