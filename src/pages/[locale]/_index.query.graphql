@@ -12,6 +12,7 @@
 #import '~/blocks/SearchFormBlock/SearchFormBlock.fragment.graphql'
 #import '~/blocks/StackBlock/StackBlock.fragment.graphql'
 #import '~/blocks/TabsBlock/TabsBlock.fragment.graphql'
+#import '~/blocks/ColumnBlock/ColumnBlock.fragment.graphql'
 
 query HomePage($locale: SiteLocale!) {
   page: homePage(locale: $locale) {
@@ -30,6 +31,9 @@ query HomePage($locale: SiteLocale!) {
       }
       ... on AccordionBlockRecord {
         ...AccordionBlock
+      }
+      ... on ColumnBlockRecord {
+        ...ColumnBlock
       }
       ... on EmbedBlockRecord {
         ...EmbedBlock

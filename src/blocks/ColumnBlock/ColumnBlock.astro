@@ -1,0 +1,28 @@
+---
+import Blocks from '~/blocks/Blocks.astro';
+import { buildNestedFieldPath } from '~/blocks/block-editor-utils';
+import { Column, Columns } from '~/components/Columns';
+import type { ColumnBlockFragment } from '~/lib/datocms/types';
+
+export interface Props {
+  block: ColumnBlockFragment;
+  editorFieldPath?: string;
+  hideEditorLabels?: boolean;
+}
+
+const { block, editorFieldPath, hideEditorLabels } = Astro.props;
+const items = block.items as ColumnBlockFragment['items'];
+const count = (block.numberOfColumns ?? 2) as 2 | 3 | 4;
+---
+
+<Columns count={ count }>
+  { items.map((item, itemIndex) => (
+    <Column>
+      <Blocks
+        blocks={ item.blocks }
+        editorFieldPath={ buildNestedFieldPath(editorFieldPath, itemIndex) }
+        hideEditorLabels={ hideEditorLabels }
+      />
+    </Column>
+  ))}
+</Columns>

@@ -16,6 +16,7 @@ import SearchFormBlock from './SearchFormBlock/SearchFormBlock.astro';
 import AccordionBlock from './AccordionBlock/AccordionBlock.astro';
 import StackBlock from './StackBlock/StackBlock.astro';
 import TabsBlock from './TabsBlock/TabsBlock.astro';
+import ColumnBlock from './ColumnBlock/ColumnBlock.astro';
 
 export const blocksByTypename = {
   ActionBlockRecord: ActionBlock,
@@ -36,4 +37,5 @@ export const blocksByTypename = {
   StackBlockRecord: StackBlock,
   TabsBlockRecord: TabsBlock,
   SearchFormBlockRecord: SearchFormBlock,
+  ColumnBlockRecord: ColumnBlock,
 };
