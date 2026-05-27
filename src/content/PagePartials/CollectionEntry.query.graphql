@@ -1,6 +1,9 @@
+#import '~/blocks/AccordionBlock/AccordionBlock.fragment.graphql'
 #import '~/blocks/ActionBlock/ActionBlock.fragment.graphql'
 #import '~/blocks/GroupingBlock/GroupingBlock.fragment.graphql'
 #import '~/blocks/ImageBlock/ImageBlock.fragment.graphql'
+#import '~/blocks/StackBlock/StackBlock.fragment.graphql'
+#import '~/blocks/TabsBlock/TabsBlock.fragment.graphql'
 #import '~/blocks/TableBlock/TableBlock.fragment.graphql'
 #import '~/blocks/TextBlock/TextBlock.fragment.graphql'
 #import '~/blocks/TextImageBlock/TextImageBlock.fragment.graphql'
@@ -14,6 +17,9 @@ query PagePartialCollectionEntry($locale: SiteLocale!, $id: ItemId!) {
     title
     blocks {
       __typename
+      ... on AccordionBlockRecord {
+        ...AccordionBlock
+      }
       ... on ActionBlockRecord {
         ...ActionBlock
       }
@@ -40,6 +46,12 @@ query PagePartialCollectionEntry($locale: SiteLocale!, $id: ItemId!) {
       }
       ... on ListBlockRecord {
         ...ListBlock
+      }
+      ... on StackBlockRecord {
+        ...StackBlock
+      }
+      ... on TabsBlockRecord {
+        ...TabsBlock
       }
     }
   }

@@ -1,0 +1,1 @@
+Groups multiple blocks into a tabbed interface. Each item has a tab label and a panel with its content.

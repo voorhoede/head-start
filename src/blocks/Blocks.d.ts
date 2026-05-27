@@ -12,6 +12,11 @@ import type {
   GroupingBlockFragment,
   CounterBlockFragment,
   ListBlockFragment,
+  VariableBlockRecord,
+  IconBlockFragment,
+  StackBlockFragment,
+  TabsBlockFragment,
+  AccordionBlockFragment,
 } from '~/lib/datocms/types';
 import type { VariableBlockRecord } from '~/lib/datocms/schema';
 
@@ -32,5 +37,8 @@ export type AnyBlock = Omit<
     | SearchFormBlockFragment
     | VariableBlockRecord
     | IconBlockFragment
+    | StackBlockFragment
+    | TabsBlockFragment
+    | AccordionBlockFragment
   ), '__typename' // Allow for any __typename so that missing blocks can be reported on.
 > & { __typename: string };

@@ -13,6 +13,9 @@ import VariableBlock from './VariableBlock/VariableBlock.astro';
 import VideoBlock from './VideoBlock/VideoBlock.astro';
 import VideoEmbedBlock from './VideoEmbedBlock/VideoEmbedBlock.astro';
 import SearchFormBlock from './SearchFormBlock/SearchFormBlock.astro';
+import AccordionBlock from './AccordionBlock/AccordionBlock.astro';
+import StackBlock from './StackBlock/StackBlock.astro';
+import TabsBlock from './TabsBlock/TabsBlock.astro';
 
 export const blocksByTypename = {
   ActionBlockRecord: ActionBlock,
@@ -29,5 +32,8 @@ export const blocksByTypename = {
   VariableBlockRecord: VariableBlock,
   VideoBlockRecord: VideoBlock,
   VideoEmbedBlockRecord: VideoEmbedBlock,
+  AccordionBlockRecord: AccordionBlock,
+  StackBlockRecord: StackBlock,
+  TabsBlockRecord: TabsBlock,
   SearchFormBlockRecord: SearchFormBlock,
 };
