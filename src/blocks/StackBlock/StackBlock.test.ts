@@ -73,7 +73,7 @@ describe('StackBlock', () => {
           __typename: 'StackBlockRecord',
           id: 'stack-test-3',
           isTitled: true,
-          items: [{ ...items[0], title: null }],
+          items: [{ ...items[0], title: 'test title' }],
         },
       },
     });
