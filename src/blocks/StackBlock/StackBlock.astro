@@ -1,0 +1,35 @@
+---
+import Blocks from '~/blocks/Blocks.astro';
+import { buildNestedFieldPath } from '~/blocks/block-editor-utils';
+import type { StackBlockFragment } from '~/lib/datocms/types';
+
+export interface Props {
+  block: StackBlockFragment;
+  editorFieldPath?: string;
+  hideEditorLabels?: boolean;
+}
+
+const { block, editorFieldPath, hideEditorLabels } = Astro.props;
+const items = block.items as StackBlockFragment['items'];
+---
+
+{ items.map((item, itemIndex) => (
+  block.isTitled && item.title
+    ? (
+      <section>
+        <h2>{ item.title }</h2>
+        <Blocks
+          blocks={ item.blocks }
+          editorFieldPath={ buildNestedFieldPath(editorFieldPath, itemIndex) }
+          hideEditorLabels={ hideEditorLabels }
+        />
+      </section>
+    )
+    : (
+      <Blocks
+        blocks={ item.blocks }
+        editorFieldPath={ buildNestedFieldPath(editorFieldPath, itemIndex) }
+        hideEditorLabels={ hideEditorLabels }
+      />
+    )
+))}
