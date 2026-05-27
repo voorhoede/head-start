@@ -14,7 +14,7 @@ export interface Props {
 const isLayout = (layout: GroupingBlockFragment['layout']) => block.layout === layout;
 
 const { block, editorFieldPath, hideEditorLabels } = Astro.props;
-const items = block.items;
+const items = block.items as GroupingBlockFragment['items'];
 ---
 { isLayout('stack-titled') && (
   items.map((item, itemIndex) => (
