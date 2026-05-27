@@ -8,8 +8,11 @@
 #import '~/blocks/TextImageBlock/TextImageBlock.fragment.graphql'
 #import '~/blocks/VideoBlock/VideoBlock.fragment.graphql'
 #import '~/blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
+#import '~/blocks/AccordionBlock/AccordionBlock.fragment.graphql'
 #import '~/blocks/GroupingBlock/GroupingBlock.fragment.graphql'
 #import '~/blocks/ListBlock/ListBlockFragment.graphql'
+#import '~/blocks/StackBlock/StackBlock.fragment.graphql'
+#import '~/blocks/TabsBlock/TabsBlock.fragment.graphql'
 
 query PageCollectionEntry($locale: SiteLocale!, $slug: String!) {
   record: page(locale: $locale, filter: { slug: { eq: $slug } }) {
@@ -23,6 +26,9 @@ query PageCollectionEntry($locale: SiteLocale!, $slug: String!) {
       __typename
       ... on ActionBlockRecord {
         ...ActionBlock
+      }
+      ... on AccordionBlockRecord {
+        ...AccordionBlock
       }
       ... on EmbedBlockRecord {
         ...EmbedBlock
@@ -53,6 +59,12 @@ query PageCollectionEntry($locale: SiteLocale!, $slug: String!) {
       }
       ... on ListBlockRecord {
         ...ListBlock
+      }
+      ... on StackBlockRecord {
+        ...StackBlock
+      }
+      ... on TabsBlockRecord {
+        ...TabsBlock
       }
     }
   }

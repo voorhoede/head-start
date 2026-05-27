@@ -7,7 +7,10 @@
 #import '~/blocks/TextImageBlock/TextImageBlock.fragment.graphql'
 #import '~/blocks/VideoBlock/VideoBlock.fragment.graphql'
 #import '~/blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
+#import '~/blocks/AccordionBlock/AccordionBlock.fragment.graphql'
 #import '~/blocks/GroupingBlock/GroupingBlock.fragment.graphql'
+#import '~/blocks/StackBlock/StackBlock.fragment.graphql'
+#import '~/blocks/TabsBlock/TabsBlock.fragment.graphql'
 
 query HomePage($locale: SiteLocale!) {
   page: homePage(locale: $locale) {
@@ -23,6 +26,9 @@ query HomePage($locale: SiteLocale!) {
       __typename
       ... on ActionBlockRecord {
         ...ActionBlock
+      }
+      ... on AccordionBlockRecord {
+        ...AccordionBlock
       }
       ... on EmbedBlockRecord {
         ...EmbedBlock
@@ -50,6 +56,12 @@ query HomePage($locale: SiteLocale!) {
       }
       ... on GroupingBlockRecord {
         ...GroupingBlock
+      }
+      ... on StackBlockRecord {
+        ...StackBlock
+      }
+      ... on TabsBlockRecord {
+        ...TabsBlock
       }
     }
   }
