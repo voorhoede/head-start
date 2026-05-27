@@ -1,0 +1,25 @@
+---
+export interface Props {
+  count: 2 | 3 | 4;
+}
+
+const { count } = Astro.props;
+---
+
+<div class="columns" style={`--column-count:${count}`}>
+  <slot />
+</div>
+
+<style>
+  .columns {
+    display: grid;
+    grid-template-columns: repeat(var(--column-count), 1fr);
+    gap: 1rem;
+  }
+
+  @media (max-width: 600px) {
+    .columns {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

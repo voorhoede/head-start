@@ -18,6 +18,7 @@ import IconBlock from './IconBlock/IconBlock.astro';
 import AccordionBlock from './AccordionBlock/AccordionBlock.astro';
 import StackBlock from './StackBlock/StackBlock.astro';
 import TabsBlock from './TabsBlock/TabsBlock.astro';
+import ColumnBlock from './ColumnBlock/ColumnBlock.astro';
 import { getEditorPaths } from './block-editor-utils';
 import Icon from '~/components/Icon';
 
@@ -39,6 +40,7 @@ const blocksByTypename = {
   AccordionBlockRecord: AccordionBlock,
   StackBlockRecord: StackBlock,
   TabsBlockRecord: TabsBlock,
+  ColumnBlockRecord: ColumnBlock,
 };
 
 interface Props {
@@ -46,7 +48,7 @@ interface Props {
   editorFieldPath?: string;
   hideEditorLabels?: boolean;
 }
-const { blocks, hideEditorLabels = false } = Astro.props;
+const { blocks, hideEditorLabels = false } = Astro.props as Props;
 const editorFieldPath = Astro.props.editorFieldPath ?? 'bodyBlocks';
 const isPreview = Astro.locals.isPreview;
 
