@@ -7,13 +7,14 @@ import AppMenu from '~/layouts/AppMenu/AppMenu.astro';
 interface Props {
   menuItems: AppMenuFragment['menuItems'];
   pageUrls: PageUrl[];
+  allowAiBots: boolean;
 }
-const { menuItems, pageUrls } = Astro.props;
+const { menuItems, pageUrls, allowAiBots } = Astro.props;
 ---
 
 <header>
   <AppLogo />
-  <AppMenu items={menuItems} {pageUrls} />
+  <AppMenu items={menuItems} {pageUrls} {allowAiBots} />
 </header>
 
 <style>
