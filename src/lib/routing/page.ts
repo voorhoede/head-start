@@ -1,7 +1,19 @@
 import type { PageRouteFragment, SiteLocale } from '~/lib/datocms/types';
 import { getLocalizedSlug, getSlugFromPath, type MaybeSlug } from './lib/slug';
 
-export function getParentPages(page: PageRouteFragment): PageRouteFragment[] {
+/**
+ * PageRouteFragment inlines `parentPage` to a finite depth, so each ancestor has
+ * a shallower type than its child. This recursive shape accepts any depth, which
+ * lets the parent-traversal helpers walk the chain regardless of nesting level.
+ */
+export type PageRouteWithParents = Pick<
+  PageRouteFragment,
+  '__typename' | 'id' | 'title' | 'slug' | '_allSlugLocales'
+> & {
+  parentPage?: PageRouteWithParents | null;
+};
+
+export function getParentPages(page: PageRouteWithParents): PageRouteWithParents[] {
   if (page.parentPage) {
     return [
       ...getParentPages(page.parentPage),
@@ -22,9 +34,9 @@ export function getParentPages(page: PageRouteFragment): PageRouteFragment[] {
  * - ['grand-parent', 'parent-slug']  (grand parent and parent page available in given locale)
  * - ['grand-parent', undefined]      (grand parent page available, parent page not available in given locale)
  */
-export const getParentSlugs = ({ locale, page }: { locale?: SiteLocale, page: PageRouteFragment }): MaybeSlug[] => {
+export const getParentSlugs = ({ locale, page }: { locale?: SiteLocale, page: PageRouteWithParents }): MaybeSlug[] => {
   if (page.parentPage) {
-    const slug = getLocalizedSlug<PageRouteFragment>({ locale, record: page.parentPage });
+    const slug = getLocalizedSlug<PageRouteWithParents>({ locale, record: page.parentPage });
     return [
       ...getParentSlugs({ locale, page: page.parentPage }),
       slug
@@ -46,7 +58,7 @@ export const getParentSlugs = ({ locale, page }: { locale?: SiteLocale, page: Pa
  * - -/-/page-slug                        (missing parent and grand parent in given locale)
  * - -                                    (missing page in given locale)
  */
-export const getPagePath = ({ locale, page }: { locale?: SiteLocale, page: PageRouteFragment }) => {
+export const getPagePath = ({ locale, page }: { locale?: SiteLocale, page: PageRouteWithParents }) => {
   const slug = getLocalizedSlug({ locale, record: page });
   const parentSlugs = getParentSlugs({ locale, page });
   return [...parentSlugs, slug].join('/');

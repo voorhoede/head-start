@@ -29,7 +29,6 @@ describe('PagePartialBlock', () => {
       const pagePartialBlock = await renderToFragment<PagePartialBlockProps>(PagePartialBlock, {
         props: {
           block: {
-            __typename: 'PagePartialBlockRecord',
             id: 'ay-D0Z1ZTqWVszeV9ZqfJA',
             items: items.map((_, i) => ({ id: `index-${i}` })),
             layout,
@@ -40,7 +39,6 @@ describe('PagePartialBlock', () => {
       const groupingBlock = await renderToFragment<GroupingBlockProps>(GroupingBlock, {
         props: {
           block: {
-            __typename: 'GroupingBlockRecord',
             id: 'ay-D0Z1ZTqWVszeV9ZqfJA',
             layout,
             items,

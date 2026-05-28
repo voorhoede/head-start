@@ -15,7 +15,8 @@ const record: PageRouteFragment = {
   slug: 'example-page',
   _allSlugLocales: mockLocales.map(
     (locale) => ({ locale, value: pageSlugs[locale] })
-  )
+  ),
+  parentPage: null,
 };
 
 describe('getLocalizedSlug', () => {

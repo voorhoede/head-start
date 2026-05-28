@@ -1,6 +1,6 @@
 import type { FileRouteFragment, HomeRouteFragment, PageRouteFragment, SiteLocale } from '~/lib/datocms/types';
 import { getLocale } from '~/lib/i18n';
-import { getPagePath } from './page';
+import { getPagePath, type PageRouteWithParents } from './page';
 import { getFileHref } from './file';
 
 export type PageUrl = {
@@ -21,7 +21,7 @@ export const getHomeHref = ({ locale = getLocale() } = {}) => {
   return `/${locale}/`;
 };
 
-export const getPageHref = ({ locale, record }: { locale: SiteLocale, record: PageRouteFragment }) => {
+export const getPageHref = ({ locale, record }: { locale: SiteLocale, record: PageRouteWithParents }) => {
   return `/${locale}/${getPagePath({ page: record, locale })}/`;
 };
 

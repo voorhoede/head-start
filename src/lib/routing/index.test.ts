@@ -23,6 +23,8 @@ const fileRecord: FileRouteFragment = {
     size: 123456,
     url: new URL('/path/to/example.pdf', datocmsAssetsOrigin).toString(),
   },
+  locale: null,
+  path: null,
 };
 
 const homeRecord: HomeRouteFragment = { 
@@ -37,6 +39,7 @@ const pageRecord: PageRouteFragment = {
   title: 'Example Page',
   slug: 'example-page',
   _allSlugLocales: [{ locale: 'en' as SiteLocale, value: 'example-page' }],
+  parentPage: null,
 };
 
 describe('getFileHref', () => {
@@ -83,6 +86,7 @@ describe('getPageHref', () => {
       title: 'Parent Page',
       slug: 'parent-page',
       _allSlugLocales: [{ locale, value: 'parent-page' }],
+      parentPage: null,
     },
   };
 
