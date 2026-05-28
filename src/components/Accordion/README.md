@@ -13,7 +13,7 @@
 
 ```astro
 ---
-import { Accordion, AccordionItem } from '@components/Accordion';
+import { Accordion, AccordionItem } from '~/components/Accordion';
 name = 'demo-accordion';
 ---
 

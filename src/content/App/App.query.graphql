@@ -1,0 +1,17 @@
+query App {
+  app {
+    allowAiBots
+    openPageInLlmPrompt
+    openPageInLlmOption {
+      __typename
+      id
+      title
+      url
+      openInNewTab
+      style
+    }
+  }
+  site: _site {
+    noIndex
+  }
+}

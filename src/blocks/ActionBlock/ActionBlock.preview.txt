@@ -1,0 +1,1 @@
+One or more buttons or links. Supports internal pages, external URLs, email addresses, and phone numbers.

@@ -1,4 +1,4 @@
-import { getLocale } from '@lib/i18n';
+import { getLocale } from '~/lib/i18n';
 
 const enhanceIntersectedVideoBlocks = (entries: IntersectionObserverEntry[]) => {
   entries.forEach((entry) => {
@@ -30,7 +30,7 @@ class VideoBlock extends HTMLElement {
       return false;
     }
     
-    type NetworkInformation = { saveData: boolean; }
+    type NetworkInformation = { saveData: boolean; };
     const connection = (navigator as unknown as { connection: NetworkInformation }).connection;
     return connection.saveData === true;
   })();

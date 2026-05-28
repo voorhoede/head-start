@@ -15,8 +15,10 @@ src/
 │       ├── SomeContentBlock.astro
 │       ├── SomeContentBlock.fragment.graphql
 │       ├── SomeContentBlock.client.ts
-│       └── SomeContentBlock.test.ts
-│       
+│       ├── SomeContentBlock.test.ts
+│       ├── SomeContentBlock.preview.txt
+│       └── SomeContentBlock.preview.png
+│
 └── components/
     └── SomeUiComponent/
         ├── SomeUiComponent.astro
@@ -33,13 +35,74 @@ src/
 
 See [CMS Data Loading](./cms-data-loading.md) for documentation on the use of GraphQL Fragment files.
 
+## Creating a new Block
+
+Before setting the front end code in HeadStart for your new block, first create the Block in your DatoCMS project. [Check here for more information](https://www.datocms.com/docs/content-modelling/blocks)
+
+1. Go to Schema > Blocks (`environments/ENVIRONMENT_NAME/schema/blocks_library`)
+2. Create a new block
+
+- The `Model ID` of the block should be the snakecase version of your Block name in the frontend.
+
+For example, if you want to create a `TestBlock`, you need to set your DatoCMS Block to the following:
+
+```bash
+Name: Test Block
+'Model ID': test_block
+```
+
+## Block Previews
+
+Blocks can have preview files that are uploaded to DatoCMS as visual hints for CMS editors. When editors select blocks in modular content or structured text fields, these previews help them identify the right block.
+
+### Preview files
+
+Each block can have a text description and/or an image preview. Place them in the block's directory:
+
+```
+src/blocks/HeroBlock/
+├── HeroBlock.astro
+├── HeroBlock.fragment.graphql
+├── HeroBlock.preview.txt              ← short text description
+└── HeroBlock.preview.png              ← visual preview (jpg, png, or webp)
+```
+
+- The **text file** should contain a brief description of what the block does (one or two sentences).
+- The **image file** should be a screenshot or mockup showing how the block looks on the front end.
+
+> [!NOTE]
+> When you scaffold a new block with `npm run create:block`, a `.preview.txt` file is automatically created. You can add a preview image manually.
+
+### Uploading previews
+
+Run the upload command to sync preview files to DatoCMS:
+
+```shell
+npm run cms:upload-block-previews
+```
+
+The script automatically detects which preview files have changed (using file hashes) and only uploads those. It will show which blocks need updating and ask for confirmation before making changes:
+
+```
+Found 10 block(s) with preview files.
+2 block(s) to upload: HeroBlock, TextBlock
+? Upload block previews to DatoCMS? (Y/n)
+```
+
+### How it works
+
+- File hashes are stored in `src/lib/datocms/previewHashes.json` and should be committed to git so that all developers share the same sync state.
+- The preview text and image URL are combined into the item type's `hint` field in DatoCMS.
+- Preview files in `src/blocks/` are the **source of truth**. Avoid editing hints directly in the DatoCMS dashboard, as they will be overwritten the next time the script runs for that block.
+- No migration is needed. The script updates hints via the Management API directly.
+
 ## Block templates
 
 Head Start uses the same convention for props and types for every Block: the `Props` interface always contains a `block` property containing the type based on the CMS model. This `block` type is automatically generated based on a Block's GraphQL Fragment file (see [CMS Data Loading](./cms-data-loading.md#graphql-files)). This means a basic Block template looks like this:
 
 ```astro
 ---
-import type { SomeContentBlockFragment } from '@lib/datocms/types';
+import type { SomeContentBlockFragment } from '~/lib/datocms/types';
 
 interface Props {
   block: SomeContentBlockFragment
@@ -59,8 +122,8 @@ Pages and other templates can use the `<Blocks />` component to render a Modular
 
 ```astro
 ---
-import { datocmsRequest } from '@lib/datocms';
-import Blocks from '@blocks/Blocks.astro';
+import { datocmsRequest } from '~/lib/datocms';
+import Blocks from '~/blocks/Blocks.astro';
 import query from './_index.query.graphql';
 
 const { page } = await datocmsRequest({ query, variables: { locale: Astro.params.locale } });
@@ -106,13 +169,49 @@ import {
   // import new Block's Fragment:
   SomeContentBlockFragment,
   TextBlockFragment,
-} from '@lib/datocms/types';
+} from '~/lib/datocms/types';
 
 export type AnyBlock =
   | ImageBlockFragment
   | SomeContentBlockFragment // and add it here (order A to Z)
   | TextBlockFragment;
 ```
+
+## Using Blocks in Pages
+
+You probably want to use your block on certain pages. Depending on the block you might want to add it to a number of models such as Page, Home, 404, et cetera.
+
+1.  In your DatoCMS project, go to Schema > Models `/environments/ENVIRONMENT_NAME/schema/item_types`.
+2.  Click on the page model of your choice.
+2.  Edit the `Body` field. Validations > Specifiy the allowed blocks for this field. Add your new block.
+3.  Update your frontend code `page` graphql query. The path of this file will depend on your model of choice.
+- import your new Block fragment
+- add your new block record in `bodyBlocks`
+
+```graphql
+#src/pages/[locale]/[...path]/_index.query.graphql
+
+#  Update the above file for the Page model
+#  Be sure to import your new block fragment
+
+#import '~/blocks/TestBlock/TestBlock.fragment.graphql'
+
+page(locale: $locale, filter: { slug: { eq: $slug } }) {
+  # redacted content
+   bodyBlocks {
+     __typename
+     ... on ActionBlockRecord {
+       ...ActionBlock
+     }
+     # add your new block
+     ... on TestBlockRecord {
+       ...TestBlock
+     }
+   }
+```
+4. Test your new block by adding content. In your DatoCMS project, go to Content > Pages.
+- Create a new record and confirm that you can add your new block to the `Body`.
+- If you run your frontend code with `npm run dev`, you will be able to access your newly created page.
 
 ## Client-side scripts
 
@@ -125,7 +224,7 @@ Astro supports [client-side scripts inside components](https://docs.astro.build/
 ```ts
 // SomeComponent.test.ts
 import { describe, expect, test } from 'vitest';
-import { renderToFragment } from '@lib/renderer';
+import { renderToFragment } from '~/lib/renderer';
 import SomeComponent, { type Props } from './SomeComponent.astro';
 
 describe('Some Component', () => {
@@ -134,7 +233,9 @@ describe('Some Component', () => {
   });
 
   test('uses some prop as attribute', () => {
-    const value = fragment.querySelector('.someSelector')?.getAttribute('some-attribute');
+    const value = fragment
+      .querySelector('.someSelector')
+      ?.getAttribute('some-attribute');
     expect(value).toBe('some value');
   });
 

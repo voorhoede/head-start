@@ -1,0 +1,28 @@
+---
+import type { IconBlockFragment } from '~/lib/datocms/types';
+import type { IconName } from '~/assets/icon-sprite';
+import Icon, { iconNames } from '~/components/Icon';
+
+export interface Props {
+  block: IconBlockFragment;
+}
+
+const { block } = Astro.props;
+
+const isIconName = (name: string): name is IconName =>
+  (iconNames as readonly string[]).includes(name);
+---
+
+{
+  isIconName(block.name) && (
+    <Icon name={block.name} aria-label={block.name} class="icon-block" />
+  )
+}
+
+<style>
+  .icon-block {
+    height: 1em;
+    width: 1em;
+    vertical-align: text-top;
+  }
+</style>

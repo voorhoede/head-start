@@ -1,3 +1,4 @@
+import { getItemTypeId } from '~/blocks/block-editor-utils';
 import type { ConnectionStatus as DatocmsConnectionStatus } from 'datocms-listen';
 import { subscribeToQuery } from 'datocms-listen';
 import { atom, map } from 'nanostores';
@@ -23,6 +24,27 @@ class PreviewMode extends HTMLElement {
   $updateCounts = map<{ [key: string]: number }>({});
   #datocmsToken: string = '';
   #datocmsEnvironment: string = '';
+
+  // CMS editor tools
+  #datocmsProject: string = '';
+  #editableRecord: { id: string; type: string } | null = null;
+  #editLinkElement: HTMLAnchorElement | null = null;
+  #toggleBlockNamesButton: HTMLButtonElement | null = null;
+  #$showBlockNames = atom<boolean>(false);
+
+  /**
+   * Generates a hashed key for the map tracking subscriptions.
+   * This key is based on the query and variables of the subscription.
+   */
+  static subscriptionKey({ query, variables }: QueryVariables) {
+    const string = JSON.stringify({ query, variables });
+    // DJB2 by Daniel J. Bernstein @see http://www.cse.yorku.ca/~oz/hash.html
+    let hash = 5381;
+    for (let i = 0; i < string.length; i++) {
+      hash = (hash >> 5) + hash + string.charCodeAt(i);
+    }
+    return hash.toString(36);
+  }
 
   constructor() { 
     super();
@@ -64,10 +86,13 @@ class PreviewMode extends HTMLElement {
     this.$connectionError.listen(() => updateBarStatus());
     this.$updateCounts.listen((updateCounts) => {
       // each subscription directly triggers an update when connected,
-      // so we wait for the second update to reload the page:
-      const counts = Object.values(updateCounts);
-      if (counts.some((count) => count >= 2)) {
-        window.location.reload();
+      // so we wait for the update count to exceed the number of instances:
+      const instances = this.getInstanceCounts();
+      for (const [key, count] of Object.entries(updateCounts)) {
+        const instanceCount = instances[key];
+        if (count > instanceCount) {
+          window.location.reload();
+        }
       }
     });
 
@@ -75,14 +100,28 @@ class PreviewMode extends HTMLElement {
     subscriptionConfigs.forEach(({ query, variables }) => {
       this.subscribe({ query, variables });
     });
+
+    this.#setupCmsEditorTools(); // Optional: remove this to disable edit links and block overlays
   }
 
   getSubscriptionConfigs () {
     return this.subscriptionElements.map((element) => element.getConfig() as QueryVariables);
   }
 
+  getInstanceCounts () {
+    return this.getSubscriptionConfigs()
+      .reduce((instanceMap, { query, variables }: QueryVariables) => {
+        const key = PreviewMode.subscriptionKey({ query, variables });
+        const count = instanceMap?.[key] || 0;
+        return {
+          ...instanceMap,
+          [key]: count + 1,
+        };
+      }, {} as { [key: string]: number });
+  }
+
   async subscribe ({ query, variables }: QueryVariables) {
-    const key = JSON.stringify({ query, variables });
+    const key = PreviewMode.subscriptionKey({ query, variables });
     this.$connections.setKey(key, 'closed');
     this.$updateCounts.setKey(key, 0);
     await subscribeToQuery({
@@ -103,6 +142,187 @@ class PreviewMode extends HTMLElement {
         console.error('PreviewMode subscription error:', { error, query, variables });
       },
     });
+  }
+
+  /**
+   * CMS editor tools (edit links + block overlays)
+   */
+
+  #setupCmsEditorTools() {
+    this.#datocmsProject = this.dataset.datocmsProject || '';
+    if (!this.#datocmsProject) return;
+
+    this.#editableRecord = JSON.parse(
+      this.subscriptionElements.find((el) => el.dataset.record)?.dataset.record ?? 'null'
+    );
+    this.#editLinkElement = this.querySelector('[data-editor-edit-record]');
+    this.#toggleBlockNamesButton = this.querySelector('[data-editor-toggle-blocks]');
+
+    const stored = localStorage.getItem('preview-mode-show-block-names');
+    this.#$showBlockNames.set(stored === 'true');
+
+    this.#$showBlockNames.listen(() => this.#syncEditorToolsVisibility());
+    this.#toggleBlockNamesButton?.addEventListener('click', () => {
+      this.#$showBlockNames.set(!this.#$showBlockNames.get());
+    });
+
+    this.#syncEditorToolsVisibility();
+    this.#setupBlockLabelHoverTracking();
+  }
+
+  #syncEditorToolsVisibility() {
+    const show = this.#$showBlockNames.get();
+    localStorage.setItem('preview-mode-show-block-names', show.toString());
+    if (this.#toggleBlockNamesButton) {
+      this.#toggleBlockNamesButton.textContent = show ? 'hide blocks' : 'show blocks';
+    }
+    document.documentElement.dataset.editorBlocksVisible = show ? 'true' : 'false';
+
+    if (show) this.#positionBlockLabels();
+    this.#applyEditLinks();
+  }
+
+  #applyEditLinks() {
+    if (!this.#editableRecord?.id || !this.#editableRecord?.type) return;
+
+    const itemTypeId = getItemTypeId(this.#editableRecord.type);
+    if (!itemTypeId) return;
+
+    if (this.#editLinkElement) {
+      this.#editLinkElement.href = this.#buildRecordEditUrl(itemTypeId, this.#editableRecord.id);
+    }
+
+    if (document.documentElement.dataset.editorBlocksVisible === 'true') {
+      this.#applyBlockEditLinks(itemTypeId);
+    }
+  }
+
+  /**
+   * Builds a DatoCMS editor URL for a specific record.
+   * (itemTypeId = "LjXdkuCdQxCFT4hv8_ayew" (Page), recordId = "X_tZn3TxQY28ltSyjZUGHQ")
+   * => https://my-project.admin.datocms.com/environments/main/editor/item_types/LjXdkuCdQxCFT4hv8_ayew/items/X_tZn3TxQY28ltSyjZUGHQ
+   */
+  #buildRecordEditUrl(itemTypeId: string, recordId: string) {
+    return `https://${this.#datocmsProject}.admin.datocms.com/environments/${this.#datocmsEnvironment}/editor/item_types/${itemTypeId}/items/${recordId}`;
+  }
+
+  /**
+   * Sets edit link hrefs on block label anchors by appending a #fieldPath hash.
+   * e.g. https://my-project.admin.datocms.com/.../items/12345#fieldPath=body.en.0.title
+   */
+  #applyBlockEditLinks(itemTypeId: string) {
+    const baseUrl = this.#buildRecordEditUrl(itemTypeId, this.#editableRecord!.id);
+    document.querySelectorAll<HTMLAnchorElement>('[data-editor-edit-block]').forEach((anchor) => {
+      const fieldPath = anchor.dataset.editorFieldPath;
+      if (!fieldPath) return;
+
+      const url = new URL(baseUrl);
+      url.hash = `fieldPath=${this.#withLocaleFieldPath(fieldPath)}`;
+      anchor.href = url.toString();
+    });
+  }
+
+  /**
+   * Inserts the current locale as the second segment of a field path.
+   * "body" => "body.en", "body.0.title" => "body.en.0.title"
+   */
+  #withLocaleFieldPath(fieldPath: string) {
+    const locale = document.documentElement.lang;
+    if (!locale) return fieldPath;
+
+    const parts = fieldPath.split('.');
+    if (parts.length < 2) return `${fieldPath}.${locale}`;
+
+    const [root, maybeLocale, ...rest] = parts;
+    if (maybeLocale === locale) return fieldPath;
+
+    return [root, locale, maybeLocale, ...rest].join('.');
+  }
+
+  #getBlockContainerForLabel(label: HTMLAnchorElement): Element | null {
+    let el: Element | null = label.nextElementSibling;
+    while (el) {
+      if (el.tagName.toLowerCase() !== 'preview-mode-subscription') return el;
+      el = el.nextElementSibling;
+    }
+    return null;
+  }
+
+  #positionBlockLabels() {
+    document.querySelectorAll<HTMLAnchorElement>('[data-editor-edit-block]').forEach((label) => {
+      const block = this.#getBlockContainerForLabel(label);
+      if (!block) return;
+
+      const blockRect = block.getBoundingClientRect();
+      if (blockRect.width === 0 && blockRect.height === 0) return;
+
+      const offsetParent = label.offsetParent || document.body;
+      const parentRect = offsetParent.getBoundingClientRect();
+      label.style.top = `${blockRect.top - parentRect.top}px`;
+      label.style.left = `${blockRect.left - parentRect.left}px`;
+      block.setAttribute('data-editor-block-container', '');
+    });
+  }
+
+  #setupBlockLabelHoverTracking() {
+    let currentLabel: HTMLAnchorElement | null = null;
+    let currentBlock: Element | null = null;
+
+    const clearHover = () => {
+      currentLabel?.classList.remove('hover');
+      currentBlock?.classList.remove('hover');
+      currentLabel = null;
+      currentBlock = null;
+    };
+
+    document.addEventListener(
+      'pointermove',
+      (e) => {
+        if (document.documentElement.dataset.editorBlocksVisible !== 'true' || !(e.target instanceof Element)) {
+          clearHover();
+          return;
+        }
+
+        const labels = document.querySelectorAll<HTMLAnchorElement>('[data-editor-edit-block]');
+        let deepest: HTMLAnchorElement | null = null;
+        let deepestBlock: Element | null = null;
+
+        for (const label of labels) {
+          const block = this.#getBlockContainerForLabel(label);
+          if (block && (label.contains(e.target) || block.contains(e.target))) {
+            deepest = label;
+            deepestBlock = block;
+          }
+        }
+
+        if (deepest === currentLabel) return;
+
+        clearHover();
+        currentLabel = deepest;
+        currentBlock = deepestBlock;
+        currentLabel?.classList.add('hover');
+        currentBlock?.classList.add('hover');
+      },
+      { passive: true }
+    );
+
+    let scrollRaf: number | null = null;
+    const onReposition = () => {
+      if (document.documentElement.dataset.editorBlocksVisible === 'true') {
+        this.#positionBlockLabels();
+      }
+    };
+
+    window.addEventListener('scroll', () => {
+      if (scrollRaf !== null) return;
+      scrollRaf = requestAnimationFrame(() => {
+        scrollRaf = null;
+        onReposition();
+      });
+    }, { passive: true });
+
+    window.addEventListener('resize', onReposition, { passive: true });
+    window.addEventListener('load', onReposition, { passive: true });
   }
 }
 

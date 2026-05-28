@@ -1,0 +1,5 @@
+# Vendored agent skills - third-party content managed via `npx skills add`.
+# Marked as vendored so GitHub collapses them in PR diffs and excludes them
+# from language statistics. Treat like `node_modules`: review the lock file
+# and SKILL.md trigger, not line-by-line.
+.agents/skills/** linguist-vendored=true

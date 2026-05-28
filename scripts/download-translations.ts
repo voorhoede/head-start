@@ -1,7 +1,7 @@
 import { writeFile } from 'node:fs/promises';
 import { buildClient } from '@datocms/cma-client-node';
 import dotenv from 'dotenv-safe';
-import { datocmsEnvironment } from '../datocms-environment';
+import { datocmsEnvironment } from '../datocms-environment.ts';
 
 dotenv.config({
   allowEmptyValues: Boolean(process.env.CI),
@@ -31,8 +31,7 @@ async function downloadTranslations() {
   const locales = Object.keys(translations);
   const translationKeys = Object.keys(translations[locales[0]]);
   await writeFile('./src/lib/i18n/types.ts',
-    `export type TranslationKey = \n | ${translationKeys.map(key => `'${key}'`).join('\n | ')};\n` +
-    `export type SiteLocale = \n | ${locales.map(locale => `'${locale}'`).join('\n | ')};\n`
+    `export type TranslationKey = \n | ${translationKeys.map(key => `'${key}'`).join('\n | ')};\n`
   );
 }
 

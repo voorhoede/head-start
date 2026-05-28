@@ -1,15 +1,15 @@
 import { describe, expect, test, } from 'vitest';
-import { datocmsAssetsOrigin } from '@lib/datocms';
-import { renderToFragment } from '@lib/renderer';
+import { datocmsAssetsOrigin } from '~/lib/datocms';
+import { renderToFragment } from '~/lib/renderer';
 import LinkToFile, { type Props as LinkToFileProps } from './LinkToFile.astro';
-import { getLocale } from '@lib/i18n';
+import { getLocale } from '~/lib/i18n';
 
 type MockFileOptions = {
   basename?: string;
   format?: string;
   size?: number;
   locale?: string | null;
-}
+};
 
 const mockFilename = (basename: string) => `123-${basename}`;
 const mockFilePath = (basename: string) => `/path/to/${mockFilename(basename)}`;

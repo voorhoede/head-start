@@ -1,4 +1,4 @@
-import type { PageRouteFragment, SiteLocale } from '@lib/datocms/types';
+import type { PageRouteFragment, SiteLocale } from '~/lib/datocms/types';
 import { getLocalizedSlug, getSlugFromPath, type MaybeSlug } from './lib/slug';
 
 export function getParentPages(page: PageRouteFragment): PageRouteFragment[] {

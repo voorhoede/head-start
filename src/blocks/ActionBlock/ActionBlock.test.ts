@@ -1,8 +1,8 @@
-import { renderToFragment } from '@lib/renderer';
+import { renderToFragment } from '~/lib/renderer';
 import { describe, expect, test } from 'vitest';
 import InlineBlock, { type Props } from './ActionBlock.astro';
-import type { ActionBlockFragment, ExternalLinkFragment, InternalLinkFragment, SiteLocale } from '@lib/datocms/types';
-import { locales } from '@lib/i18n';
+import type { ActionBlockFragment, ExternalLinkFragment, InternalLinkFragment, SiteLocale } from '~/lib/datocms/types';
+import { locales } from '~/lib/i18n';
 
 type ActionBlockItem = 
   | InternalLinkFragment
@@ -71,4 +71,24 @@ describe('ActionBlock', () => {
     expect(fragment.querySelector('a.action--secondary')?.textContent).toBe('Second item');
   });
 
+
+  test('Block is rendered with primary links, internal and external', async () => {
+    const blockWithTwoItems = createActionBlockFragment([
+      createExternalLinkFragment('First item', 'https://example.com/first', 'primary'),
+      createInternalLinkFragment('Second item', 'second-item', 'primary'),
+    ]);
+    const fragment = await renderToFragment<Props>(InlineBlock, {
+      props: {
+        block: blockWithTwoItems,
+      }
+    });
+
+    const actions = Array.from(fragment.querySelectorAll('a.action'));
+    expect(actions.length).toBe(2);
+    expect(actions[0]?.classList.contains('action--primary')).toBe(true);
+    expect(actions[1]?.classList.contains('action--secondary')).toBe(true);
+
+    expect(actions[0]?.textContent).toBe('First item');
+    expect(actions[1]?.textContent).toBe('Second item');
+  });
 });

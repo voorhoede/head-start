@@ -8,7 +8,7 @@ Head Start provides CSS helper classes for improved accessibility:
 
 ```astro
 ---
-import '@assets/a11y.css';
+import '~/assets/a11y.css';
 ---
 
 <span class="a11y-sr-only">

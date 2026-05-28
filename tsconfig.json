@@ -3,15 +3,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@assets/*": ["src/assets/*"],
-      "@blocks/*": ["src/blocks/*"],
-      "@components/*": ["src/components/*"],
-      "@layouts/*": ["src/layouts/*"],
-      "@lib/*": ["src/lib/*"],
-      "@middleware/*": ["src/middleware/*"],
-      "@pages/*": ["src/pages/*"],
-      "@root/*": ["./*"],
-      "@src/*": ["src/*"]
+      "~/*": ["./src/*"],
+      "~root/*": ["./*"]
     },
     "verbatimModuleSyntax": true,
     "plugins": [
@@ -21,5 +14,5 @@
     ]
   },
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "node_modules"]
+  "exclude": ["dist", "node_modules", "config/datocms/migrations"]
 }

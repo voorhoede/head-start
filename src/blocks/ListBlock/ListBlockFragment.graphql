@@ -1,0 +1,31 @@
+fragment ListBlock on ListBlockRecord {
+  id
+  listType
+  startNumber
+  items {
+    __typename
+    ... on ListItemRecord {
+      ...ListItem
+    }
+  }
+}
+fragment ListItem on ListItemRecord {
+  listText: text {
+   links {
+      __typename
+      ... on FileRecord {
+        ...FileRoute
+      }
+      ... on HomePageRecord {
+        ...HomeRoute
+      }
+      ... on PageRecord {
+        ...PageRoute
+      }
+      ... on VariableRecord {
+        ...Variable
+      }
+    }
+    value
+  }
+}

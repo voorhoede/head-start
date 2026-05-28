@@ -18,6 +18,7 @@ node_modules/
 reports/
 src/assets/icon-sprite.svg
 src/assets/icon-sprite.ts
+src/lib/datocms/itemTypes.json
 src/lib/datocms/types.ts
 src/lib/i18n/messages.json
 src/lib/i18n/types.ts

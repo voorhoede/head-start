@@ -1,0 +1,1 @@
+Displays a single image with an optional caption.

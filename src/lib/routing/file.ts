@@ -1,5 +1,5 @@
-import type { FileRouteFragment } from '@lib/datocms/types';
-import { datocmsAssetsOrigin } from '@lib/datocms';
+import type { FileRouteFragment } from '~/lib/datocms/types';
+import { datocmsAssetsOrigin } from '~/lib/datocms';
 import fileProxyMapUntyped from './file-proxy-map.json';
 
 export const getFileHref = (record: FileRouteFragment) => {

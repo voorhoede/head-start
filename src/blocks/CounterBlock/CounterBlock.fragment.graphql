@@ -1,0 +1,5 @@
+fragment CounterBlock on CounterBlockRecord {
+  __typename
+  id
+  value
+}

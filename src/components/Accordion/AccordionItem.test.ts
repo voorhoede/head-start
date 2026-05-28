@@ -1,4 +1,4 @@
-import { renderToFragment } from '@lib/renderer';
+import { renderToFragment } from '~/lib/renderer';
 import { describe, expect, test } from 'vitest';
 import AccordionItem, { type Props } from './AccordionItem.astro';
 

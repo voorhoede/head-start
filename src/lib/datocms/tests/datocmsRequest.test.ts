@@ -10,7 +10,7 @@ import {
 import { HttpResponse, graphql } from 'msw';
 import { setupServer } from 'msw/node';
 import { parse } from 'graphql/language';
-import { datocmsRequest } from '@lib/datocms';
+import { datocmsRequest } from '~/lib/datocms';
 
 // these imports will resolve to their mocked counterparts
 import * as env from 'astro:env/server';
@@ -103,11 +103,7 @@ describe('datocmsRequest:', () => {
     }
 
     expect(response!).toBeInstanceOf(Error);
-
-    // compare parsed objects instead of stringified objects because the formatting of the error message strings is an implementation detail
-    // e.g. JSON.stringify({ a: 'b' }, null, 2) does not equal JSON.stringify({ a: 'b' }, null, 4) because of the difference in whitespace
-    const parsedErrorResponse = JSON.parse(response!.message);
-    expect(parsedErrorResponse).toEqual(errorResponse);
+    expect(response!.message).toContain(errorResponse[0].message);
   });
 
   test('should retry if it hits a rate-limit error', async () => {

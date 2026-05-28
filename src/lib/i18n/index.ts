@@ -1,7 +1,8 @@
 import rosetta from 'rosetta';
-import type { SiteLocale, TranslationKey } from '@lib/i18n/types';
-import messages from '@lib/i18n/messages.json';
-import { locales as siteLocales } from '@lib/site.json';
+import type { TranslationKey } from '~/lib/i18n/types';
+import { type SiteLocale } from '~/lib/datocms/types';
+import messages from '~/lib/i18n/messages.json';
+import { locales as siteLocales } from '~/lib/site.json';
 
 export const locales = siteLocales as SiteLocale[];
 export const defaultLocale = locales[0];
@@ -10,7 +11,7 @@ export const cookieName = 'HEAD_START_LOCALE';
 const i18n = rosetta(messages);
 
 if (typeof document !== 'undefined') {
-  setLocale(document.documentElement.lang as SiteLocale);
+  setLocale(document.documentElement.lang);
 } else {
   i18n.locale(defaultLocale);
 }
@@ -26,7 +27,7 @@ export const t: T = (key: TranslationKey, params?: any[] | Record<string, any>, 
 };
 
 export function getLocale() {
-  return i18n.locale();
+  return i18n.locale() as SiteLocale;
 }
 
 export function isLocale<T extends typeof locales>(locale: unknown): locale is T[number] {

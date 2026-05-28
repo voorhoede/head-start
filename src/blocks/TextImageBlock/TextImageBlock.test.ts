@@ -1,5 +1,5 @@
-import { renderToFragment } from '@lib/renderer';
-import type { TextImageBlockFragment } from '@lib/datocms/types';
+import { renderToFragment } from '~/lib/renderer';
+import type { TextImageBlockFragment } from '~/lib/datocms/types';
 import { describe, expect, test } from 'vitest';
 import TextImageBlock from './TextImageBlock.astro';
 
@@ -11,6 +11,7 @@ describe('TextImageBlock', () => {
           layout: 'text-image',
           text: {
             blocks: [],
+            inlineBlocks: [],
             links: [],
             value: {
               schema: 'dast',
@@ -58,6 +59,7 @@ describe('TextImageBlock', () => {
           layout: 'image-text',
           text: {
             blocks: [],
+            inlineBlocks: [],
             links: [],
             value: {
               schema: 'dast',

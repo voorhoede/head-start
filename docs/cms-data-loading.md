@@ -2,6 +2,8 @@
 
 **Head Starts provides loaders and helpers to fetch content from DatoCMS.**
 
+In most cases you want to fetch content per page via GraphQL queries, as is described below. In some cases however, you might want to use Astro's Content Collections. See the [documentation on Content Collections](./content-collections.md) to learn how it is implemented in Head Start.
+
 ## Configuration
 
 Head Start supports the use of [primary and sandbox environments in DatoCMS](https://www.datocms.com/docs/scripting-migrations/introduction). This enables feature branches to use a different environment than the main branch. You need to set the DatoCMS environment where content should be fetched from in [`/datocms-environment.ts`](../datocms-environment.ts):
@@ -47,8 +49,8 @@ fragment ImageBlock on ImageBlockRecord {
 ```graphql
 # src/pages/[locale]/[slug]/_index.query.graphql
 
-#import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
-#import '@blocks/TextBlock/TextBlock.fragment.graphql'
+#import '~/blocks/ImageBlock/ImageBlock.fragment.graphql'
+#import '~/blocks/TextBlock/TextBlock.fragment.graphql'
 
 query Page($locale: SiteLocale!, $slug: String!) {
   page(locale: $locale, filter: { slug: { eq: $slug } }) {
@@ -79,7 +81,7 @@ console.log(typeof query) // DocumentNode
 Head Start automatically generates TypeScript types for all your GraphQL files, which you can import:
 
 ```ts
-import type { ImageBlockFragment, PageQuery, PageRecord } from '@lib/datocms/types';
+import type { ImageBlockFragment, PageQuery, PageRecord } from '~/lib/datocms/types';
 ```
 
 ## DatoCMS requests
@@ -90,8 +92,8 @@ Example usage:
 
 ```astro
 ---
-import { datocmsRequest } from '@lib/datocms';
-import type { PageQuery, PageRecord } from '@lib/datocms/types';
+import { datocmsRequest } from '~/lib/datocms';
+import type { PageQuery, PageRecord } from '~/lib/datocms/types';
 import query from './_index.query.graphql';
 
 const { page } = await datocmsRequest<PageQuery>({
@@ -126,7 +128,7 @@ Head Start provides a `datocmsCollection()` helper to retrieve all records of a 
 Simplified example without types:
 
 ```ts
-import { datocmsCollection } from '@lib/datocms';
+import { datocmsCollection } from '~/lib/datocms';
 
 const pages = await datocmsCollection({
   collection: 'Pages',
@@ -138,7 +140,7 @@ More realistic example with types:
 
 ```astro
 ---
-import { datocmsCollection } from '@lib/datocms';
+import { datocmsCollection } from '~/lib/datocms';
 
 export async function getStaticPaths() {
   interface PagesCollectionItem {

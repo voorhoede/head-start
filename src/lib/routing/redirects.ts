@@ -1,6 +1,6 @@
 import type { ValidRedirectStatus } from 'astro';
 import { parse, inject } from 'regexparam';
-import type { RedirectRule } from '@root/scripts/download-redirects';
+import type { RedirectRule } from '~root/scripts/download-redirects';
 import redirectConfiguration from './redirects.json';
 
 export const defaultRedirectStatus = 302;
@@ -17,14 +17,14 @@ interface ParamsOutput {
 
 export const redirectStatusCode = (statusCode: number): ValidRedirectStatus => {
   switch (statusCode) {
-  case 301:
-  case 302:
-  case 303:
-  case 307:
-  case 308:
-    return statusCode;
-  default:
-    return defaultRedirectStatus;
+    case 301:
+    case 302:
+    case 303:
+    case 307:
+    case 308:
+      return statusCode;
+    default:
+      return defaultRedirectStatus;
   }
 };
 

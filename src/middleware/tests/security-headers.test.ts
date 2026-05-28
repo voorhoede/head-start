@@ -8,6 +8,7 @@ describe('securityheaders middleware', () => {
     const mockRequest = new Request('https://example.com');
     const mockContext = {
       request: mockRequest,
+      url: new URL('https://example.com'),
       params: {},
     } as APIContext;
 
@@ -36,6 +37,7 @@ describe('securityheaders middleware', () => {
     const mockRequest = new Request('https://example.com');
     const mockContext = {
       request: mockRequest,
+      url: new URL('https://example.com'),
       params: {},
     } as APIContext;
 

@@ -1,13 +1,13 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { defaultLocale, getLocale, getLocaleName, setLocale, t } from '@lib/i18n';
+import { defaultLocale, getLocale, getLocaleName, setLocale, t } from '~/lib/i18n';
 
 // these imports will resolve to their mocked counterparts
-import { locales } from '@lib/site.json';
+import { locales } from '~/lib/site.json';
 
 // to verify that unsupported locales are handled correctly we test with locales that we know do not exist (e.g. 'unsupported_locale')
 // TS does not like this, so we supress the warnings with a ts-expect-error comment
 
-vi.mock('@lib/i18n/messages.json', () => {
+vi.mock('~/lib/i18n/messages.json', () => {
   return {
     default: {
       en: {
@@ -28,7 +28,7 @@ vi.mock('@lib/i18n/messages.json', () => {
   };
 });
 
-vi.mock('@lib/site.json', () => {
+vi.mock('~/lib/site.json', () => {
   return {
     locales: [
       'en',

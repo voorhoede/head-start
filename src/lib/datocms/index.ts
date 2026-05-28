@@ -1,10 +1,11 @@
-import { Kind, parse, type DocumentNode, type FragmentDefinitionNode } from 'graphql';
+import { Kind, parse, type DocumentNode, type FragmentDefinitionNode, type OperationDefinitionNode } from 'graphql';
 import { print } from 'graphql/language/printer';
-import type { SiteLocale } from '@lib/i18n/types';
-import { titleSuffix } from '@lib/seo';
-import { datocmsBuildTriggerId, datocmsEnvironment } from '@root/datocms-environment';
-import { output } from '@root/config/output';
+import type { SiteLocale } from '~/lib/datocms/types';
+import { titleSuffix } from '~/lib/seo';
+import { datocmsBuildTriggerId, datocmsEnvironment } from '~root/datocms-environment';
+import { output } from '~root/config/output';
 import { DATOCMS_READONLY_API_TOKEN, HEAD_START_PREVIEW } from 'astro:env/server';
+import { stripIndents } from 'proper-tags';
 
 const wait = (milliSeconds: number) => new Promise((resolve) => setTimeout(resolve, milliSeconds));
 
@@ -78,13 +79,27 @@ export async function datocmsRequest<
   }
 
   const { data, errors } = await response.json();
-  if (errors) throw Error(JSON.stringify(errors, null, 4));
+  if (errors) {
+    const definition = query.definitions.find(
+      (definition): definition is OperationDefinitionNode => definition.kind === Kind.OPERATION_DEFINITION
+    );
+    const type = definition?.operation;
+    const name = definition?.name?.value;
+    const operation = (type && name)
+      ? `"${type} ${name}"`
+      : 'unknown operation';
+    throw Error(stripIndents`
+      DatoCMS request failed for ${operation}
+      ` +
+      JSON.stringify(errors, null, 4)
+    );
+  }
   return data;
 }
 
 type CollectionData<CollectionType> = {
   [key: string]: CollectionType[];
-}
+};
 
 export type CollectionInfo = {
   meta: { count: number };
@@ -114,7 +129,7 @@ export async function datocmsCollection<CollectionType>({
   const {
     meta,
     records: [
-      { __typename: type } = { __typename: '' } // Collection might be empty
+      { __typename: type } = { __typename: null } // Collection might be empty
     ]
   } = await datocmsRequest<CollectionInfo>({
     query: parse(/* graphql */`
@@ -125,9 +140,16 @@ export async function datocmsCollection<CollectionType>({
       }
    `)
   });
+  
+  const records: CollectionType[] = [];
+
+  // The type is used to create a fragment from a string. Without it, that fails.
+  // But the type is null because the collection is empty, so we don't need to fetch any records.
+  if (!type) return records;
+  
   const recordsPerPage = 100; // DatoCMS GraphQL API has a limit of 100 records per request
   const totalPages = Math.ceil(meta.count / recordsPerPage);
-  const records: CollectionType[] = [];
+ 
   // Create new fragment to maintain support for passing a string to argument fragment
   const fragmentDocument = typeof fragment === 'string'
     ? parse(`fragment InlineFragment on ${type} { ${fragment} }`)
@@ -142,7 +164,7 @@ export async function datocmsCollection<CollectionType>({
     const data = await datocmsRequest<CollectionData<CollectionType>>({
       query: parse(/* graphql */`
         # Insert fragment definition from fragmentDocument, 
-        # which is either the fragment passed from an import from @lib/datocms/types.ts 
+        # which is either the fragment passed from an import from ~/lib/datocms/types.ts 
         # or the one created from a string;
         ${print(fragmentDocument)}
         

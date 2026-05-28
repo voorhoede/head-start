@@ -1,0 +1,1 @@
+Embeds a video from YouTube or Vimeo using a URL. Use this when the video is already hosted on an external platform.

@@ -22,7 +22,7 @@ You can create your own enhanced search experience - like a search widget in the
 ### Search lib function
 
 ```ts
-import { datocmsSearch } from '@lib/datocms';
+import { datocmsSearch } from '~/lib/datocms';
 
 const { meta, results } = await datocmsSearch({
   locale: 'en',
