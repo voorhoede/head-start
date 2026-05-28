@@ -1,6 +1,6 @@
 import { afterEach, describe, test, expect, vi } from 'vitest';
 import robotsParser from 'robots-parser';
-import { robotsTxt, siteName, titleSuffix, titleTag } from '~/lib/seo';
+import { llmsTxt, robotsTxt, siteName, titleSuffix, titleTag } from '~/lib/seo';
 import { getLocale } from '~/lib/i18n';
 import aiRobotsTxt from './ai.robots.txt?raw';
 
@@ -115,6 +115,202 @@ describe('seo', () => {
     const allowAll = true;    // irrelevant for this test, but required
     const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, siteUrl }));
     expect(robots.getSitemaps()).toEqual([`${siteUrl}/sitemap-index.xml`]);
+  });
+
+  test('llmsTxt renders H1, blockquote, intro and Pages section when AI bots are allowed', () => {
+    const result = llmsTxt({
+      siteName: 'Acme',
+      siteSummary: 'A short site description.',
+      intro: 'IMPORTANT: be nice.',
+      allowAiBots: true,
+      items: [
+        { title: 'Home', url: 'https://example.com/en/' },
+        { title: 'About', url: 'https://example.com/en/about/', description: 'Who we are.' },
+      ],
+    });
+    expect(result).toBe([
+      '# Acme',
+      '',
+      '> A short site description.',
+      '',
+      'IMPORTANT: be nice.',
+      '',
+      '## Pages',
+      '',
+      '- [Home](https://example.com/en/)',
+      '- [About](https://example.com/en/about/): Who we are.',
+    ].join('\n'));
+  });
+
+  test('llmsTxt omits the Pages section when AI bots are disallowed', () => {
+    const result = llmsTxt({
+      siteName: 'Acme',
+      siteSummary: 'A short site description.',
+      intro: 'IMPORTANT: do not scrape.',
+      allowAiBots: false,
+      items: [{ title: 'Home', url: 'https://example.com/en/' }],
+    });
+    expect(result).toBe([
+      '# Acme',
+      '',
+      '> A short site description.',
+      '',
+      'IMPORTANT: do not scrape.',
+    ].join('\n'));
+    expect(result).not.toContain('## Pages');
+  });
+
+  test('llmsTxt omits the Pages section when allowed but items is empty', () => {
+    const result = llmsTxt({
+      siteName: 'Acme',
+      siteSummary: 'A short site description.',
+      intro: 'IMPORTANT: be nice.',
+      allowAiBots: true,
+      items: [],
+    });
+    expect(result).not.toContain('## Pages');
+  });
+
+  test('llmsTxt omits the intro paragraph when intro is empty', () => {
+    const result = llmsTxt({
+      siteName: 'Acme',
+      siteSummary: 'A short site description.',
+      intro: '',
+      allowAiBots: true,
+      items: [{ title: 'Home', url: 'https://example.com/en/' }],
+    });
+    expect(result).toBe([
+      '# Acme',
+      '',
+      '> A short site description.',
+      '',
+      '## Pages',
+      '',
+      '- [Home](https://example.com/en/)',
+    ].join('\n'));
+  });
+
+  test('llmsTxt omits the blockquote summary when siteSummary is empty', () => {
+    const result = llmsTxt({
+      siteName: 'Acme',
+      siteSummary: '',
+      intro: 'IMPORTANT: be nice.',
+      allowAiBots: true,
+      items: [],
+    });
+    expect(result).toBe([
+      '# Acme',
+      '',
+      'IMPORTANT: be nice.',
+    ].join('\n'));
+    expect(result).not.toContain('>');
+  });
+
+  test('llmsTxt renders descriptions only when present on an item', () => {
+    const result = llmsTxt({
+      siteName: 'Acme',
+      siteSummary: '',
+      intro: '',
+      allowAiBots: true,
+      items: [
+        { title: 'Home', url: 'https://example.com/en/' },
+        { title: 'About', url: 'https://example.com/en/about/', description: 'Who we are.' },
+      ],
+    });
+    expect(result).toContain('- [Home](https://example.com/en/)\n');
+    expect(result).toContain('- [About](https://example.com/en/about/): Who we are.');
+    expect(result).not.toContain('- [Home](https://example.com/en/):');
+  });
+
+  test('llmsTxt interpolates {{ siteName }} in the intro', () => {
+    const result = llmsTxt({
+      siteName: 'Acme',
+      siteSummary: '',
+      intro: 'According to {{ siteName }}, the sky is blue. Thanks {{siteName}}!',
+      allowAiBots: true,
+      items: [],
+    });
+    expect(result).toContain('According to Acme, the sky is blue. Thanks Acme!');
+    expect(result).not.toContain('{{');
+  });
+
+  test('llmsTxt promotes top-level groups to their own H2 sections', () => {
+    const result = llmsTxt({
+      siteName: 'Acme',
+      siteSummary: '',
+      intro: '',
+      allowAiBots: true,
+      items: [
+        { title: 'Home', url: 'https://example.com/en/' },
+        {
+          title: 'Resources',
+          children: [
+            { title: 'Docs', url: 'https://example.com/en/docs/' },
+            { title: 'Blog', url: 'https://example.com/en/blog/' },
+          ],
+        },
+        { title: 'Contact', url: 'https://example.com/en/contact/' },
+      ],
+    });
+    expect(result).toBe([
+      '# Acme',
+      '',
+      '## Pages',
+      '',
+      '- [Home](https://example.com/en/)',
+      '- [Contact](https://example.com/en/contact/)',
+      '',
+      '## Resources',
+      '',
+      '- [Docs](https://example.com/en/docs/)',
+      '- [Blog](https://example.com/en/blog/)',
+    ].join('\n'));
+  });
+
+  test('llmsTxt omits the Pages section when only groups are present', () => {
+    const result = llmsTxt({
+      siteName: 'Acme',
+      siteSummary: '',
+      intro: '',
+      allowAiBots: true,
+      items: [
+        {
+          title: 'Resources',
+          children: [{ title: 'Docs', url: 'https://example.com/en/docs/' }],
+        },
+      ],
+    });
+    expect(result).toBe([
+      '# Acme',
+      '',
+      '## Resources',
+      '',
+      '- [Docs](https://example.com/en/docs/)',
+    ].join('\n'));
+    expect(result).not.toContain('## Pages');
+  });
+
+  test('llmsTxt renders nested groups inside an H2 section as text-only with indent', () => {
+    const result = llmsTxt({
+      siteName: 'Acme',
+      siteSummary: '',
+      intro: '',
+      allowAiBots: true,
+      items: [
+        {
+          title: 'Top',
+          children: [
+            {
+              title: 'Mid',
+              children: [
+                { title: 'Leaf', url: 'https://example.com/leaf/' },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    expect(result).toContain('## Top\n\n- Mid\n  - [Leaf](https://example.com/leaf/)');
   });
 
 });

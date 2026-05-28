@@ -1,0 +1,23 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import type { RecordRoute } from '~/lib/routing';
+import LinkToRecord from '~/components/LinkToRecord/LinkToRecord.astro';
+
+type Node = {
+  meta?: {
+    id: string;
+    value: string;
+  }[];
+};
+
+export type Props = HTMLAttributes<'a'> & {
+  node?: Node;
+  record: RecordRoute;
+};
+
+const { record, node, ...props } = Astro.props;
+
+const openInNewTab = Boolean(node?.meta?.find(entry => entry.id === 'target' && entry.value === '_blank'));
+---
+
+<LinkToRecord {record} {openInNewTab} {...props}><slot>{record.title}</slot></LinkToRecord>

@@ -1,7 +1,7 @@
 import { writeFile } from 'node:fs/promises';
 import { buildClient } from '@datocms/cma-client-node';
 import dotenv from 'dotenv-safe';
-import { datocmsEnvironment } from '../datocms-environment';
+import { datocmsEnvironment } from '../datocms-environment.ts';
 
 dotenv.config({
   allowEmptyValues: Boolean(process.env.CI),
@@ -12,12 +12,12 @@ type RedirectRuleRecord = {
   to: string;
   status_code: string;
   [key: string]: string | object;
-}
+};
 export type RedirectRule = {
   from: string;
   to: string;
   statusCode: '301'|'302';
-}
+};
 
 async function fetchRedirectRules() {
   // use client instead of http api for pagination support

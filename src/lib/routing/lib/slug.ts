@@ -6,9 +6,9 @@ export type MaybeSlug = string | undefined;
 type LocalizedSlugs = {
   _allSlugLocales?:
     | {
-        locale?: SiteLocale | null;
-        value?: string;
-      }[]
+      locale?: SiteLocale | null;
+      value?: string;
+    }[]
     | null;
 };
 

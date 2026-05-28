@@ -9,7 +9,7 @@ type MockFileOptions = {
   format?: string;
   size?: number;
   locale?: string | null;
-}
+};
 
 const mockFilename = (basename: string) => `123-${basename}`;
 const mockFilePath = (basename: string) => `/path/to/${mockFilename(basename)}`;
