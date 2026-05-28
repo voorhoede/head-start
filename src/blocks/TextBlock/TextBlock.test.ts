@@ -7,6 +7,7 @@ describe('TextBlock Component', () => {
     const fragment = await renderToFragment<Props>(TextBlock, {
       props: {
         block: {
+          __typename: 'TextBlockRecord',
           text: {
             blocks: [],
             inlineBlocks: [],
@@ -51,6 +52,7 @@ describe('TextBlock Component', () => {
     const fragment = await renderToFragment<Props>(TextBlock, {
       props: {
         block: {
+          __typename: 'TextBlockRecord',
           text: {
             blocks: [],
             inlineBlocks: [],
@@ -95,6 +97,7 @@ describe('TextBlock Component', () => {
     const fragment = await renderToFragment<Props>(TextBlock, {
       props: {
         block: {
+          __typename: 'TextBlockRecord',
           text: {
             blocks: [],
             inlineBlocks: [],

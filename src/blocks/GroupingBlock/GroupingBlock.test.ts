@@ -42,6 +42,7 @@ describe('GroupingBlock', () => {
     const fragment = await renderToFragment<Props>(GroupingBlock, {
       props: {
         block: {
+          __typename: 'GroupingBlockRecord',
           id: 'ay-D0Z1ZTqWVszeV9ZqfJA',
           layout: 'stack-untitled',
           items,
@@ -58,6 +59,7 @@ describe('GroupingBlock', () => {
     const fragment = await renderToFragment<Props>(GroupingBlock, {
       props: {
         block: {
+          __typename: 'GroupingBlockRecord',
           id: 'ay-D0Z1ZTqWVszeV9ZqfJA',
           layout: 'stack-titled',
           items,
@@ -75,6 +77,7 @@ describe('GroupingBlock', () => {
     const fragment = await renderToFragment<Props>(GroupingBlock, {
       props: {
         block: {
+          __typename: 'GroupingBlockRecord',
           id: 'ay-D0Z1ZTqWVszeV9ZqfJA',
           layout: 'accordion-closed',
           items,
@@ -90,6 +93,7 @@ describe('GroupingBlock', () => {
     const fragment = await renderToFragment<Props>(GroupingBlock, {
       props: {
         block: {
+          __typename: 'GroupingBlockRecord',
           id: 'ay-D0Z1ZTqWVszeV9ZqfJA',
           layout: 'accordion-open',
           items,
@@ -104,6 +108,7 @@ describe('GroupingBlock', () => {
     const fragment = await renderToFragment<Props>(GroupingBlock, {
       props: {
         block: {
+          __typename: 'GroupingBlockRecord',
           id: 'ay-D0Z1ZTqWVszeV9ZqfJA',
           layout: 'tabs',
           items,
