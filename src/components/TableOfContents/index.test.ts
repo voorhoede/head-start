@@ -1,21 +1,33 @@
 import { describe, expect, test } from 'vitest';
-import { extractTocItemsFromHtml } from './index';
+import { processTableOfContents } from './index';
 
-describe('extractTocItemsFromHtml', () => {
-  test('returns an empty array when there are no headings', () => {
-    const items = extractTocItemsFromHtml('<p>No headings here</p>');
+describe('processTableOfContents', () => {
+  test('returns an empty list when there are no headings', () => {
+    const { items } = processTableOfContents('<p>No headings here</p>');
     expect(items).toEqual([]);
   });
 
-  test('returns an empty array when headings have no id attribute', () => {
-    const items = extractTocItemsFromHtml('<h2>No id</h2><h3>Also no id</h3>');
-    expect(items).toEqual([]);
+  test('assigns slug ids to headings that have none', () => {
+    const { items, html } = processTableOfContents('<h2>Hello World</h2>');
+    expect(items).toEqual([{ id: 'hello-world', level: 2, text: 'Hello World' }]);
+    expect(html).toContain('id="hello-world"');
   });
 
-  test('extracts a flat list of headings with ids', () => {
-    const items = extractTocItemsFromHtml(`
-      <h2 id="first">First</h2>
-      <h2 id="second">Second</h2>
+  test('slugs author-set ids and keeps them on the element', () => {
+    const { items, html } = processTableOfContents('<h2 id="My Custom ID">Title</h2>');
+    expect(items[0].id).toBe('my-custom-id');
+    expect(html).toContain('id="my-custom-id"');
+  });
+
+  test('deduplicates repeated headings with a counter suffix', () => {
+    const { items } = processTableOfContents('<h2>Section</h2><h2>Section</h2>');
+    expect(items.map((item) => item.id)).toEqual(['section', 'section-1']);
+  });
+
+  test('extracts a flat list of sibling headings', () => {
+    const { items } = processTableOfContents(`
+      <h2>First</h2>
+      <h2>Second</h2>
     `);
     expect(items).toEqual([
       { id: 'first', level: 2, text: 'First' },
@@ -24,9 +36,9 @@ describe('extractTocItemsFromHtml', () => {
   });
 
   test('nests a deeper heading under the previous shallower heading', () => {
-    const items = extractTocItemsFromHtml(`
-      <h2 id="parent">Parent</h2>
-      <h3 id="child">Child</h3>
+    const { items } = processTableOfContents(`
+      <h2>Parent</h2>
+      <h3>Child</h3>
     `);
     expect(items).toEqual([
       {
@@ -39,10 +51,10 @@ describe('extractTocItemsFromHtml', () => {
   });
 
   test('does not nest when heading level goes back to same or higher level', () => {
-    const items = extractTocItemsFromHtml(`
-      <h2 id="first">First</h2>
-      <h3 id="sub">Sub</h3>
-      <h2 id="second">Second</h2>
+    const { items } = processTableOfContents(`
+      <h2>First</h2>
+      <h3>Sub</h3>
+      <h2>Second</h2>
     `);
     expect(items).toHaveLength(2);
     expect(items[0].items).toHaveLength(1);
@@ -50,15 +62,15 @@ describe('extractTocItemsFromHtml', () => {
   });
 
   test('uses the text content of the heading', () => {
-    const items = extractTocItemsFromHtml('<h2 id="my-heading"><span>Nested <strong>text</strong></span></h2>');
+    const { items } = processTableOfContents('<h2><span>Nested <strong>text</strong></span></h2>');
     expect(items[0].text).toBe('Nested text');
   });
 
-  test('nests items more than one level deep (ol > li > ol > li > ol > li)', () => {
-    const items = extractTocItemsFromHtml(`
-      <h2 id="parent">Parent</h2>
-      <h3 id="child">Child</h3>
-      <h4 id="grandchild">Grandchild</h4>
+  test('nests items more than one level deep', () => {
+    const { items } = processTableOfContents(`
+      <h2>Parent</h2>
+      <h3>Child</h3>
+      <h4>Grandchild</h4>
     `);
     expect(items).toHaveLength(1);
     expect(items[0].id).toBe('parent');
@@ -68,12 +80,11 @@ describe('extractTocItemsFromHtml', () => {
     expect(items[0].items![0].items![0].id).toBe('grandchild');
   });
 
-  test('extracts all heading levels h1–h6', () => {
+  test('handles all heading levels h1–h6', () => {
     const html = [1, 2, 3, 4, 5, 6]
-      .map((n) => `<h${n} id="h${n}">Heading ${n}</h${n}>`)
+      .map((n) => `<h${n}>Heading ${n}</h${n}>`)
       .join('');
-    const items = extractTocItemsFromHtml(html);
-    // h1 is always top-level; deeper ones nest under the previous item
-    expect(items[0]).toMatchObject({ id: 'h1', level: 1 });
+    const { items } = processTableOfContents(html);
+    expect(items[0]).toMatchObject({ id: 'heading-1', level: 1 });
   });
 });

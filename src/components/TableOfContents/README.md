@@ -1,3 +1,3 @@
 # Table of Contents
 
-**Render a list of links to headings in a given HTML string.**
+**Assigns anchor ids to the headings in a given HTML string and renders a nested list of links to them.**

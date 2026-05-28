@@ -73,6 +73,7 @@
     "github-slugger": "^2.0.0",
     "hast-util-select": "^6.0.4",
     "hast-util-from-html": "^2.0.3",
+    "hast-util-to-html": "^9.0.5",
     "hast-util-to-string": "^3.0.1",
     "hls.js": "^1.6.16",
     "html-validate": "^11.2.0",

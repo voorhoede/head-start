@@ -1,4 +1,6 @@
+import GithubSlugger from 'github-slugger';
 import { fromHtml } from 'hast-util-from-html';
+import { toHtml } from 'hast-util-to-html';
 import { toString } from 'hast-util-to-string';
 import { visit } from 'unist-util-visit';
 
@@ -23,23 +25,29 @@ const insertItem = (items: TreeItem[], item: TreeItem): void => {
   }
 };
 
-export const extractTocItemsFromHtml = (html: string) => {
+const headingTagNames = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
 
+// Parses the HTML once to both assign a unique slug id to every heading
+// (slugging any author-set id) and build the nested table-of-contents tree,
+// so the nav links and on-page heading anchors stay in sync by construction.
+export const processTableOfContents = (html: string) => {
+  const slugger = new GithubSlugger();
   const hast = fromHtml(html, { fragment: true });
-  const tagNames = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
   const items: TreeItem[] = [];
 
   visit(hast, 'element', (node) => {
-    if (tagNames.has(node.tagName) && node.properties?.id) {
-      const text = toString(node);
-      const item: TreeItem = {
-        id: String(node.properties.id),
-        level: parseInt(node.tagName.slice(1), 10),
-        text,
-      };
-      insertItem(items, item);
-    }
+    if (!headingTagNames.has(node.tagName)) return;
+    const text = toString(node);
+    const id = slugger.slug(
+      node.properties?.id ? String(node.properties.id) : text,
+    );
+    node.properties = { ...node.properties, id };
+    insertItem(items, {
+      id,
+      level: parseInt(node.tagName.slice(1), 10),
+      text,
+    });
   });
 
-  return items;
+  return { items, html: toHtml(hast) };
 };
