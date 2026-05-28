@@ -45,7 +45,7 @@ if (canonicalUrl && Astro.url.pathname !== canonicalUrl) {
     record={{ type: recordType, id: recordId }}
   />
   <h1>{page.title}</h1>
-  <TableOfContents showToc={page.hasTableOfContents ?? true}>
+  <TableOfContents showToc={page.hasTableOfContents ?? false}>
     <Blocks blocks={page.bodyBlocks} />
   </TableOfContents>
 </Layout>
