@@ -1,7 +1,7 @@
 ---
-import { getLocale } from '~/lib/i18n';
+import { getAskPathname } from '~/lib/ai-search';
 
-const askUrl = `/${getLocale()}/ask/`;
+const askUrl = getAskPathname();
 ---
 
 <a rel="search" href={askUrl}>Ask AI</a>

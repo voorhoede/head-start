@@ -1,4 +1,5 @@
 ---
+import { getAskPathname } from '~/lib/ai-search';
 import { locales } from '~/lib/i18n';
 import { noIndexTag, titleTag } from '~/lib/seo';
 import type { SiteLocale } from '~/lib/datocms/types';
@@ -12,7 +13,6 @@ const { locale } = Astro.params as { locale: SiteLocale };
 
 const pageTitle = 'Ask AI';
 
-const getAskPathname = (locale: SiteLocale) => `/${locale}/ask/`;
 const pageUrls = locales.map((locale) => ({ locale, pathname: getAskPathname(locale) }));
 const breadcrumbs: Breadcrumb[] = [{ text: pageTitle, href: getAskPathname(locale) }];
 ---
