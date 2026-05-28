@@ -1,4 +1,6 @@
 ---
+import { t } from '~/lib/i18n';
+import { siteName } from '~/lib/seo';
 import { queryParamName } from '~/lib/search';
 
 /*
@@ -9,39 +11,39 @@ const inputId = 'ai-search-input';
 ---
 
 <ai-search
-  data-thinking-text="Thinking…"
-  data-empty-text="No answer found for that question."
-  data-error-text="Something went wrong. Please try again."
+  data-thinking-text={t('ask_thinking')}
+  data-empty-text={t('ask_empty')}
+  data-error-text={t('ask_error')}
 >
   <div class="ai-search__head">
-    <h1>Ask Head Start</h1>
+    <h1>{t('ask_on_site', { siteName: siteName() })}</h1>
     <p class="ai-search__intro">
-      Ask a question and get an answer drawn from this site's content.
+      {t('ask_intro')}
     </p>
     <form class="ai-search__form" role="search">
-      <label class="a11y-sr-only" for={inputId}>Ask a question</label>
+      <label class="a11y-sr-only" for={inputId}>{t('ask_label')}</label>
       <input
         class="ai-search__input"
         id={inputId}
         name={queryParamName}
         type="search"
-        placeholder="Ask a question about this site…"
+        placeholder={t('ask_placeholder')}
         autocomplete="off"
         required
         data-input
       />
-      <button type="submit" data-submit>Ask</button>
+      <button type="submit" data-submit>{t('ask_submit')}</button>
     </form>
   </div>
 
   <div class="ai-search__result" data-result hidden>
     <article>
-      <h2>Answer</h2>
+      <h2>{t('ask_answer')}</h2>
       <p class="ai-search__status" data-status aria-live="polite"></p>
       <div class="ai-search__text" data-answer></div>
     </article>
     <aside data-sources-wrap hidden>
-      <h2>Sources</h2>
+      <h2>{t('ask_sources')}</h2>
       <ul class="ai-search__sources" data-sources></ul>
     </aside>
   </div>
