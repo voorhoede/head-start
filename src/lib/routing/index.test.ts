@@ -1,5 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
-import type { FileRouteFragment, HomeRouteFragment, PageRouteFragment, SiteLocale } from '~/lib/datocms/types';
+import type { FileRouteFragment, HomeRouteFragment, PageRouteFragment } from '~/lib/datocms/types';
+import type { SiteLocale } from '~/lib/datocms/schema';
 import { datocmsAssetsOrigin } from '~/lib/datocms';
 import { getHref, getFileHref, getHomeHref, getPageHref } from './index';
 

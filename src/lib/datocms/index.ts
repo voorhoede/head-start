@@ -1,6 +1,6 @@
 import { Kind, parse, type DocumentNode, type FragmentDefinitionNode, type OperationDefinitionNode } from 'graphql';
 import { print } from 'graphql/language/printer';
-import type { SiteLocale } from '~/lib/datocms/types';
+import type { SiteLocale } from '~/lib/datocms/schema';
 import { titleSuffix } from '~/lib/seo';
 import { datocmsBuildTriggerId, datocmsEnvironment } from '~root/datocms-environment';
 import { output } from '~root/config/output';

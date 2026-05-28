@@ -1,4 +1,5 @@
-import type { PageRouteFragment, SiteLocale } from '~/lib/datocms/types';
+import type { PageRouteFragment } from '~/lib/datocms/types';
+import type { SiteLocale } from '~/lib/datocms/schema';
 import { getLocalizedSlug, getSlugFromPath, type MaybeSlug } from './lib/slug';
 
 /**

@@ -1,4 +1,4 @@
-import type { SiteLocale } from '~/lib/datocms/types';
+import type { SiteLocale } from '~/lib/datocms/schema';
 import { getLocale } from '~/lib/i18n';
 import { globalSeo } from '~/lib/site.json';
 

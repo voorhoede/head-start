@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import type { PageRouteFragment, SiteLocale } from '~/lib/datocms/types';
+import type { PageRouteFragment } from '~/lib/datocms/types';
+import type { SiteLocale } from '~/lib/datocms/schema';
 import { getLocalizedSlug, getSlugFromPath } from './slug';
 
 const mockLocales = ['en', 'nl'] as SiteLocale[];

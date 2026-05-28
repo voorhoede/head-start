@@ -58,11 +58,11 @@ module.exports = {
             },
           },
         },
-        // Operation/fragment types + typed DocumentNodes. Re-exports the schema
-        // types so consumers can keep importing everything from this one module.
+        // Operation/fragment types + typed DocumentNodes. Schema types
+        // (object types, enums, inputs, scalars) are imported from schema.ts
+        // by callers directly, not re-exported here.
         [outputFilename]: {
           plugins: [
-            { add: { content: 'export * from \'./schema\';' } },
             'typescript-operations',
             '@graphql-codegen/typescript-document-nodes',
           ],

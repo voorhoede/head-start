@@ -11,8 +11,8 @@ import type {
   GroupingBlockFragment,
   CounterBlockFragment,
   ListBlockFragment,
-  VariableBlockRecord,
 } from '~/lib/datocms/types';
+import type { VariableBlockRecord } from '~/lib/datocms/schema';
 
 export type AnyBlock = Omit<
   ( // Add any new Block types here.
