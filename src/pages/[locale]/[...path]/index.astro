@@ -1,6 +1,7 @@
 ---
 import Blocks from '~/blocks/Blocks.astro';
 import PreviewModeSubscription from '~/components/PreviewMode/PreviewModeSubscription.astro';
+import TableOfContents from '~/components/TableOfContents/TableOfContents.astro';
 import Layout from '~/layouts/Default.astro';
 import { getCollection, getEntry } from '~/lib/content';
 import { isLocale } from '~/lib/i18n';
@@ -30,7 +31,9 @@ const {
 } = entry;
 const { breadcrumbs, pageUrls } = meta;
 
-const canonicalUrl = pageUrls.find((url) => url.locale === meta.locale)?.pathname;
+const canonicalUrl = pageUrls.find(
+  (url) => url.locale === meta.locale,
+)?.pathname;
 if (canonicalUrl && Astro.url.pathname !== canonicalUrl) {
   return Astro.redirect(canonicalUrl);
 }
@@ -45,5 +48,7 @@ if (canonicalUrl && Astro.url.pathname !== canonicalUrl) {
     {...subscription}
   />
   <h1>{page.title}</h1>
-  <Blocks blocks={page.bodyBlocks} />
+  <TableOfContents showToc={page.hasTableOfContents ?? false}>
+    <Blocks blocks={page.bodyBlocks} />
+  </TableOfContents>
 </Layout>
