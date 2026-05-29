@@ -47,42 +47,45 @@ async function* readSseEvents(body: ReadableStream<Uint8Array>): AsyncGenerator<
 }
 
 class AiSearch extends HTMLElement {
-  #form: HTMLFormElement | null = null;
-  #input: HTMLInputElement | null = null;
-  #submit: HTMLButtonElement | null = null;
-  #result: HTMLElement | null = null;
-  #status: HTMLElement | null = null;
-  #answer: HTMLElement | null = null;
-  #sourcesWrap: HTMLElement | null = null;
-  #sources: HTMLElement | null = null;
+  #form: HTMLFormElement;
+  #input: HTMLInputElement;
+  #submit: HTMLButtonElement;
+  #result: HTMLElement;
+  #status: HTMLElement;
+  #answer: HTMLElement;
+  #sourcesWrap: HTMLElement;
+  #sources: HTMLElement;
+
+  constructor() {
+    super();
+    this.#form = this.querySelector('form') as HTMLFormElement;
+    this.#input = this.querySelector('[data-input]') as HTMLInputElement;
+    this.#submit = this.querySelector('[data-submit]') as HTMLButtonElement;
+    this.#result = this.querySelector('[data-result]') as HTMLElement;
+    this.#status = this.querySelector('[data-status]') as HTMLElement;
+    this.#answer = this.querySelector('[data-answer]') as HTMLElement;
+    this.#sourcesWrap = this.querySelector('[data-sources-wrap]') as HTMLElement;
+    this.#sources = this.querySelector('[data-sources]') as HTMLElement;
+  }
 
   connectedCallback() {
-    this.#form = this.querySelector('form');
-    this.#input = this.querySelector('[data-input]');
-    this.#submit = this.querySelector('[data-submit]');
-    this.#result = this.querySelector('[data-result]');
-    this.#status = this.querySelector('[data-status]');
-    this.#answer = this.querySelector('[data-answer]');
-    this.#sourcesWrap = this.querySelector('[data-sources-wrap]');
-    this.#sources = this.querySelector('[data-sources]');
-
-    this.#form?.addEventListener('submit', this.#handleSubmit);
+    this.#form.addEventListener('submit', this.#handleSubmit);
 
     // If the page was opened with ?query= in the URL, run that search straight away.
     const initial = new URL(location.href).searchParams.get('query')?.trim();
-    if (initial && this.#input) {
+    if (initial) {
       this.#input.value = initial;
       void this.#run(initial);
     }
   }
 
   disconnectedCallback() {
-    this.#form?.removeEventListener('submit', this.#handleSubmit);
+    this.#form.removeEventListener('submit', this.#handleSubmit);
   }
 
   #handleSubmit = (event: Event) => {
     event.preventDefault();
-    const query = this.#input?.value.trim();
+    const query = this.#input.value.trim();
     if (!query) return;
 
     const url = new URL(location.href);
@@ -93,9 +96,6 @@ class AiSearch extends HTMLElement {
   };
 
   async #run(query: string) {
-    if (!this.#result || !this.#status || !this.#answer || !this.#sources || !this.#sourcesWrap) {
-      return;
-    }
     this.#result.hidden = false;
     this.#setBusy(true);
     this.#status.textContent = this.dataset.thinkingText ?? '';
@@ -147,7 +147,6 @@ class AiSearch extends HTMLElement {
   }
 
   #addSource(title: string, url: string) {
-    if (!this.#sources || !this.#sourcesWrap) return;
     const link = document.createElement('a');
     link.href = url;
     const name = document.createElement('strong');
@@ -163,8 +162,8 @@ class AiSearch extends HTMLElement {
 
   #setBusy(busy: boolean) {
     this.toggleAttribute('aria-busy', busy);
-    if (this.#submit) this.#submit.disabled = busy;
-    if (this.#input) this.#input.disabled = busy;
+    this.#submit.disabled = busy;
+    this.#input.disabled = busy;
   }
 }
 
