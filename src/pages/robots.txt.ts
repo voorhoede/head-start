@@ -2,11 +2,12 @@
 // so we use this API route to prerender the robots.txt file.
 import type { APIRoute } from 'astro';
 import { robotsTxt } from '~/lib/seo';
-import app from '~/lib/app';
+import { getApp } from '~/lib/app';
 
 export const prerender = true;
 
 export const GET: APIRoute = async (context) => {
+  const app = await getApp();
   const allowAll = !app.noIndex && !context.locals.isPreview;
   const allowAiBots = allowAll && Boolean(app.allowAiBots);
 

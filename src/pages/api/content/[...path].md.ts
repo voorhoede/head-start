@@ -4,7 +4,7 @@ import rehypeRemark from 'rehype-remark';
 import remarkGfm from 'remark-gfm';
 import remarkStringify from 'remark-stringify';
 import { unified } from 'unified';
-import app from '~/lib/app';
+import { getApp } from '~/lib/app';
 import { buildFrontmatter } from '~/lib/frontmatter';
 import type { PageMeta } from '~/lib/rehype/rehype-extract-meta';
 import rehypeExtractMeta from '~/lib/rehype/rehype-extract-meta';
@@ -18,6 +18,7 @@ const CACHE_TTL = 60000 * 5;
 const MAX_CACHE_SIZE = 500;
 
 export const GET: APIRoute = async ({ params, site, locals }) => {
+  const app = await getApp();
   if (!app.allowAiBots || app.noIndex || locals.isPreview) {
     return new Response('Not found', {
       status: 404,

@@ -16,13 +16,11 @@ export const securityheaders = defineMiddleware(async (context, next) => {
     'Referrer-Policy': 'no-referrer-when-downgrade',
     'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
     'X-Content-Type-Options': 'nosniff',
-    'X-Frame-Options': 'SAMEORIGIN',
     'X-XSS-Protection': '1; mode=block',
   };
+  headers['Content-Security-Policy'] = 'frame-ancestors \'self\' https://*.admin.datocms.com https://plugins-cdn.datocms.com';
 
-  // Allow DatoCMS to embed the editor-guide page in an iframe
   if (isEditorGuide) {
-    headers['Content-Security-Policy'] = 'frame-ancestors \'self\' https://*.datocms.com';
     headers['X-Robots-Tag'] = 'noindex';
   }
 

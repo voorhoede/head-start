@@ -1,4 +1,5 @@
 import rosetta from 'rosetta';
+import { stripStega } from '@datocms/content-link';
 import type { TranslationKey } from '~/lib/i18n/types';
 import { type SiteLocale } from '~/lib/datocms/types';
 import messages from '~/lib/i18n/messages.json';
@@ -45,5 +46,6 @@ export function setLocale(locale?: string) {
  * Returns locale name for a given code in its own language.
  */
 export function getLocaleName(code: string) {
-  return new Intl.DisplayNames([code], { type: 'language' }).of(code);
+  const clean = stripStega(code);
+  return new Intl.DisplayNames([clean], { type: 'language' }).of(clean);
 }
