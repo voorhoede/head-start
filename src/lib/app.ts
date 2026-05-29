@@ -1,9 +1,18 @@
 import { getEntry } from '~/lib/content';
 
-const entry = await getEntry('App', 'default', null);
+async function load() {
+  const entry = await getEntry('App', 'default', null);
+  if (!entry) throw new Error('App entry not found');
+  return entry.data;
+}
 
-if (!entry) throw new Error('App entry not found');
+export type App = Awaited<ReturnType<typeof load>>;
 
-export type App = typeof entry.data;
-export const app: App = entry.data;
-export default app;
+let cache: Promise<App> | undefined;
+
+export async function getApp(): Promise<App> {
+  if (!cache) cache = load();
+  return cache;
+}
+
+export default getApp;
