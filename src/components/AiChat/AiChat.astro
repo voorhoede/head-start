@@ -1,5 +1,6 @@
 ---
-import { getLocale } from '~/lib/i18n';
+import { getLocale, t } from '~/lib/i18n';
+import { siteName } from '~/lib/seo';
 
 /*
  * <ai-chat> component: a conversation surface for /api/ai-chat. Messages persist
@@ -13,36 +14,36 @@ const locale = getLocale();
 
 <ai-chat
   data-locale={locale}
-  data-thinking-text="Thinking…"
-  data-empty-text="No answer found for that question."
-  data-error-text="Something went wrong. Please try again."
-  data-empty-state-text="Ask a question to start a conversation."
+  data-thinking-text={t('chat_thinking')}
+  data-empty-text={t('chat_empty')}
+  data-error-text={t('chat_error')}
+  data-empty-state-text={t('chat_empty_state')}
 >
   <div class="ai-chat__head">
-    <h1>Chat with Head Start</h1>
+    <h1>{t('chat_on_site', { siteName: siteName() })}</h1>
     <p class="ai-chat__intro">
-      Ask follow-up questions and get answers drawn from this site's content.
+      {t('chat_intro')}
     </p>
   </div>
 
   <ol class="ai-chat__log" data-log aria-live="polite" aria-label="Conversation"></ol>
 
-  <p class="ai-chat__empty" data-empty>Ask a question to start a conversation.</p>
+  <p class="ai-chat__empty" data-empty>{t('chat_empty_state')}</p>
 
   <form class="ai-chat__form" data-form>
-    <label class="a11y-sr-only" for={inputId}>Ask a question</label>
+    <label class="a11y-sr-only" for={inputId}>{t('chat_label')}</label>
     <textarea
       class="ai-chat__input"
       id={inputId}
       name="message"
-      placeholder="Ask a question…"
+      placeholder={t('chat_placeholder')}
       rows="2"
       required
       data-input
     ></textarea>
     <div class="ai-chat__actions">
-      <button type="button" data-clear hidden>Clear chat</button>
-      <button type="submit" data-submit>Send</button>
+      <button type="button" data-clear hidden>{t('chat_clear')}</button>
+      <button type="submit" data-submit>{t('chat_submit')}</button>
     </div>
   </form>
 </ai-chat>

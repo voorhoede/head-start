@@ -1,6 +1,7 @@
 ---
-import { locales } from '~/lib/i18n';
-import { noIndexTag, titleTag } from '~/lib/seo';
+import { isAllowAiBots } from '~/lib/app';
+import { locales, t } from '~/lib/i18n';
+import { noIndexTag, siteName, titleTag } from '~/lib/seo';
 import type { SiteLocale } from '~/lib/datocms/types';
 import type { Breadcrumb } from '~/lib/routing';
 import Layout from '~/layouts/Default.astro';
@@ -10,11 +11,15 @@ export const prerender = false;
 
 const { locale } = Astro.params as { locale: SiteLocale };
 
-const pageTitle = 'Chat';
+if (!(await isAllowAiBots(Astro.locals.isPreview))) {
+  return Astro.rewrite(`/404/?locale=${locale}`);
+}
+
+const pageTitle = t('chat_on_site', { siteName: siteName() });
 
 const getChatPathname = (locale: SiteLocale) => `/${locale}/chat/`;
 const pageUrls = locales.map((locale) => ({ locale, pathname: getChatPathname(locale) }));
-const breadcrumbs: Breadcrumb[] = [{ text: pageTitle, href: getChatPathname(locale) }];
+const breadcrumbs: Breadcrumb[] = [{ text: t('chat'), href: getChatPathname(locale) }];
 ---
 
 <Layout

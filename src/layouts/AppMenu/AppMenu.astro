@@ -19,6 +19,7 @@ export interface Props {
 }
 const { items, pageUrls, allowAiBots } = Astro.props;
 const showAskLink = allowAiBots && Boolean(t('ask'));
+const showChatLink = allowAiBots && Boolean(t('chat'));
 ---
 
 <app-menu>
@@ -92,13 +93,13 @@ const showAskLink = allowAiBots && Boolean(t('ask'));
         )
       }
       {
-        allowAiBots && (
+        showChatLink && (
           <li class:list={['main-menu__item', !showAskLink && 'main-menu__item--last']} data-menu-item>
             <ChatLink />
           </li>
         )
       }
-      <li class:list={['main-menu__item', !showAskLink && !allowAiBots && 'main-menu__item--last']} data-menu-item>
+      <li class:list={['main-menu__item', !showAskLink && !showChatLink && 'main-menu__item--last']} data-menu-item>
         <SearchLink />
       </li>
     </UnstyledList>
@@ -148,7 +149,7 @@ const showAskLink = allowAiBots && Boolean(t('ask'));
           })
         }
         {showAskLink && <li><AskLink /></li>}
-        {allowAiBots && <li><ChatLink /></li>}
+        {showChatLink && <li><ChatLink /></li>}
         <li><SearchLink /></li>
       </UnstyledList>
     </nav>
