@@ -12,6 +12,7 @@ import TextImageBlock from './TextImageBlock/TextImageBlock.astro';
 import VariableBlock from './VariableBlock/VariableBlock.astro';
 import VideoBlock from './VideoBlock/VideoBlock.astro';
 import VideoEmbedBlock from './VideoEmbedBlock/VideoEmbedBlock.astro';
+import SearchFormBlock from './SearchFormBlock/SearchFormBlock.astro';
 
 export const blocksByTypename = {
   ActionBlockRecord: ActionBlock,
@@ -28,4 +29,5 @@ export const blocksByTypename = {
   VariableBlockRecord: VariableBlock,
   VideoBlockRecord: VideoBlock,
   VideoEmbedBlockRecord: VideoEmbedBlock,
+  SearchFormBlockRecord: SearchFormBlock,
 };
