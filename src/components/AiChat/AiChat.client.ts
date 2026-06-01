@@ -21,36 +21,39 @@ type Message = { role: Role; content: string; sources?: Source[] };
 const STORAGE_PREFIX = 'ai-chat:';
 
 class AiChat extends HTMLElement {
-  #locale = '';
-  #form: HTMLFormElement | null = null;
-  #input: HTMLTextAreaElement | null = null;
-  #submit: HTMLButtonElement | null = null;
-  #clear: HTMLButtonElement | null = null;
-  #log: HTMLOListElement | null = null;
-  #empty: HTMLElement | null = null;
+  #locale: string;
+  #form: HTMLFormElement;
+  #input: HTMLTextAreaElement;
+  #submit: HTMLButtonElement;
+  #clear: HTMLButtonElement;
+  #log: HTMLOListElement;
+  #empty: HTMLElement;
   #messages: Message[] = [];
 
-  connectedCallback() {
+  constructor() {
+    super();
     this.#locale = this.dataset.locale ?? '';
-    this.#form = this.querySelector('[data-form]');
-    this.#input = this.querySelector('[data-input]');
-    this.#submit = this.querySelector('[data-submit]');
-    this.#clear = this.querySelector('[data-clear]');
-    this.#log = this.querySelector('[data-log]');
-    this.#empty = this.querySelector('[data-empty]');
+    this.#form = this.querySelector('[data-form]') as HTMLFormElement;
+    this.#input = this.querySelector('[data-input]') as HTMLTextAreaElement;
+    this.#submit = this.querySelector('[data-submit]') as HTMLButtonElement;
+    this.#clear = this.querySelector('[data-clear]') as HTMLButtonElement;
+    this.#log = this.querySelector('[data-log]') as HTMLOListElement;
+    this.#empty = this.querySelector('[data-empty]') as HTMLElement;
+  }
 
+  connectedCallback() {
     this.#messages = this.#loadHistory();
     this.#render();
 
-    this.#form?.addEventListener('submit', this.#handleSubmit);
-    this.#clear?.addEventListener('click', this.#handleClear);
-    this.#input?.addEventListener('keydown', this.#handleKeydown);
+    this.#form.addEventListener('submit', this.#handleSubmit);
+    this.#clear.addEventListener('click', this.#handleClear);
+    this.#input.addEventListener('keydown', this.#handleKeydown);
   }
 
   disconnectedCallback() {
-    this.#form?.removeEventListener('submit', this.#handleSubmit);
-    this.#clear?.removeEventListener('click', this.#handleClear);
-    this.#input?.removeEventListener('keydown', this.#handleKeydown);
+    this.#form.removeEventListener('submit', this.#handleSubmit);
+    this.#clear.removeEventListener('click', this.#handleClear);
+    this.#input.removeEventListener('keydown', this.#handleKeydown);
   }
 
   #storageKey() {
@@ -87,7 +90,6 @@ class AiChat extends HTMLElement {
   }
 
   #render() {
-    if (!this.#log || !this.#empty || !this.#clear) return;
     this.#log.replaceChildren();
     for (const message of this.#messages) {
       this.#log.append(this.#renderMessage(message));
@@ -134,13 +136,12 @@ class AiChat extends HTMLElement {
   }
 
   #scrollToBottom() {
-    if (!this.#log) return;
     this.#log.scrollTop = this.#log.scrollHeight;
   }
 
   #handleSubmit = (event: Event) => {
     event.preventDefault();
-    const content = this.#input?.value.trim();
+    const content = this.#input.value.trim();
     if (!content) return;
     void this.#run(content);
   };
@@ -149,7 +150,7 @@ class AiChat extends HTMLElement {
     // Enter sends; Shift+Enter inserts a newline. Matches most chat UIs.
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
-      this.#form?.requestSubmit();
+      this.#form.requestSubmit();
     }
   };
 
@@ -157,12 +158,10 @@ class AiChat extends HTMLElement {
     this.#messages = [];
     this.#saveHistory();
     this.#render();
-    this.#input?.focus();
+    this.#input.focus();
   };
 
   async #run(userContent: string) {
-    if (!this.#log || !this.#input || !this.#empty || !this.#clear) return;
-
     this.#messages.push({ role: 'user', content: userContent });
     this.#log.append(this.#renderMessage(this.#messages[this.#messages.length - 1]));
     this.#input.value = '';
@@ -244,8 +243,8 @@ class AiChat extends HTMLElement {
 
   #setBusy(busy: boolean) {
     this.toggleAttribute('aria-busy', busy);
-    if (this.#submit) this.#submit.disabled = busy;
-    if (this.#input) this.#input.disabled = busy;
+    this.#submit.disabled = busy;
+    this.#input.disabled = busy;
   }
 }
 
