@@ -1,0 +1,26 @@
+---
+import { locales } from '~/lib/i18n';
+import { noIndexTag, titleTag } from '~/lib/seo';
+import type { SiteLocale } from '~/lib/datocms/types';
+import type { Breadcrumb } from '~/lib/routing';
+import Layout from '~/layouts/Default.astro';
+import AiChat from '~/components/AiChat/AiChat.astro';
+
+export const prerender = false;
+
+const { locale } = Astro.params as { locale: SiteLocale };
+
+const pageTitle = 'Chat';
+
+const getChatPathname = (locale: SiteLocale) => `/${locale}/chat/`;
+const pageUrls = locales.map((locale) => ({ locale, pathname: getChatPathname(locale) }));
+const breadcrumbs: Breadcrumb[] = [{ text: pageTitle, href: getChatPathname(locale) }];
+---
+
+<Layout
+  breadcrumbs={breadcrumbs}
+  pageUrls={pageUrls}
+  seoMetaTags={[noIndexTag, titleTag(pageTitle)]}
+>
+  <AiChat />
+</Layout>
