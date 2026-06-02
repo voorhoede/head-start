@@ -12,6 +12,7 @@
 #import '~/lib/routing/PageRoute.fragment.graphql'
 
 fragment TextBlock on TextBlockRecord {
+  __typename
   text {
     blocks {
       __typename

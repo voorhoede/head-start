@@ -36,6 +36,7 @@ const mockFileLinkProps = ({
         url: new URL(`${proxiedFilePath}`, datocmsAssetsOrigin).toString(),
       },
       locale: locale || null,
+      path: null,
     }
   } satisfies LinkToFileProps;
 };

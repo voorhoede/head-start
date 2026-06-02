@@ -11,8 +11,10 @@ describe('ImageBlock', () => {
           image: {
             url: 'https://example.com/test.jpg',
             alt: 'A test image',
+            title: null,
             height: 150,
-            width: 150
+            width: 150,
+            responsiveImage: null
           }
         }
       },
@@ -33,8 +35,10 @@ describe('ImageBlock', () => {
           image: {
             url: 'https://example.com/test.jpg',
             alt: 'A test image',
+            title: null,
             height: 150,
-            width: 150
+            width: 150,
+            responsiveImage: null
           }
         }
       },
@@ -55,7 +59,8 @@ describe('ImageBlock', () => {
             alt: 'A test image',
             title: 'See the test image',
             height: 150,
-            width: 150
+            width: 150,
+            responsiveImage: null
           }
         }
       },
@@ -73,8 +78,10 @@ describe('ImageBlock', () => {
           image: {
             url: 'https://example.com/test.jpg',
             alt: 'A test image',
+            title: null,
             height: 150,
-            width: 150
+            width: 150,
+            responsiveImage: null
           }
         }
       },
@@ -91,6 +98,7 @@ describe('ImageBlock', () => {
           image: {
             url: 'https://example.com/test.jpg',
             alt: 'A responsive test image',
+            title: null,
             height: 150,
             width: 150,
             responsiveImage: {
