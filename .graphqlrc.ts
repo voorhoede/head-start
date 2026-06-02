@@ -10,6 +10,26 @@ const { DATOCMS_READONLY_API_TOKEN } = loadEnv(
 const schemaFilename = 'src/lib/datocms/schema.ts';
 const outputFilename = 'src/lib/datocms/types.ts';
 
+/**
+ * Custom scalar mappings for DatoCMS. Needed by both the schema types
+ * (typescript) and the operation types (typescript-operations): the latter
+ * inlines the resolved scalar TS type into operation results, so omitting it
+ * would emit `unknown` instead of e.g. `string`.
+ * @see https://www.datocms.com/docs/content-delivery-api/custom-scalar-types
+ */
+const scalars = {
+  BooleanType: 'boolean',
+  CustomData: 'Record<string, unknown>',
+  Date: 'string',
+  DateTime: 'string',
+  FloatType: 'number',
+  IntType: 'number',
+  ItemId: 'string',
+  JsonField: 'unknown',
+  MetaTagAttributes: 'Record<string, string>',
+  UploadId: 'string',
+};
+
 console.log(`Saving generated types for DatoCMS (environment: '${datocmsEnvironment}') to '${outputFilename}'.`);
 
 /**
@@ -40,22 +60,7 @@ module.exports = {
           config: {
             enumsAsConst: true,
             strictScalars: true,
-            /**
-             * scalar config borrowed from DatoCMS team:
-             * @see https://github.com/Tonel/typescript-type-generation-graphql-example/blob/2d43584b1d75c9086c4ddd594a6b2401a29b0055/graphql.config.yml#L11-L23
-             */
-            scalars: {
-              BooleanType: 'boolean',
-              CustomData: 'Record<string, unknown>',
-              Date: 'string',
-              DateTime: 'string',
-              FloatType: 'number',
-              IntType: 'number',
-              ItemId: 'string',
-              JsonField: 'unknown',
-              MetaTagAttributes: 'Record<string, string>',
-              UploadId: 'string',
-            },
+            scalars,
           },
         },
         // Operation/fragment types + typed DocumentNodes. Schema types
@@ -71,22 +76,7 @@ module.exports = {
             // output dir → './schema' in the generated import statement.
             importSchemaTypesFrom: `./${schemaFilename.replace(/\.ts$/, '')}`,
             strictScalars: true,
-            /**
-             * scalar config borrowed from DatoCMS team:
-             * @see https://github.com/Tonel/typescript-type-generation-graphql-example/blob/2d43584b1d75c9086c4ddd594a6b2401a29b0055/graphql.config.yml#L11-L23
-             */
-            scalars: {
-              BooleanType: 'boolean',
-              CustomData: 'Record<string, unknown>',
-              Date: 'string',
-              DateTime: 'string',
-              FloatType: 'number',
-              IntType: 'number',
-              ItemId: 'string',
-              JsonField: 'unknown',
-              MetaTagAttributes: 'Record<string, string>',
-              UploadId: 'string',
-            },
+            scalars,
           },
         },
       },
