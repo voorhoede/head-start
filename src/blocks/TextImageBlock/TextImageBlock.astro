@@ -18,7 +18,7 @@ const layout = stripStega(block.layout);
       <Text data={ block.text as CdaStructuredTextValue } />
     </div>
     <div class="layout__item">
-      <Image image={ block.image } />
+      <Image image={ block.image } imgixParams={{ auto: ['format', 'compress'], quality: 80, fit: 'max' }} />
     </div>
   </div>
 </div>

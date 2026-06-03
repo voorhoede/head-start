@@ -9,4 +9,4 @@ export interface Props {
 const { block } = Astro.props;
 ---
 
-<Image image={ block.image } />
+<Image image={ block.image } imgixParams={{ auto: ['format', 'compress'], quality: 80, fit: 'max' }} />

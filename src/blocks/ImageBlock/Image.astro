@@ -4,34 +4,60 @@ import type { ComponentProps, HTMLAttributes } from 'astro/types';
 import type { ImageBlockFragment } from '~/lib/datocms/types';
 import { t } from '~/lib/i18n';
 
+type ImgixParams = {
+  auto?: ('format' | 'compress')[];
+  quality?: number;
+  fit?: string;
+};
+
 type Props = HTMLAttributes<'figure'> & {
   image: ImageBlockFragment['image'];
   priority?: boolean;
+  imgixParams?: ImgixParams;
   imageProps?: Omit<
     ComponentProps<typeof AstroImage>,
     'data' | 'imgClass' | 'priority'
   >;
 };
 
+function applyImgixParams(srcSet: string, params: ImgixParams): string {
+  return srcSet.replace(/https?:\/\/\S+/g, (url) => {
+    const u = new URL(url);
+    if (params.auto !== undefined) u.searchParams.set('auto', params.auto.join(','));
+    if (params.quality !== undefined) u.searchParams.set('q', String(params.quality));
+    if (params.fit !== undefined) u.searchParams.set('fit', params.fit);
+    return u.toString();
+  });
+}
+
 const {
   image,
   priority = false,
+  imgixParams,
   imageProps,
   class: className,
   ...rest
 } = Astro.props;
 
 const alt = image.alt ?? '';
+
+const responsiveImage = image.responsiveImage && imgixParams
+  ? {
+    ...image.responsiveImage,
+    srcSet: applyImgixParams(image.responsiveImage.srcSet, imgixParams),
+    src: applyImgixParams(image.responsiveImage.src, imgixParams),
+  }
+  : image.responsiveImage;
 ---
 
 <figure {...rest} class:list={['image-block', className]}>
   {
-    image.responsiveImage ? (
+    responsiveImage ? (
       // bitmap images have Imgix generated props (responsiveImage.*):
       <AstroImage
         {...imageProps}
         priority={priority}
-        data={{ ...image.responsiveImage, alt }}
+        data={{ ...responsiveImage, alt }}
         imgClass="image-block__image"
       />
     ) : (

@@ -65,7 +65,7 @@ fragment TextImageBlock on TextImageBlockRecord {
     width
     height
     url
-    responsiveImage( imgixParams: { auto: [format, compress], q: 80, fit: max, w: 1200} ) {
+    responsiveImage( imgixParams: { w: 1200 } ) {
       srcSet
       src
       base64
