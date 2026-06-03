@@ -30,6 +30,8 @@ const locale = getLocale();
 
   <p class="ai-chat__empty" data-empty>{t('chat_empty_state')}</p>
 
+  <p class="ai-chat__notice" data-notice role="status" hidden>{t('chat_not_saved')}</p>
+
   <form class="ai-chat__form" data-form>
     <label class="a11y-sr-only" for={inputId}>{t('chat_label')}</label>
     <textarea
@@ -73,6 +75,14 @@ const locale = getLocale();
   ai-chat .ai-chat__empty {
     color: #666;
     font-style: italic;
+  }
+  ai-chat .ai-chat__notice {
+    margin: 0;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    background: #fff4e5;
+    color: #663c00;
+    font-size: 0.85em;
   }
   ai-chat .ai-chat__message {
     padding: 0.75rem 1rem;
