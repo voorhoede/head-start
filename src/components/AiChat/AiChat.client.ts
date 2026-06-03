@@ -28,6 +28,7 @@ class AiChat extends HTMLElement {
   #clear: HTMLButtonElement;
   #log: HTMLOListElement;
   #empty: HTMLElement;
+  #notice: HTMLElement;
   #messages: Message[] = [];
 
   constructor() {
@@ -39,6 +40,7 @@ class AiChat extends HTMLElement {
     this.#clear = this.querySelector('[data-clear]') as HTMLButtonElement;
     this.#log = this.querySelector('[data-log]') as HTMLOListElement;
     this.#empty = this.querySelector('[data-empty]') as HTMLElement;
+    this.#notice = this.querySelector('[data-notice]') as HTMLElement;
   }
 
   connectedCallback() {
@@ -85,7 +87,9 @@ class AiChat extends HTMLElement {
       localStorage.setItem(this.#storageKey(), JSON.stringify(this.#messages));
     } catch {
       // Private mode or quota full. Chat keeps working in memory; refresh
-      // would lose it, but that's better than blocking the user.
+      // would lose it, but that's better than blocking the user. Surface a
+      // one-time notice so the loss isn't silent.
+      this.#notice.hidden = false;
     }
   }
 
