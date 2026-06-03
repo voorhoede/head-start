@@ -2,10 +2,10 @@ import { defineCollection, z } from 'astro:content';
 import {
   FormCollectionEntry as query,
   type FormCollectionEntryQuery,
-  type SiteLocale,
-} from '@lib/datocms/types';
-import { datocmsCollection, datocmsRequest } from '@lib/datocms';
-import { combine } from '@lib/content';
+} from '~/lib/datocms/types';
+import type { SiteLocale } from '~/lib/datocms/schema';
+import { datocmsCollection, datocmsRequest } from '~/lib/datocms';
+import { combine } from '~/lib/content';
 
 type Meta = {
   locale: SiteLocale;

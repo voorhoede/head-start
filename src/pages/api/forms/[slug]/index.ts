@@ -1,9 +1,10 @@
-import { getEntry } from '@lib/content';
-import { validateSubmission } from '@lib/forms';
-import { Form, FormNotFound } from '@components/Form';
+import { getEntry } from '~/lib/content';
+import { validateSubmission } from '~/lib/forms';
+import { Form, FormNotFound } from '~/components/Form';
 import type { APIRoute } from 'astro';
-import { renderToString } from '@lib/renderer';
-import NotFound from '@pages/404.astro';
+import { renderToString } from '~/lib/renderer';
+
+import NotFound from '~/pages/404.astro';
 
 export const prerender = false;
 
@@ -19,8 +20,6 @@ export const POST: APIRoute = async ({ params, request }) => {
   const partial = requestHeaders?.['x-requested-by'] === 'client';
 
   const form = await getEntry('Forms', slug);
-  let formErrors: Record<string, string> = {};
-  let formValues: Record<string, string> = {};
 
   if (form) {
     const { success, values, errors } = await validateSubmission({
@@ -28,8 +27,6 @@ export const POST: APIRoute = async ({ params, request }) => {
       formData: await request.formData(),
       requestHeaders: request.headers,
     });
-    formValues = values;
-    formErrors = errors;
 
     if (!success) {
       return new Response(
@@ -37,8 +34,8 @@ export const POST: APIRoute = async ({ params, request }) => {
           props: {
             slug: slug,
             formFields: form.data.formFields,
-            errors: formErrors,
-            formValues: formValues,
+            errors,
+            formValues: values,
           },
           partial
         }), {

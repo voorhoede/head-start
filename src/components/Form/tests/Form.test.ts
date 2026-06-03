@@ -1,9 +1,10 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { renderToFragment } from '@lib/renderer';
-import { FormNotFound, FormSuccess, Form } from '@components/Form';
-import type { CollectionEntry } from '@lib/content';
-import type { SiteLocale } from '@lib/datocms/types.ts';
-import { POST } from '@pages/api/forms/[slug]';
+import { renderToFragment } from '~/lib/renderer';
+import { FormNotFound, FormSuccess, Form } from '~/components/Form';
+import type { CollectionEntry } from '~/lib/content';
+import type { SiteLocale } from '~/lib/datocms/schema';
+import type { APIContext } from 'astro';
+import { POST } from '~/pages/api/forms/[slug]';
 
 const locale = 'en' as SiteLocale;
 const formFields = [
@@ -135,7 +136,7 @@ describe('POST /api/forms/[slug]', () => {
     });
     
     // @TODO Add actual integration test with a local build
-    const res = await POST({ params: { slug: 'contact' }, request });
+    const res = await POST({ params: { slug: 'contact' }, request } as unknown as APIContext);
 
     // Should return a Response with 400
     expect(res).toBeInstanceOf(Response);
@@ -167,7 +168,7 @@ describe('POST /api/forms/[slug]', () => {
     });
     
     // @TODO Add actual integration test with a local build
-    const result = await POST({ params: { slug: 'contact' }, request });
+    const result = await POST({ params: { slug: 'contact' }, request } as unknown as APIContext);
     
     expect(result instanceof Response).toBe(true);
     const html = await (result as Response).text();

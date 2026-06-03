@@ -1,11 +1,6 @@
 import type { Client } from '@datocms/cli/lib/cma-client-node';
 
 export default async function (client: Client) {
-  console.log('Manage upload filters');
-
-  console.log('Delete plugin "Model Deployment Links"');
-  await client.plugins.destroy('NYOCpCD9SUSA3y3sod-84Q');
-
   console.log('Create new models/block models');
 
   console.log('Create block model "\uD83D\uDD18 Form Field" (`form_field`)');
@@ -247,24 +242,17 @@ export default async function (client: Client) {
     default_value: null,
   });
 
-  console.log('Destroy fields in existing models/block models');
-
-  console.log(
-    'Delete JSON field "Preview" (`preview`) in model "\uD83D\uDCD1 Page" (`page`)',
-  );
-  await client.fields.destroy('dyBTjn-aQwOI1xYPVvCFsQ');
-
-  console.log(
-    'Delete JSON field "Preview" (`preview`) in model "\uD83C\uDFE0 Home" (`home_page`)',
-  );
-  await client.fields.destroy('FbCSEwdTSEulvG2Jw70dyg');
-
-  console.log(
-    'Delete JSON field "Preview" (`preview`) in model "\uD83E\uDD37 Not found" (`not_found_page`)',
-  );
-  await client.fields.destroy('F861OXBNQE6s0QkW8Ccg4A');
-
   console.log('Update existing fields/fieldsets');
+
+  // Fetch current block lists and append form_block so we don't drop any blocks added since this branch was created
+  // @ts-expect-error rich_text_blocks is only available on Modular Content fields
+  const pagePartialBlocks: string[] = (await client.fields.find('page_partial::blocks')).validators.rich_text_blocks?.item_types ?? [];
+  // @ts-expect-error rich_text_blocks is only available on Modular Content fields
+  const pageBodyBlocks: string[] = (await client.fields.find('page::body_blocks')).validators.rich_text_blocks?.item_types ?? [];
+  // @ts-expect-error rich_text_blocks is only available on Modular Content fields
+  const homeBodyBlocks: string[] = (await client.fields.find('home_page::body_blocks')).validators.rich_text_blocks?.item_types ?? [];
+
+  const formBlockId = 'O0aXohhNR1uQgUsDaOVODg';
 
   console.log(
     'Update Modular Content (Multiple blocks) field "Body" (`blocks`) in model "\uD83E\uDDE9 Page Partial" (`page_partial`)',
@@ -272,17 +260,7 @@ export default async function (client: Client) {
   await client.fields.update('SKLmdv71Rge0rKhJzOFQWQ', {
     validators: {
       rich_text_blocks: {
-        item_types: [
-          'BRbU6VwTRgmG5SbwUs0rBg',
-          'F60ZY1wFSW2qbvh99poj3g',
-          'O0aXohhNR1uQgUsDaOVODg',
-          'PAk40zGjQJCcDXXPgygUrA',
-          'QYfZyBzIRWKxA1MinIR0aQ',
-          'TBuD6qQOSDy6i9dM3T_XEA',
-          'ZdBokLsWRgKKjHrKeJzdpw',
-          'gezG9nO7SfaiWcWnp-HNqw',
-          '0SxYNS2CR1it_5LHYWuEQg',
-        ],
+        item_types: [...pagePartialBlocks, formBlockId],
       },
     },
   });
@@ -293,56 +271,10 @@ export default async function (client: Client) {
   await client.fields.update('Q-z1nyMsQtC8Sr6w6J2oGw', {
     validators: {
       rich_text_blocks: {
-        item_types: [
-          'BRbU6VwTRgmG5SbwUs0rBg',
-          'F60ZY1wFSW2qbvh99poj3g',
-          'O0aXohhNR1uQgUsDaOVODg',
-          'PAk40zGjQJCcDXXPgygUrA',
-          'QYfZyBzIRWKxA1MinIR0aQ',
-          'TBuD6qQOSDy6i9dM3T_XEA',
-          'VZvVfu52RZK81WG0Dxp-FQ',
-          'V80liDVtRC-UYgd3Sm-dXg',
-          'ZdBokLsWRgKKjHrKeJzdpw',
-          'gezG9nO7SfaiWcWnp-HNqw',
-          '0SxYNS2CR1it_5LHYWuEQg',
-        ],
+        item_types: [...pageBodyBlocks, formBlockId],
       },
     },
   });
-
-  console.log(
-    'Update Structured text field "Text" (`text`) in block model "\uD83D\uDCDD Text Block" (`text_block`)',
-  );
-  await client.fields.update('NtVXfZ6gTL2sKNffNeUf5Q', {
-    validators: {
-      required: {},
-      structured_text_blocks: {
-        item_types: [
-          'F60ZY1wFSW2qbvh99poj3g',
-          'QYfZyBzIRWKxA1MinIR0aQ',
-          'ZdBokLsWRgKKjHrKeJzdpw',
-          'gezG9nO7SfaiWcWnp-HNqw',
-          '0SxYNS2CR1it_5LHYWuEQg',
-        ],
-      },
-      structured_text_links: {
-        on_publish_with_unpublished_references_strategy: 'fail',
-        on_reference_unpublish_strategy: 'delete_references',
-        on_reference_delete_strategy: 'delete_references',
-        item_types: [
-          'GjWw8t-hTFaYYWyc53FeIg',
-          'LjXdkuCdQxCFT4hv8_ayew',
-          'X_tZn3TxQY28ltSyjZUGHQ',
-        ],
-      },
-      structured_text_inline_blocks: { item_types: [] },
-    },
-  });
-
-  console.log(
-    'Update Single asset field "Video" (`video_asset`) in block model "\uD83C\uDFAC Video Block" (`video_block`)',
-  );
-  await client.fields.update('KdXhYelkQdaepb_wpK7yuw', { hint: null });
 
   console.log(
     'Update Modular Content (Multiple blocks) field "Body" (`body_blocks`) in model "\uD83C\uDFE0 Home" (`home_page`)',
@@ -350,30 +282,9 @@ export default async function (client: Client) {
   await client.fields.update('pUj2PObgTyC-8X4lvZLMBA', {
     validators: {
       rich_text_blocks: {
-        item_types: [
-          'BRbU6VwTRgmG5SbwUs0rBg',
-          'F60ZY1wFSW2qbvh99poj3g',
-          'O0aXohhNR1uQgUsDaOVODg',
-          'PAk40zGjQJCcDXXPgygUrA',
-          'QYfZyBzIRWKxA1MinIR0aQ',
-          'TBuD6qQOSDy6i9dM3T_XEA',
-          'VZvVfu52RZK81WG0Dxp-FQ',
-          'V80liDVtRC-UYgd3Sm-dXg',
-          'ZdBokLsWRgKKjHrKeJzdpw',
-          'gezG9nO7SfaiWcWnp-HNqw',
-          '0SxYNS2CR1it_5LHYWuEQg',
-        ],
+        item_types: [...homeBodyBlocks, formBlockId],
       },
     },
-  });
-
-  console.log('Destroy models/block models');
-
-  console.log(
-    'Delete block model "\uD83D\uDD22 Counter Block" (`counter_block`)',
-  );
-  await client.itemTypes.destroy('Yj11fFgoThKqLyKcqIg2Gg', {
-    skip_menu_items_deletion: true,
   });
 
   console.log('Finalize models/block models');

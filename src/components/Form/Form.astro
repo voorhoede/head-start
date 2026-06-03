@@ -1,8 +1,8 @@
 ---
-import FormField, { isValidFieldType } from '@components/FormField/FormField.astro';
-import type { CollectionEntry } from '@lib/content';
+import FormField, { isValidFieldType } from '~/components/FormField/FormField.astro';
+import type { CollectionEntry } from '~/lib/content';
 import Turnstile from './Turnstile.astro';
-import { t } from '@lib/i18n';
+import { t } from '~/lib/i18n';
 
 export interface Props {
   slug: CollectionEntry<'Forms'>['data']['slug'];
@@ -39,3 +39,6 @@ const { slug, formFields, submitLabel, errors, formValues, useTurnStile = true }
     {submitLabel || t('submit')}
   </button>
 </form>
+<script>
+console.log('hi');
+</script>

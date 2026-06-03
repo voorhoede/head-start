@@ -1,9 +1,9 @@
 import { PUBLIC_IS_PRODUCTION, } from 'astro:env/server';
-import { type FieldType, isValidFieldType, } from '@components/FormField/FormField.astro';
+import { type FieldType, isValidFieldType, } from '~/components/FormField/FormField.astro';
 import { z } from 'astro:schema';
-import { type CollectionEntry } from '@lib/content';
-import { t } from '@lib/i18n';
-import { turnstileChallenge } from '@lib/forms';
+import { type CollectionEntry } from '~/lib/content';
+import { t } from '~/lib/i18n';
+import { turnstileChallenge } from '~/lib/forms';
 
 type Form = CollectionEntry<'Forms'>['data'];
 
