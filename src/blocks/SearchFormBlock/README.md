@@ -6,6 +6,12 @@
 
 - Semantic search form: `form[role="search"]`.
 - Semantic search input: `input[type="search"]`.
-- Input is prefilled with query defined in CMS (`block: { query: 'text' }`) if provided.
-- Input is prefilled with query from URL (`?query=text`) if otherwise provided.
-- Input is prefilled with path name from URL `/:locale/:path-name/` if no other value is available.
+
+## Pre-fill behavior
+
+The search input is pre-filled automatically based on context. The first available value wins:
+
+1. **CMS query** — a query set directly on the block in the CMS (`block.query`).
+2. **URL query parameter** — `?query=my+search` in the page URL.
+3. **URL path segment** — the last path segment of the current URL (e.g. `/en/my-topic/` → `my topic`).
+4. **Empty** — the input starts blank if none of the above apply.

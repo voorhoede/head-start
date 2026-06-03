@@ -48,6 +48,7 @@ export default async function (client: Client) {
     label: 'Query',
     field_type: 'string',
     api_key: 'query',
+    hint: 'Pre-fill priority for the search input: 1. CMS query (this field), 2. URL query parameter (?query=…), 3. last URL path segment, 4. empty.',
     appearance: {
       addons: [],
       editor: 'single_line',
