@@ -5,10 +5,13 @@ import type { ImageBlockFragment } from '~/lib/datocms/types';
 import { t } from '~/lib/i18n';
 
 type Props = HTMLAttributes<'figure'> & {
-  image: ImageBlockFragment['image']
-  priority?: boolean
-  imageProps?: Omit<ComponentProps<typeof AstroImage>, 'data' | 'imgClass' | 'priority'>
-}
+  image: ImageBlockFragment['image'];
+  priority?: boolean;
+  imageProps?: Omit<
+    ComponentProps<typeof AstroImage>,
+    'data' | 'imgClass' | 'priority'
+  >;
+};
 
 const {
   image,
@@ -20,6 +23,7 @@ const {
 
 const alt = image.alt ?? '';
 ---
+
 <figure {...rest} class:list={['image-block', className]}>
   {
     image.responsiveImage ? (
@@ -44,10 +48,18 @@ const alt = image.alt ?? '';
       />
     )
   }
-  {image.title && <figcaption class="image-block__caption">{image.title}</figcaption>}
+  {
+    image.title && (
+      <figcaption class="image-block__caption">{image.title}</figcaption>
+    )
+  }
 </figure>
 
-<style define:vars={{ 'unavailable-message': JSON.stringify(t('image_unavailable')) }}>
+<style
+  define:vars={{
+    'unavailable-message': JSON.stringify(t('image_unavailable')),
+  }}
+>
   /**
    * functional styling + broken image styling (only applies when image fails to load)
    * @see https://bitsofco.de/styling-broken-images/
@@ -58,21 +70,20 @@ const alt = image.alt ?? '';
     block-size: auto;
     position: relative;
     text-align: center;
-
-    &::after {
-      content: attr(alt) ' (' var(--unavailable-message) ')';
-      display: block;
-      position: absolute;
-      color: black;
-      inset-block-start: 0;
-      inset-inline-start: 0;
-      inline-size: 100%;
-      block-size: 100%;
-      padding-block-start: calc(50% - 1em);
-      background-color: #f1f1f1;
-    }
   }
-  
+  .image-block :global(.image-block__image)::after {
+    content: attr(alt) ' (' var(--unavailable-message) ')';
+    display: block;
+    position: absolute;
+    color: black;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    padding-block-start: calc(50% - 1em);
+    background-color: #f1f1f1;
+  }
+
   /* basic styling, can be removed */
   .image-block__caption {
     text-align: center;
