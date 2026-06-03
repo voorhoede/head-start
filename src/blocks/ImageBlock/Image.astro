@@ -23,8 +23,10 @@ type Props = HTMLAttributes<'figure'> & {
 function applyImgixParams(srcSet: string, params: ImgixParams): string {
   return srcSet.replace(/https?:\/\/\S+/g, (url) => {
     const u = new URL(url);
-    if (params.auto !== undefined) u.searchParams.set('auto', params.auto.join(','));
-    if (params.quality !== undefined) u.searchParams.set('q', String(params.quality));
+    if (params.auto !== undefined)
+      u.searchParams.set('auto', params.auto.join(','));
+    if (params.quality !== undefined)
+      u.searchParams.set('q', String(params.quality));
     if (params.fit !== undefined) u.searchParams.set('fit', params.fit);
     return u.toString();
   });
@@ -41,13 +43,14 @@ const {
 
 const alt = image.alt ?? '';
 
-const responsiveImage = image.responsiveImage && imgixParams
-  ? {
-    ...image.responsiveImage,
-    srcSet: applyImgixParams(image.responsiveImage.srcSet, imgixParams),
-    src: applyImgixParams(image.responsiveImage.src, imgixParams),
-  }
-  : image.responsiveImage;
+const responsiveImage =
+  image.responsiveImage && imgixParams
+    ? {
+      ...image.responsiveImage,
+      srcSet: applyImgixParams(image.responsiveImage.srcSet, imgixParams),
+      src: applyImgixParams(image.responsiveImage.src, imgixParams),
+    }
+    : image.responsiveImage;
 ---
 
 <figure {...rest} class:list={['image-block', className]}>
