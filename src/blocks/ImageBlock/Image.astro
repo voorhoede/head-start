@@ -1,101 +1,120 @@
 ---
-import { stripStega } from '@datocms/content-link';
+import { Image as AstroImage } from '@datocms/astro';
+import type { ComponentProps, HTMLAttributes } from 'astro/types';
+import type { ImageBlockFragment } from '~/lib/datocms/types';
 import { t } from '~/lib/i18n';
 
-const defaultSizes = [1280, 960, 640, 320];
-
-const getImageSrc = (url: string, params: Record<string, number|string> = {}) => {
-  const defaults: Record<string, number|string> = {
-    auto: 'format,compress',
-    q: 80,
-    w: Math.max(...defaultSizes),
-  };
-  const stringifyObjectValues = (obj: Record<string, number|string>) => {
-    return Object.entries(obj).reduce((acc, [key, value]) => ({ ...acc, [key]: value.toString() }), {});
-  };
-  const queryString = new URLSearchParams(stringifyObjectValues({ ...defaults, ...params })).toString();
-  return new URL(`${url}?${queryString}`).toString();
+type ImgixParams = {
+  auto?: ('format' | 'compress')[];
+  quality?: number;
+  fit?: string;
 };
 
-const getImageSrcSet = (url: string, sizes = defaultSizes, params = {}) => {
-  return sizes.map((size) => {
-    const src = getImageSrc(url, { ...params, w: size, fit: 'max' });
-    return `${src} ${size}w`;
-  }).join(', ');
+type Props = HTMLAttributes<'figure'> & {
+  image: ImageBlockFragment['image'];
+  priority?: boolean;
+  imgixParams?: ImgixParams;
+  imageProps?: Omit<
+    ComponentProps<typeof AstroImage>,
+    'data' | 'imgClass' | 'priority'
+  >;
 };
 
-const { image, loading = 'lazy' } = Astro.props;
-const altText = image.alt ? image.alt : ''; // default to empty string for accessibility
-const imageUnavailableMessage = t('image_unavailable');
-const imageUrl = stripStega(image.url);
----
-<image-component>
-  <figure data-datocms-content-link-source={image.alt || image.title}>
-    {
-      image.responsiveImage
-        ? // bitmap images have Imgix generated props (responsiveImage.*):
-        <img
-          alt={ altText }
-          loading={ loading }
-          srcset={ getImageSrcSet(imageUrl) }
-          src={ getImageSrc(imageUrl) }
-          width={ image.width }
-          height={ image.height }
-          style={{
-            backgroundImage: `url(${image.responsiveImage.base64})`
-          }}
-          data-unavailable={ imageUnavailableMessage }
-        />
-        : // vector images do not have Imgix generated props, so using as is:
-        <img
-          alt={ altText }
-          loading={ loading }
-          src={ imageUrl }
-          width={ image.width }
-          height={ image.height }
-          data-unavailable={ imageUnavailableMessage }
-        />
-    }
-    { image.title && (
-      <figcaption>{ image.title }</figcaption>
-    )}
-  </figure>
-</image-component>
-
-<script src="./Image.client.ts"></script>
-
-<style>
-/* functional styling */
-
-img {
-  display: block;
-  max-width: 100%;
-  height: auto;
-  background-size: cover;
+function applyImgixParams(srcSet: string, params: ImgixParams): string {
+  return srcSet.replace(/https?:\/\/\S+/g, (url) => {
+    const u = new URL(url);
+    if (params.auto !== undefined)
+      u.searchParams.set('auto', params.auto.join(','));
+    if (params.quality !== undefined)
+      u.searchParams.set('q', String(params.quality));
+    if (params.fit !== undefined) u.searchParams.set('fit', params.fit);
+    return u.toString();
+  });
 }
 
-/**
- * broken image styling, only applies when image fails to load
- * @see https://bitsofco.de/styling-broken-images/
- */
- img {
-  position: relative;
-  text-align: center;
- }
- img:after {
-  content: attr(alt) " (" attr(data-unavailable) ")";
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  padding-top: calc(50% - 1em);
-  background-color: #f1f1f1;
- }
+const {
+  image,
+  priority = false,
+  imgixParams,
+  imageProps,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const alt = image.alt ?? '';
+
+const responsiveImage =
+  image.responsiveImage && imgixParams
+    ? {
+      ...image.responsiveImage,
+      srcSet: applyImgixParams(image.responsiveImage.srcSet, imgixParams),
+      src: applyImgixParams(image.responsiveImage.src, imgixParams),
+    }
+    : image.responsiveImage;
+---
+
+<figure {...rest} class:list={['image-block', className]}>
+  {
+    responsiveImage ? (
+      // bitmap images have Imgix generated props (responsiveImage.*):
+      <AstroImage
+        {...imageProps}
+        priority={priority}
+        data={{ ...responsiveImage, alt }}
+        imgClass="image-block__image"
+      />
+    ) : (
+      // vector images do not have Imgix generated props, so using as is:
+      <img
+        alt={alt}
+        fetchpriority={priority ? 'high' : undefined}
+        loading={priority ? undefined : 'lazy'}
+        decoding="async"
+        src={image.url}
+        width={image.width}
+        height={image.height}
+        class="image-block__image"
+      />
+    )
+  }
+  {
+    image.title && (
+      <figcaption class="image-block__caption">{image.title}</figcaption>
+    )
+  }
+</figure>
+
+<style
+  define:vars={{
+    'unavailable-message': JSON.stringify(t('image_unavailable')),
+  }}
+>
+  /**
+   * functional styling + broken image styling (only applies when image fails to load)
+   * @see https://bitsofco.de/styling-broken-images/
+   */
+  .image-block :global(.image-block__image) {
+    display: block;
+    max-inline-size: 100%;
+    block-size: auto;
+    position: relative;
+    text-align: center;
+  }
+  .image-block :global(.image-block__image)::after {
+    content: attr(alt) ' (' var(--unavailable-message) ')';
+    display: block;
+    position: absolute;
+    color: black;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    padding-block-start: calc(50% - 1em);
+    background-color: #f1f1f1;
+  }
 
   /* basic styling, can be removed */
-  figcaption {
+  .image-block__caption {
     text-align: center;
   }
 </style>

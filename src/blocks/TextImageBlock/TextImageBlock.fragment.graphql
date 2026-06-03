@@ -65,9 +65,15 @@ fragment TextImageBlock on TextImageBlockRecord {
     width
     height
     url
-    responsiveImage {
-      aspectRatio
+    responsiveImage( imgixParams: { w: 1200 } ) {
+      srcSet
+      src
       base64
+      alt
+      title
+      width
+      height
+      sizes
     }
   }
   layout

@@ -102,7 +102,14 @@ describe('ImageBlock', () => {
             height: 150,
             width: 150,
             responsiveImage: {
-              base64: 'data:image/jpeg;base64,...'
+              base64: 'data:image/jpeg;base64,...',
+              srcSet: 'https://example.com/test.jpg 150w',
+              src: 'https://example.com/test.jpg',
+              alt: 'A responsive test image',
+              title: null,
+              width: 150,
+              height: 150,
+              sizes: '(max-width: 150px) 100vw, 150px',
             }
           }
         }
@@ -110,8 +117,55 @@ describe('ImageBlock', () => {
     });
 
     const img = fragment.querySelector('img');
-    expect(img?.width).toBe(150);
-    expect(img?.height).toBe(150);
+    expect(img?.style.maxWidth).toBe('150px');
+    expect(img?.style.aspectRatio).toBe('150 / 150');
     expect(img?.style.backgroundImage).toContain('base64');
+  });
+
+  describe('broken image fallback (::after pseudo)', () => {
+    test('exposes the unavailable-message as a CSS string literal (quoted)', async () => {
+      const fragment = await renderToFragment<Props>(ImageBlock, {
+        props: {
+          block: {
+            id: '123',
+            image: {
+              url: 'https://example.com/test.jpg',
+              alt: 'A test image',
+              title: null,
+              height: 150,
+              width: 150,
+              responsiveImage: null,
+            },
+          },
+        },
+      });
+      const figure = fragment.querySelector<HTMLElement>('figure.image-block');
+      const message = figure?.style.getPropertyValue('--unavailable-message').trim();
+
+      // Must be wrapped in quotes - otherwise `content: var(...)` is invalid
+      // and the ::after pseudo is silently dropped by the browser.
+      expect(message).toBeTruthy();
+      expect(message?.startsWith('"')).toBe(true);
+      expect(message?.endsWith('"')).toBe(true);
+    });
+
+    test('falls back to an empty alt when the image alt is missing', async () => {
+      const fragment = await renderToFragment<Props>(ImageBlock, {
+        props: {
+          block: {
+            id: '123',
+            // @ts-expect-error - alt intentionally omitted to exercise the runtime fallback
+            image: {
+              url: 'https://example.com/test.jpg',
+              height: 150,
+              width: 150,
+            },
+          },
+        },
+      });
+
+      const img = fragment.querySelector('img');
+      expect(img?.getAttribute('alt')).toBe('');
+    });
   });
 });
