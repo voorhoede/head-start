@@ -12,11 +12,12 @@ interface Props {
   blockId: string;
 }
 const { query, blockId } = Astro.props;
+const hasHint = query && !hasValidQuery(query);
 ---
 
 <form method="GET" action={getSearchPathname()} role="search">
   {
-    query && !hasValidQuery(query) && (
+    hasHint && (
       <a
         id={`search-${blockId}-hint`}
         href={`#search-${blockId}`}
@@ -34,7 +35,7 @@ const { query, blockId } = Astro.props;
     value={query}
     placeholder={t('search_label')}
     minlength={minQueryLength}
-    aria-describedby={`search-${blockId}-hint`}
+    aria-describedby={hasHint ? `search-${blockId}-hint` : undefined}
     required
   />
   <button type="submit">{t('search')}</button>
