@@ -113,8 +113,8 @@ afterEach(() => {
 
 describe('POST /api/forms/[slug]', () => {
   it('returns 400 with rendered form when validation fails', async () => {
-    const { getEntry } = await import('@lib/content');
-    const { validateSubmission } = await import('@lib/forms');
+    const { getEntry } = await import('~/lib/content');
+    const { validateSubmission } = await import('~/lib/forms');
 
     vi.mocked(getEntry).mockResolvedValue(mockEntry);
     vi.mocked(validateSubmission).mockResolvedValue({
@@ -148,8 +148,8 @@ describe('POST /api/forms/[slug]', () => {
   });
 
   it('returns action HTML when validation succeeds', async () => {
-    const { getEntry } = await import('@lib/content');
-    const { validateSubmission } = await import('@lib/forms');
+    const { getEntry } = await import('~/lib/content');
+    const { validateSubmission } = await import('~/lib/forms');
 
     vi.mocked(getEntry).mockResolvedValue(mockEntry);
     vi.mocked(validateSubmission).mockResolvedValue({
