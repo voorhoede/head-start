@@ -1,4 +1,4 @@
-import type { Client } from '@datocms/cli/lib/cma-client-node';
+import { Client } from '@datocms/lib/cma-client-node';
 
 export default async function (client: Client) {
   console.log('Create new models/block models');
@@ -164,7 +164,11 @@ export default async function (client: Client) {
       },
       required: {},
     },
-    appearance: { addons: [], editor: 'link_select', parameters: {} },
+    appearance: {
+      addons: [],
+      editor: 'link_select',
+      parameters: { filters: [] },
+    },
     default_value: null,
   });
 
@@ -245,11 +249,8 @@ export default async function (client: Client) {
   console.log('Update existing fields/fieldsets');
 
   // Fetch current block lists and append form_block so we don't drop any blocks added since this branch was created
-  // @ts-expect-error rich_text_blocks is only available on Modular Content fields
   const pagePartialBlocks: string[] = (await client.fields.find('page_partial::blocks')).validators.rich_text_blocks?.item_types ?? [];
-  // @ts-expect-error rich_text_blocks is only available on Modular Content fields
   const pageBodyBlocks: string[] = (await client.fields.find('page::body_blocks')).validators.rich_text_blocks?.item_types ?? [];
-  // @ts-expect-error rich_text_blocks is only available on Modular Content fields
   const homeBodyBlocks: string[] = (await client.fields.find('home_page::body_blocks')).validators.rich_text_blocks?.item_types ?? [];
 
   const formBlockId = 'O0aXohhNR1uQgUsDaOVODg';
@@ -312,30 +313,23 @@ export default async function (client: Client) {
   console.log('Manage schema menu items');
 
   console.log(
-    'Update model schema menu item for model "\uD83D\uDCE9 Form" (`form`)',
+    'Update block schema menu item for block model "\uD83D\uDCE9 Form Block" (`form_block`)',
   );
-  await client.schemaMenuItems.update('Cjj7jAnnRuaJ-q2_aT06Lw', {
-    position: 30,
+  await client.schemaMenuItems.update('M1IZ5VtrT36y02ik-sbZlw', {
+    position: 29,
   });
 
   console.log(
     'Update block schema menu item for block model "\uD83D\uDD18 Form Field" (`form_field`)',
   );
   await client.schemaMenuItems.update('L4vSFicIRTWHFVOZa8tE1w', {
-    position: 28,
+    position: 30,
   });
 
   console.log(
-    'Update block schema menu item for block model "\uD83D\uDDC2\uFE0F Grouping Item" (`grouping_item`)',
+    'Update model schema menu item for model "\uD83D\uDCE9 Form" (`form`)',
   );
-  await client.schemaMenuItems.update('HgENUoheQ_2DhBF6OFHfWg', {
-    position: 27,
-  });
-
-  console.log(
-    'Update block schema menu item for block model "\uD83D\uDCE9 Form Block" (`form_block`)',
-  );
-  await client.schemaMenuItems.update('M1IZ5VtrT36y02ik-sbZlw', {
-    position: 29,
+  await client.schemaMenuItems.update('Cjj7jAnnRuaJ-q2_aT06Lw', {
+    position: 32,
   });
 }
