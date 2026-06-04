@@ -20,7 +20,7 @@ const createFieldSchema = (field: Form['formFields'][number]) => {
       ),
     text: z.string(),
     textarea: z.string(),
-    tel: z
+    phone: z
       .string()
       .regex(
         /^\+?[1-9]\d{1,14}$/,

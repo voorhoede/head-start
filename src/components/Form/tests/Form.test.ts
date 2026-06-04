@@ -11,11 +11,11 @@ vi.mock('~/lib/forms');
 
 const locale = 'en' as SiteLocale;
 const formFields = [
-  { id: '1', label: 'Name', name: 'name', required: true, fieldType: 'text', placeholder: 'Name', options: null, spanOverride: null },
-  { id: '2', label: 'Email', name: 'email', required: true, fieldType: 'email', placeholder: 'you@example.com', options: null, spanOverride: null },
-  { id: '3', label: 'Phone', name: 'phone', required: false, fieldType: 'phone', placeholder: '+123...', options: null, spanOverride: null },
-  { id: '4', label: 'Message', name: 'message', required: false, fieldType: 'textarea', placeholder: 'Say hi', options: null, spanOverride: null },
-  { id: '5', label: 'Subject', name: 'subject', required: true, fieldType: 'select', placeholder: '', options: [{ label: 'Sales', value: 'sales' }, { label: 'Support', value: 'support' }], spanOverride: '1/2' },
+  { id: '1', label: 'Name', name: 'name', required: true, fieldType: 'text', placeholder: 'Name', options: [], inputWidth: null },
+  { id: '2', label: 'Email', name: 'email', required: true, fieldType: 'email', placeholder: 'you@example.com', options: [], inputWidth: null },
+  { id: '3', label: 'Phone', name: 'phone', required: false, fieldType: 'phone', placeholder: '+123...', options: [], inputWidth: null },
+  { id: '4', label: 'Message', name: 'message', required: false, fieldType: 'textarea', placeholder: 'Say hi', options: [], inputWidth: null },
+  { id: '5', label: 'Subject', name: 'subject', required: true, fieldType: 'select', placeholder: '', options: [{ label: 'Sales', value: 'sales' }, { label: 'Support', value: 'support' }], inputWidth: '1/2' },
 ];
 
 const mockEntry = {
@@ -25,6 +25,7 @@ const mockEntry = {
     title: 'Contact',
     id: 'en/contact',
     slug: 'contact',
+    submitLabel: null,
     formFields,
     meta: { recordId: '0', locale },
     subscription: { variables: { slug: 'contact', locale } }
@@ -86,7 +87,7 @@ describe('Form.astro', () => {
   it('applies grid-column span style to form fields', async () => {
     const frag = await renderToFragment(Form, { props: { ...mockEntry.data, useTurnStile: false } });
     const subjectField = frag.querySelector('.form-field--select');
-    expect(subjectField?.getAttribute('style')).toContain('grid-column: span 2');
+    expect(subjectField?.getAttribute('style')).toContain('grid-column: span 4');
     const messageField = frag.querySelector('.form-field--textarea');
     expect(messageField?.getAttribute('style')).toContain('grid-column: span 4');
   });

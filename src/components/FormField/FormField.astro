@@ -32,8 +32,7 @@ export function isValidFieldType(fieldType: unknown): fieldType is FieldType {
   return ([...fieldTypes] as unknown[]).includes(fieldType);
 }
 
-const spanMap: Record<string, number> = { 'span-1': 1, 'span-2': 2, 'span-3': 3, 'span-4': 4 }; // todo make easier
-const fullWidthByDefault = new Set<FieldType>(['textarea', 'checkbox', 'radio']);
+const spanMap: Record<string, number> = { 'span-1': 1, 'span-2': 2, 'span-3': 3, 'span-4': 4 };
 
 const {
   class: className,
@@ -50,9 +49,7 @@ const {
   ...props
 } = Astro.props;
 
-const span = inputWidth
-  ? (spanMap[inputWidth] ?? 2)
-  : fullWidthByDefault.has(fieldType) ? 4 : 2;
+const span = inputWidth ? (spanMap[inputWidth] ?? 4) : 4;
 
 const classList = [
   'form-field',
