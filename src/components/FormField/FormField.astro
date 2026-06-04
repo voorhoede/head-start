@@ -19,7 +19,7 @@ export const fieldTypes = [
   'radio',
   'number',
   'date',
-];
+] as const;
 export type FieldType = (typeof fieldTypes)[number];
 
 type Option = { label: string; value: string };
