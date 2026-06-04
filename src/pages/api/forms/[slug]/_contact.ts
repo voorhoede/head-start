@@ -10,5 +10,8 @@ export default async function <T extends CollectionEntry<'Forms'>['data']>(
   partial: boolean = false,
 ) {
   console.log(result);
-  return await renderToString(FormSuccess, { partial });
+  return new Response(await renderToString(FormSuccess, { partial }), {
+    status: 200,
+    headers: new Headers({ 'Content-Type': 'text/html' }),
+  });
 }

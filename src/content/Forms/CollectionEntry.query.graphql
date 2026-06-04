@@ -10,6 +10,11 @@ query FormCollectionEntry($locale: SiteLocale!, $slug: String!) {
       fieldType
       required
       placeholder
+      options {
+        label
+        value
+      }
+      inputWidth
     }
     submitLabel
   }

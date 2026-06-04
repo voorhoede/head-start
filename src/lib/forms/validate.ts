@@ -27,6 +27,23 @@ const createFieldSchema = (field: Form['formFields'][number]) => {
         t('field_valid_phone', { field: field.label }) ||
         'Vul een geldig telefoonnummer in',
       ),
+    select: z.string(),
+    radio: z.string(),
+    checkbox: z.string(),
+    number: z
+      .string()
+      .regex(
+        /^\d+(\.\d+)?$/,
+        t('field_valid_number', { field: field.label }) ||
+        'Vul een geldig getal in',
+      ),
+    date: z
+      .string()
+      .regex(
+        /^\d{4}-\d{2}-\d{2}$/,
+        t('field_valid_date', { field: field.label }) ||
+        'Vul een geldige datum in',
+      ),
   } satisfies Record<FieldType, z.ZodTypeAny>;
   return schemas[fieldType] || z.string();
 };
@@ -56,6 +73,12 @@ export default async function <T extends Form>({
     formErrors['turnstileError'] =
       t('turnstile_error') || 'Validatie mislukt, probeer het opnieuw';
   }
+
+  const checkboxFields = new Set(
+    form.formFields
+      .filter((f) => f.fieldType === 'checkbox')
+      .map((f) => f.name),
+  );
 
   const formSchema = z.object(
     form.formFields.reduce(
@@ -88,6 +111,13 @@ export default async function <T extends Form>({
       if (typeof value === 'string') {
         formValues[field] = value;
       }
+    }
+
+    // Checkbox groups submit multiple values for the same name — collect them all.
+    // Always set the key (empty string when nothing checked) so nonempty() fires with the right message.
+    for (const name of checkboxFields) {
+      const values = formData.getAll(name).filter((v): v is string => typeof v === 'string');
+      formValues[name] = values.join(', ');
     }
 
     formSchema.parse(formValues);

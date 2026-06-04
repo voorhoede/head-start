@@ -1,0 +1,30 @@
+---
+type Option = { label: string; value: string };
+
+type Props = {
+  name: string;
+  options?: Option[];
+  value?: string;
+  required?: boolean;
+  class?: string;
+};
+
+const { name, options = [], value, required, class: className } = Astro.props;
+const checkedValues = value ? value.split(', ') : [];
+---
+
+<checkbox-group class:list={['checkbox-group', className]} required={required}>
+  {options.map((option) => (
+    <label class="checkbox-group__item">
+      <input
+        type="checkbox"
+        name={name}
+        value={option.value}
+        checked={checkedValues.includes(option.value)}
+      />
+      {option.label}
+    </label>
+  ))}
+</checkbox-group>
+
+<script src="./CheckboxGroup.client.ts"></script>

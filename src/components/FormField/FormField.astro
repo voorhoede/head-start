@@ -3,10 +3,17 @@ import type { HTMLAttributes } from 'astro/types';
 import Input from './Fields/Input.astro';
 import InputEmail from './Fields/InputEmail.astro';
 import InputTel from './Fields/InputTel.astro';
+import InputNumber from './Fields/InputNumber.astro';
+import InputDate from './Fields/InputDate.astro';
 import Textarea from './Fields/Textarea.astro';
+import Select from './Fields/Select.astro';
+import CheckboxGroup from './Fields/CheckboxGroup.astro';
+import RadioGroup from './Fields/RadioGroup.astro';
 
-export const fieldTypes = ['text', 'email', 'tel', 'textarea'] as const;
+export const fieldTypes = ['text', 'email', 'phone', 'textarea', 'select', 'checkbox', 'radio', 'number', 'date'] as const;
 export type FieldType = typeof fieldTypes[number];
+
+type Option = { label: string; value: string };
 
 export interface Props extends HTMLAttributes<'div'> {
   id: string;
@@ -17,11 +24,16 @@ export interface Props extends HTMLAttributes<'div'> {
   error?: string;
   fieldType: FieldType;
   placeholder?: string;
+  options?: Option[];
+  inputWidth?: string | null;
 }
 
 export function isValidFieldType(fieldType: unknown): fieldType is FieldType {
   return ([...fieldTypes] as unknown[]).includes(fieldType);
 }
+
+const spanMap: Record<string, number> = { 'span-1': 1, 'span-2': 2, 'span-3': 3, 'span-4': 4 }; // todo make easier
+const fullWidthByDefault = new Set<FieldType>(['textarea', 'checkbox', 'radio']);
 
 const {
   class: className,
@@ -33,19 +45,14 @@ const {
   error,
   fieldType,
   placeholder = '',
+  options,
+  inputWidth,
   ...props
 } = Astro.props;
 
-const componenstByFieldType = {
-  text: Input,
-  email: InputEmail,
-  tel: InputTel,
-  textarea: Textarea,
-} satisfies Record<FieldType, typeof Input | typeof Textarea>;
-
-const Component = componenstByFieldType[fieldType] ?? (() => {
-  throw new Error(`Unsupported field type: ${fieldType}`);
-});
+const span = inputWidth
+  ? (spanMap[inputWidth] ?? 2)
+  : fullWidthByDefault.has(fieldType) ? 4 : 2;
 
 const classList = [
   'form-field',
@@ -53,19 +60,130 @@ const classList = [
   ...error ? ['form-field--error'] : [],
   ...className ? [className] : [],
 ];
+
+const isCheckboxGroup = fieldType === 'checkbox' && !!options?.length;
+const isSingleInput = (fieldType === 'checkbox' || fieldType === 'radio') && !options?.length;
 ---
 
-<div class:list={classList} {...props}>
-  <label for={id} class="form-field__label">
-    {label}{required && <span class="form-field__required" role="presentation">*</span>}
-  </label>
-  <Component
-    {id}
-    {name}
-    {required}
-    {placeholder}
-    {value}
-    class="form-field__input"
-  />
-  {error && <span class="form-field__error">{error}</span>}
-</div>
+{/* Checkbox group: fieldset groups the inputs, legend replaces the label */}
+{isCheckboxGroup && (
+  <fieldset class:list={classList} style={`grid-column: span ${span}`} {...props}>
+    <legend class="form-field__label">
+      {label}{required && <span class="form-field__required" role="presentation">*</span>}
+    </legend>
+    <CheckboxGroup
+      {name}
+      {required}
+      {value}
+      {options}
+      class="form-field__input"
+    />
+    {error && <span class="form-field__error">{error}</span>}
+  </fieldset>
+)}
+
+{/* Single checkbox or radio: label wraps the input so they sit on the same row */}
+{isSingleInput && (
+  <div class:list={classList} style={`grid-column: span ${span}`} {...props}>
+    <label class="form-field__label form-field__label--inline">
+      <input
+        type={fieldType}
+        {id}
+        {name}
+        checked={!!value}
+        required={required}
+      />
+      {label}{required && <span class="form-field__required" role="presentation">*</span>}
+    </label>
+    {error && <span class="form-field__error">{error}</span>}
+  </div>
+)}
+
+{/* All other fields: div with a label above the input */}
+{!isCheckboxGroup && !isSingleInput && (
+  <div class:list={classList} style={`grid-column: span ${span}`} {...props}>
+    <label for={id} class="form-field__label">
+      {label}{required && <span class="form-field__required" role="presentation">*</span>}
+    </label>
+    {fieldType === 'select' && (
+      <Select
+        {id}
+        {name}
+        {required}
+        {value}
+        {options}
+        class="form-field__input"
+      />
+    )}
+    {fieldType === 'radio' && (
+      <RadioGroup
+        {id}
+        {name}
+        {required}
+        {value}
+        {options}
+        class="form-field__input"
+      />
+    )}
+    {fieldType === 'textarea' && (
+      <Textarea
+        {id}
+        {name}
+        {required}
+        {placeholder}
+        {value}
+        class="form-field__input"
+      />
+    )}
+    {fieldType === 'number' && (
+      <InputNumber
+        {id}
+        {name}
+        {required}
+        {placeholder}
+        {value}
+        class="form-field__input"
+      />
+    )}
+    {fieldType === 'date' && (
+      <InputDate
+        {id}
+        {name}
+        {required}
+        {value}
+        class="form-field__input"
+      />
+    )}
+    {fieldType === 'email' && (
+      <InputEmail
+        {id}
+        {name}
+        {required}
+        {placeholder}
+        {value}
+        class="form-field__input"
+      />
+    )}
+    {fieldType === 'phone' && (
+      <InputTel
+        {id}
+        {name}
+        {required}
+        {placeholder}
+        {value}
+        class="form-field__input"
+      />
+    )}
+    {(fieldType === 'text' || !isValidFieldType(fieldType)) && (
+      <Input
+        {id}
+        {name}
+        {required}
+        {placeholder}
+        {value}
+        class="form-field__input"
+      />
+    )}
+    {error && <span class="form-field__error">{error}</span>}
+  </div>
+)}

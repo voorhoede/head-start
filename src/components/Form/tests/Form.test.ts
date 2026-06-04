@@ -6,12 +6,16 @@ import type { SiteLocale } from '~/lib/datocms/schema';
 import type { APIContext } from 'astro';
 import { POST } from '~/pages/api/forms/[slug]';
 
+vi.mock('~/lib/content');
+vi.mock('~/lib/forms');
+
 const locale = 'en' as SiteLocale;
 const formFields = [
-  { id: '1', label: 'Name', name: 'name', required: true, fieldType: 'text', placeholder: 'Name' },
-  { id: '2', label: 'Email', name: 'email', required: true, fieldType: 'email', placeholder: 'you@example.com' },
-  { id: '3', label: 'Phone', name: 'phone', required: false, fieldType: 'tel', placeholder: '+123...' },
-  { id: '4', label: 'Message', name: 'message', required: false, fieldType: 'textarea', placeholder: 'Say hi' },
+  { id: '1', label: 'Name', name: 'name', required: true, fieldType: 'text', placeholder: 'Name', options: null, spanOverride: null },
+  { id: '2', label: 'Email', name: 'email', required: true, fieldType: 'email', placeholder: 'you@example.com', options: null, spanOverride: null },
+  { id: '3', label: 'Phone', name: 'phone', required: false, fieldType: 'phone', placeholder: '+123...', options: null, spanOverride: null },
+  { id: '4', label: 'Message', name: 'message', required: false, fieldType: 'textarea', placeholder: 'Say hi', options: null, spanOverride: null },
+  { id: '5', label: 'Subject', name: 'subject', required: true, fieldType: 'select', placeholder: '', options: [{ label: 'Sales', value: 'sales' }, { label: 'Support', value: 'support' }], spanOverride: '1/2' },
 ];
 
 const mockEntry = {
@@ -68,6 +72,23 @@ describe('Form.astro', () => {
     expect(emailInput?.getAttribute('value')).toBe('wrong');
     // In JSDOM, the current value of a textarea is exposed via the `.value` property
     expect(messageTextarea?.value).toBe('Hello World!');
+  });
+
+  it('renders a select field with options', async () => {
+    const frag = await renderToFragment(Form, { props: { ...mockEntry.data, useTurnStile: false } });
+    const select = frag.querySelector('select[name="subject"]');
+    expect(select).toBeTruthy();
+    const optionValues = [...select!.querySelectorAll('option')].map((o) => o.getAttribute('value'));
+    expect(optionValues).toContain('sales');
+    expect(optionValues).toContain('support');
+  });
+
+  it('applies grid-column span style to form fields', async () => {
+    const frag = await renderToFragment(Form, { props: { ...mockEntry.data, useTurnStile: false } });
+    const subjectField = frag.querySelector('.form-field--select');
+    expect(subjectField?.getAttribute('style')).toContain('grid-column: span 2');
+    const messageField = frag.querySelector('.form-field--textarea');
+    expect(messageField?.getAttribute('style')).toContain('grid-column: span 4');
   });
 
   it('includes Turnstile markup by default and can be disabled', async () => {

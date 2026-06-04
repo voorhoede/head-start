@@ -18,27 +18,40 @@ const { slug, formFields, submitLabel, errors, formValues, useTurnStile = true }
 <form
   method="POST"
   action={`/api/forms/${slug}/`}
+  class="form"
 >
   {useTurnStile &&
     <Turnstile error={errors?.['turnstileError']} />}
-  {formFields.map(
-    ({ id, label, name, required, fieldType, placeholder }) => (
-      <FormField
-        id={id}
-        label={label}
-        name={name}
-        required={required}
-        fieldType={isValidFieldType(fieldType) ? fieldType : 'text'}
-        placeholder={placeholder || ''}
-        error={errors?.[name]}
-        value={formValues?.[name]}
-      />
-    )
-  )}
+  <div class="form__fields">
+    {formFields.map(
+      ({ id, label, name, required, fieldType, placeholder, options, inputWidth }) => (
+        <FormField
+          id={id}
+          label={label}
+          name={name}
+          required={required}
+          fieldType={isValidFieldType(fieldType) ? fieldType : 'text'}
+          placeholder={placeholder || ''}
+          error={errors?.[name]}
+          value={formValues?.[name]}
+          options={options ?? undefined}
+          inputWidth={inputWidth}
+        />
+      )
+    )}
+  </div>
   <button type="submit">
     {submitLabel || t('submit')}
   </button>
 </form>
-<script>
-console.log('hi');
-</script>
+
+<style>
+  .form__fields {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+  .form-field {
+    border: solid black 2px;
+  }
+</style>
