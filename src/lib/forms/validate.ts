@@ -1,5 +1,5 @@
 import { PUBLIC_IS_PRODUCTION, } from 'astro:env/server';
-import { type FieldType, isValidFieldType, } from '~/components/FormField/FormField.astro';
+import { type FieldType, isValidFieldType } from '~/components/FormField/fieldTypes';
 import { z } from 'astro:schema';
 import { type CollectionEntry } from '~/lib/content';
 import { t } from '~/lib/i18n';

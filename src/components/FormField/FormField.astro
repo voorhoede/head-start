@@ -8,19 +8,7 @@ import InputDate from './Fields/InputDate.astro';
 import Textarea from './Fields/Textarea.astro';
 import Select from './Fields/Select.astro';
 import Fieldset from './Fields/Fieldset.astro';
-
-export const fieldTypes = [
-  'text',
-  'email',
-  'phone',
-  'textarea',
-  'select',
-  'checkbox',
-  'radio',
-  'number',
-  'date',
-] as const;
-export type FieldType = (typeof fieldTypes)[number];
+import { type FieldType, isValidFieldType } from './fieldTypes';
 
 type Option = { label: string; value: string };
 
@@ -35,10 +23,6 @@ export interface Props extends HTMLAttributes<'div'> {
   placeholder?: string;
   options?: Option[];
   inputWidth?: string | null;
-}
-
-export function isValidFieldType(fieldType: unknown): fieldType is FieldType {
-  return ([...fieldTypes] as unknown[]).includes(fieldType);
 }
 
 const spanMap: Record<string, number> = {
