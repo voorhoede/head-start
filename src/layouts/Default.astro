@@ -66,13 +66,9 @@ const llmOptions = data.app?.openPageInLlmOption ?? app.openPageInLlmOption ?? [
       {
         (breadcrumbs.length > 0 || allowAiBots) && (
           <div class="page-context">
-            {breadcrumbs.length > 0 ? (
-              <Breadcrumbs items={breadcrumbs} />
-            ) : (
-              <span />
-            )}
+            {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
             {allowAiBots && (
-              <div {...datocmsNoIndex} data-nosnippet>
+              <div class="page-context__llm" {...datocmsNoIndex} data-nosnippet>
                 <Fragment set:html={'<!--googleoff: index-->'} />
                 <OpenInLlm {llmOptions} {prompt} />
                 <Fragment set:html={'<!--googleon: index-->'} />
@@ -138,7 +134,9 @@ const llmOptions = data.app?.openPageInLlmOption ?? app.openPageInLlmOption ?? [
   .page-context {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+  }
+  .page-context__llm {
+    margin-inline-start: auto;
   }
   footer {
     padding: 1rem;

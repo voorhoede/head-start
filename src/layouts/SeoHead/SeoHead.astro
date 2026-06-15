@@ -2,7 +2,7 @@
 import type { HTMLTag } from 'astro/types';
 import { getLocale } from '~/lib/i18n';
 import { getOpenSearchName, getOpenSearchPathname } from '~/lib/search';
-import type { PageUrl } from '~/lib/routing';
+import { htmlToMarkdownPath, type PageUrl } from '~/lib/routing';
 import type { Tag } from '~/lib/datocms/schema';
 import DynamicTag from '~/components/DynamicTag.astro';
 
@@ -18,9 +18,9 @@ const locale = getLocale();
 const metaTags = tags.filter((tag) => tag.tag !== 'title');
 const titleTag = tags.find((tag) => tag.tag === 'title');
 
-const trailingSlashPattern = /\/$/;
-const { pathname } = Astro.url;
-const markdownUrl = new URL(`/api/content${pathname.replace(trailingSlashPattern, '')}.md`, Astro.site);
+// Reuse the shared routing helper so this URL can't drift from the
+// "Open as Markdown" link / copy button in OpenInLlm.
+const markdownUrl = new URL(htmlToMarkdownPath(Astro.url.pathname), Astro.site);
 ---
 
 {titleTag && <title>{titleTag.content}</title>}
