@@ -52,6 +52,16 @@ describe('rehypeRewriteLinksToMarkdown', () => {
     expect(out).toContain('href="/api/search/?q=foo"');
   });
 
+  test('skips proxied file assets', async () => {
+    const out = await rewrite('<a href="/files/report.pdf">Report</a>');
+    expect(out).toContain('href="/files/report.pdf"');
+  });
+
+  test('skips absolute same-origin file assets', async () => {
+    const out = await rewrite(`<a href="${SITE}/files/report.pdf">Report</a>`);
+    expect(out).toContain(`href="${SITE}/files/report.pdf"`);
+  });
+
   test('handles hash-only links', async () => {
     const out = await rewrite('<a href="#section">Anchor</a>');
     expect(out).toContain('href="#section"');

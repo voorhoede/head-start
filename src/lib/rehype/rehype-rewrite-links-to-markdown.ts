@@ -7,6 +7,10 @@ export interface Options {
   siteUrl: string;
 }
 
+// Same-origin paths that are not content pages and have no markdown
+// alternative: the markdown API itself and the proxied file assets.
+const NON_CONTENT_PREFIXES = ['/api/', '/files/'];
+
 const rehypeRewriteLinksToMarkdown: Plugin<[Options], Root> = ({ siteUrl }) => {
   const origin = new URL(siteUrl).origin;
 
@@ -24,7 +28,9 @@ const rehypeRewriteLinksToMarkdown: Plugin<[Options], Root> = ({ siteUrl }) => {
         continue;
       }
 
-      if (pathname.startsWith('/api/')) continue;
+      if (NON_CONTENT_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
+        continue;
+      }
 
       node.properties!.href = `${origin}${htmlToMarkdownPath(pathname)}`;
     }
