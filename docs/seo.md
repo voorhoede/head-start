@@ -74,6 +74,17 @@ npx jiti scripts/download-ai-robots-txt.ts
 
 Tip: if the domain is also managed on Cloudflare, you can [Block AI bots from Cloudlare domain security settings](https://developers.cloudflare.com/bots/concepts/bot/#ai-bots) (also see [background info](https://blog.cloudflare.com/declaring-your-aindependence-block-ai-bots-scrapers-and-crawlers-with-a-single-click/)). And in addition you can [run an audit for AI bot insights](https://blog.cloudflare.com/cloudflare-ai-audit-control-ai-content-crawlers/) on your domain.
 
+## Markdown for agents
+
+AI agents can request a Markdown rendition of any page instead of HTML, which is cheaper to read and easier to parse. Head Start supports this two ways:
+
+- **Per-page `.md` URL** — every content page is also served as Markdown at `/api/content/{path}.md` (see [`src/pages/api/content/[...path].md.ts`](../src/pages/api/content/[...path].md.ts)). The [default layout](../src/layouts/Default.astro) links to it via the "Open in LLM" control. This is an on-demand route, so it works regardless of output mode.
+- **Same-URL content negotiation** — a request with `Accept: text/markdown` to the page's own URL gets Markdown back; browsers (and anything sending `*/*`) keep the default HTML. Negotiable pages advertise this with `Vary: accept`, and the Markdown response carries `Content-Type: text/markdown; charset=utf-8` plus `x-markdown-tokens` / `x-original-tokens` estimates so agents can budget context. See [`src/middleware/markdown-negotiation.ts`](../src/middleware/markdown-negotiation.ts). The HTML→Markdown conversion is shared with the `.md` route via [`lib/markdown.ts`](../src/lib/markdown.ts).
+
+Both honour the **Allow AI Bots** toggle, `noIndex`, and preview mode — when disallowed, no Markdown is served.
+
+> ⚠️ **Static pages bypass the Worker.** With the production `output: 'static'` ([`config/output.ts`](../config/output.ts)), content pages are prerendered and served as static assets by Cloudflare Pages, so the negotiation middleware only runs for on-demand routes (e.g. search). To negotiate Markdown on the prerendered page URLs, enable [**Markdown for Agents**](https://developers.cloudflare.com/fundamentals/reference/markdown-for-agents/) at the Cloudflare zone level — it converts HTML responses at the edge with no application code. The per-page `.md` URL above is always available as a code-level fallback.
+
 ## /llms.txt
 
 Head Start serves an [`/llms.txt`](../src/pages/llms.txt.ts) file at the site root following the [llmstxt.org](https://llmstxt.org/) proposal. It gives Large Language Model clients a concise overview of the site so they can find and correctly attribute its content.
