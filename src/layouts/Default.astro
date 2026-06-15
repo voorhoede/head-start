@@ -68,7 +68,7 @@ const llmOptions = data.app?.openPageInLlmOption ?? app.openPageInLlmOption ?? [
           <div class="page-context">
             {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
             {allowAiBots && (
-              <div class="page-context__llm" {...datocmsNoIndex} data-nosnippet>
+              <div {...datocmsNoIndex} data-nosnippet>
                 <Fragment set:html={'<!--googleoff: index-->'} />
                 <OpenInLlm {llmOptions} {prompt} />
                 <Fragment set:html={'<!--googleon: index-->'} />
@@ -135,7 +135,10 @@ const llmOptions = data.app?.openPageInLlmOption ?? app.openPageInLlmOption ?? [
     display: flex;
     align-items: center;
   }
-  .page-context__llm {
+  /* Push the LLM controls to the end, with or without breadcrumbs.
+     Targeted by attribute to avoid a class on the spread element,
+     which would emit a duplicate `class` (scoped-style hash). */
+  .page-context > [data-nosnippet] {
     margin-inline-start: auto;
   }
   footer {
