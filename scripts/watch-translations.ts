@@ -1,6 +1,6 @@
 import { exec } from 'node:child_process';
 import { subscribeToQuery } from 'datocms-listen';
-import EventSource from 'eventsource';
+import { EventSource } from 'eventsource';
 import dotenv from 'dotenv-safe';
 import { datocmsEnvironment } from '../datocms-environment.ts';
 
@@ -25,7 +25,6 @@ function watchTranslations() {
   subscribeToQuery({
     query,
     fetcher: fetch,
-    // @ts-expect-error types are compatible
     eventSourceClass: EventSource,
     environment: datocmsEnvironment,
     token: process.env.DATOCMS_READONLY_API_TOKEN!,

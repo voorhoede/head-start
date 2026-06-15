@@ -1,4 +1,5 @@
 fragment PagePartialBlock on PagePartialBlockRecord {
+  __typename
   id
   items {
     id

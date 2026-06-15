@@ -1,6 +1,6 @@
 ---
 import type { HTMLTag } from 'astro/types';
-import type { Tag } from '~/lib/datocms/types';
+import type { Tag } from '~/lib/datocms/schema';
 import DynamicTag from './DynamicTag.astro';
 
 type SearchResult = {
@@ -11,7 +11,7 @@ type SearchResult = {
     matchingTerm: string
     markedText: string
   }[]
-}
+};
 interface Props {
   item: SearchResult;
   tag?: Tag;

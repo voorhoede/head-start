@@ -5,8 +5,8 @@ import {
   PageCollectionEntry as query,
   type PageCollectionEntryQuery,
   type PageRouteFragment,
-  type SiteLocale
 } from '~/lib/datocms/types';
+import type { SiteLocale } from '~/lib/datocms/schema';
 import { isLocale } from '~/lib/i18n';
 import {
   formatBreadcrumb,

@@ -43,7 +43,11 @@ describe('TextImageBlock', () => {
           },
           image: {
             url: 'https://via.placeholder.com/300',
-            alt: 'Placeholder'
+            alt: 'Placeholder',
+            title: null,
+            width: null,
+            height: null,
+            responsiveImage: null
           }
         }
       }
@@ -91,7 +95,11 @@ describe('TextImageBlock', () => {
           },
           image: {
             url: 'https://via.placeholder.com/300',
-            alt: 'Placeholder'
+            alt: 'Placeholder',
+            title: null,
+            width: null,
+            height: null,
+            responsiveImage: null
           }
         }
       }

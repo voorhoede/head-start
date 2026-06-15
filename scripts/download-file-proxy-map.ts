@@ -12,7 +12,7 @@ type FileRecord = {
   file: {
     upload_id: string;
   }
-}
+};
 type FilePathMap = {
   [key: string]: string;
 };

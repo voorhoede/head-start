@@ -1,0 +1,27 @@
+---
+import { t } from '~/lib/i18n';
+import { processTableOfContents } from './index';
+import List from './List.astro';
+
+interface Props {
+  showToc?: boolean;
+}
+const { showToc = true } = Astro.props;
+
+const rawHtml = await Astro.slots.render('default');
+// Always process so headings get anchor ids; only show the nav when enabled.
+const { items, html } = processTableOfContents(rawHtml);
+const tocItems = showToc ? items : [];
+---
+
+{
+  tocItems.length > 0 && (
+    <nav>
+      <details open>
+        <summary>{t('table_of_contents')}</summary>
+        <List items={tocItems} />
+      </details>
+    </nav>
+  )
+}
+<Fragment set:html={html} />

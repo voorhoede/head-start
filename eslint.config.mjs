@@ -4,12 +4,12 @@ import js from '@eslint/js';
 import ts from 'typescript-eslint';
 import astro from 'eslint-plugin-astro';
 import depend from 'eslint-plugin-depend';
+import stylistic from '@stylistic/eslint-plugin';
 
 export default defineConfig([
   js.configs.recommended,
   ...ts.configs.recommended,
   ...astro.configs.recommended,
-  ...astro.configs['jsx-a11y-recommended'],
   {
     files: ['**/*.js', '**/*.ts', '**/*.astro'],
     plugins: {
@@ -18,6 +18,9 @@ export default defineConfig([
     extends: ['depend/flat/recommended'],
   },
   {
+    plugins: {
+      '@stylistic': stylistic,
+    },
     languageOptions: {
       globals: {
         ...globals.node,
@@ -27,10 +30,10 @@ export default defineConfig([
       sourceType: 'module',
     },
     rules: {
-      indent: ['warn', 2],
-      quotes: ['warn', 'single'],
-      semi: ['warn', 'always'],
-      'object-curly-spacing': ['warn', 'always'],
+      '@stylistic/indent': ['warn', 2],
+      '@stylistic/quotes': ['warn', 'single'],
+      '@stylistic/semi': ['warn', 'always'],
+      '@stylistic/object-curly-spacing': ['warn', 'always'],
       'no-unused-vars': [
         'warn',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
@@ -43,7 +46,11 @@ export default defineConfig([
       'no-unused-vars': ['off'],
       '@typescript-eslint/no-unused-vars': [
         'error',
-        { argsIgnorePattern: '^_', destructuredArrayIgnorePattern: '^_' },
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+        },
       ],
       '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/triple-slash-reference': 'off',

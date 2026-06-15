@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import parser from 'accept-language-parser';
 import { cookieName, defaultLocale, locales } from '~/lib/i18n';
-import type { SiteLocale } from '~/lib/datocms/types';
+import type { SiteLocale } from '~/lib/datocms/schema';
 
 export const prerender = false;
 

@@ -1,5 +1,6 @@
 import { defineCollection, z } from 'astro:content';
-import { type AppQuery, App as query, type SiteLocale } from '~/lib/datocms/types';
+import { type AppQuery, App as query } from '~/lib/datocms/types';
+import type { SiteLocale } from '~/lib/datocms/schema';
 import { datocmsRequest } from '~/lib/datocms';
 import { locales } from '~/lib/i18n';
 

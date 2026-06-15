@@ -9,4 +9,4 @@ const { node } = Astro.props;
 const { code, language } = node;
 ---
 
-<pre><code class={ language }>{code}</code></pre>
+<pre data-language={language || undefined}><code>{code}</code></pre>

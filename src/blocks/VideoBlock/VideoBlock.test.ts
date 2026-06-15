@@ -13,11 +13,18 @@ describe('VideoBlock', () => {
           mute: false,
           loop: false,
           videoAsset: {
+            width: null,
+            height: null,
+            alt: null,
+            title: null,
             video: {
               muxAssetId: '123',
               muxPlaybackId: '123',
               streamingUrl: 'https://example.com/',
               thumbnailUrl: 'https://example.com/',
+              duration: null,
+              framerate: null,
+              mp4Url: null,
             }
           },
           tracks: []
@@ -40,14 +47,22 @@ describe('VideoBlock', () => {
           mute: false,
           loop: false,
           videoAsset: {
+            width: null,
+            height: null,
+            alt: null,
+            title: null,
             video: {
               muxAssetId: '123',
               muxPlaybackId: '123',
               streamingUrl: 'https://example.com/',
               thumbnailUrl: 'https://example.com/',
+              duration: null,
+              framerate: null,
+              mp4Url: null,
             }
           },
           tracks: [{
+            title: null,
             locale: 'en',
             kind: 'mp4',
             file: {

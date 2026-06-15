@@ -1,4 +1,4 @@
-import type { Tag } from '~/lib/datocms/types';
+import type { Tag } from '~/lib/datocms/schema';
 import { getLocale } from '~/lib/i18n';
 import { globalSeo } from '~/lib/site.json';
 import aiRobotsTxt from './ai.robots.txt?raw';
@@ -31,7 +31,7 @@ export type RobotsTxtProps = {
   allowAiBots: boolean,
   allowAll: boolean,
   siteUrl: string,
-}
+};
 
 export const robotsTxt = ({ allowAiBots, allowAll, siteUrl }: RobotsTxtProps) => `
 ${allowAiBots ? '' : aiRobotsTxt}

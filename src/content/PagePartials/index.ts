@@ -2,8 +2,8 @@ import { defineCollection, z } from 'astro:content';
 import {
   PagePartialCollectionEntry as query,
   type PagePartialCollectionEntryQuery,
-  type SiteLocale
 } from '~/lib/datocms/types';
+import type { SiteLocale } from '~/lib/datocms/schema';
 import { datocmsCollection, datocmsRequest } from '~/lib/datocms';
 import { combine } from '~/lib/content';
 

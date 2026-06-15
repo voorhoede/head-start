@@ -21,7 +21,7 @@ const pagePartials = await Promise.all(
 )) }
 
 {/* Temporary solution to prevent breaking changes for existing Page Partial Blocks */}
-<GroupingBlock hideEditorLabels block={{
+<GroupingBlock block={{
   ...block,
   __typename: 'GroupingBlockRecord',
   items: pagePartials.map(({ data: item }) => ({

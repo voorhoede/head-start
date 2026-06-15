@@ -2,6 +2,7 @@ import { defineMiddleware } from 'astro:middleware';
 import { HEAD_START_PREVIEW_SECRET, HEAD_START_PREVIEW } from 'astro:env/server';
 
 export const previewCookieName = 'HEAD_START_PREVIEW';
+export const editModeCookieName = 'HEAD_START_EDIT_MODE';
 
 export const hashSecret = async (secret: string) => {
   const msgUint8 = new TextEncoder().encode(secret);
@@ -15,6 +16,9 @@ export const preview = defineMiddleware(async ({ cookies, locals }, next) => {
   Object.assign(locals, {
     isPreview: HEAD_START_PREVIEW,
     isPreviewAuthOk: Boolean(previewSecret) && cookies.get(previewCookieName)?.value === await hashSecret(previewSecret),
+    // Edit mode (click-to-edit overlays) is on by default; the preview bar toggle
+    // flips a cookie so the choice persists across page navigations.
+    editModeOn: cookies.get(editModeCookieName)?.value !== '0',
     previewSecret
   });
   const response = await next();

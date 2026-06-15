@@ -1,5 +1,4 @@
 ---
-import { fontFamilyArchivo } from '~/assets/fonts';
 import PerfHead from '~/layouts/PerfHead/PerfHead.astro';
 import { Content } from '../../content/editor-guide.md';
 
@@ -24,7 +23,7 @@ export const prerender = false;
   </body>
 </html>
 
-<style is:global define:vars={{ fontFamilyArchivo }}>
+<style is:global>
   *,
   *::before,
   *::after {
@@ -34,7 +33,7 @@ export const prerender = false;
   body {
     margin: 0;
     padding: 0;
-    font-family: var(--fontFamilyArchivo);
+    font-family: var(--font-archivo);
     background: #ffffff;
     color: #1a1a1a;
   }
