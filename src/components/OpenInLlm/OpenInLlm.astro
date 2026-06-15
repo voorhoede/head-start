@@ -12,19 +12,16 @@ export type Props = {
 const { llmOptions, prompt } = Astro.props;
 
 const popoverId = 'open-in-llm-popover';
-const pageUrl = Astro.url.href;
 const markdownHref = `${Astro.url.origin}${htmlToMarkdownPath(Astro.url.pathname)}`;
 
-let searchText = prompt.replaceAll(/\{\s*pageUrl\s*\}/g, pageUrl);
-if (searchText === '') searchText = pageUrl;
+let searchText = prompt.replaceAll(/\{\s*pageUrl\s*\}/g, markdownHref);
+if (searchText === '') searchText = markdownHref;
 
 const llmLinks = llmOptions.map((option) => {
   const href = new URL(option.url);
   href.searchParams.set('q', searchText);
   return { ...option, href: href.toString() };
 });
-
-const hasDropdown = true;
 ---
 
 <open-in-llm>
@@ -39,45 +36,39 @@ const hasDropdown = true;
       <Icon name="share" />
       <span data-copy-label>{t('copy_page')}</span>
     </button>
-    {
-      hasDropdown && (
-        <button
-          type="button"
-          popovertarget={popoverId}
-          aria-label={t('open_in_llm')}
-          aria-haspopup="true"
-          aria-expanded="false"
-        >
-          <Icon name="chevron-down" />
-        </button>
-      )
-    }
+    <button
+      type="button"
+      popovertarget={popoverId}
+      aria-label={t('open_in_llm')}
+      aria-haspopup="true"
+      aria-expanded="false"
+    >
+      <Icon name="chevron-down" />
+    </button>
   </div>
-  {
-    hasDropdown && (
-      <ul popover id={popoverId} data-placement="bottom-start">
+  <ul popover id={popoverId} data-placement="bottom-start">
+    <li>
+      <a href={markdownHref}>
+        {t('open_as_markdown')}
+        <Icon name="external" />
+      </a>
+    </li>
+    {
+      llmLinks.map((link) => (
         <li>
-          <a href={markdownHref}>
-            {t('open_as_markdown')}
+          <a
+            href={link.href}
+            {...(link.openInNewTab
+              ? { target: '_blank', rel: 'noopener noreferrer' }
+              : {})}
+          >
+            {link.title}
             <Icon name="external" />
           </a>
         </li>
-        {llmLinks.map((link) => (
-          <li>
-            <a
-              href={link.href}
-              {...(link.openInNewTab
-                ? { target: '_blank', rel: 'noopener noreferrer' }
-                : {})}
-            >
-              {link.title}
-              <Icon name="external" />
-            </a>
-          </li>
-        ))}
-      </ul>
-    )
-  }
+      ))
+    }
+  </ul>
 </open-in-llm>
 
 <script src="./OpenInLlm.client.ts"></script>
