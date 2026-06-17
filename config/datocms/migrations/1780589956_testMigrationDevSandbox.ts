@@ -230,31 +230,6 @@ export default async function (client: Client) {
   });
 
   console.log(
-    'Create Single link field "Form" (`form`) in block model "\uD83D\uDCE9 Form Block" (`form_block`)',
-  );
-  await client.fields.create('O0aXohhNR1uQgUsDaOVODg', {
-    id: 'O_QuU43RRumZyZGeRSOkPQ',
-    label: 'Form',
-    field_type: 'link',
-    api_key: 'form',
-    validators: {
-      item_item_type: {
-        on_publish_with_unpublished_references_strategy: 'fail',
-        on_reference_unpublish_strategy: 'delete_references',
-        on_reference_delete_strategy: 'delete_references',
-        item_types: ['cpbyAb0SScmWIX8IThJ4TQ'],
-      },
-      required: {},
-    },
-    appearance: {
-      addons: [],
-      editor: 'link_select',
-      parameters: { filters: [] },
-    },
-    default_value: null,
-  });
-
-  console.log(
     'Create Single-line string field "Label" (`label`) in block model "Form field option" (`form_field_option`)',
   );
   await client.fields.create('Memqq5AXRaei-rGJOFlllQ', {
@@ -288,6 +263,31 @@ export default async function (client: Client) {
       addons: [],
       editor: 'slug',
       parameters: { url_prefix: null, placeholder: null },
+    },
+    default_value: null,
+  });
+
+  console.log(
+    'Create Single link field "Form" (`form`) in block model "\uD83D\uDCE9 Form Block" (`form_block`)',
+  );
+  await client.fields.create('O0aXohhNR1uQgUsDaOVODg', {
+    id: 'O_QuU43RRumZyZGeRSOkPQ',
+    label: 'Form',
+    field_type: 'link',
+    api_key: 'form',
+    validators: {
+      item_item_type: {
+        on_publish_with_unpublished_references_strategy: 'fail',
+        on_reference_unpublish_strategy: 'delete_references',
+        on_reference_delete_strategy: 'delete_references',
+        item_types: ['cpbyAb0SScmWIX8IThJ4TQ'],
+      },
+      required: {},
+    },
+    appearance: {
+      addons: [],
+      editor: 'link_select',
+      parameters: { filters: [] },
     },
     default_value: null,
   });
@@ -366,26 +366,12 @@ export default async function (client: Client) {
     default_value: null,
   });
 
-  console.log('Update existing fields/fieldsets');
-
   // Fetch current block lists and append form_block so we don't drop any blocks added since this branch was created
-  const pagePartialBlocks: string[] = (await client.fields.find('page_partial::blocks')).validators.rich_text_blocks?.item_types ?? [];
   const pageBodyBlocks: string[] = (await client.fields.find('page::body_blocks')).validators.rich_text_blocks?.item_types ?? [];
   const homeBodyBlocks: string[] = (await client.fields.find('home_page::body_blocks')).validators.rich_text_blocks?.item_types ?? [];
   const notFoundBodyBlocks: string[] = (await client.fields.find('not_found_page::body_blocks')).validators.rich_text_blocks?.item_types ?? [];
 
   const formBlockId = 'O0aXohhNR1uQgUsDaOVODg';
-
-  console.log(
-    'Update Modular Content (Multiple blocks) field "Body" (`blocks`) in model "\uD83E\uDDE9 Page Partial" (`page_partial`)',
-  );
-  await client.fields.update('SKLmdv71Rge0rKhJzOFQWQ', {
-    validators: {
-      rich_text_blocks: {
-        item_types: [...pagePartialBlocks, formBlockId],
-      },
-    },
-  });
 
   console.log(
     'Update Modular Content (Multiple blocks) field "Body" (`body_blocks`) in model "\uD83D\uDCD1 Page" (`page`)',
@@ -450,6 +436,13 @@ export default async function (client: Client) {
   console.log('Manage schema menu items');
 
   console.log(
+    'Update block schema menu item for block model "Form field option" (`form_field_option`)',
+  );
+  await client.schemaMenuItems.update('H5AS4nZXRJ2g2R_5nszZ2g', {
+    position: 31,
+  });
+
+  console.log(
     'Update block schema menu item for block model "\uD83D\uDCE9 Form Block" (`form_block`)',
   );
   await client.schemaMenuItems.update('M1IZ5VtrT36y02ik-sbZlw', {
@@ -461,13 +454,6 @@ export default async function (client: Client) {
   );
   await client.schemaMenuItems.update('L4vSFicIRTWHFVOZa8tE1w', {
     position: 30,
-  });
-
-  console.log(
-    'Update block schema menu item for block model "Form field option" (`form_field_option`)',
-  );
-  await client.schemaMenuItems.update('H5AS4nZXRJ2g2R_5nszZ2g', {
-    position: 31,
   });
 
   console.log(
