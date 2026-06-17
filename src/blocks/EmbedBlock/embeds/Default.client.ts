@@ -1,3 +1,16 @@
+import { persistentMap } from '@nanostores/persistent';
+
+type ConsentMap = Record<string, boolean>;
+
+const $consent = persistentMap<ConsentMap>(
+  'DefaultEmbed:consent:',
+  {},
+  {
+    decode: JSON.parse,
+    encode: JSON.stringify,
+  }
+);
+
 const enhanceIntersectedEmbeds = (entries: IntersectionObserverEntry[]) => {
   entries.forEach((entry) => {
     if (entry.isIntersecting && entry.target instanceof DefaultEmbed) {
@@ -16,31 +29,78 @@ class DefaultEmbed extends HTMLElement {
   #provider: string;
   #template?: HTMLTemplateElement;
   #scriptTags: HTMLScriptElement[] = [];
+  #consentAlert?: HTMLElement;
+  #consentButton?: HTMLButtonElement;
+  #placeholder?: HTMLAnchorElement;
+  #boundGrantConsent: () => void;
+  #boundOnPlaceholderClick: (event: MouseEvent) => void;
 
   constructor() {
     super();
     this.#provider = this.dataset.provider || '';
     this.#template = this.querySelector('template') || undefined;
     this.#scriptTags = Array.from(this.querySelectorAll('script[data-src]'));
+    this.#consentAlert = (this.querySelector('[role="dialog"]') as HTMLElement) ?? undefined;
+    this.#consentButton = (this.querySelector('[role="dialog"] button') as HTMLButtonElement) ?? undefined;
+    this.#placeholder = (this.querySelector('.embed-placeholder') as HTMLAnchorElement) ?? undefined;
+    this.#boundGrantConsent = this.#grantConsent.bind(this);
+    this.#boundOnPlaceholderClick = this.#onPlaceholderClick.bind(this);
   }
 
   connectedCallback() {
+    this.#consentButton?.addEventListener('click', this.#boundGrantConsent);
+    this.#placeholder?.addEventListener('click', this.#boundOnPlaceholderClick);
     observer.observe(this);
+  }
+
+  disconnectedCallback() {
+    this.#consentButton?.removeEventListener('click', this.#boundGrantConsent);
+    this.#placeholder?.removeEventListener('click', this.#boundOnPlaceholderClick);
+    observer.unobserve(this);
+  }
+
+  #hasConsent() {
+    return $consent.get()[this.#provider] === true;
+  }
+
+  #grantConsent() {
+    $consent.setKey(this.#provider, true);
+    this.#consentAlert?.setAttribute('hidden', '');
+    this.#load();
+  }
+
+  #onPlaceholderClick(event: MouseEvent) {
+    if (!this.#consentAlert) return;
+    event.preventDefault();
+    if (this.#hasConsent()) {
+      this.#load();
+    } else {
+      this.#placeholder?.setAttribute('hidden', '');
+      this.#consentAlert.removeAttribute('hidden');
+      this.#consentButton?.focus();
+    }
   }
 
   enhance() {
     observer.unobserve(this);
 
+    if (!this.#template && this.#scriptTags.length === 0) return;
+    if (this.#placeholder && !this.#hasConsent()) return;
+
+    if (!this.#hasConsent()) {
+      this.#consentAlert?.removeAttribute('hidden');
+      this.#consentButton?.focus();
+      return;
+    }
+
+    this.#load();
+  }
+
+  #load() {
     if (this.#isEnhanced) {
       return;
     }
     this.#isEnhanced = true;
-
-    if (!this.#template && this.#scriptTags.length === 0) {
-      return;
-    }
-  
-    console.log(`Todo: only enhance after consent for "${this.#provider}". See https://github.com/voorhoede/head-start/issues/49`);
 
     if (this.#template) {
       const clone = this.#template.content.cloneNode(true);

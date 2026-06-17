@@ -17,6 +17,7 @@ const getHlsPlayer = () => import('hls.js');
 
 class VideoBlock extends HTMLElement {
   #autoplay = false;
+  #chaptersRendered = false;
   #mp4Url?: string;
   #streamingUrl?: string;
   #useReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -53,6 +54,7 @@ class VideoBlock extends HTMLElement {
       this.addEventListener('click', this.#onClick.bind(this), { once: true });
     }
     videoBlockObserver.observe(this);
+    this.#initChapters();
   }
 
   disconnectedCallback() {
@@ -65,12 +67,42 @@ class VideoBlock extends HTMLElement {
     this.play({ focus: true });
   }
 
+  #initChapters() {
+    if (this.#chaptersRendered) return;
+    const chaptersTrack = [...this.#video.textTracks].find(t => t.kind === 'chapters');
+    if (!chaptersTrack) return;
+
+    const render = () => {
+      if (this.#chaptersRendered) return;
+      this.#chaptersRendered = true;
+      chaptersTrack.mode = 'hidden';
+      [...(chaptersTrack.cues ?? [])].forEach(cue => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = (cue as VTTCue).text;
+        btn.addEventListener('click', () => { this.#video.currentTime = cue.startTime; });
+        this.appendChild(btn);
+      });
+    };
+
+    if (chaptersTrack.cues?.length) {
+      render();
+    } else {
+      this.querySelector('track[kind="chapters"]')?.addEventListener('load', render, { once: true });
+    }
+  }
+
   /**
    * HLS stream ignores <track default> attribute, so we enable it manually:
    */
   showTextTrack() {
-    const defaultTrack = [...this.#video.textTracks]
-      .find((track) => track.language === getLocale());
+    const tracks = [...this.#video.textTracks].filter(t => t.kind === 'subtitles' || t.kind === 'captions');
+    const alreadyShowing = tracks.some(t => t.mode === 'showing');
+    if (alreadyShowing) return;
+
+    const locale = getLocale();
+    const defaultTrack = tracks.find(t => t.language === locale && t.kind === 'subtitles')
+      ?? tracks.find(t => t.language === locale);
     if (defaultTrack) {
       defaultTrack.mode = 'showing';
     }

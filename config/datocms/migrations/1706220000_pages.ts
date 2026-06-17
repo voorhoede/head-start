@@ -725,7 +725,7 @@ export default async function (client: Client) {
     field_type: 'links',
     api_key: 'tracks',
     hint:
-      'For accessibility, videos should provide both captions and transcripts that accurately describe its content. Captions allow people who are experiencing hearing loss to understand a video\'s audio content as the video is being played, while transcripts allow people who need additional time to be able to review audio content at a pace and format that is comfortable for them.',
+      'For accessibility, videos should provide both captions and transcripts that accurately describe its content. Captions allow people who are experiencing hearing loss to understand a video\'s audio content as the video is being played, while transcripts allow people who need additional time to be able to review audio content at a pace and format that is comfortable for them. Use this field for chapters, descriptions, or metadata tracks only. Subtitles and closed captions must be added directly on the video asset itself (e.g. in the media library), not here.',
     validators: {
       items_item_type: {
         on_publish_with_unpublished_references_strategy: 'fail',
@@ -795,8 +795,6 @@ export default async function (client: Client) {
       required: {},
       enum: {
         values: [
-          'subtitles',
-          'captions',
           'descriptions',
           'chapters',
           'metadata',
@@ -808,7 +806,7 @@ export default async function (client: Client) {
       editor: 'single_line',
       parameters: { heading: false, placeholder: null },
     },
-    default_value: 'subtitles',
+    default_value: 'chapters',
   });
 
   console.log(

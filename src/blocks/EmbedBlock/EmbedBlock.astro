@@ -23,13 +23,13 @@ const isProvider = (name: string) =>
   {
     data && data.html ? (
       isProvider('Twitter') ? (
-        <TwitterEmbed {data} {url} />
+        <TwitterEmbed {data} {url} blockId={block.id} />
       ) : isProvider('Vimeo') ? (
         <VimeoEmbed {data} {url} />
       ) : isProvider('YouTube') ? (
         <YouTubeEmbed {data} {url} />
       ) : (
-        <DefaultEmbed {data} {url} />
+        <DefaultEmbed {data} {url} blockId={block.id} />
       )
     ) : (
       <BasicEmbed {data} {url} />
