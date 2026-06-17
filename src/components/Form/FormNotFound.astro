@@ -1,11 +1,10 @@
 ---
+import { t } from '~/lib/i18n';
+
 interface Props {
   slug?: string;
 }
 const { slug } = Astro.props;
 ---
-<p>
-  Form
-  {slug && <span>"${slug}"</span>}
-  not found.
-</p>
+<p>{t('form_not_found_slug', { slug })}</p>
+<button type="button" onclick="history.back()">{t('form_back_to_form')}</button>

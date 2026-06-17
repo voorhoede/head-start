@@ -13,7 +13,7 @@ const { name, options = [], value, required, class: className } = Astro.props;
 const checkedValues = value ? value.split(', ') : [];
 ---
 
-<checkbox-group class:list={['checkbox-group', className]} required={required}>
+<checkbox-group class:list={['checkbox-group', className]} required={required || undefined}>
   {options.map((option) => (
     <label class="checkbox-group__item">
       <input

@@ -9,15 +9,25 @@ import NotFound from '~/pages/404.astro';
 export const prerender = false;
 
 export const POST: APIRoute = async ({ params, request }) => {
-  const action = (await import(`./_${params.slug}.ts`)).default;
   const requestHeaders = Object.fromEntries(request.headers);
   const responseHeaders = new Headers({ 'Content-Type': 'text/html' });
   const { slug } = params;
 
   if (request.method !== 'POST' || !requestHeaders.referer || !slug) {
-    return await renderToString(NotFound);
+    return new Response(await renderToString(NotFound), { status: 404, headers: responseHeaders });
   }
   const partial = requestHeaders?.['x-requested-by'] === 'client';
+
+  type ActionResult = { success: boolean; values: Record<string, string>; errors: Record<string, string> };
+  let action: (result: ActionResult, partial: boolean) => Promise<Response>;
+  try {
+    action = (await import(`./_${slug}.ts`)).default;
+  } catch {
+    return new Response(
+      await renderToString(FormNotFound, { props: { slug }, partial }),
+      { status: 500, headers: responseHeaders }
+    );
+  }
 
   const form = await getEntry('Forms', slug);
 
@@ -43,7 +53,7 @@ export const POST: APIRoute = async ({ params, request }) => {
           headers: responseHeaders
         });
     }
-    return await action({ success, values, errors });
+    return await action({ success, values, errors }, partial);
   } else {
     return new Response(await renderToString(FormNotFound, {
       props: { slug: params.slug },

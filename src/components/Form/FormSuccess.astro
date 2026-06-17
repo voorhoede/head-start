@@ -1,4 +1,8 @@
+---
+import { t } from '~/lib/i18n';
+---
 <p>
-  <em>Success!</em>
-  The form has been submitted.
+  <em>{t('form_success_title')}</em>
+  {t('form_success')}
 </p>
+<button type="button" onclick="history.back()">{t('form_back_to_form')}</button>

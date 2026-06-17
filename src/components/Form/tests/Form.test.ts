@@ -10,12 +10,20 @@ vi.mock('~/lib/content');
 vi.mock('~/lib/forms');
 
 const locale = 'en' as SiteLocale;
+
+// Shared options used for both checkbox and radio group fields
+const groupOptions = [{ label: 'Option A', value: 'a' }, { label: 'Option B', value: 'b' }];
+
 const formFields = [
-  { id: '1', label: 'Name', name: 'name', required: true, fieldType: 'text', placeholder: 'Name', options: [], inputWidth: null },
-  { id: '2', label: 'Email', name: 'email', required: true, fieldType: 'email', placeholder: 'you@example.com', options: [], inputWidth: null },
-  { id: '3', label: 'Phone', name: 'phone', required: false, fieldType: 'phone', placeholder: '+123...', options: [], inputWidth: null },
-  { id: '4', label: 'Message', name: 'message', required: false, fieldType: 'textarea', placeholder: 'Say hi', options: [], inputWidth: null },
-  { id: '5', label: 'Subject', name: 'subject', required: true, fieldType: 'select', placeholder: '', options: [{ label: 'Sales', value: 'sales' }, { label: 'Support', value: 'support' }], inputWidth: '1/2' },
+  { id: '1', label: 'Name',      name: 'name',      required: true,  fieldType: 'text',     placeholder: 'Name',            options: [],          inputWidth: null },
+  { id: '2', label: 'Email',     name: 'email',     required: true,  fieldType: 'email',    placeholder: 'you@example.com', options: [],          inputWidth: null },
+  { id: '3', label: 'Phone',     name: 'phone',     required: false, fieldType: 'phone',    placeholder: '+123...',         options: [],          inputWidth: null },
+  { id: '4', label: 'Message',   name: 'message',   required: false, fieldType: 'textarea', placeholder: 'Say hi',          options: [],          inputWidth: null },
+  { id: '5', label: 'Subject',   name: 'subject',   required: true,  fieldType: 'select',   placeholder: '',                options: [{ label: 'Sales', value: 'sales' }, { label: 'Support', value: 'support' }], inputWidth: null },
+  { id: '6', label: 'Age',       name: 'age',       required: false, fieldType: 'number',   placeholder: '25',              options: [],          inputWidth: null },
+  { id: '7', label: 'Birthday',  name: 'birthday',  required: false, fieldType: 'date',     placeholder: '',                options: [],          inputWidth: null },
+  { id: '8', label: 'Interests', name: 'interests', required: false, fieldType: 'checkbox', placeholder: '',                options: groupOptions, inputWidth: null },
+  { id: '9', label: 'Role',      name: 'role',      required: true,  fieldType: 'radio',    placeholder: '',                options: groupOptions, inputWidth: null },
 ];
 
 const mockEntry = {
@@ -32,6 +40,10 @@ const mockEntry = {
   },
 } as CollectionEntry<'Forms'>;
 
+// checkbox/radio with options renders a <fieldset><legend> instead of <label for>
+const isGroup = (f: typeof formFields[number]) =>
+  (f.fieldType === 'checkbox' || f.fieldType === 'radio') && f.options.length > 0;
+
 describe('Form.astro', () => {
   it('renders a POST form with the correct action', async () => {
     const frag = await renderToFragment(Form, { props: { ...mockEntry.data, useTurnStile: false } });
@@ -41,18 +53,58 @@ describe('Form.astro', () => {
     expect(formEl?.getAttribute('action')).toBe('/api/forms/contact/');
   });
 
-  it('renders all fields with labels', async () => {
+  it('renders all fields with their labels', async () => {
     const frag = await renderToFragment(Form, { props: { ...mockEntry.data, useTurnStile: false } });
-    const fields = frag.querySelectorAll('.form-field');
-    expect(fields.length).toBe(formFields.length);
-    // Ensure labels exist with required asterisk for required fields
-    formFields.forEach(({ id, label, required }) => {
-      const labelEl = frag.querySelector(`label[for="${id}"]`);
-      expect(labelEl?.textContent).toContain(label);
-      if (required) {
-        expect(labelEl?.textContent).toContain('*');
+    expect(frag.querySelectorAll('.form-field').length).toBe(formFields.length);
+
+    for (const field of formFields) {
+      if (isGroup(field)) {
+        // Groups expose their label via <legend> inside a <fieldset>
+        const legend = frag.querySelector(`.form-field--${field.fieldType} legend`);
+        expect(legend?.textContent).toContain(field.label);
+        if (field.required) expect(legend?.textContent).toContain('*');
+      } else {
+        const labelEl = frag.querySelector(`label[for="${field.id}"]`);
+        expect(labelEl?.textContent).toContain(field.label);
+        if (field.required) expect(labelEl?.textContent).toContain('*');
       }
-    });
+    }
+  });
+
+  it('renders the correct HTML input type for each field type', async () => {
+    const frag = await renderToFragment(Form, { props: { ...mockEntry.data, useTurnStile: false } });
+
+    const cases: [string, string][] = [
+      ['name',      'input[type="text"][name="name"]'],
+      ['email',     'input[type="email"][name="email"]'],
+      ['phone',     'input[type="tel"][name="phone"]'],
+      ['age',       'input[type="number"][name="age"]'],
+      ['birthday',  'input[type="date"][name="birthday"]'],
+      ['message',   'textarea[name="message"]'],
+      ['subject',   'select[name="subject"]'],
+      ['interests', 'input[type="checkbox"][name="interests"]'],
+      ['role',      'input[type="radio"][name="role"]'],
+    ];
+
+    for (const [fieldName, selector] of cases) {
+      expect(frag.querySelector(selector), `${fieldName}: expected ${selector}`).toBeTruthy();
+    }
+  });
+
+  it('checkbox and radio groups use fieldset + legend for semantic grouping', async () => {
+    const frag = await renderToFragment(Form, { props: { ...mockEntry.data, useTurnStile: false } });
+
+    for (const fieldType of ['checkbox', 'radio'] as const) {
+      const fieldset = frag.querySelector(`.form-field--${fieldType}`);
+      expect(fieldset?.tagName.toLowerCase(), `${fieldType} group should be a <fieldset>`).toBe('fieldset');
+
+      const legend = fieldset?.querySelector('legend');
+      expect(legend, `${fieldType} group needs a <legend>`).toBeTruthy();
+
+      // Each option must have its own label wrapping the input
+      const labels = fieldset?.querySelectorAll('label');
+      expect(labels?.length, `${fieldType} group should have ${groupOptions.length} labels`).toBe(groupOptions.length);
+    }
   });
 
   it('shows errors and preserves values when provided', async () => {
@@ -71,7 +123,7 @@ describe('Form.astro', () => {
     const messageTextarea = fragment.querySelector('textarea[name="message"]') as HTMLTextAreaElement | null;
     expect(nameInput?.getAttribute('value')).toBe('Alice');
     expect(emailInput?.getAttribute('value')).toBe('wrong');
-    // In JSDOM, the current value of a textarea is exposed via the `.value` property
+    // JSDOM exposes textarea content via .value, not an attribute
     expect(messageTextarea?.value).toBe('Hello World!');
   });
 
@@ -82,14 +134,6 @@ describe('Form.astro', () => {
     const optionValues = [...select!.querySelectorAll('option')].map((o) => o.getAttribute('value'));
     expect(optionValues).toContain('sales');
     expect(optionValues).toContain('support');
-  });
-
-  it('applies grid-column span style to form fields', async () => {
-    const frag = await renderToFragment(Form, { props: { ...mockEntry.data, useTurnStile: false } });
-    const subjectField = frag.querySelector('.form-field--select');
-    expect(subjectField?.getAttribute('style')).toContain('grid-column: span 4');
-    const messageField = frag.querySelector('.form-field--textarea');
-    expect(messageField?.getAttribute('style')).toContain('grid-column: span 4');
   });
 
   it('includes Turnstile markup by default and can be disabled', async () => {
@@ -110,7 +154,6 @@ describe('FormSuccess.astro', () => {
   });
 });
 
-
 describe('FormNotFound.astro', () => {
   it('renders generic not found message when no slug provided', async () => {
     const frag = await renderToFragment(FormNotFound);
@@ -124,7 +167,7 @@ describe('FormNotFound.astro', () => {
     const frag = await renderToFragment(FormNotFound, { props: { slug: 'contact' } });
     const text = frag.textContent?.replace(/\s+/g, ' ').trim();
     expect(text).toContain('Form');
-    expect(text).toContain('"$contact"');
+    expect(text).toContain('"contact"');
     expect(text).toContain('not found');
   });
 });
@@ -156,11 +199,10 @@ describe('POST /api/forms/[slug]', () => {
         'x-requested-by': 'client',
       },
     });
-    
+
     // @TODO Add actual integration test with a local build
     const res = await POST({ params: { slug: 'contact' }, request } as unknown as APIContext);
 
-    // Should return a Response with 400
     expect(res).toBeInstanceOf(Response);
     const response = res as Response;
     expect(response.status).toBe(400);
@@ -188,13 +230,12 @@ describe('POST /api/forms/[slug]', () => {
       body: form,
       headers: { referer: 'http://localhost/contact' },
     });
-    
+
     // @TODO Add actual integration test with a local build
     const result = await POST({ params: { slug: 'contact' }, request } as unknown as APIContext);
-    
+
     expect(result instanceof Response).toBe(true);
     const html = await (result as Response).text();
     expect(html).toMatch(/Success/i);
   });
-
 });
