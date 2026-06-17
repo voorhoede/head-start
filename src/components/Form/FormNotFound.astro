@@ -7,4 +7,4 @@ interface Props {
 const { slug } = Astro.props;
 ---
 <p>{t('form_not_found_slug', { slug })}</p>
-<button type="button" onclick="history.back()">{t('form_back_to_form')}</button>
+<button type="button" data-form-back>{t('form_back_to_form')}</button>

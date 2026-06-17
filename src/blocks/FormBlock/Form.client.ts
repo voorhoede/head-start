@@ -1,19 +1,30 @@
 class Form extends HTMLElement {
-
-  constructor() {
-    super();
-  }
+  private initialHTML = '';
 
   connectedCallback() {
+    this.initialHTML = this.innerHTML;
     this.addEventListener('submit', this);
+    this.addEventListener('click', this);
   }
 
   disconnectedCallback() {
+    this.removeEventListener('submit', this);
+    this.removeEventListener('click', this);
   }
 
   handleEvent(event: Event) {
-    event.preventDefault();
+    if (event.type === 'click') {
+      const target = event.target as HTMLElement;
+      if (target.closest('[data-form-back]')) {
+        event.preventDefault();
+        this.innerHTML = this.initialHTML;
+      }
+      return;
+    }
+
     if (event.type !== 'submit') return;
+    event.preventDefault();
+
     const form = this.querySelector('form')!;
     const submitButton = form.querySelector('button[type="submit"]');
     const formData = new FormData(form);
@@ -23,23 +34,22 @@ class Form extends HTMLElement {
     fetch(form.action, {
       method: form.method,
       body: formData,
-      headers: new Headers({
-        'x-requested-by': 'client'
-      })
+      headers: new Headers({ 'x-requested-by': 'client' }),
     })
       .then(async (response) => ({
         html: await response.text(),
-        status: response.status,
+        ok: response.ok,
       }))
-      .then((data) => {
-        this.innerHTML = data.html;
-        if (data.status !== 200) {
-          const errors = this.querySelectorAll<HTMLSpanElement>('.form-field__error');
-          errors?.[0].focus();
-          errors?.[0].scrollIntoView({ behavior: 'smooth' });
+      .then(({ html, ok }) => {
+        if (ok) {
+          console.log('Form submission:', Object.fromEntries(formData));
         }
-
-        submitButton?.removeAttribute('disabled');
+        this.innerHTML = html;
+        if (!ok) {
+          const errors = this.querySelectorAll<HTMLSpanElement>('.form-field__error');
+          errors[0]?.scrollIntoView({ behavior: 'smooth' });
+          errors[0]?.focus();
+        }
       });
   }
 }

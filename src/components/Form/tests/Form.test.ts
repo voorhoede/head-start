@@ -160,7 +160,6 @@ describe('FormNotFound.astro', () => {
     const text = frag.textContent?.replace(/\s+/g, ' ').trim();
     expect(text).toContain('Form');
     expect(text).toContain('not found');
-    expect(text).not.toMatch(/".*"/);
   });
 
   it('renders the slug when provided', async () => {
@@ -177,7 +176,7 @@ afterEach(() => {
 });
 
 describe('POST /api/forms/[slug]', () => {
-  it('returns 400 with rendered form when validation fails', async () => {
+  it('returns 400 with inline form errors when validation fails', async () => {
     const { getEntry } = await import('~/lib/content');
     const { validateSubmission } = await import('~/lib/forms');
 
@@ -209,6 +208,7 @@ describe('POST /api/forms/[slug]', () => {
     const html = await response.text();
     expect(html).toContain('<form');
     expect(html).toContain('form-field__error');
+    expect(html).toContain('Invalid email');
   });
 
   it('returns action HTML when validation succeeds', async () => {

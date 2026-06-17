@@ -7,43 +7,24 @@ import { turnstileChallenge } from '~/lib/forms';
 
 type Form = CollectionEntry<'Forms'>['data'];
 
+const fieldMessage = (field: Form['formFields'][number]) =>
+  t('field_invalid', { field: field.label }) || `Invalid ${field.label} field`;
+
 const createFieldSchema = (field: Form['formFields'][number]) => {
   const fieldType = isValidFieldType(field.fieldType)
     ? field.fieldType
     : ('text' as FieldType);
+  const msg = fieldMessage(field);
   const schemas = {
-    email: z
-      .string()
-      .email(
-        t('field_valid_email', { field: field.label }) ||
-        'Vul een geldig e-mailadres in',
-      ),
+    email: z.string().email(msg),
     text: z.string(),
     textarea: z.string(),
-    phone: z
-      .string()
-      .regex(
-        /^\+?[1-9]\d{1,14}$/,
-        t('field_valid_phone', { field: field.label }) ||
-        'Vul een geldig telefoonnummer in',
-      ),
+    phone: z.string().regex(/^\+?[1-9]\d{1,14}$/, msg),
     select: z.string(),
     radio: z.string(),
     checkbox: z.string(),
-    number: z
-      .string()
-      .regex(
-        /^\d+(\.\d+)?$/,
-        t('field_valid_number', { field: field.label }) ||
-        'Vul een geldig getal in',
-      ),
-    date: z
-      .string()
-      .regex(
-        /^\d{4}-\d{2}-\d{2}$/,
-        t('field_valid_date', { field: field.label }) ||
-        'Vul een geldige datum in',
-      ),
+    number: z.string().regex(/^\d+(\.\d+)?$/, msg),
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, msg),
   } satisfies Record<FieldType, z.ZodTypeAny>;
   return schemas[fieldType] || z.string();
 };
@@ -70,8 +51,8 @@ export default async function <T extends Form>({
     formData.get('use-turnstile') &&
     !(await turnstileChallenge(formData, requestHeaders))
   ) {
-    formErrors['turnstileError'] =
-      t('turnstile_error') || 'Validatie mislukt, probeer het opnieuw';
+    console.error('Turnstile verification failed');
+    formErrors['turnstileError'] = 'Verification failed, please try again';
   }
 
   const checkboxFields = new Set(
@@ -85,8 +66,7 @@ export default async function <T extends Form>({
       (acc, field) => {
         const fieldSchema = createFieldSchema(field);
         acc[field.name] = field.required ? (fieldSchema as z.ZodString).nonempty(
-          t('field_required') ||
-          'Dit veld is verplicht',
+          fieldMessage(field),
         ) : fieldSchema.optional().or(z.literal(''));
         return acc;
       },

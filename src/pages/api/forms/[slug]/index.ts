@@ -42,16 +42,16 @@ export const POST: APIRoute = async ({ params, request }) => {
       return new Response(
         await renderToString(Form, {
           props: {
-            slug: slug,
+            slug,
             formFields: form.data.formFields,
+            submitLabel: form.data.submitLabel,
             errors,
             formValues: values,
           },
-          partial
-        }), {
-          status: 400,
-          headers: responseHeaders
-        });
+          partial,
+        }),
+        { status: 400, headers: responseHeaders }
+      );
     }
     return await action({ success, values, errors }, partial);
   } else {
