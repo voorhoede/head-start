@@ -1,15 +1,6 @@
 import type { APIRoute } from 'astro';
-import rehypeParse from 'rehype-parse';
-import rehypeRemark from 'rehype-remark';
-import remarkGfm from 'remark-gfm';
-import remarkStringify from 'remark-stringify';
-import { unified } from 'unified';
 import { getApp } from '~/lib/app';
-import { buildFrontmatter } from '~/lib/frontmatter';
-import type { PageMeta } from '~/lib/rehype/rehype-extract-meta';
-import rehypeExtractMeta from '~/lib/rehype/rehype-extract-meta';
-import rehypeExtractNoindex from '~/lib/rehype/rehype-extract-noindex';
-import rehypeExtractMain from '~/lib/rehype/rehype-extract-main';
+import { htmlToMarkdown } from '~/lib/markdown';
 
 export const prerender = false;
 
@@ -88,29 +79,8 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
   let md: string;
 
   try {
-    const result = await unified()
-      .use(rehypeParse)
-      .use(rehypeExtractMeta)
-      .use(rehypeExtractNoindex)
-      .use(rehypeExtractMain)
-      .use(rehypeRemark)
-      .use(remarkGfm)
-      .use(remarkStringify)
-      .process(html);
-
-    noindex = Boolean(result.data.noindex);
-    const meta = (result.data.meta ?? {}) as PageMeta;
     const localeCode = params.path.split('/')[0] || undefined;
-    let language: string | undefined;
-    if (localeCode) {
-      try {
-        language = new Intl.DisplayNames(['en'], { type: 'language' }).of(localeCode);
-      } catch {
-        language = undefined;
-      }
-    }
-    const frontmatter = buildFrontmatter({ meta, url: pageUrl.href, language });
-    md = frontmatter + String(result);
+    ({ md, noindex } = await htmlToMarkdown(html, { url: pageUrl.href, localeCode }));
   } catch {
     return new Response('Unable to process page content', {
       status: 500,
