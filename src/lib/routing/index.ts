@@ -17,6 +17,7 @@ export type RecordRoute =
 export { getFileHref } from './file';
 export { formatBreadcrumb, type Breadcrumb } from './lib/breadcrumbs';
 export { getSlugFromPath } from './lib/slug';
+export { htmlToMarkdownPath, isMarkdownApiPath, markdownToHtmlPath } from './markdown';
 
 export const getHomeHref = ({ locale = getLocale() } = {}) => {
   return `/${locale}/`;

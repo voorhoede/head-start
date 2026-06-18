@@ -37,8 +37,8 @@ const menuItems = data.app?.menuItems ?? [];
 
 const { isPreview, editModeOn } = Astro.locals;
 const allowAiBots = !app.noIndex && !isPreview && Boolean(app.allowAiBots);
-const prompt = app.openPageInLlmPrompt || '';
-const llmOptions = app.openPageInLlmOption ?? [];
+const prompt = data.app?.openPageInLlmPrompt ?? app.openPageInLlmPrompt ?? '';
+const llmOptions = data.app?.openPageInLlmOption ?? app.openPageInLlmOption ?? [];
 ---
 
 <!doctype html>
@@ -63,12 +63,24 @@ const llmOptions = app.openPageInLlmOption ?? [];
       <div {...datocmsNoIndex}>
         <AppHeader {menuItems} {pageUrls} />
       </div>
-      {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
+      {
+        (breadcrumbs.length > 0 || allowAiBots) && (
+          <div class="page-context">
+            {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
+            {allowAiBots && (
+              <div {...datocmsNoIndex} data-nosnippet>
+                <Fragment set:html={'<!--googleoff: index-->'} />
+                <OpenInLlm {llmOptions} {prompt} />
+                <Fragment set:html={'<!--googleon: index-->'} />
+              </div>
+            )}
+          </div>
+        )
+      }
       {
         /* main element requires tabindex to be focusable, see SkipLink/README.md */
       }
       <main id={mainContentId} tabindex="-1">
-        {allowAiBots && <OpenInLlm {llmOptions} {prompt} />}
         <slot />
       </main>
       <footer {...datocmsNoIndex}>
@@ -118,6 +130,16 @@ const llmOptions = app.openPageInLlmOption ?? [];
     max-width: calc(100% - 2rem);
     font-size: 20px;
     line-height: 1.6;
+  }
+  .page-context {
+    display: flex;
+    align-items: center;
+  }
+  /* Push the LLM controls to the end, with or without breadcrumbs.
+     Targeted by attribute to avoid a class on the spread element,
+     which would emit a duplicate `class` (scoped-style hash). */
+  .page-context > [data-nosnippet] {
+    margin-inline-start: auto;
   }
   footer {
     padding: 1rem;

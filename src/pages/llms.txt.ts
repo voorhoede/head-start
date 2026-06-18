@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { datocmsRequest } from '~/lib/datocms';
 import type { LlmsTxtQuery } from '~/lib/datocms/types';
 import { defaultLocale } from '~/lib/i18n';
-import { getHref } from '~/lib/routing';
+import { getHref, htmlToMarkdownPath } from '~/lib/routing';
 import { llmsTxt, type LlmsTxtItem } from '~/lib/seo';
 import query from './_llms.query.graphql';
 
@@ -25,7 +25,8 @@ const buildItem = (raw: RawMenuItem, siteUrl: string): LlmsTxtItem | null => {
   if (raw.__typename === 'MenuItemInternalRecord') {
     const link = raw.internalLink;
     if (!link) return null;
-    const url = `${siteUrl}${getHref({ locale: defaultLocale, record: link as Parameters<typeof getHref>[0]['record'] })}`;
+    const href = getHref({ locale: defaultLocale, record: link as Parameters<typeof getHref>[0]['record'] });
+    const url = `${siteUrl}${htmlToMarkdownPath(href)}`;
     const description = link.seo?.description ?? undefined;
     const title = raw.internalTitle || link.title || '';
     return { title, url, description };
