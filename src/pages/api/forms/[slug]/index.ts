@@ -1,6 +1,6 @@
 import { getEntry } from '~/lib/content';
 import { validateSubmission } from '~/lib/forms';
-import { Form, FormNotFound } from '~/components/Form';
+import { Form, FormError, FormNotFound } from '~/components/Form';
 import type { APIRoute } from 'astro';
 import { renderToString } from '~/lib/renderer';
 
@@ -32,28 +32,36 @@ export const POST: APIRoute = async ({ params, request }) => {
   const form = await getEntry('Forms', slug);
 
   if (form) {
-    const { success, values, errors } = await validateSubmission({
-      form: form.data,
-      formData: await request.formData(),
-      requestHeaders: request.headers,
-    });
+    try {
+      const { success, values, errors } = await validateSubmission({
+        form: form.data,
+        formData: await request.formData(),
+        requestHeaders: request.headers,
+      });
 
-    if (!success) {
+      if (!success) {
+        return new Response(
+          await renderToString(Form, {
+            props: {
+              slug,
+              formFields: form.data.formFields,
+              submitLabel: form.data.submitLabel,
+              errors,
+              formValues: values,
+            },
+            partial,
+          }),
+          { status: 400, headers: responseHeaders }
+        );
+      }
+      return await action({ success, values, errors }, partial);
+    } catch (error) {
+      console.error('Form submission error:', error);
       return new Response(
-        await renderToString(Form, {
-          props: {
-            slug,
-            formFields: form.data.formFields,
-            submitLabel: form.data.submitLabel,
-            errors,
-            formValues: values,
-          },
-          partial,
-        }),
-        { status: 400, headers: responseHeaders }
+        await renderToString(FormError, { partial }),
+        { status: 500, headers: responseHeaders }
       );
     }
-    return await action({ success, values, errors }, partial);
   } else {
     return new Response(await renderToString(FormNotFound, {
       props: { slug: params.slug },
