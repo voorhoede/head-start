@@ -32,29 +32,47 @@ export const POST: APIRoute = async ({ params, request }) => {
   const form = await getEntry('Forms', slug);
 
   if (form) {
+    let result: ActionResult;
     try {
-      const { success, values, errors } = await validateSubmission({
+      result = await validateSubmission({
         form: form.data,
         formData: await request.formData(),
         requestHeaders: request.headers,
       });
+    } catch (error) {
+      console.error('Form validation error:', error);
+      return new Response(
+        await renderToString(FormError, { partial }),
+        { status: 500, headers: responseHeaders }
+      );
+    }
 
-      if (!success) {
+    if (!result.success) {
+      if (partial) {
+        const jsonHeaders = new Headers(responseHeaders);
+        jsonHeaders.set('Content-Type', 'application/json');
         return new Response(
-          await renderToString(Form, {
-            props: {
-              slug,
-              formFields: form.data.formFields,
-              submitLabel: form.data.submitLabel,
-              errors,
-              formValues: values,
-            },
-            partial,
-          }),
-          { status: 400, headers: responseHeaders }
+          JSON.stringify({ errors: result.errors }),
+          { status: 400, headers: jsonHeaders }
         );
       }
-      return await action({ success, values, errors }, partial);
+      return new Response(
+        await renderToString(Form, {
+          props: {
+            slug,
+            formFields: form.data.formFields,
+            submitLabel: form.data.submitLabel,
+            errors: result.errors,
+            formValues: result.values,
+          },
+          partial,
+        }),
+        { status: 400, headers: responseHeaders }
+      );
+    }
+
+    try {
+      return await action(result, partial);
     } catch (error) {
       console.error('Form submission error:', error);
       return new Response(
