@@ -8,7 +8,7 @@ import { turnstileChallenge } from '~/lib/forms';
 type Form = CollectionEntry<'Forms'>['data'];
 
 const fieldMessage = (field: Form['formFields'][number]) =>
-  t('field_invalid', { field: field.label }) || `Invalid ${field.label} field`;
+  t('field_invalid', { field: field.name });
 
 const createFieldSchema = (field: Form['formFields'][number]) => {
   const fieldType = isValidFieldType(field.fieldType)
@@ -19,7 +19,7 @@ const createFieldSchema = (field: Form['formFields'][number]) => {
     email: z.string().email(msg),
     text: z.string(),
     textarea: z.string(),
-    phone: z.string().regex(/^\+?[1-9]\d{1,14}$/, msg),
+    phone: z.string().regex(/^[0-9+() ]+$/, msg),
     select: z.string(),
     radio: z.string(),
     checkbox: z.string(),
