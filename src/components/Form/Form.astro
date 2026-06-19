@@ -45,11 +45,9 @@ const { slug, formFields, submitLabel, errors, formValues, useTurnStile = true }
     {submitLabel}
   </button>
 </form>
-{useTurnStile && (
-  <template data-form-error>
-    <FormError />
-  </template>
-)}
+<template data-form-error>
+  <FormError />
+</template>
 
 <style>
   .form__fields {

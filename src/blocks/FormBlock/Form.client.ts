@@ -74,24 +74,34 @@ class Form extends HTMLElement {
 
     this.submitButton?.setAttribute('disabled', 'true');
 
-    const response = await fetch(form.action, {
-      method: form.method,
-      body: formData,
-      headers: new Headers({ 'x-requested-by': 'client' }),
-    });
+    try {
+      const response = await fetch(form.action, {
+        method: form.method,
+        body: formData,
+        headers: new Headers({ 'x-requested-by': 'client' }),
+      });
 
-    const html = await response.text();
+      if (response.status >= 500) {
+        this.showError();
+        return;
+      }
 
-    if (response.ok) {
-      console.log('Form submission:', Object.fromEntries(formData));
-    }
+      const html = await response.text();
 
-    this.innerHTML = html;
+      if (response.ok) {
+        console.log('Form submission:', Object.fromEntries(formData));
+      }
 
-    if (!response.ok && response.status < 500) {
-      const errors = this.querySelectorAll<HTMLElement>('.form-field__error, .form__error');
-      errors[0]?.scrollIntoView({ behavior: 'smooth' });
-      errors[0]?.focus();
+      this.innerHTML = html;
+
+      if (!response.ok) {
+        const errors = this.querySelectorAll<HTMLElement>('.form-field__error, .form__error');
+        errors[0]?.scrollIntoView({ behavior: 'smooth' });
+        errors[0]?.focus();
+      }
+    } catch {
+      // Network failure or unreadable response — surface the error view.
+      this.showError();
     }
   }
 }
