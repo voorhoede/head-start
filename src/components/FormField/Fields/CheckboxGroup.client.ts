@@ -1,3 +1,8 @@
+/**
+ * HTML has no native "at least one required" for checkbox groups. Workaround: keep `required` 
+ * on the first box only when nothing is checked, so the browser blocks submission with a 
+ * native validation message. Without JS this constraint is skipped.
+ */
 class CheckboxGroup extends HTMLElement {
   connectedCallback() {
     if (!this.hasAttribute('required')) return;

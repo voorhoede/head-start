@@ -24,33 +24,40 @@ class Form extends HTMLElement {
 
     if (event.type !== 'submit') return;
     event.preventDefault();
+    this.submitForm();
+  }
 
+  private async submitForm() {
     const form = this.querySelector('form')!;
     const submitButton = form.querySelector('button[type="submit"]');
     const formData = new FormData(form);
 
     submitButton?.setAttribute('disabled', 'true');
 
-    fetch(form.action, {
+    const response = await fetch(form.action, {
       method: form.method,
       body: formData,
       headers: new Headers({ 'x-requested-by': 'client' }),
-    })
-      .then(async (response) => ({
-        html: await response.text(),
-        ok: response.ok,
-      }))
-      .then(({ html, ok }) => {
-        if (ok) {
-          console.log('Form submission:', Object.fromEntries(formData));
-        }
-        this.innerHTML = html;
-        if (!ok) {
-          const errors = this.querySelectorAll<HTMLSpanElement>('.form-field__error');
-          errors[0]?.scrollIntoView({ behavior: 'smooth' });
-          errors[0]?.focus();
-        }
-      });
+    });
+
+    const html = await response.text();
+
+    if (response.ok) {
+      console.log('Form submission:', Object.fromEntries(formData));
+    }
+
+    if (!response.ok && response.status >= 500) {
+      submitButton?.removeAttribute('disabled');
+      return;
+    }
+
+    this.innerHTML = html;
+
+    if (!response.ok) {
+      const errors = this.querySelectorAll<HTMLElement>('.form-field__error, .form__error');
+      errors[0]?.scrollIntoView({ behavior: 'smooth' });
+      errors[0]?.focus();
+    }
   }
 }
 
