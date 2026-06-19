@@ -128,6 +128,21 @@ You're project is now deployed and will automatically be deployed on every git c
 
 That's it. Now deployments are automatically triggered from both git and when editors hit 'Build now' in the CMS. If you add additional build triggers in the future, you can repeat those steps. Note that `buildTriggerId` in `/datocms-environment.ts` should always be set to the production build trigger.
 
+## Enable AI agent discovery (DNS-AID) (optional)
+
+Head Start serves an agent registry at [`/.well-known/agents/index.json`](../src/pages/.well-known/agents/index.json.ts) (see [SEO → Agent discovery](./seo.md#agent-discovery-dns-aid)). To make it discoverable via [DNS for AI Discovery (DNS-AID)](https://datatracker.ietf.org/doc/draft-mozleywilliams-dnsop-dnsaid/), add DNS records on your own domain. This is optional and only applies once you use a custom domain on Cloudflare.
+
+1. **Publish DNS records.** In your Cloudflare DNS settings, add [`SVCB`/`HTTPS`](https://www.rfc-editor.org/rfc/rfc9460) records under `_agents.<domain>`. The `_index._agents.<domain>` record points clients to where the registry is served; service-specific records (e.g. `_a2a._agents.<domain>`) point to individual agents:
+
+   ```dns
+   _index._agents.example.com.  3600 IN SVCB 1 example.com. alpn="h2" port=443
+   _a2a._agents.example.com.    3600 IN SVCB 1 agent.example.com. alpn="a2a" port=443 mandatory=alpn,port
+   ```
+
+   Point the `_index` record's target (and `well-known` path, if used) at your site, so `_index._agents.<domain>` resolves to `/.well-known/agents/index.json`.
+
+2. **Enable DNSSEC.** Sign the zone so validating resolvers return authenticated data. On Cloudflare this is a [one-click setting](https://developers.cloudflare.com/dns/dnssec/) under DNS → Settings. This is the part a DNS-AID/DNSSEC audit checks — it cannot be set in application code.
+
 ## What's next?
 
 Read the [docs](../README.md#documentation) for more details on the setup Head Start provides.
