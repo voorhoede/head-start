@@ -1,10 +1,6 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
 import Input from './Fields/Input.astro';
-import InputEmail from './Fields/InputEmail.astro';
-import InputTel from './Fields/InputTel.astro';
-import InputNumber from './Fields/InputNumber.astro';
-import InputDate from './Fields/InputDate.astro';
 import Textarea from './Fields/Textarea.astro';
 import Select from './Fields/Select.astro';
 import Fieldset from './Fields/Fieldset.astro';
@@ -125,47 +121,9 @@ const isInputGroup =
           class="form-field__input"
         />
       )}
-      {fieldType === 'number' && (
-        <InputNumber
-          {id}
-          {name}
-          {required}
-          {placeholder}
-          {value}
-          class="form-field__input"
-        />
-      )}
-      {fieldType === 'date' && (
-        <InputDate
-        {id}
-        {name}
-        {required}
-        {value}
-        class="form-field__input"
-        />
-      )}
-      {fieldType === 'email' && (
-        <InputEmail
-          {id}
-          {name}
-          {required}
-          {placeholder}
-          {value}
-          class="form-field__input"
-        />
-      )}
-      {fieldType === 'phone' && (
-        <InputTel
-          {id}
-          {name}
-          {required}
-          {placeholder}
-          {value}
-          class="form-field__input"
-        />
-      )}
-      {(fieldType === 'text' || !isValidFieldType(fieldType)) && (
+      {(fieldType === 'text' || fieldType === 'email' || fieldType === 'number' || fieldType === 'date' || fieldType === 'phone' || !isValidFieldType(fieldType)) && (
         <Input
+          type={fieldType === 'phone' ? 'tel' : fieldType === 'text' || !isValidFieldType(fieldType) ? 'text' : fieldType}
           {id}
           {name}
           {required}
