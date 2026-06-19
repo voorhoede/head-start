@@ -1,3 +1,7 @@
+type TurnstileApi = {
+  render: (container: HTMLElement, params: Record<string, unknown>) => string;
+};
+
 class Form extends HTMLElement {
   private initialHTML = '';
 
@@ -5,11 +9,46 @@ class Form extends HTMLElement {
     this.initialHTML = this.innerHTML;
     this.addEventListener('submit', this);
     this.addEventListener('click', this);
+    this.gateSubmit();
   }
 
   disconnectedCallback() {
     this.removeEventListener('submit', this);
     this.removeEventListener('click', this);
+  }
+
+  private get submitButton() {
+    return this.querySelector<HTMLButtonElement>('button[type="submit"]');
+  }
+
+  private gateSubmit() {
+    const widget = this.querySelector<HTMLElement>('.cf-turnstile');
+    const sitekey = widget?.getAttribute('data-sitekey') ?? '';
+    if (!widget || sitekey.startsWith('<')) return;
+    this.submitButton?.setAttribute('disabled', 'true');
+  }
+
+  private renderTurnstile() {
+    const widget = this.querySelector<HTMLElement>('.cf-turnstile');
+    const sitekey = widget?.getAttribute('data-sitekey') ?? '';
+    const turnstile = (window as Window & { turnstile?: TurnstileApi }).turnstile;
+    if (!widget || !turnstile || sitekey.startsWith('<')) return;
+    turnstile.render(widget, {
+      sitekey,
+      callback: () => this.enableSubmit(),
+      'error-callback': () => this.showError(),
+    });
+  }
+
+  enableSubmit() {
+    this.submitButton?.removeAttribute('disabled');
+  }
+
+  showError() {
+    const template = this.querySelector<HTMLTemplateElement>('template[data-form-error]');
+    if (template) {
+      this.innerHTML = template.innerHTML;
+    }
   }
 
   handleEvent(event: Event) {
@@ -18,6 +57,8 @@ class Form extends HTMLElement {
       if (target.closest('[data-form-back]')) {
         event.preventDefault();
         this.innerHTML = this.initialHTML;
+        this.gateSubmit();
+        this.renderTurnstile();
       }
       return;
     }
@@ -29,10 +70,9 @@ class Form extends HTMLElement {
 
   private async submitForm() {
     const form = this.querySelector('form')!;
-    const submitButton = form.querySelector('button[type="submit"]');
     const formData = new FormData(form);
 
-    submitButton?.setAttribute('disabled', 'true');
+    this.submitButton?.setAttribute('disabled', 'true');
 
     const response = await fetch(form.action, {
       method: form.method,
@@ -46,14 +86,9 @@ class Form extends HTMLElement {
       console.log('Form submission:', Object.fromEntries(formData));
     }
 
-    if (!response.ok && response.status >= 500) {
-      submitButton?.removeAttribute('disabled');
-      return;
-    }
-
     this.innerHTML = html;
 
-    if (!response.ok) {
+    if (!response.ok && response.status < 500) {
       const errors = this.querySelectorAll<HTMLElement>('.form-field__error, .form__error');
       errors[0]?.scrollIntoView({ behavior: 'smooth' });
       errors[0]?.focus();
@@ -62,3 +97,24 @@ class Form extends HTMLElement {
 }
 
 customElements.define('web-form', Form);
+
+// Global callbacks referenced by the Turnstile widget (data-callback /
+// data-error-callback). On success we enable the matching form's submit
+// button; on error we surface the error view.
+const turnstileWindow = window as Window & {
+  onTurnstileSuccess?: () => void;
+  onTurnstileError?: () => void;
+};
+
+turnstileWindow.onTurnstileSuccess = () => {
+  document.querySelectorAll<Form>('web-form').forEach((form) => {
+    const token = form.querySelector<HTMLInputElement>('[name="cf-turnstile-response"]');
+    if (token?.value) {
+      form.enableSubmit();
+    }
+  });
+};
+
+turnstileWindow.onTurnstileError = () => {
+  document.querySelectorAll<Form>('web-form').forEach((form) => form.showError());
+};

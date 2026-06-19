@@ -15,5 +15,10 @@ const url = error
 ---
 <script is:inline src={url} async defer />
 <input type="hidden" name="use-turnstile" value="true" />
-<div class="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY}></div>
+<div
+  class="cf-turnstile"
+  data-sitekey={TURNSTILE_SITE_KEY}
+  data-callback="onTurnstileSuccess"
+  data-error-callback="onTurnstileError"
+></div>
 {error && <p class="form__error">{error}</p> }

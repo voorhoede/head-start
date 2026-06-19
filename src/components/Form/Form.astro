@@ -3,6 +3,7 @@ import FormField from '~/components/FormField/FormField.astro';
 import { isValidFieldType } from '~/components/FormField/fieldTypes';
 import type { CollectionEntry } from '~/lib/content';
 import Turnstile from './Turnstile.astro';
+import FormError from './FormError.astro';
 
 export interface Props {
   slug: CollectionEntry<'Forms'>['data']['slug'];
@@ -44,6 +45,11 @@ const { slug, formFields, submitLabel, errors, formValues, useTurnStile = true }
     {submitLabel}
   </button>
 </form>
+{useTurnStile && (
+  <template data-form-error>
+    <FormError />
+  </template>
+)}
 
 <style>
   .form__fields {
