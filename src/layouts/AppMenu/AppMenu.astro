@@ -28,18 +28,21 @@ const { items, pageUrls } = Astro.props;
               item={item}
               class:list="main-menu__item"
               data-menu-item
+              style={`anchor-name: --menu-anchor-${item.id}`}
             >
               {item.items?.length > 0 && (
                 <ul
                   popover
                   id={getItemPopoverId(item.id)}
                   data-placement="bottom-start"
+                  style={`position-anchor: --menu-anchor-${item.id}`}
                 >
                   {item.items?.map((subItem, index) => (
                     <AppMenuItem
                       item={subItem}
                       class:list="submenu__item"
                       data-submenu-item
+                      style={`anchor-name: --menu-anchor-${item.id}-sub-${index}`}
                     >
                       {Array.isArray(subItem.items) &&
                         subItem.items.length > 0 && (
@@ -59,6 +62,7 @@ const { items, pageUrls } = Astro.props;
                           popover
                           id={getItemPopoverId(item.id, `sub-${index}`)}
                           data-placement="right-start"
+                          style={`position-anchor: --menu-anchor-${item.id}-sub-${index}`}
                         >
                           {subItem.items?.map((subSubItem) => (
                             <AppMenuItem
@@ -177,7 +181,8 @@ const { items, pageUrls } = Astro.props;
 
   [popover] {
     margin: 0;
-    inset-inline-start: 0;
+    position-area: bottom span-right;
+    position-try: flip-block;
   }
 
   [popover]::before {
@@ -190,6 +195,8 @@ const { items, pageUrls } = Astro.props;
   }
 
   [popover][data-placement='right-start'] {
+    position-area: right span-bottom;
+    position-try: flip-inline;
     margin-left: 5px;
   }
 
