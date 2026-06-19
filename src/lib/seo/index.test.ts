@@ -117,6 +117,27 @@ describe('seo', () => {
     expect(robots.getSitemaps()).toEqual([`${siteUrl}/sitemap-index.xml`]);
   });
 
+  test('robots.txt declares a Content-Signal in the User-agent: * block', () => {
+    const result = robotsTxt({ allowAiBots: true, allowAll: true, siteUrl: 'https://example.com' });
+    const userAgentBlock = result.slice(result.indexOf('User-agent: *'));
+    expect(userAgentBlock).toMatch(/^Content-Signal: .+$/m);
+  });
+
+  test('robots.txt Content-Signal grants all uses when AI bots and indexing are allowed', () => {
+    const result = robotsTxt({ allowAiBots: true, allowAll: true, siteUrl: 'https://example.com' });
+    expect(result).toContain('Content-Signal: ai-train=yes, search=yes, ai-input=yes');
+  });
+
+  test('robots.txt Content-Signal denies AI uses but keeps search when AI bots are disallowed', () => {
+    const result = robotsTxt({ allowAiBots: false, allowAll: true, siteUrl: 'https://example.com' });
+    expect(result).toContain('Content-Signal: ai-train=no, search=yes, ai-input=no');
+  });
+
+  test('robots.txt Content-Signal denies all uses when indexing is disallowed', () => {
+    const result = robotsTxt({ allowAiBots: false, allowAll: false, siteUrl: 'https://example.com' });
+    expect(result).toContain('Content-Signal: ai-train=no, search=no, ai-input=no');
+  });
+
   test('llmsTxt renders H1, blockquote, intro and Pages section when AI bots are allowed', () => {
     const result = llmsTxt({
       siteName: 'Acme',

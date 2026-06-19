@@ -33,10 +33,24 @@ export type RobotsTxtProps = {
   siteUrl: string,
 };
 
+/**
+  * Content Signals declare how content may be used by automated clients,
+  * independently from crawl access (Allow/Disallow). We tie the preferences to
+  * the site's existing config: `search` follows general indexing access
+  * (`allowAll`), while `ai-train` and `ai-input` follow the AI bots preference
+  * (`allowAiBots`).
+  * @see https://contentsignals.org/
+  */
+const contentSignal = ({ allowAiBots, allowAll }: Pick<RobotsTxtProps, 'allowAiBots' | 'allowAll'>) => {
+  const yesNo = (value: boolean) => (value ? 'yes' : 'no');
+  return `Content-Signal: ai-train=${yesNo(allowAiBots)}, search=${yesNo(allowAll)}, ai-input=${yesNo(allowAiBots)}`;
+};
+
 export const robotsTxt = ({ allowAiBots, allowAll, siteUrl }: RobotsTxtProps) => `
 ${allowAiBots ? '' : aiRobotsTxt}
 
 User-agent: *
+${contentSignal({ allowAiBots, allowAll })}
 ${allowAll ? 'Allow: /' : 'Disallow: /'}
 
 Sitemap: ${siteUrl}/sitemap-index.xml
