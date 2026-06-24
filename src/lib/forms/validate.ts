@@ -7,6 +7,17 @@ import { turnstileChallenge } from '~/lib/forms';
 
 type Form = CollectionEntry<'Forms'>['data'];
 
+export type ValidationResult = {
+  success: boolean;
+  values: Record<string, string>;
+  errors: Record<string, string>;
+};
+
+export type FormActionHandler = (
+  result: ValidationResult,
+  partial: boolean,
+) => Promise<Response>;
+
 const fieldMessage = (field: Form['formFields'][number]) =>
   t('field_invalid', { field: field.name });
 
@@ -37,18 +48,13 @@ export default async function <T extends Form>({
   form: T;
   formData: FormData;
   requestHeaders: Request['headers'];
-}): Promise<{
-  success: boolean;
-  values: Record<string, string>;
-  errors: Record<string, string>;
-}> {
+}): Promise<ValidationResult> {
   const formValues: Record<string, string> = {};
-  const attachmentValues: Record<string, Record<string, File>> = {};
+  const _attachmentValues: Record<string, Record<string, File>> = {};
   let formErrors: Record<string, string> = {};
 
   if (
     PUBLIC_IS_PRODUCTION &&
-    formData.get('use-turnstile') &&
     !(await turnstileChallenge(formData, requestHeaders))
   ) {
     console.error('Turnstile verification failed');
@@ -81,8 +87,8 @@ export default async function <T extends Form>({
       }
 
       if (value instanceof File) {
-        attachmentValues[field] = {
-          ...attachmentValues[field],
+        _attachmentValues[field] = {
+          ..._attachmentValues[field],
           [value.name]: value
         };
         formValues[field] = `${formValues[field] ? `${formValues[field]}, ${value.name}` : value.name}`;
@@ -93,20 +99,27 @@ export default async function <T extends Form>({
       }
     }
 
-    // Checkbox groups submit multiple values for the same name — collect them all.
-    // Always set the key (empty string when nothing checked) so nonempty() fires with the right message.
+    // Checkbox groups submit multiple values for the same name so we get them all.
     for (const name of checkboxFields) {
       const values = formData.getAll(name).filter((v): v is string => typeof v === 'string');
       formValues[name] = values.join(', ');
+    }
+
+    // Seed empty string so required fields fire nonempty()
+    for (const field of form.formFields) {
+      if (!(field.name in formValues)) formValues[field.name] = '';
     }
 
     formSchema.parse(formValues);
   } catch (error) {
     if (error instanceof z.ZodError) {
       console.error('Validation error:', error.errors);
-      formErrors = Object.fromEntries(
-        error.errors.map(({ path, message }) => [path[0], message]),
-      );
+      formErrors = {
+        ...formErrors,
+        ...Object.fromEntries(
+          error.errors.map(({ path, message }) => [path[0], message]),
+        ),
+      };
     } else {
       if (Object.keys(formErrors).length === 0) {
         throw error;

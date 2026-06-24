@@ -2,7 +2,7 @@ import { TURNSTILE_SECRET_KEY } from 'astro:env/server';
 
 export default async function (formData: FormData, requestHeaders: Request['headers']) {
   try {
-    const token = formData.get('cf-turnstile-response') || '';
+    const token = String(formData.get('cf-turnstile-response') ?? '');
     const ip = requestHeaders.get('CF-Connecting-IP') || '';
 
     // Validate the token by calling the
@@ -22,7 +22,7 @@ export default async function (formData: FormData, requestHeaders: Request['head
     if (outcome.success) {
       return true;
     }
-    console.error('Turnstile challenge failed:', outcome['error-codes'].join(', '));
+    console.error('Turnstile challenge failed:', (outcome['error-codes'] ?? []).join(', '));
     return false;
   } catch (error) {
     console.error('Turnstile challenge failed:', error);

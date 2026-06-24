@@ -13,6 +13,7 @@ function createError(tag: 'p' | 'span', className: string, message: string) {
   const error = document.createElement(tag);
   error.className = className;
   error.setAttribute('role', 'alert');
+  error.tabIndex = -1;
   error.textContent = message;
   return error;
 }

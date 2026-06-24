@@ -1,5 +1,6 @@
 import { getEntry } from '~/lib/content';
 import { validateSubmission } from '~/lib/forms';
+import type { FormActionHandler, ValidationResult } from '~/lib/forms';
 import { Form, FormError, FormNotFound } from '~/components/Form';
 import type { APIRoute } from 'astro';
 import { renderToString } from '~/lib/renderer';
@@ -18,21 +19,20 @@ export const POST: APIRoute = async ({ params, request }) => {
   }
   const partial = requestHeaders?.['x-requested-by'] === 'client';
 
-  type ActionResult = { success: boolean; values: Record<string, string>; errors: Record<string, string> };
-  let action: (result: ActionResult, partial: boolean) => Promise<Response>;
-  try {
-    action = (await import(`./_${slug}.ts`)).default;
-  } catch {
+  const handlers = import.meta.glob<{ default: FormActionHandler }>('./_*.ts');
+  const loader = handlers[`./_${slug}.ts`];
+  if (!loader) {
     return new Response(
       await renderToString(FormNotFound, { props: { slug }, partial }),
       { status: 404, headers: responseHeaders }
     );
   }
+  const action = (await loader()).default;
 
   const form = await getEntry('Forms', slug);
 
   if (form) {
-    let result: ActionResult;
+    let result: ValidationResult;
     try {
       result = await validateSubmission({
         form: form.data,
