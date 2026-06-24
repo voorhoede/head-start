@@ -73,7 +73,7 @@ describe('seo', () => {
     const siteUrl = 'https://example.com';
     const allowAiBots = false;
     const allowAll = true;
-    const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, siteUrl }));
+    const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, aiContentPolicy: 'disallow-all', siteUrl }));
     expect(robots.isAllowed('/', 'GPTBot')).toBe(false);
   });
 
@@ -81,7 +81,7 @@ describe('seo', () => {
     const siteUrl = 'https://example.com';
     const allowAiBots = true;
     const allowAll = true;
-    const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, siteUrl }));
+    const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, aiContentPolicy: 'disallow-all', siteUrl }));
     expect(robots.isAllowed('/', 'GPTBot')).toBe(true);
   });
 
@@ -89,7 +89,7 @@ describe('seo', () => {
     const siteUrl = 'https://example.com';
     const allowAiBots = true;
     const allowAll = false;
-    const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, siteUrl }));
+    const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, aiContentPolicy: 'disallow-all', siteUrl }));
     expect(robots.isAllowed('/', 'GPTBot')).toBe(false);
   });
 
@@ -97,7 +97,7 @@ describe('seo', () => {
     const siteUrl = 'https://example.com';
     const allowAiBots = true; // irrelevant for this test, but required
     const allowAll = true;
-    const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, siteUrl }));
+    const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, aiContentPolicy: 'disallow-all', siteUrl }));
     expect(robots.isAllowed('/', 'HeadStartExampleBot')).toBe(true);
   });
 
@@ -105,7 +105,7 @@ describe('seo', () => {
     const siteUrl = 'https://example.com';
     const allowAiBots = true; // irrelevant for this test, but required
     const allowAll = false;
-    const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, siteUrl }));
+    const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, aiContentPolicy: 'disallow-all', siteUrl }));
     expect(robots.isAllowed('/', 'HeadStartExampleBot')).toBe(false);
   });
 
@@ -113,28 +113,48 @@ describe('seo', () => {
     const siteUrl = 'https://example.com';
     const allowAiBots = true; // irrelevant for this test, but required
     const allowAll = true;    // irrelevant for this test, but required
-    const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, siteUrl }));
+    const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, aiContentPolicy: 'disallow-all', siteUrl }));
     expect(robots.getSitemaps()).toEqual([`${siteUrl}/sitemap-index.xml`]);
   });
 
   test('robots.txt declares a Content-Signal in the User-agent: * block', () => {
-    const result = robotsTxt({ allowAiBots: true, allowAll: true, siteUrl: 'https://example.com' });
+    const result = robotsTxt({ allowAiBots: true, allowAll: true, aiContentPolicy: 'search-only', siteUrl: 'https://example.com' });
     const userAgentBlock = result.slice(result.indexOf('User-agent: *'));
     expect(userAgentBlock).toMatch(/^Content-Signal: .+$/m);
   });
 
-  test('robots.txt Content-Signal grants all uses when AI bots and indexing are allowed', () => {
-    const result = robotsTxt({ allowAiBots: true, allowAll: true, siteUrl: 'https://example.com' });
+  test('robots.txt Content-Signal grants all uses for the `search-ai-input-ai-training` policy when indexing is allowed', () => {
+    const result = robotsTxt({ allowAiBots: true, allowAll: true, aiContentPolicy: 'search-ai-input-ai-training', siteUrl: 'https://example.com' });
     expect(result).toContain('Content-Signal: ai-train=yes, search=yes, ai-input=yes');
   });
 
-  test('robots.txt Content-Signal denies AI uses but keeps search when AI bots are disallowed', () => {
-    const result = robotsTxt({ allowAiBots: false, allowAll: true, siteUrl: 'https://example.com' });
+  test('robots.txt Content-Signal grants search only for the `search-only` policy', () => {
+    const result = robotsTxt({ allowAiBots: true, allowAll: true, aiContentPolicy: 'search-only', siteUrl: 'https://example.com' });
     expect(result).toContain('Content-Signal: ai-train=no, search=yes, ai-input=no');
   });
 
-  test('robots.txt Content-Signal denies all uses when indexing is disallowed', () => {
-    const result = robotsTxt({ allowAiBots: false, allowAll: false, siteUrl: 'https://example.com' });
+  test('robots.txt Content-Signal grants search and AI input but not training for the `search-ai-input` policy', () => {
+    const result = robotsTxt({ allowAiBots: true, allowAll: true, aiContentPolicy: 'search-ai-input', siteUrl: 'https://example.com' });
+    expect(result).toContain('Content-Signal: ai-train=no, search=yes, ai-input=yes');
+  });
+
+  test('robots.txt Content-Signal denies all uses for the `disallow-all` policy', () => {
+    const result = robotsTxt({ allowAiBots: true, allowAll: true, aiContentPolicy: 'disallow-all', siteUrl: 'https://example.com' });
+    expect(result).toContain('Content-Signal: ai-train=no, search=no, ai-input=no');
+  });
+
+  test('robots.txt Content-Signal denies all uses for an unknown policy', () => {
+    const result = robotsTxt({ allowAiBots: true, allowAll: true, aiContentPolicy: 'something-else', siteUrl: 'https://example.com' });
+    expect(result).toContain('Content-Signal: ai-train=no, search=no, ai-input=no');
+  });
+
+  test('robots.txt Content-Signal follows the policy independently of allowAiBots', () => {
+    const result = robotsTxt({ allowAiBots: false, allowAll: true, aiContentPolicy: 'search-ai-input-ai-training', siteUrl: 'https://example.com' });
+    expect(result).toContain('Content-Signal: ai-train=yes, search=yes, ai-input=yes');
+  });
+
+  test('robots.txt Content-Signal denies all uses when indexing is disallowed, regardless of policy', () => {
+    const result = robotsTxt({ allowAiBots: true, allowAll: false, aiContentPolicy: 'search-ai-input-ai-training', siteUrl: 'https://example.com' });
     expect(result).toContain('Content-Signal: ai-train=no, search=no, ai-input=no');
   });
 

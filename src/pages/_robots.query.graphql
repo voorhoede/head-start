@@ -4,5 +4,6 @@ query RobotsTxt {
   }
   app {
     allowAiBots
+    aiContentPolicy
   }
 }
