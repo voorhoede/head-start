@@ -5,7 +5,8 @@ import { buildClient } from '@datocms/cma-client-node';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import type { Root } from 'mdast';
 import { toHast } from 'mdast-util-to-hast';
-import { hastToStructuredText, type HastRootNode } from 'datocms-html-to-structured-text';
+import type { Root as HastRoot } from 'hast';
+import { hastToStructuredText } from 'datocms-html-to-structured-text';
 import { validate } from 'datocms-structured-text-utils';
 import { visit } from 'unist-util-visit';
 import { datocmsEnvironment } from '../../../datocms-environment';
@@ -211,7 +212,7 @@ async function getDocumentationRecord() {
 async function markdownToStructuredText(markdown: string) {
   const mdast = fromMarkdown(markdown);
   resolveLinks(mdast);
-  const hast = toHast(mdast) as HastRootNode;
+  const hast = toHast(mdast) as HastRoot;
   const structuredText = await hastToStructuredText(hast);
   const validationResult = validate(structuredText);
   if (!validationResult.valid) {
