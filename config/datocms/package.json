@@ -5,7 +5,7 @@
   },
   "dependencies": {
     "@datocms/cma-client-node": "^5.4.18",
-    "datocms-html-to-structured-text": "^5.1.16",
+    "datocms-html-to-structured-text": "^6.0.0",
     "datocms-structured-text-utils": "^6.0.0",
     "dotenv-safe": "^9.1.0",
     "mdast-util-from-markdown": "^2.0.3",
