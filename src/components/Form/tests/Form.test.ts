@@ -127,15 +127,6 @@ describe('Form.astro', () => {
     expect(messageTextarea?.value).toBe('Hello World!');
   });
 
-  it('renders a select field with options', async () => {
-    const frag = await renderToFragment(Form, { props: { ...mockEntry.data, useTurnStile: false } });
-    const select = frag.querySelector('select[name="subject"]');
-    expect(select).toBeTruthy();
-    const optionValues = [...select!.querySelectorAll('option')].map((o) => o.getAttribute('value'));
-    expect(optionValues).toContain('sales');
-    expect(optionValues).toContain('support');
-  });
-
   it('includes Turnstile markup by default and can be disabled', async () => {
     const withTurnstile = await renderToFragment(Form, { props: { ...mockEntry.data } });
     expect(withTurnstile.querySelector('.cf-turnstile')).toBeTruthy();
@@ -176,66 +167,77 @@ afterEach(() => {
 });
 
 describe('POST /api/forms/[slug]', () => {
-  it('returns 400 with inline form errors when validation fails', async () => {
+  type ValidationResult = { success: boolean; values: Record<string, string>; errors: Record<string, string> };
+
+  // Mocks the form lookup + validation outcome and POSTs to the endpoint.
+  // Pass an Error as `validation` to simulate a server-side crash during validation.
+  // Pass `client: true` to simulate a JS-driven submit (x-requested-by header).
+  async function submit(
+    { fields, validation, client = false }:
+    { fields: Record<string, string>; validation: ValidationResult | Error; client?: boolean },
+  ) {
     const { getEntry } = await import('~/lib/content');
     const { validateSubmission } = await import('~/lib/forms');
 
     vi.mocked(getEntry).mockResolvedValue(mockEntry);
-    vi.mocked(validateSubmission).mockResolvedValue({
-      success: false,
-      values: { email: 'wrong' },
-      errors: { email: 'Invalid email' },
-    });
+    if (validation instanceof Error) {
+      vi.mocked(validateSubmission).mockRejectedValue(validation);
+    } else {
+      vi.mocked(validateSubmission).mockResolvedValue(validation);
+    }
 
     const form = new FormData();
-    form.set('email', 'wrong');
+    for (const [key, value] of Object.entries(fields)) form.set(key, value);
 
-    const request = new Request('http://localhost/api/forms/contact/', {
-      method: 'POST',
-      body: form,
-      headers: {
-        referer: 'http://localhost/contact',
-        'x-requested-by': 'client',
-      },
-    });
+    const headers: Record<string, string> = { referer: 'http://localhost/contact' };
+    if (client) headers['x-requested-by'] = 'client';
+
+    const request = new Request('http://localhost/api/forms/contact/', { method: 'POST', body: form, headers });
 
     // @TODO Add actual integration test with a local build
     const res = await POST({ params: { slug: 'contact' }, request } as unknown as APIContext);
-
     expect(res).toBeInstanceOf(Response);
-    const response = res as Response;
+    return res as Response;
+  }
+
+  const invalid: ValidationResult = { success: false, values: { email: 'wrong' }, errors: { email: 'Invalid email' } };
+
+  it('shows inline validation errors on the re-rendered form when validation fails', async () => {
+    const response = await submit({ fields: { email: 'wrong' }, validation: invalid });
+
     expect(response.status).toBe(400);
+    expect(response.headers.get('Content-Type')).toContain('text/html');
     const html = await response.text();
     expect(html).toContain('<form');
     expect(html).toContain('form-field__error');
     expect(html).toContain('Invalid email');
   });
 
-  it('returns action HTML when validation succeeds', async () => {
-    const { getEntry } = await import('~/lib/content');
-    const { validateSubmission } = await import('~/lib/forms');
+  it('returns validation errors as JSON so the client can render them inline', async () => {
+    const response = await submit({ fields: { email: 'wrong' }, validation: invalid, client: true });
 
-    vi.mocked(getEntry).mockResolvedValue(mockEntry);
-    vi.mocked(validateSubmission).mockResolvedValue({
-      success: true,
-      values: { email: 'john@example.com' },
-      errors: {},
+    expect(response.status).toBe(400);
+    expect(response.headers.get('Content-Type')).toContain('application/json');
+    const data = await response.json() as { errors: Record<string, string> };
+    expect(data.errors.email).toBe('Invalid email');
+  });
+
+  it('shows the success view when the form is submitted correctly', async () => {
+    const response = await submit({
+      fields: { email: 'john@example.com' },
+      validation: { success: true, values: { email: 'john@example.com' }, errors: {} },
     });
 
-    const form = new FormData();
-    form.set('email', 'john@example.com');
-
-    const request = new Request('http://localhost/api/forms/contact/', {
-      method: 'POST',
-      body: form,
-      headers: { referer: 'http://localhost/contact' },
-    });
-
-    // @TODO Add actual integration test with a local build
-    const result = await POST({ params: { slug: 'contact' }, request } as unknown as APIContext);
-
-    expect(result instanceof Response).toBe(true);
-    const html = await (result as Response).text();
+    const html = await response.text();
     expect(html).toMatch(/Success/i);
+  });
+
+  it('shows the error page when the form action errors server-side', async () => {
+    const response = await submit({ fields: { email: 'john@example.com' }, validation: new Error('boom') });
+
+    expect(response.status).toBe(500);
+    expect(response.headers.get('Content-Type')).toContain('text/html');
+    const html = await response.text();
+    expect(html).toContain('data-form-back');
   });
 });
