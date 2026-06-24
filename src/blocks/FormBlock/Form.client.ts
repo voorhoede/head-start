@@ -18,10 +18,7 @@ function createError(tag: 'p' | 'span', className: string, message: string) {
 }
 
 class Form extends HTMLElement {
-  private initialHTML = '';
-
   connectedCallback() {
-    this.initialHTML = this.innerHTML;
     this.addEventListener('submit', this);
     this.addEventListener('click', this);
     this.gateSubmit();
@@ -64,13 +61,25 @@ class Form extends HTMLElement {
 
   showError() {
     const template = this.querySelector<HTMLTemplateElement>('template[data-form-error]');
-    if (template) this.innerHTML = template.innerHTML;
+    if (template) this.showView(template.innerHTML);
+  }
+
+  private showView(html: string) {
+    const form = this.querySelector('form');
+    if (!form || this.querySelector('[data-form-view]')) return;
+    form.hidden = true;
+    const view = document.createElement('div');
+    view.dataset.formView = '';
+    view.innerHTML = html;
+    this.append(view);
   }
 
   private restore() {
-    this.innerHTML = this.initialHTML;
+    this.querySelector('[data-form-view]')?.remove();
+    const form = this.querySelector('form');
+    if (form) form.hidden = false;
     this.gateSubmit();
-    this.renderTurnstile();
+    this.resetTurnstile();
   }
 
   /** 
@@ -78,16 +87,6 @@ class Form extends HTMLElement {
    */
   private gateSubmit() {
     if (this.turnstile) this.disableSubmit();
-  }
-
-  private renderTurnstile() {
-    const turnstile = this.turnstile;
-    if (!turnstile) return;
-    turnstileWindow.turnstile?.render(turnstile.widget, {
-      sitekey: turnstile.sitekey,
-      callback: () => this.enableSubmit(),
-      'error-callback': () => this.showError(),
-    });
   }
 
   /** Issues a fresh single-use token for a retry, or re-enables submit if there's no widget. */
@@ -103,7 +102,7 @@ class Form extends HTMLElement {
   private async submitForm() {
     const form = this.querySelector('form')!;
     const formData = new FormData(form);
-
+    this.clearFieldErrors();
     this.disableSubmit();
 
     let response: Response;
@@ -137,22 +136,26 @@ class Form extends HTMLElement {
 
     if (response.ok) {
       console.log('Form submission:', Object.fromEntries(formData));
+      // Clear the inputs so "back to form" from the success view shows a blank form.
+      form.reset();
+      this.showView(await response.text());
+      return;
     }
-    this.innerHTML = await response.text();
+    this.showError();
   }
 
-  /**
-   * Injects validation errors into the existing form, mirroring the markup of
-   * FormField.astro / Fieldset.astro: a `.form-field__error` inside the
-   * `.form-field` wrapper, which also gets the `--error` modifier. The
-   * `turnstileError` is form-level rather than tied to a field.
-   */
+  private clearFieldErrors() {
+    const form = this.querySelector('form');
+    if (!form) return;
+    form.querySelectorAll('.form-field__error, .form__error').forEach((el) => el.remove());
+    form.querySelectorAll('.form-field--error').forEach((el) => el.classList.remove('form-field--error'));
+  }
+
   private showFieldErrors(errors: Record<string, string>) {
     const form = this.querySelector('form');
     if (!form) return;
 
-    form.querySelectorAll('.form-field__error, .form__error').forEach((el) => el.remove());
-    form.querySelectorAll('.form-field--error').forEach((el) => el.classList.remove('form-field--error'));
+    this.clearFieldErrors();
 
     let firstError: HTMLElement | null = null;
 
