@@ -90,6 +90,7 @@ export default async function (client: Client) {
           'select',
           'radio',
           'checkbox',
+          'number',
           'date',
         ],
       },
@@ -114,6 +115,7 @@ export default async function (client: Client) {
           { hint: '', label: 'Select', value: 'select' },
           { hint: '', label: 'Checkbox', value: 'checkbox' },
           { hint: '', label: 'Radio', value: 'radio' },
+          { hint: '', label: 'Number', value: 'number' },
           { hint: '', label: 'Date', value: 'date' },
         ],
       },
@@ -337,6 +339,9 @@ export default async function (client: Client) {
     field_type: 'string',
     api_key: 'submit_label',
     localized: true,
+    validators: {
+      required: {},
+    },
     appearance: {
       addons: [],
       editor: 'single_line',

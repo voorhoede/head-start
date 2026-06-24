@@ -9,7 +9,6 @@ export default async function <T extends CollectionEntry<'Forms'>['data']>(
   result: Awaited<ReturnType<typeof validateSubmission<T>>>,
   partial: boolean = false,
 ) {
-  console.log(result);
   return new Response(await renderToString(FormSuccess, { partial }), {
     status: 200,
     headers: new Headers({ 'Content-Type': 'text/html' }),

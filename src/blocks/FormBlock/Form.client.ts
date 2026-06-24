@@ -135,8 +135,6 @@ class Form extends HTMLElement {
     }
 
     if (response.ok) {
-      console.log('Form submission:', Object.fromEntries(formData));
-      // Clear the inputs so "back to form" from the success view shows a blank form.
       form.reset();
       this.showView(await response.text());
       return;

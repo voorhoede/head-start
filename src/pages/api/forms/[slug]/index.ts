@@ -25,7 +25,7 @@ export const POST: APIRoute = async ({ params, request }) => {
   } catch {
     return new Response(
       await renderToString(FormNotFound, { props: { slug }, partial }),
-      { status: 500, headers: responseHeaders }
+      { status: 404, headers: responseHeaders }
     );
   }
 
@@ -84,6 +84,6 @@ export const POST: APIRoute = async ({ params, request }) => {
     return new Response(await renderToString(FormNotFound, {
       props: { slug: params.slug },
       partial
-    }), { status: 500, headers: responseHeaders });
+    }), { status: 404, headers: responseHeaders });
   }
 };

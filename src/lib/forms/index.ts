@@ -1,2 +1,2 @@
-export { default as validateSubmission } from './validate.ts';
-export { default as turnstileChallenge } from './turnstile.ts';
+export { default as validateSubmission } from './validate';
+export { default as turnstileChallenge } from './turnstile';
