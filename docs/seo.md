@@ -141,7 +141,20 @@ The `agents` array is an **empty placeholder** by default. Per project, list the
   "name": "Head Start",
   "description": "Base setup on top of headless services to help you get started quickly",
   "url": "https://head-start.pages.dev",
-  "agents": []
+  "agents": [
+    // example of added agents
+    {
+      "name": "Site Search",
+      "description": "Searches Head Start's content and returns matching pages.",
+      "url": "https://head-start.pages.dev/api/agents/search",
+      "agentCard": "/.well-known/agent-card.json"
+    },
+    {
+      "name": "Booking Assistant",
+      "description": "Checks availability and books appointments.",
+      "url": "https://some-website.com/api/agents/booking"
+    }
+  ]
 }
 ```
 
