@@ -152,7 +152,7 @@ The `agents` array is an **empty placeholder** by default. Per project, list the
     {
       "name": "Booking Assistant",
       "description": "Checks availability and books appointments.",
-      "url": "https://some-website.com/api/agents/booking"
+      "url": "https://example.com/api/agents/booking"
     }
   ]
 }
