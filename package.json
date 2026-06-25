@@ -130,7 +130,7 @@
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.60.0",
     "vitest": "^4.1.8",
-    "wrangler": "^4.87.0"
+    "wrangler": "^4.99.0"
   },
   "nano-staged": {
     "*.{astro,js,ts}": "npm run lint:eslint -- --fix --max-warnings 0"
