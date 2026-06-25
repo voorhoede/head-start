@@ -125,7 +125,7 @@
     "plop": "^4.0.5",
     "proper-tags": "^2.0.2",
     "robots-parser": "^3.0.1",
-    "sonda": "^0.11.1",
+    "sonda": "^0.13.0",
     "svg-sprite": "^2.0.2",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.60.0",
