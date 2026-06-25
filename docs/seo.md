@@ -122,3 +122,40 @@ For commercial use, contact partnerships@yoursite.com
 - [GitHub](https://github.com/voorhoede)
 - [Website](https://voorhoede.nl/)
 ```
+
+## Agent discovery (DNS-AID)
+
+Head Start serves a machine-readable agent registry at [`/.well-known/agents/index.json`](../src/pages/.well-known/agents/index.json.ts), the HTTP counterpart to the [DNS for AI Discovery (DNS-AID)](https://datatracker.ietf.org/doc/draft-mozleywilliams-dnsop-dnsaid/) `_index._agents.<domain>` registry. It lets AI agents discover which agents (if any) an organisation exposes.
+
+The file is auto-generated at build time from:
+
+- `globalSeo.siteName` — used as `name`.
+- `globalSeo.fallbackSeo.description` — used as `description`.
+- The site URL — used as `url`.
+
+The `agents` array is an **empty placeholder** by default. Per project, list the agents your site exposes by passing them to [`agentsIndex()`](../src/lib/seo/index.ts) in the route, each with a `name`, `url`, and optional `agentCard` path (the [`/.well-known/agent-card.json`](https://www.rfc-editor.org/rfc/rfc8615) capability descriptor referenced by the DNS record's `well-known` parameter):
+
+```json
+{
+  "version": "0.1",
+  "name": "Head Start",
+  "description": "Base setup on top of headless services to help you get started quickly",
+  "url": "https://head-start.pages.dev",
+  "agents": [
+    // example of added agents
+    {
+      "name": "Site Search",
+      "description": "Searches Head Start's content and returns matching pages.",
+      "url": "https://head-start.pages.dev/api/agents/search",
+      "agentCard": "/.well-known/agent-card.json"
+    },
+    {
+      "name": "Booking Assistant",
+      "description": "Checks availability and books appointments.",
+      "url": "https://example.com/api/agents/booking"
+    }
+  ]
+}
+```
+
+The registry JSON alone is **not discoverable** — a DNS-AID client finds it via DNS SVCB records, and those (plus DNSSEC signing) live in your DNS zone, not in this repo. See [Getting Started → Enable AI agent discovery](./getting-started.md#enable-ai-agent-discovery-dns-aid-optional) for the per-project DNS setup.

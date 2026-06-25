@@ -1,6 +1,6 @@
 import { afterEach, describe, test, expect, vi } from 'vitest';
 import robotsParser from 'robots-parser';
-import { llmsTxt, robotsTxt, siteName, titleSuffix, titleTag } from '~/lib/seo';
+import { agentsIndex, llmsTxt, robotsTxt, siteName, titleSuffix, titleTag } from '~/lib/seo';
 import { getLocale } from '~/lib/i18n';
 import aiRobotsTxt from './ai.robots.txt?raw';
 
@@ -332,6 +332,39 @@ describe('seo', () => {
       ],
     });
     expect(result).toContain('## Top\n\n- Mid\n  - [Leaf](https://example.com/leaf/)');
+  });
+
+  test('agentsIndex builds a registry with an empty agents list by default', () => {
+    const result = agentsIndex({
+      siteName: 'Acme',
+      siteSummary: 'A short site description.',
+      siteUrl: 'https://example.com',
+    });
+    expect(result).toEqual({
+      version: '0.1',
+      name: 'Acme',
+      description: 'A short site description.',
+      url: 'https://example.com',
+      agents: [],
+    });
+  });
+
+  test('agentsIndex includes provided agents', () => {
+    const agents = [
+      {
+        name: 'Site search',
+        description: 'Search this site’s content',
+        url: 'https://example.com/api/search',
+        agentCard: '/.well-known/agent-card.json',
+      },
+    ];
+    const result = agentsIndex({
+      siteName: 'Acme',
+      siteSummary: '',
+      siteUrl: 'https://example.com',
+      agents,
+    });
+    expect(result.agents).toEqual(agents);
   });
 
 });

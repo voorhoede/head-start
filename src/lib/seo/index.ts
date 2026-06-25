@@ -83,6 +83,64 @@ const renderLlmsTxtItems = (items: LlmsTxtItem[], depth = 0): string[] => {
   });
 };
 
+export type AgentEntry = {
+  /** Human-readable name of the agent. */
+  name: string;
+  /** What the agent does. */
+  description?: string;
+  /** Endpoint where the agent can be reached. */
+  url: string;
+  /**
+   * Path (or URL) to the agent's A2A capability descriptor, i.e. the
+   * `/.well-known/agent-card.json` referenced by the DNS-AID SVCB record's
+   * `well-known` parameter. @see https://www.rfc-editor.org/rfc/rfc8615
+   */
+  agentCard?: string;
+};
+
+export type AgentsIndex = {
+  version: string;
+  name: string;
+  description: string;
+  url: string;
+  agents: AgentEntry[];
+};
+
+export type AgentsIndexProps = {
+  siteName: string;
+  siteSummary: string;
+  siteUrl: string;
+  agents?: AgentEntry[];
+};
+
+/**
+ * Machine-readable agent registry: the HTTP counterpart to the DNS-AID
+ * `_index._agents.<domain>` record (which returns a pointer to an
+ * organization-specific registry of all agents).
+ *
+ * IMPORTANT: authoritative DNS-AID discovery happens via SVCB/HTTPS DNS records
+ * under `_agents.<domain>` plus DNSSEC signing. Those live in your DNS zone
+ * (e.g. Cloudflare DNS) and cannot be served from this repo. This file is the
+ * registry those records can point a client to.
+ * @see https://datatracker.ietf.org/doc/draft-mozleywilliams-dnsop-dnsaid/
+ * @see https://www.rfc-editor.org/rfc/rfc9460
+ *
+ * Minimal placeholder: `agents` is empty by default. Per project, pass the
+ * agents this site exposes (e.g. its search endpoint).
+ */
+export const agentsIndex = ({
+  siteName,
+  siteSummary,
+  siteUrl,
+  agents = [],
+}: AgentsIndexProps): AgentsIndex => ({
+  version: '0.1',
+  name: siteName,
+  description: siteSummary,
+  url: siteUrl,
+  agents,
+});
+
 export const llmsTxt = ({
   siteName,
   siteSummary,
