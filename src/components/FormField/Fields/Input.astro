@@ -1,0 +1,13 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type InputType = 'text' | 'email' | 'tel' | 'number' | 'date';
+
+type Props = Omit<HTMLAttributes<'input'>, 'type'> & {
+  type?: InputType;
+};
+
+const { type = 'text', ...props } = Astro.props;
+---
+
+<input {type} {...props} />

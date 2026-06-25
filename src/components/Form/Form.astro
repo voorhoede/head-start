@@ -1,0 +1,58 @@
+---
+import FormField from '~/components/FormField/FormField.astro';
+import { isValidFieldType } from '~/components/FormField/fieldTypes';
+import type { CollectionEntry } from '~/lib/content';
+import Turnstile from './Turnstile.astro';
+import FormError from './FormError.astro';
+
+export interface Props {
+  slug: CollectionEntry<'Forms'>['data']['slug'];
+  formFields: CollectionEntry<'Forms'>['data']['formFields'];
+  submitLabel: CollectionEntry<'Forms'>['data']['submitLabel'];
+  errors?: Record<string, string>;
+  formValues?: Record<string, string>;
+  useTurnStile?: boolean;
+}
+
+const { slug, formFields, submitLabel, errors, formValues, useTurnStile = true } = Astro.props;
+---
+<form
+  method="POST"
+  action={`/api/forms/${slug}/`}
+  class="form"
+>
+  {useTurnStile &&
+    <Turnstile error={errors?.['turnstileError']} />}
+  <div class="form__fields">
+    {formFields.map(
+      ({ id, label, name, required, fieldType, placeholder, options, inputWidth }) => (
+        <FormField
+          id={id}
+          label={label}
+          name={name}
+          required={required}
+          fieldType={isValidFieldType(fieldType) ? fieldType : 'text'}
+          placeholder={placeholder || ''}
+          error={errors?.[name]}
+          value={formValues?.[name]}
+          options={options ?? undefined}
+          inputWidth={inputWidth}
+        />
+      )
+    )}
+  </div>
+  <button type="submit">
+    {submitLabel}
+  </button>
+</form>
+<template data-form-error>
+  <FormError />
+</template>
+
+<style>
+  .form__fields {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+</style>

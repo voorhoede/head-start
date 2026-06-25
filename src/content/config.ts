@@ -2,12 +2,14 @@
 import AppCollection from './App';
 import PagePartialCollection from './PagePartials';
 import PageCollection from './Pages';
+import FormCollection from './Forms';
 
 export const collectionMap = {
   // Add your collections here
   ...AppCollection,
   ...PagePartialCollection,
   ...PageCollection,
+  ...FormCollection,
 } as const;
 
 // Astro needs a value for collections that is an object whose keys are collection names

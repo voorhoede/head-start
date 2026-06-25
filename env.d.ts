@@ -9,6 +9,8 @@ declare global {
       DATOCMS_READONLY_API_TOKEN: string;
       HEAD_START_PREVIEW?: string;
       HEAD_START_PREVIEW_SECRET: string;
+      TURNSTILE_SITE_KEY: string;
+      TURNSTILE_SECRET_KEY: string;
     }
   }
 }
