@@ -61,7 +61,9 @@ const aiSignals = ['ai-train', 'ai-input'] as const;
   * @see https://contentsignals.org/
   */
 const contentSignal = ({ aiContentPolicy, allowAll, allowAiBots }: Pick<RobotsTxtProps, 'aiContentPolicy' | 'allowAll' | 'allowAiBots'>) => {
-  const signals: readonly string[] = aiContentPolicies[aiContentPolicy as AiContentPolicy] ?? [];
+  const signals: readonly string[] = Object.hasOwn(aiContentPolicies, aiContentPolicy)
+    ? aiContentPolicies[aiContentPolicy as AiContentPolicy]
+    : [];
   const yesNo = (signal: string) => {
     if (!allowAll || !signals.includes(signal)) return 'no';
     if (!allowAiBots && (aiSignals as readonly string[]).includes(signal)) return 'no';

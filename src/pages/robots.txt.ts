@@ -14,7 +14,7 @@ export const GET: APIRoute = async (context) => {
   return new Response(robotsTxt({
     allowAiBots,
     allowAll,
-    aiContentPolicy: app.aiContentPolicy ?? 'disallow-all',
+    aiContentPolicy: app.aiContentPolicy ?? 'search-only',
     siteUrl: context.site!.origin,
   }), {
     headers: {

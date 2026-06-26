@@ -154,6 +154,13 @@ describe('seo', () => {
     expect(result).toContain('Content-Signal: ai-train=no, search=no, ai-input=no');
   });
 
+  test('robots.txt Content-Signal denies all uses for a prototype key without throwing', () => {
+    for (const aiContentPolicy of ['__proto__', 'constructor', 'hasOwnProperty']) {
+      const result = robotsTxt({ allowAiBots: true, allowAll: true, aiContentPolicy, siteUrl: 'https://example.com' });
+      expect(result).toContain('Content-Signal: ai-train=no, search=no, ai-input=no');
+    }
+  });
+
   test('robots.txt Content-Signal denies AI uses but keeps search when allowAiBots is false', () => {
     const result = robotsTxt({ allowAiBots: false, allowAll: true, aiContentPolicy: 'search-ai-input-ai-training', siteUrl: 'https://example.com' });
     expect(result).toContain('Content-Signal: ai-train=no, search=yes, ai-input=no');
