@@ -101,7 +101,7 @@
     "@datocms/cma-client-node": "^5.4.18",
     "@eslint/js": "^10.0.1",
     "@graphql-codegen/cli": "^7.0.0",
-    "@graphql-codegen/typescript": "^6.0.1",
+    "@graphql-codegen/typescript": "^6.0.2",
     "@graphql-codegen/typescript-document-nodes": "^6.0.0",
     "@graphql-codegen/typescript-operations": "^6.0.2",
     "@stylistic/eslint-plugin": "^5.10.0",
