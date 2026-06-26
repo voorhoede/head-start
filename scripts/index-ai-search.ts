@@ -74,11 +74,12 @@ const collectSitemapUrls = async (): Promise<string[]> => {
   return [...urls];
 };
 
-const mdUrlFor = (pageUrl: string): { url: string; key: string } => {
+const mdUrlFor = (pageUrl: string): { url: string; key: string } | null => {
   const u = new URL(pageUrl);
   const path = u.pathname.replace(/^\/|\/$/g, '');
-  u.pathname = path ? `/api/content/${path}.md` : '/api/content.md';
-  return { url: u.toString(), key: path || 'index' };
+  if (!path) return null;
+  u.pathname = `/api/content/${path}.md`;
+  return { url: u.toString(), key: path };
 };
 
 const sha256 = (input: string): string =>
@@ -174,7 +175,13 @@ async function indexAiSearch(): Promise<void> {
   let skipped = 0;
 
   for (const pageUrl of pageUrls) {
-    const { url: md, key } = mdUrlFor(pageUrl);
+    const target = mdUrlFor(pageUrl);
+    if (!target) {
+      console.log(`skip root: ${pageUrl}`);
+      skipped++;
+      continue;
+    }
+    const { url: md, key } = target;
     const res = await fetch(md, { headers: { Accept: 'text/markdown' }, redirect: 'follow' });
 
     if (res.status === 404) {
@@ -244,7 +251,7 @@ async function indexAiSearch(): Promise<void> {
         }
       } else {
         console.log(
-          `dry-run: ${stale.length} stale entrie(s) would be pruned (set AI_SEARCH_PRUNE_STALE=1 to delete): ${stale.join(', ')}`,
+          `dry-run: ${stale.length} stale entr${stale.length === 1 ? 'y' : 'ies'} would be pruned (set AI_SEARCH_PRUNE_STALE=1 to delete): ${stale.join(', ')}`,
         );
       }
     }

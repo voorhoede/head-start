@@ -10,7 +10,7 @@ export const prerender = false;
 const jsonError = (message: string, status: number) =>
   new Response(JSON.stringify({ error: message }), {
     status,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
   });
 
 type ChunkMeta = { url?: string; title?: string };
