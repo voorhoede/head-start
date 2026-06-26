@@ -48,17 +48,25 @@ export type RobotsTxtProps = {
   siteUrl: string,
 };
 
+/** Signals that depend on allowAiBots */
+const aiSignals = ['ai-train', 'ai-input'] as const;
+
 /**
   * Content Signals declare how content may be used by automated clients,
-  * independently from crawl access (Allow/Disallow). Signals are intentionally decoupled
-  * from `allowAiBots`; the only override is `allowAll`: when general indexing is
+  * independently from crawl access (Allow/Disallow). `allowAiBots` has effect on the 
+  * `ai-train` and `ai-input` signals, but not on the `search` signal.
+  * The override for all the aiContentPolicies is `allowAll`: when general indexing is
   * disallowed (`allowAll` is false, e.g. a noIndex or preview site) every signal
   * is suppressed (`no`).
   * @see https://contentsignals.org/
   */
-const contentSignal = ({ aiContentPolicy, allowAll }: Pick<RobotsTxtProps, 'aiContentPolicy' | 'allowAll'>) => {
+const contentSignal = ({ aiContentPolicy, allowAll, allowAiBots }: Pick<RobotsTxtProps, 'aiContentPolicy' | 'allowAll' | 'allowAiBots'>) => {
   const signals: readonly string[] = aiContentPolicies[aiContentPolicy as AiContentPolicy] ?? [];
-  const yesNo = (signal: string) => (allowAll && signals.includes(signal) ? 'yes' : 'no');
+  const yesNo = (signal: string) => {
+    if (!allowAll || !signals.includes(signal)) return 'no';
+    if (!allowAiBots && (aiSignals as readonly string[]).includes(signal)) return 'no';
+    return 'yes';
+  };
   return `Content-Signal: ai-train=${yesNo('ai-train')}, search=${yesNo('search')}, ai-input=${yesNo('ai-input')}`;
 };
 
@@ -66,7 +74,7 @@ export const robotsTxt = ({ allowAiBots, allowAll, aiContentPolicy, siteUrl }: R
 ${allowAiBots ? '' : aiRobotsTxt}
 
 User-agent: *
-${contentSignal({ aiContentPolicy, allowAll })}
+${contentSignal({ aiContentPolicy, allowAll, allowAiBots })}
 ${allowAll ? 'Allow: /' : 'Disallow: /'}
 
 Sitemap: ${siteUrl}/sitemap-index.xml
