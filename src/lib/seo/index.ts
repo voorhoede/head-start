@@ -28,12 +28,8 @@ export const titleTag = (title: string): Tag => ({
 });
 
 /**
-  * Content-Signal policies, ordered from most to least restrictive. Each policy
-  * is cumulative: it grants its use plus all lighter ones (`search` ⊂ `ai-input`
-  * ⊂ `ai-train`), which is why the editor picks one via a single-select rather
-  * than toggling signals independently. The keys are the option values stored in
-  * Dato (api_key `ai_content_policy`); the arrays are the Content-Signal tokens
-  * declared as `yes`.
+  * Content-Signal policies based on the policy select on contentsignals.org. 
+  * The policy is set per site by the editor via the Dato `aiContentPolicy` single-select. 
   * @see https://contentsignals.org/
   */
 export const aiContentPolicies = {
@@ -54,12 +50,10 @@ export type RobotsTxtProps = {
 
 /**
   * Content Signals declare how content may be used by automated clients,
-  * independently from crawl access (Allow/Disallow). The preference is set per
-  * site by the editor via the `aiContentPolicy` single-select in Dato (see
-  * `aiContentPolicies` for the options). Signals are intentionally decoupled
+  * independently from crawl access (Allow/Disallow). Signals are intentionally decoupled
   * from `allowAiBots`; the only override is `allowAll`: when general indexing is
   * disallowed (`allowAll` is false, e.g. a noIndex or preview site) every signal
-  * is suppressed (`no`). An unknown/missing policy falls back to most restrictive.
+  * is suppressed (`no`).
   * @see https://contentsignals.org/
   */
 const contentSignal = ({ aiContentPolicy, allowAll }: Pick<RobotsTxtProps, 'aiContentPolicy' | 'allowAll'>) => {

@@ -73,7 +73,8 @@ describe('seo', () => {
     const siteUrl = 'https://example.com';
     const allowAiBots = false;
     const allowAll = true;
-    const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, aiContentPolicy: 'disallow-all', siteUrl }));
+    const aiContentPolicy = 'disallow-all';
+    const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, aiContentPolicy, siteUrl }));
     expect(robots.isAllowed('/', 'GPTBot')).toBe(false);
   });
 
@@ -81,7 +82,8 @@ describe('seo', () => {
     const siteUrl = 'https://example.com';
     const allowAiBots = true;
     const allowAll = true;
-    const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, aiContentPolicy: 'disallow-all', siteUrl }));
+    const aiContentPolicy = 'disallow-all';
+    const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, aiContentPolicy, siteUrl }));
     expect(robots.isAllowed('/', 'GPTBot')).toBe(true);
   });
 
@@ -89,7 +91,8 @@ describe('seo', () => {
     const siteUrl = 'https://example.com';
     const allowAiBots = true;
     const allowAll = false;
-    const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, aiContentPolicy: 'disallow-all', siteUrl }));
+    const aiContentPolicy = 'disallow-all';
+    const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, aiContentPolicy, siteUrl }));
     expect(robots.isAllowed('/', 'GPTBot')).toBe(false);
   });
 
@@ -97,7 +100,8 @@ describe('seo', () => {
     const siteUrl = 'https://example.com';
     const allowAiBots = true; // irrelevant for this test, but required
     const allowAll = true;
-    const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, aiContentPolicy: 'disallow-all', siteUrl }));
+    const aiContentPolicy = 'disallow-all';
+    const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, aiContentPolicy, siteUrl }));
     expect(robots.isAllowed('/', 'HeadStartExampleBot')).toBe(true);
   });
 
@@ -105,7 +109,8 @@ describe('seo', () => {
     const siteUrl = 'https://example.com';
     const allowAiBots = true; // irrelevant for this test, but required
     const allowAll = false;
-    const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, aiContentPolicy: 'disallow-all', siteUrl }));
+    const aiContentPolicy = 'disallow-all';
+    const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, aiContentPolicy, siteUrl }));
     expect(robots.isAllowed('/', 'HeadStartExampleBot')).toBe(false);
   });
 
@@ -113,7 +118,8 @@ describe('seo', () => {
     const siteUrl = 'https://example.com';
     const allowAiBots = true; // irrelevant for this test, but required
     const allowAll = true;    // irrelevant for this test, but required
-    const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, aiContentPolicy: 'disallow-all', siteUrl }));
+    const aiContentPolicy = 'disallow-all';
+    const robots = robotsParser('', robotsTxt({ allowAiBots, allowAll, aiContentPolicy, siteUrl }));
     expect(robots.getSitemaps()).toEqual([`${siteUrl}/sitemap-index.xml`]);
   });
 
