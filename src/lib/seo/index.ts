@@ -27,30 +27,56 @@ export const titleTag = (title: string): Tag => ({
   content: `${title} ${titleSuffix()}`,
 });
 
+/**
+  * Content-Signal policies based on the policy select on contentsignals.org. 
+  * The policy is set per site by the editor via the Dato `aiContentPolicy` single-select. 
+  * @see https://contentsignals.org/
+  */
+export const aiContentPolicies = {
+  'disallow-all': [],
+  'search-only': ['search'],
+  'search-ai-input': ['search', 'ai-input'],
+  'search-ai-input-ai-training': ['search', 'ai-input', 'ai-train'],
+} as const satisfies Record<string, readonly string[]>;
+
+export type AiContentPolicy = keyof typeof aiContentPolicies;
+
 export type RobotsTxtProps = {
   allowAiBots: boolean,
   allowAll: boolean,
+  aiContentPolicy: string,
   siteUrl: string,
 };
 
+/** Signals that depend on allowAiBots */
+const aiSignals = ['ai-train', 'ai-input'] as const;
+
 /**
   * Content Signals declare how content may be used by automated clients,
-  * independently from crawl access (Allow/Disallow). We tie the preferences to
-  * the site's existing config: `search` follows general indexing access
-  * (`allowAll`), while `ai-train` and `ai-input` follow the AI bots preference
-  * (`allowAiBots`).
+  * independently from crawl access (Allow/Disallow). `allowAiBots` has effect on the 
+  * `ai-train` and `ai-input` signals, but not on the `search` signal.
+  * The override for all the aiContentPolicies is `allowAll`: when general indexing is
+  * disallowed (`allowAll` is false, e.g. a noIndex or preview site) every signal
+  * is suppressed (`no`).
   * @see https://contentsignals.org/
   */
-const contentSignal = ({ allowAiBots, allowAll }: Pick<RobotsTxtProps, 'allowAiBots' | 'allowAll'>) => {
-  const yesNo = (value: boolean) => (value ? 'yes' : 'no');
-  return `Content-Signal: ai-train=${yesNo(allowAiBots)}, search=${yesNo(allowAll)}, ai-input=${yesNo(allowAiBots)}`;
+const contentSignal = ({ aiContentPolicy, allowAll, allowAiBots }: Pick<RobotsTxtProps, 'aiContentPolicy' | 'allowAll' | 'allowAiBots'>) => {
+  const signals: readonly string[] = Object.hasOwn(aiContentPolicies, aiContentPolicy)
+    ? aiContentPolicies[aiContentPolicy as AiContentPolicy]
+    : [];
+  const yesNo = (signal: string) => {
+    if (!allowAll || !signals.includes(signal)) return 'no';
+    if (!allowAiBots && (aiSignals as readonly string[]).includes(signal)) return 'no';
+    return 'yes';
+  };
+  return `Content-Signal: ai-train=${yesNo('ai-train')}, search=${yesNo('search')}, ai-input=${yesNo('ai-input')}`;
 };
 
-export const robotsTxt = ({ allowAiBots, allowAll, siteUrl }: RobotsTxtProps) => `
+export const robotsTxt = ({ allowAiBots, allowAll, aiContentPolicy, siteUrl }: RobotsTxtProps) => `
 ${allowAiBots ? '' : aiRobotsTxt}
 
 User-agent: *
-${contentSignal({ allowAiBots, allowAll })}
+${contentSignal({ aiContentPolicy, allowAll, allowAiBots })}
 ${allowAll ? 'Allow: /' : 'Disallow: /'}
 
 Sitemap: ${siteUrl}/sitemap-index.xml
