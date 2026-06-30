@@ -16,7 +16,7 @@ import OpenInLlm from '~/components/OpenInLlm/OpenInLlm.astro';
 import AppHeader from './AppHeader/AppHeader.astro';
 import PerfHead from './PerfHead/PerfHead.astro';
 import SeoHead from './SeoHead/SeoHead.astro';
-import { getApp } from '~/lib/app';
+import { getApp, isAllowAiBots } from '~/lib/app';
 import '~/assets/a11y.css';
 
 interface Props {
@@ -36,9 +36,9 @@ const mainContentId = 'content';
 const menuItems = data.app?.menuItems ?? [];
 
 const { isPreview, editModeOn } = Astro.locals;
-const allowAiBots = !app.noIndex && !isPreview && Boolean(app.allowAiBots);
-const prompt = data.app?.openPageInLlmPrompt ?? app.openPageInLlmPrompt ?? '';
-const llmOptions = data.app?.openPageInLlmOption ?? app.openPageInLlmOption ?? [];
+const allowAiBots = await isAllowAiBots(isPreview);
+const prompt = app.openPageInLlmPrompt || '';
+const llmOptions = app.openPageInLlmOption ?? [];
 ---
 
 <!doctype html>
@@ -61,7 +61,7 @@ const llmOptions = data.app?.openPageInLlmOption ?? app.openPageInLlmOption ?? [
     <PreviewModeProvider>
       <SkipLink targetId={mainContentId} />
       <div {...datocmsNoIndex}>
-        <AppHeader {menuItems} {pageUrls} />
+        <AppHeader {menuItems} {pageUrls} {allowAiBots} />
       </div>
       {
         (breadcrumbs.length > 0 || allowAiBots) && (

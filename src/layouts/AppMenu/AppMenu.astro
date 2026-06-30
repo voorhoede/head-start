@@ -3,6 +3,7 @@ import type { AppMenuFragment } from '~/lib/datocms/types';
 import { t } from '~/lib/i18n';
 import type { PageUrl } from '~/lib/routing';
 import AppLogo from '~/components/AppLogo/AppLogo.astro';
+import AskLink from '~/components/AskLink/AskLink.astro';
 import IconButton from '~/components/IconButton/IconButton.astro';
 import LocaleSelector from '~/components/LocaleSelector/LocaleSelector.astro';
 import SearchLink from '~/components/SearchLink/SearchLink.astro';
@@ -13,8 +14,10 @@ import { getItemPopoverId } from './AppMenu';
 export interface Props {
   items: AppMenuFragment['menuItems'];
   pageUrls: PageUrl[];
+  allowAiBots: boolean;
 }
-const { items, pageUrls } = Astro.props;
+const { items, pageUrls, allowAiBots } = Astro.props;
+const showAskLink = allowAiBots && Boolean(t('ask'));
 ---
 
 <app-menu>
@@ -80,7 +83,14 @@ const { items, pageUrls } = Astro.props;
           );
         })
       }
-      <li class="main-menu__item main-menu__item--last" data-menu-item>
+      {
+        showAskLink && (
+          <li class="main-menu__item main-menu__item--last" data-menu-item>
+            <AskLink />
+          </li>
+        )
+      }
+      <li class:list={['main-menu__item', !showAskLink && 'main-menu__item--last']} data-menu-item>
         <SearchLink />
       </li>
     </UnstyledList>
@@ -129,6 +139,7 @@ const { items, pageUrls } = Astro.props;
             );
           })
         }
+        {showAskLink && <li><AskLink /></li>}
         <li><SearchLink /></li>
       </UnstyledList>
     </nav>
