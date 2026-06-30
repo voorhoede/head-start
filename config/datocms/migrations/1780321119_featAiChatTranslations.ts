@@ -48,6 +48,14 @@ export default async function (client: Client) {
       en: 'Ask a question to start a conversation.',
       nl: 'Stel een vraag om een gesprek te starten.',
     },
+    chat_not_saved: {
+      en: 'This chat could not be saved. You can keep chatting, but refreshing the page will lose earlier messages.',
+      nl: 'Dit gesprek kon niet worden opgeslagen. Je kunt blijven chatten, maar als je de pagina ververst gaan eerdere berichten verloren.',
+    },
+    chat_context_divider: {
+      en: 'Messages above this line are out of the current context window.',
+      nl: 'Berichten boven deze lijn vallen buiten het huidige contextvenster.',
+    },
   };
 
   console.log('Create AI Chat translation content');
