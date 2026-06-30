@@ -4,10 +4,9 @@ import {
   CLOUDFLARE_API_TOKEN,
   CLOUDFLARE_AI_SEARCH_INSTANCE_NAME,
 } from 'astro:env/server';
+import { HISTORY_CAP } from '~/lib/ai-stream';
 
 export const prerender = false;
-
-const HISTORY_CAP = 10;
 
 type ChatRole = 'user' | 'assistant';
 type ChatMessage = { role: ChatRole; content: string };

@@ -18,6 +18,7 @@ const locale = getLocale();
   data-empty-text={t('chat_empty')}
   data-error-text={t('chat_error')}
   data-empty-state-text={t('chat_empty_state')}
+  data-context-divider-text={t('chat_context_divider')}
 >
   <div class="ai-chat__head">
     <h1>{t('chat_on_site', { siteName: siteName() })}</h1>
@@ -83,6 +84,16 @@ const locale = getLocale();
     background: #fff4e5;
     color: #663c00;
     font-size: 0.85em;
+  }
+  ai-chat .ai-chat__context-divider {
+    align-self: stretch;
+    margin: 0;
+    padding-block-start: 0.5rem;
+    border-block-start: 1px solid #ddd;
+    text-align: center;
+    font-size: 0.75em;
+    font-style: italic;
+    color: #666;
   }
   ai-chat .ai-chat__message {
     padding: 0.75rem 1rem;
