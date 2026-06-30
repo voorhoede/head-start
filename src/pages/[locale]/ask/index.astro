@@ -18,7 +18,6 @@ if (!(await isAllowAiBots(Astro.locals.isPreview))) {
 
 const pageTitle = t('ask_on_site', { siteName: siteName() });
 
-const getAskPathname = (locale: SiteLocale) => `/${locale}/ask/`;
 const pageUrls = locales.map((locale) => ({ locale, pathname: getAskPathname(locale) }));
 const breadcrumbs: Breadcrumb[] = [{ text: pageTitle, href: getAskPathname(locale) }];
 ---
