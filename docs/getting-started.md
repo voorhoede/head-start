@@ -128,6 +128,94 @@ You're project is now deployed and will automatically be deployed on every git c
 
 That's it. Now deployments are automatically triggered from both git and when editors hit 'Build now' in the CMS. If you add additional build triggers in the future, you can repeat those steps. Note that `buildTriggerId` in `/datocms-environment.ts` should always be set to the production build trigger.
 
+## Enable AI Search
+
+Head Start has an optional AI Search prototype that lets visitors ask natural-language questions about your site's content. It uses [Cloudflare AI Search](https://developers.cloudflare.com/ai-search/) to index your published pages (via the existing `/api/content/<path>.md` endpoint) and answer questions with citations. The query API is exposed at `/api/ai-search`.
+
+If you skip this section, builds and deploys still work. The `/api/ai-search` endpoint just returns a 503.
+
+### 1. Create an AI Search instance
+
+- In the [Cloudflare dashboard](https://dash.cloudflare.com/), go to **AI** > **AI Search** and create a new instance with built-in storage.
+- Under the instance's **Settings** > **Metadata fields**, declare four custom metadata fields (all of type `text`): `url`, `title`, `description`, `language`. These must exist before the indexer can upload pages.
+- Copy the instance name.
+
+### 2. Create a KV namespace for the indexer cache
+
+The indexer stores a fingerprint per page in [Workers KV](https://developers.cloudflare.com/kv/) so it can skip unchanged pages on re-runs (no wasted embedding calls).
+
+- In the Cloudflare dashboard, go to **Storage & Databases** > **KV** and create a new namespace (any name works, e.g. `AI_SEARCH_HASHES`).
+- Copy the namespace ID.
+
+### 3. Create an API token
+
+- Go to **My Profile** > **API Tokens** > **Create Token** > **Create Custom Token**.
+- Add three permissions:
+  - **Account** > **AI Search:Edit**
+  - **Account** > **AI Search:Run**
+  - **Account** > **Workers KV Storage:Edit**
+- Copy the token value.
+
+### 4. Add the values to your `.env`
+
+```shell
+# .env
+CLOUDFLARE_ACCOUNT_ID=your-account-id
+CLOUDFLARE_API_TOKEN=your-token
+CLOUDFLARE_AI_SEARCH_INSTANCE_NAME=your-instance-name
+CLOUDFLARE_AI_SEARCH_KV_NAMESPACE_ID=your-kv-namespace-id
+SITE_URL=https://your-project.pages.dev
+```
+
+`SITE_URL` is the deployed site the indexer crawls. Set it to your production URL. The GitHub workflow sets it automatically from the production deploy, so it's only needed in your local `.env`.
+
+### 5. Add Cloudflare Pages environment variables
+
+So the `/api/ai-search` proxy can reach AI Search at runtime, add these in your Pages project > **Settings** > **Environment variables** (production + preview):
+
+- `CLOUDFLARE_ACCOUNT_ID`
+- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_AI_SEARCH_INSTANCE_NAME`
+
+The KV namespace ID is only needed by the indexer, not the runtime proxy, so it doesn't go on Pages. The runtime proxy doesn't need `Workers KV Storage:Edit` either, but it's harmless to leave on the token.
+
+### 6. Add GitHub repository secrets for automatic re-indexing
+
+Head Start ships a [GitHub Actions workflow](../.github/workflows/index-ai-search.yml) that runs the indexer after every successful Cloudflare Pages production deploy. This is what keeps the AI Search index in sync with what's live, including the very first index after you push your code. The workflow listens for the `deployment_status` event and only fires on the `Production` environment, so preview deploys are ignored.
+
+To enable it, add these four repository secrets in **Settings** > **Secrets and variables** > **Actions**:
+
+- `CLOUDFLARE_ACCOUNT_ID`
+- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_AI_SEARCH_INSTANCE_NAME`
+- `CLOUDFLARE_AI_SEARCH_KV_NAMESPACE_ID`
+
+Once these are set, you can push your code and the first production deploy will index your pages automatically. No manual command needed.
+
+### 7. (Optional) Verify your indexer setup locally
+
+If you want to confirm your `.env` is correct before pushing (or seed the index immediately without waiting for a deploy), run the indexer once locally:
+
+```shell
+npm run index:ai-search
+```
+
+This crawls the sitemap at the `SITE_URL` you set in step 4.
+
+On a fresh KV namespace, expect a log line per page (`added:`) and a summary like `Done. +N added, ~0 updated, =0 unchanged, !M skipped, -0 pruned.` Run it a second time. Every page should now log `unchanged:`, confirming the cache works.
+
+### Cleaning up deleted pages
+
+When a page is removed from your site, the next indexer run notices that its URL is no longer in the sitemap and logs it as stale. By design, the workflow does not delete stale entries automatically. A misconfigured sitemap (for example, a CMS API hiccup that returns only a handful of URLs) would otherwise silently wipe most of your index.
+
+To actually delete orphaned entries, run the indexer manually with the prune flag:
+
+```shell
+AI_SEARCH_PRUNE_STALE=1 npm run index:ai-search
+```
+
+This is an occasional housekeeping command, not something you need to schedule.
+
 ## Enable AI agent discovery (DNS-AID) (optional)
 
 Head Start serves an agent registry at [`/.well-known/agents/index.json`](../src/pages/.well-known/agents/index.json.ts) (see [SEO → Agent discovery](./seo.md#agent-discovery-dns-aid)). To make it discoverable via [DNS for AI Discovery (DNS-AID)](https://datatracker.ietf.org/doc/draft-mozleywilliams-dnsop-dnsaid/), add DNS records on your own domain. This is optional and only applies once you use a custom domain on Cloudflare.

@@ -9,6 +9,12 @@ declare global {
       DATOCMS_READONLY_API_TOKEN: string;
       HEAD_START_PREVIEW?: string;
       HEAD_START_PREVIEW_SECRET: string;
+      CLOUDFLARE_ACCOUNT_ID?: string;
+      CLOUDFLARE_API_TOKEN?: string;
+      CLOUDFLARE_AI_SEARCH_INSTANCE_NAME?: string;
+      CLOUDFLARE_AI_SEARCH_KV_NAMESPACE_ID?: string;
+      SITE_URL?: string;
+      AI_SEARCH_PRUNE_STALE?: string;
     }
   }
 }

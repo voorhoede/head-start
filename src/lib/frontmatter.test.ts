@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { buildFrontmatter } from '~/lib/frontmatter';
+import { buildFrontmatter, parseFrontmatter } from '~/lib/frontmatter';
 
 describe('buildFrontmatter', () => {
   test('emits title from og:title', () => {
@@ -74,5 +74,40 @@ describe('buildFrontmatter', () => {
     const result = buildFrontmatter({ meta: { 'og:title': 'Test' }, url: 'https://example.com/' });
     expect(result).toMatch(/^---\n/);
     expect(result).toMatch(/\n---\n\n$/);
+  });
+});
+
+describe('parseFrontmatter', () => {
+  test('returns an empty object when there is no front matter block', () => {
+    expect(parseFrontmatter('# Just markdown\n')).toEqual({});
+  });
+
+  test('round-trips every field built by buildFrontmatter', () => {
+    const built = buildFrontmatter({
+      meta: { 'og:title': 'My Page', 'og:description': 'A description' },
+      url: 'https://example.com/page/',
+      language: 'English',
+    });
+    expect(parseFrontmatter(built)).toEqual({
+      title: 'My Page',
+      description: 'A description',
+      language: 'English',
+      url: 'https://example.com/page/',
+    });
+  });
+
+  test('round-trips double quotes', () => {
+    const built = buildFrontmatter({ meta: { 'og:title': 'Say "hello"' }, url: 'https://example.com/' });
+    expect(parseFrontmatter(built).title).toBe('Say "hello"');
+  });
+
+  test('round-trips backslashes', () => {
+    const built = buildFrontmatter({ meta: { 'og:title': 'C:\\path' }, url: 'https://example.com/' });
+    expect(parseFrontmatter(built).title).toBe('C:\\path');
+  });
+
+  test('round-trips a literal backslash followed by n without turning it into a newline', () => {
+    const built = buildFrontmatter({ meta: { 'og:title': 'literal \\n here' }, url: 'https://example.com/' });
+    expect(parseFrontmatter(built).title).toBe('literal \\n here');
   });
 });

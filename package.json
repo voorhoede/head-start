@@ -34,6 +34,7 @@
     "prep:download-translations": "node scripts/download-translations.ts",
     "prep:download-item-types": "node scripts/download-item-types.ts",
     "prep:icons": "svg-sprite --svg-doctype=false --symbol --symbol-dest='src/assets' --symbol-sprite=icon-sprite.svg src/assets/icons/*.svg && jiti scripts/icon-types.ts",
+    "index:ai-search": "node scripts/index-ai-search.ts",
     "preview": "wrangler pages dev ./dist",
     "lint": "run-s lint:* --print-label",
     "lint:astro": "astro check",
