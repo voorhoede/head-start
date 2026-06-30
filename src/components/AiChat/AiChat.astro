@@ -1,0 +1,143 @@
+---
+import { getLocale, t } from '~/lib/i18n';
+import { siteName } from '~/lib/seo';
+
+/*
+ * <ai-chat> component: a conversation surface for /api/ai-chat. Messages persist
+ * in localStorage scoped per locale (key `ai-chat:<locale>`). A "Clear chat"
+ * button wipes both the UI and the stored history.
+ */
+
+const inputId = 'ai-chat-input';
+const locale = getLocale();
+---
+
+<ai-chat
+  data-locale={locale}
+  data-thinking-text={t('chat_thinking')}
+  data-empty-text={t('chat_empty')}
+  data-error-text={t('chat_error')}
+  data-empty-state-text={t('chat_empty_state')}
+  data-context-divider-text={t('chat_context_divider')}
+>
+  <div class="ai-chat__head">
+    <h1>{t('chat_on_site', { siteName: siteName() })}</h1>
+    <p class="ai-chat__intro">
+      {t('chat_intro')}
+    </p>
+  </div>
+
+  <ol class="ai-chat__log" data-log aria-live="polite" aria-label="Conversation"></ol>
+
+  <p class="ai-chat__empty" data-empty>{t('chat_empty_state')}</p>
+
+  <p class="ai-chat__notice" data-notice role="status" hidden>{t('chat_not_saved')}</p>
+
+  <form class="ai-chat__form" data-form>
+    <label class="a11y-sr-only" for={inputId}>{t('chat_label')}</label>
+    <textarea
+      class="ai-chat__input"
+      id={inputId}
+      name="message"
+      placeholder={t('chat_placeholder')}
+      rows="2"
+      required
+      data-input
+    ></textarea>
+    <div class="ai-chat__actions">
+      <button type="button" data-clear hidden>{t('chat_clear')}</button>
+      <button type="submit" data-submit>{t('chat_submit')}</button>
+    </div>
+  </form>
+</ai-chat>
+
+<script src="./AiChat.client.ts"></script>
+
+<style is:global>
+  ai-chat {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  ai-chat .ai-chat__intro {
+    margin-block: 0.25rem 1rem;
+  }
+  ai-chat .ai-chat__log {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  ai-chat .ai-chat__log:empty {
+    display: none;
+  }
+  ai-chat .ai-chat__empty {
+    color: #666;
+    font-style: italic;
+  }
+  ai-chat .ai-chat__notice {
+    margin: 0;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    background: #fff4e5;
+    color: #663c00;
+    font-size: 0.85em;
+  }
+  ai-chat .ai-chat__context-divider {
+    border-block-start: 1px solid #ddd;
+    text-align: center;
+    font-size: 0.75em;
+  }
+  ai-chat .ai-chat__message {
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    max-width: 80%;
+  }
+  ai-chat .ai-chat__message--user {
+    background: #eef2ff;
+    align-self: flex-end;
+  }
+  ai-chat .ai-chat__message--assistant {
+    background: #f5f5f5;
+    align-self: flex-start;
+  }
+  ai-chat .ai-chat__body > :first-child {
+    margin-block-start: 0;
+  }
+  ai-chat .ai-chat__body > :last-child {
+    margin-block-end: 0;
+  }
+  ai-chat .ai-chat__body pre {
+    padding: 0.5rem;
+    background: #fff;
+    font-size: 0.8em;
+    overflow-x: auto;
+  }
+  ai-chat .ai-chat__sources {
+    list-style: none;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    font-size: 0.8em;
+  }
+  ai-chat .ai-chat__sources li {
+    margin-block-end: 0.25rem;
+  }
+  ai-chat .ai-chat__form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  ai-chat .ai-chat__input {
+    width: 100%;
+    font: inherit;
+    padding: 0.5rem;
+    resize: vertical;
+  }
+  ai-chat .ai-chat__actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+</style>
