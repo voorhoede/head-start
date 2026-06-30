@@ -7,6 +7,8 @@ import { parseFrontmatter } from '~/lib/frontmatter';
  * with the answer text.
  */
 
+export const HISTORY_CAP = 10;
+
 export type SseEvent = { name: string; data: unknown };
 export type RetrievedChunk = { text?: string };
 export type CompletionChunk = { choices?: { delta?: { content?: string } }[] };

@@ -3,6 +3,7 @@ import {
   readSseEvents,
   parseChunks,
   getDeltaContent,
+  HISTORY_CAP,
   type RetrievedChunk,
   type Source,
 } from '~/lib/ai-stream';
@@ -101,7 +102,19 @@ class AiChat extends HTMLElement {
     const hasMessages = this.#messages.length > 0;
     this.#empty.hidden = hasMessages;
     this.#clear.hidden = !hasMessages;
+    this.#updateContextDivider();
     this.#scrollToBottom();
+  }
+
+  #updateContextDivider() {
+    this.#log.querySelector('.ai-chat__context-divider')?.remove();
+    const overflow = this.#log.children.length - HISTORY_CAP;
+    if (overflow <= 0) return;
+    const divider = document.createElement('li');
+    divider.className = 'ai-chat__context-divider';
+    divider.setAttribute('aria-hidden', 'true');
+    divider.textContent = this.dataset.contextDividerText ?? '';
+    this.#log.insertBefore(divider, this.#log.children[overflow]);
   }
 
   #renderMessage(message: Message): HTMLLIElement {
@@ -179,6 +192,7 @@ class AiChat extends HTMLElement {
     const placeholderBody = placeholderEl.querySelector('.ai-chat__body') as HTMLElement;
     placeholderBody.textContent = this.dataset.thinkingText ?? '';
     this.#log.append(placeholderEl);
+    this.#updateContextDivider();
     this.#scrollToBottom();
 
     this.#setBusy(true);
