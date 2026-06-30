@@ -3,7 +3,7 @@ import { getAskPathname } from '~/lib/ai-search';
 import { isAllowAiBots } from '~/lib/app';
 import { locales, t } from '~/lib/i18n';
 import { noIndexTag, siteName, titleTag } from '~/lib/seo';
-import type { SiteLocale } from '~/lib/datocms/types';
+import type { SiteLocale } from '~/lib/datocms/schema';
 import type { Breadcrumb } from '~/lib/routing';
 import Layout from '~/layouts/Default.astro';
 import AiSearch from '~/components/AiSearch/AiSearch.astro';
@@ -12,7 +12,7 @@ export const prerender = false;
 
 const { locale } = Astro.params as { locale: SiteLocale };
 
-if (!isAllowAiBots(Astro.locals.isPreview)) {
+if (!(await isAllowAiBots(Astro.locals.isPreview))) {
   return Astro.rewrite(`/404/?locale=${locale}`);
 }
 
