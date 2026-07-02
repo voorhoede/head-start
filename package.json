@@ -128,7 +128,7 @@
     "svg-sprite": "^2.0.2",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.62.1",
-    "vitest": "^4.1.8",
+    "vitest": "^4.1.9",
     "wrangler": "^4.99.0"
   },
   "nano-staged": {
