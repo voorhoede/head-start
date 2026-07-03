@@ -27,6 +27,13 @@ function context({ accept, method = 'GET', isPreview = false }: ContextOptions =
 const html = '<!doctype html><html><head><title>About</title></head><body><main><h1>About</h1><p>Hi</p></main></body></html>';
 const htmlResponse = () => new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
 
+/** The middleware always resolves to a Response; narrow away the `void` from its type. */
+async function negotiate(...args: Parameters<typeof markdownNegotiation>): Promise<Response> {
+  const response = await markdownNegotiation(...args);
+  if (!(response instanceof Response)) throw new Error('expected a Response');
+  return response;
+}
+
 describe('markdownNegotiation middleware', () => {
   beforeEach(() => {
     getApp.mockReset();
@@ -35,7 +42,7 @@ describe('markdownNegotiation middleware', () => {
 
   it('returns markdown when the client accepts text/markdown', async () => {
     const next = vi.fn().mockResolvedValue(htmlResponse());
-    const response = await markdownNegotiation(context({ accept: 'text/markdown' }), next);
+    const response = await negotiate(context({ accept: 'text/markdown' }), next);
 
     expect(response.headers.get('Content-Type')).toBe('text/markdown; charset=utf-8');
     expect(response.headers.get('Vary')?.toLowerCase()).toContain('accept');
@@ -46,7 +53,7 @@ describe('markdownNegotiation middleware', () => {
 
   it('keeps HTML for browsers but advertises negotiation via Vary', async () => {
     const next = vi.fn().mockResolvedValue(htmlResponse());
-    const response = await markdownNegotiation(
+    const response = await negotiate(
       context({ accept: 'text/html,application/xhtml+xml,*/*' }),
       next,
     );
@@ -59,7 +66,7 @@ describe('markdownNegotiation middleware', () => {
   it('does not negotiate when AI bots are disallowed', async () => {
     getApp.mockResolvedValue({ allowAiBots: false, noIndex: false });
     const next = vi.fn().mockResolvedValue(htmlResponse());
-    const response = await markdownNegotiation(context({ accept: 'text/markdown' }), next);
+    const response = await negotiate(context({ accept: 'text/markdown' }), next);
 
     expect(response.headers.get('Content-Type')).toBe('text/html; charset=utf-8');
     expect(response.headers.get('Vary')).toBeNull();
@@ -67,7 +74,7 @@ describe('markdownNegotiation middleware', () => {
 
   it('does not negotiate in preview mode', async () => {
     const next = vi.fn().mockResolvedValue(htmlResponse());
-    const response = await markdownNegotiation(
+    const response = await negotiate(
       context({ accept: 'text/markdown', isPreview: true }),
       next,
     );
@@ -77,7 +84,7 @@ describe('markdownNegotiation middleware', () => {
 
   it('ignores non-HTML and non-200 responses', async () => {
     const json = new Response('{}', { status: 200, headers: { 'Content-Type': 'application/json' } });
-    const response = await markdownNegotiation(
+    const response = await negotiate(
       context({ accept: 'text/markdown' }),
       vi.fn().mockResolvedValue(json),
     );
@@ -87,7 +94,7 @@ describe('markdownNegotiation middleware', () => {
 
   it('treats q=0 as not acceptable', async () => {
     const next = vi.fn().mockResolvedValue(htmlResponse());
-    const response = await markdownNegotiation(context({ accept: 'text/markdown;q=0' }), next);
+    const response = await negotiate(context({ accept: 'text/markdown;q=0' }), next);
     expect(response.headers.get('Content-Type')).toBe('text/html; charset=utf-8');
   });
 });
