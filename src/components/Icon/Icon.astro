@@ -1,6 +1,8 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
 import type { IconName } from '~/assets/icon-sprite';
+
+// eslint-disable-next-line astro/no-exports-from-components
 export { iconNames } from '~/assets/icon-sprite';
 
 interface Props extends HTMLAttributes<'svg'> {
