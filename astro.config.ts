@@ -55,11 +55,11 @@ export default defineConfig({
         optional: true,
         default: process.env.CLOUDFLARE_ACCOUNT_ID
       }),
-      CLOUDFLARE_API_TOKEN: envField.string({
+      CLOUDFLARE_AI_API_TOKEN: envField.string({
         context: 'server',
         access: 'secret',
         optional: true,
-        default: process.env.CLOUDFLARE_API_TOKEN
+        default: process.env.CLOUDFLARE_AI_API_TOKEN
       }),
       CLOUDFLARE_AI_SEARCH_INSTANCE_NAME: envField.string({
         context: 'server',

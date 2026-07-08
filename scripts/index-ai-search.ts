@@ -9,7 +9,7 @@ try {
 
 const {
   CLOUDFLARE_ACCOUNT_ID,
-  CLOUDFLARE_API_TOKEN,
+  CLOUDFLARE_AI_API_TOKEN,
   CLOUDFLARE_AI_SEARCH_INSTANCE_NAME,
   CLOUDFLARE_AI_SEARCH_KV_NAMESPACE_ID,
   SITE_URL,
@@ -18,7 +18,7 @@ const {
 
 const missing: string[] = [];
 if (!CLOUDFLARE_ACCOUNT_ID) missing.push('CLOUDFLARE_ACCOUNT_ID');
-if (!CLOUDFLARE_API_TOKEN) missing.push('CLOUDFLARE_API_TOKEN');
+if (!CLOUDFLARE_AI_API_TOKEN) missing.push('CLOUDFLARE_AI_API_TOKEN');
 if (!CLOUDFLARE_AI_SEARCH_INSTANCE_NAME) missing.push('CLOUDFLARE_AI_SEARCH_INSTANCE_NAME');
 if (!SITE_URL) missing.push('SITE_URL');
 if (missing.length > 0) {
@@ -35,7 +35,7 @@ const kvValueUrl = (key: string) =>
   `${cfBase}/storage/kv/namespaces/${CLOUDFLARE_AI_SEARCH_KV_NAMESPACE_ID}/values/${encodeURIComponent(key)}`;
 const kvKeysUrl = (cursor?: string) =>
   `${cfBase}/storage/kv/namespaces/${CLOUDFLARE_AI_SEARCH_KV_NAMESPACE_ID}/keys${cursor ? `?cursor=${encodeURIComponent(cursor)}` : ''}`;
-const auth = { Authorization: `Bearer ${CLOUDFLARE_API_TOKEN}` };
+const auth = { Authorization: `Bearer ${CLOUDFLARE_AI_API_TOKEN}` };
 
 const cacheEnabled = Boolean(CLOUDFLARE_AI_SEARCH_KV_NAMESPACE_ID);
 const pruneEnabled = AI_SEARCH_PRUNE_STALE === '1' || AI_SEARCH_PRUNE_STALE === 'true';
