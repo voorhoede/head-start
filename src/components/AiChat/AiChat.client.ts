@@ -1,8 +1,8 @@
-import { marked } from 'marked';
 import {
   readSseEvents,
   parseChunks,
   getDeltaContent,
+  renderMarkdown,
   HISTORY_CAP,
   type RetrievedChunk,
   type Source,
@@ -125,7 +125,7 @@ class AiChat extends HTMLElement {
     const body = document.createElement('div');
     body.className = 'ai-chat__body';
     if (message.role === 'assistant') {
-      body.innerHTML = marked.parse(message.content) as string;
+      body.innerHTML = renderMarkdown(message.content);
     } else {
       body.textContent = message.content;
     }
@@ -233,14 +233,15 @@ class AiChat extends HTMLElement {
               receivedFirst = true;
             }
             answer += delta;
-            placeholderBody.innerHTML = marked.parse(answer) as string;
+            placeholderBody.innerHTML = renderMarkdown(answer);
             this.#scrollToBottom();
           }
         }
       }
 
       if (!answer) {
-        placeholderBody.textContent = this.dataset.emptyText ?? '';
+        answer = this.dataset.emptyText ?? '';
+        placeholderBody.textContent = answer;
       }
 
       this.#messages[placeholderIndex] = { role: 'assistant', content: answer, sources };

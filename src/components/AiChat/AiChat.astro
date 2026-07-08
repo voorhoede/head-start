@@ -17,7 +17,6 @@ const locale = getLocale();
   data-thinking-text={t('chat_thinking')}
   data-empty-text={t('chat_empty')}
   data-error-text={t('chat_error')}
-  data-empty-state-text={t('chat_empty_state')}
   data-context-divider-text={t('chat_context_divider')}
 >
   <div class="ai-chat__head">
@@ -27,7 +26,7 @@ const locale = getLocale();
     </p>
   </div>
 
-  <ol class="ai-chat__log" data-log aria-live="polite" aria-label="Conversation"></ol>
+  <ol class="ai-chat__log" data-log aria-live="polite" aria-label={t('chat')}></ol>
 
   <p class="ai-chat__empty" data-empty>{t('chat_empty_state')}</p>
 

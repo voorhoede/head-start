@@ -1,5 +1,10 @@
-import { marked } from 'marked';
-import { readSseEvents, parseChunks, getDeltaContent, type RetrievedChunk } from '~/lib/ai-stream';
+import {
+  readSseEvents,
+  parseChunks,
+  getDeltaContent,
+  renderMarkdown,
+  type RetrievedChunk,
+} from '~/lib/ai-stream';
 
 /*
  * <ai-search> custom element. Sends the question to /api/ai-search, then shows
@@ -90,7 +95,7 @@ class AiSearch extends HTMLElement {
             answer += delta;
             // Re-render the whole answer each time, so markdown like code
             // blocks and lists still formats correctly as more text arrives.
-            this.#answer.innerHTML = marked.parse(answer) as string;
+            this.#answer.innerHTML = renderMarkdown(answer);
             this.#status.textContent = '';
           }
         }

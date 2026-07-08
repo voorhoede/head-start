@@ -1,3 +1,4 @@
+import { Marked } from 'marked';
 import { parseFrontmatter } from '~/lib/frontmatter';
 
 /*
@@ -49,6 +50,20 @@ export async function* readSseEvents(
   }
 }
 
+const SAFE_URL = /^(https?:|mailto:|tel:|\/|#|\.)/i;
+
+function isSafeUrl(url: string): boolean {
+  return SAFE_URL.test(url.trim());
+}
+
+const escapeHtml = (value: string) =>
+  value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
 /*
  * Pull new sources out of a `chunks` event. Mutates `seen` so callers can
  * de-dupe across the whole conversation, not just one event.
@@ -57,7 +72,7 @@ export function parseChunks(chunks: RetrievedChunk[], seen: Set<string>): Source
   const sources: Source[] = [];
   for (const chunk of chunks) {
     const { url, title } = parseFrontmatter(chunk.text ?? '');
-    if (url && !seen.has(url)) {
+    if (url && isSafeUrl(url) && !seen.has(url)) {
       seen.add(url);
       sources.push({ url, title: title || url });
     }
@@ -67,4 +82,21 @@ export function parseChunks(chunks: RetrievedChunk[], seen: Set<string>): Source
 
 export function getDeltaContent(event: SseEvent): string | undefined {
   return (event.data as CompletionChunk).choices?.[0]?.delta?.content;
+}
+
+const markdown = new Marked({
+  walkTokens(token) {
+    if ((token.type === 'link' || token.type === 'image') && !isSafeUrl(token.href)) {
+      token.href = '#';
+    }
+  },
+  renderer: {
+    html({ text }) {
+      return escapeHtml(text);
+    },
+  },
+});
+
+export function renderMarkdown(source: string): string {
+  return markdown.parse(source, { async: false });
 }

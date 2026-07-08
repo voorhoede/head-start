@@ -14,7 +14,7 @@ type ChatMessage = { role: ChatRole; content: string };
 const jsonError = (message: string, status: number) =>
   new Response(JSON.stringify({ error: message }), {
     status,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
   });
 
 type ChunkMeta = { url?: string; title?: string };
@@ -37,9 +37,9 @@ const reshapeAsJson = (payload: ChatCompletionResponse) => {
   return { answer, sources };
 };
 
-const isValidMessage = (m: unknown): m is ChatMessage => {
-  if (typeof m !== 'object' || m === null) return false;
-  const { role, content } = m as { role?: unknown; content?: unknown };
+const isValidMessage = (message: unknown): message is ChatMessage => {
+  if (typeof message !== 'object' || message === null) return false;
+  const { role, content } = message as { role?: unknown; content?: unknown };
   if (role !== 'user' && role !== 'assistant') return false;
   return typeof content === 'string' && content.trim().length > 0;
 };
