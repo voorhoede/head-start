@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import {
   CLOUDFLARE_ACCOUNT_ID,
-  CLOUDFLARE_API_TOKEN,
+  CLOUDFLARE_AI_API_TOKEN,
   CLOUDFLARE_AI_SEARCH_INSTANCE_NAME,
 } from 'astro:env/server';
 
@@ -34,7 +34,7 @@ const reshapeAsJson = (payload: ChatCompletionResponse) => {
 };
 
 export const POST: APIRoute = async ({ request, url }) => {
-  if (!CLOUDFLARE_ACCOUNT_ID || !CLOUDFLARE_API_TOKEN || !CLOUDFLARE_AI_SEARCH_INSTANCE_NAME) {
+  if (!CLOUDFLARE_ACCOUNT_ID || !CLOUDFLARE_AI_API_TOKEN || !CLOUDFLARE_AI_SEARCH_INSTANCE_NAME) {
     return jsonError('AI Search is not configured on this deployment.', 503);
   }
 
@@ -57,7 +57,7 @@ export const POST: APIRoute = async ({ request, url }) => {
     {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${CLOUDFLARE_API_TOKEN}`,
+        Authorization: `Bearer ${CLOUDFLARE_AI_API_TOKEN}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({

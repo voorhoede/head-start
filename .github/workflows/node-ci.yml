@@ -37,7 +37,7 @@ jobs:
       DATOCMS_API_TOKEN: '' # required but unused in this workflow
       HEAD_START_PREVIEW_SECRET: '' # required but unused in this workflow
       CLOUDFLARE_ACCOUNT_ID: '' # required but unused in this workflow
-      CLOUDFLARE_API_TOKEN: '' # required but unused in this workflow
+      CLOUDFLARE_AI_API_TOKEN: '' # required but unused in this workflow
       CLOUDFLARE_AI_SEARCH_INSTANCE_NAME: '' # required but unused in this workflow
       CLOUDFLARE_AI_SEARCH_KV_NAMESPACE_ID: '' # required but unused in this workflow
 
@@ -76,7 +76,7 @@ jobs:
       DATOCMS_API_TOKEN: '' # required but unused in this workflow
       HEAD_START_PREVIEW_SECRET: '' # required but unused in this workflow
       CLOUDFLARE_ACCOUNT_ID: '' # required but unused in this workflow
-      CLOUDFLARE_API_TOKEN: '' # required but unused in this workflow
+      CLOUDFLARE_AI_API_TOKEN: '' # required but unused in this workflow
       CLOUDFLARE_AI_SEARCH_INSTANCE_NAME: '' # required but unused in this workflow
       CLOUDFLARE_AI_SEARCH_KV_NAMESPACE_ID: '' # required but unused in this workflow
 
@@ -110,7 +110,7 @@ jobs:
       DATOCMS_API_TOKEN: '' # required but unused in this workflow
       HEAD_START_PREVIEW_SECRET: '' # required but unused in this workflow
       CLOUDFLARE_ACCOUNT_ID: '' # required but unused in this workflow
-      CLOUDFLARE_API_TOKEN: '' # required but unused in this workflow
+      CLOUDFLARE_AI_API_TOKEN: '' # required but unused in this workflow
       CLOUDFLARE_AI_SEARCH_INSTANCE_NAME: '' # required but unused in this workflow
       CLOUDFLARE_AI_SEARCH_KV_NAMESPACE_ID: '' # required but unused in this workflow
 
