@@ -130,9 +130,12 @@ That's it. Now deployments are automatically triggered from both git and when ed
 
 ## Enable AI Search
 
-Head Start has an optional AI Search prototype that lets visitors ask natural-language questions about your site's content. It uses [Cloudflare AI Search](https://developers.cloudflare.com/ai-search/) to index your published pages (via the existing `/api/content/<path>.md` endpoint) and answer questions with citations. The query API is exposed at `/api/ai-search`.
+Head Start has an optional AI Search prototype that lets visitors ask natural-language questions about your site's content. It uses [Cloudflare AI Search](https://developers.cloudflare.com/ai-search/) to index your published pages (via the existing `/api/content/<path>.md` endpoint) and answer questions with citations. Two endpoints share the same setup:
 
-If you skip this section, builds and deploys still work. The `/api/ai-search` endpoint just returns a 503.
+- `/api/ai-search` for a single question + answer.
+- `/api/ai-chat` for multi-turn follow-ups. Accepts `{ messages: [{ role: 'user' | 'assistant', content }, ...] }`; the server caps history to the last 10 messages.
+
+If you skip this section, builds and deploys still work. The endpoints just return a 503.
 
 ### 1. Create an AI Search instance
 
