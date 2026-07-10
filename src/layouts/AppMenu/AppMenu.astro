@@ -17,7 +17,7 @@ export interface Props {
   allowAiBots: boolean;
 }
 const { items, pageUrls, allowAiBots } = Astro.props;
-const showAskLink = allowAiBots && Boolean(t('ask'));
+const showAskLink = allowAiBots && Boolean(t('ask_ai'));
 ---
 
 <app-menu>
