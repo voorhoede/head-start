@@ -15,4 +15,9 @@ export async function getApp(): Promise<App> {
   return cache;
 }
 
+export const isAllowAiBots = async (isPreview = false) => {
+  const app = await getApp();
+  return !app.noIndex && !isPreview && Boolean(app.allowAiBots);
+};
+
 export default getApp;

@@ -1,0 +1,31 @@
+---
+import { isAllowAiBots } from '~/lib/app';
+import { locales, t } from '~/lib/i18n';
+import { noIndexTag, siteName, titleTag } from '~/lib/seo';
+import type { SiteLocale } from '~/lib/datocms/schema';
+import type { Breadcrumb } from '~/lib/routing';
+import Layout from '~/layouts/Default.astro';
+import AiChat from '~/components/AiChat/AiChat.astro';
+
+export const prerender = false;
+
+const { locale } = Astro.params as { locale: SiteLocale };
+
+if (!(await isAllowAiBots(Astro.locals.isPreview))) {
+  return Astro.rewrite(`/404/?locale=${locale}`);
+}
+
+const pageTitle = t('chat_on_site', { siteName: siteName() });
+
+const getChatPathname = (locale: SiteLocale) => `/${locale}/chat/`;
+const pageUrls = locales.map((locale) => ({ locale, pathname: getChatPathname(locale) }));
+const breadcrumbs: Breadcrumb[] = [{ text: t('chat'), href: getChatPathname(locale) }];
+---
+
+<Layout
+  breadcrumbs={breadcrumbs}
+  pageUrls={pageUrls}
+  seoMetaTags={[noIndexTag, titleTag(pageTitle)]}
+>
+  <AiChat />
+</Layout>
