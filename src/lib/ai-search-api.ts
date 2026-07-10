@@ -20,10 +20,6 @@ export const jsonError = (message: string, status: number) =>
     headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
   });
 
-/*
- * All three secrets must be present for the upstream call to work. Routes call
- * this first and return a 503 when the deployment isn't configured.
- */
 export const isAiSearchConfigured = () =>
   Boolean(CLOUDFLARE_ACCOUNT_ID && CLOUDFLARE_AI_API_TOKEN && CLOUDFLARE_AI_SEARCH_INSTANCE_NAME);
 
@@ -47,11 +43,6 @@ const reshapeAsJson = (payload: ChatCompletionResponse) => {
   return { answer, sources };
 };
 
-/*
- * Call the Cloudflare AI Search chat/completions endpoint and return a Response
- * ready to hand back to the browser. When `wantsJson` is set we buffer and
- * reshape the response; otherwise we stream the SSE body straight through.
- */
 export const chatCompletion = async (
   messages: ChatMessage[],
   wantsJson: boolean,
@@ -76,8 +67,6 @@ export const chatCompletion = async (
     try {
       payload = (await upstream.json());
     } catch {
-      // A 2xx response with a non-JSON body (e.g. a transient HTML error page)
-      // would otherwise throw and surface as a generic 500.
       return jsonError('Upstream returned a malformed response.', 502);
     }
     return new Response(JSON.stringify(reshapeAsJson(payload), null, 2), {
