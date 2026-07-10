@@ -20,7 +20,7 @@ const pageTitle = t('ask_ai_on_site', { siteName: siteName() });
 
 const pageUrls = locales.map((locale) => ({ locale, pathname: getAskPathname(locale) }));
 
-const breadcrumbs: Breadcrumb[] = [{ text: pageTitle, href: getAskPathname(locale) }];
+const breadcrumbs: Breadcrumb[] = [{ text: t('ask_ai'), href: getAskPathname(locale) }];
 ---
 
 <Layout

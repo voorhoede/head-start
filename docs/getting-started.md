@@ -164,7 +164,7 @@ The indexer stores a fingerprint per page in [Workers KV](https://developers.clo
 ```shell
 # .env
 CLOUDFLARE_ACCOUNT_ID=your-account-id
-CLOUDFLARE_API_TOKEN=your-token
+CLOUDFLARE_AI_API_TOKEN=your-token
 CLOUDFLARE_AI_SEARCH_INSTANCE_NAME=your-instance-name
 CLOUDFLARE_AI_SEARCH_KV_NAMESPACE_ID=your-kv-namespace-id
 SITE_URL=https://your-project.pages.dev
@@ -177,7 +177,7 @@ SITE_URL=https://your-project.pages.dev
 So the `/api/ai-search` proxy can reach AI Search at runtime, add these in your Pages project > **Settings** > **Environment variables** (production + preview):
 
 - `CLOUDFLARE_ACCOUNT_ID`
-- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_AI_API_TOKEN`
 - `CLOUDFLARE_AI_SEARCH_INSTANCE_NAME`
 
 The KV namespace ID is only needed by the indexer, not the runtime proxy, so it doesn't go on Pages. The runtime proxy doesn't need `Workers KV Storage:Edit` either, but it's harmless to leave on the token.
@@ -189,7 +189,7 @@ Head Start ships a [GitHub Actions workflow](../.github/workflows/index-ai-searc
 To enable it, add these four repository secrets in **Settings** > **Secrets and variables** > **Actions**:
 
 - `CLOUDFLARE_ACCOUNT_ID`
-- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_AI_API_TOKEN`
 - `CLOUDFLARE_AI_SEARCH_INSTANCE_NAME`
 - `CLOUDFLARE_AI_SEARCH_KV_NAMESPACE_ID`
 
