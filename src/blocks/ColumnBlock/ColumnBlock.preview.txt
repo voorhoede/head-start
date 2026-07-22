@@ -1,0 +1,1 @@
+Arranges multiple blocks side by side in 2, 3, or 4 columns. Collapses to a single column on small screens.

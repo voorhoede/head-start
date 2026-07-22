@@ -1,0 +1,1 @@
+Groups multiple blocks into an expandable accordion. Each item has a title toggle and collapsible body content.
