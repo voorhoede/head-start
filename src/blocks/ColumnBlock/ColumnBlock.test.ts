@@ -34,7 +34,6 @@ describe('ColumnBlock', () => {
     const fragment = await renderToFragment<Props>(ColumnBlock, {
       props: {
         block: {
-          __typename: 'ColumnBlockRecord',
           id: 'col-test-1',
           numberOfColumns: 3,
           items: [makeTextItem('Col 1'), makeTextItem('Col 2'), makeTextItem('Col 3')],
@@ -51,7 +50,6 @@ describe('ColumnBlock', () => {
     const fragment = await renderToFragment<Props>(ColumnBlock, {
       props: {
         block: {
-          __typename: 'ColumnBlockRecord',
           id: 'col-test-2',
           numberOfColumns: 2,
           items: [makeTextItem('Col A'), makeTextItem('Col B')],

@@ -37,7 +37,6 @@ describe('TabsBlock', () => {
     const fragment = await renderToFragment<Props>(TabsBlock, {
       props: {
         block: {
-          __typename: 'TabsBlockRecord',
           id: 'tabs-test-1',
           items,
         },

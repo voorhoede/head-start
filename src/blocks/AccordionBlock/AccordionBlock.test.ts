@@ -61,7 +61,6 @@ describe('AccordionBlock', () => {
     const fragment = await renderToFragment<Props>(AccordionBlock, {
       props: {
         block: {
-          __typename: 'AccordionBlockRecord',
           id: 'acc-test-1',
           isFirstItemOpenOnStart: false,
           items,
@@ -77,7 +76,6 @@ describe('AccordionBlock', () => {
     const fragment = await renderToFragment<Props>(AccordionBlock, {
       props: {
         block: {
-          __typename: 'AccordionBlockRecord',
           id: 'acc-test-2',
           isFirstItemOpenOnStart: true,
           items,

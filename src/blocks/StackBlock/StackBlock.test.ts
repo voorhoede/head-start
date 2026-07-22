@@ -37,7 +37,6 @@ describe('StackBlock', () => {
     const fragment = await renderToFragment<Props>(StackBlock, {
       props: {
         block: {
-          __typename: 'StackBlockRecord',
           id: 'stack-test-1',
           isTitled: false,
           items,
@@ -53,7 +52,6 @@ describe('StackBlock', () => {
     const fragment = await renderToFragment<Props>(StackBlock, {
       props: {
         block: {
-          __typename: 'StackBlockRecord',
           id: 'stack-test-2',
           isTitled: true,
           items,
@@ -70,10 +68,9 @@ describe('StackBlock', () => {
     const fragment = await renderToFragment<Props>(StackBlock, {
       props: {
         block: {
-          __typename: 'StackBlockRecord',
           id: 'stack-test-3',
           isTitled: true,
-          items: [{ ...items[0], title: 'test title' }],
+          items: [{ ...items[0], title: '' }],
         },
       },
     });
