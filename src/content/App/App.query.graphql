@@ -1,6 +1,7 @@
 query App {
   app {
     allowAiBots
+    aiContentPolicy
     openPageInLlmPrompt
     openPageInLlmOption {
       __typename
