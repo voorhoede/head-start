@@ -20,4 +20,4 @@ See [documentation on Upgrading](docs/upgrading.md#find-the-changes).
 - Default production URL changed from `*.pages.dev` to `*.workers.dev` (override with a custom domain as before).
 
 - `AccordionBlock` (formerly `GroupingBlock` `accordion-open`): now only the **first** item starts expanded when "Open first item on load" is enabled. Previously all items were opened simultaneously, which was a bug.
-- `GroupingBlock` is deprecated and will be removed in a future release. Use the new dedicated blocks for new content. Existing `GroupingBlock` records in the CMS should be migrated via `scripts/cms-migrate-grouping-blocks.ts` before the cleanup migration (`1779805400_removeGroupingBlock.ts`) is applied.
+- `GroupingBlock` is deprecated and will be removed in a future release. Use the new dedicated blocks for new content. Existing `GroupingBlock` records in the CMS should be migrated before removing the model.
