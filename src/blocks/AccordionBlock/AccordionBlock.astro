@@ -1,16 +1,13 @@
 ---
 import Blocks from '~/blocks/Blocks.astro';
-import { buildNestedFieldPath } from '~/blocks/block-editor-utils';
 import { Accordion, AccordionItem } from '~/components/Accordion';
 import type { AccordionBlockFragment } from '~/lib/datocms/types';
 
 export interface Props {
   block: AccordionBlockFragment;
-  editorFieldPath?: string;
-  hideEditorLabels?: boolean;
 }
 
-const { block, editorFieldPath, hideEditorLabels } = Astro.props;
+const { block } = Astro.props;
 const items = block.items;
 ---
 
@@ -22,11 +19,7 @@ const items = block.items;
     >
       <Fragment slot="heading">{ item.title }</Fragment>
       <Fragment slot="body">
-        <Blocks
-          blocks={ item.blocks }
-          editorFieldPath={ buildNestedFieldPath(editorFieldPath, itemIndex) }
-          hideEditorLabels={ hideEditorLabels }
-        />
+        <Blocks blocks={ item.blocks } />
       </Fragment>
     </AccordionItem>
   ))}
