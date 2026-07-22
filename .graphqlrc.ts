@@ -77,6 +77,8 @@ module.exports = {
             importSchemaTypesFrom: `./${schemaFilename.replace(/\.ts$/, '')}`,
             strictScalars: true,
             scalars,
+            documentMode: 'documentNode',
+            useTypeImports: true,
           },
         },
       },

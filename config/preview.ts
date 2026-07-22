@@ -14,5 +14,5 @@ function getGitBranch() {
 }
 
 export const isPreview = previewBranches.includes(
-  process.env.CF_PAGES_BRANCH || getGitBranch(),
+  process.env.WORKERS_CI_BRANCH || getGitBranch(),
 );

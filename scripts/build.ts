@@ -4,12 +4,12 @@ import dotenv from 'dotenv-safe';
 
 dotenv.config();
 
-const { DATOCMS_API_TOKEN, CF_PAGES, CF_PAGES_BRANCH } = process.env;
+const { DATOCMS_API_TOKEN, WORKERS_CI, WORKERS_CI_BRANCH } = process.env;
 const command = 'npm run build';
 
 async function notifyDatocms({ status }: { status: 'success' | 'error' }) {
-  if (!CF_PAGES) {
-    console.log('Not on Cloudflare Pages. Skipping notify DatoCMS');
+  if (!WORKERS_CI) {
+    console.log('Not on Cloudflare Workers Builds. Skipping notify DatoCMS');
     return;
   }
 
@@ -17,10 +17,10 @@ async function notifyDatocms({ status }: { status: 'success' | 'error' }) {
   const triggers = await client.buildTriggers.list();
   const matchingTrigger = triggers.find(trigger => {
     const payload = trigger.adapter_settings?.payload as { branch?: string };
-    return payload?.branch === CF_PAGES_BRANCH;
+    return payload?.branch === WORKERS_CI_BRANCH;
   });
   if (!matchingTrigger) {
-    console.log(`No matching DatoCMS build trigger found for branch '${CF_PAGES_BRANCH}'`);
+    console.log(`No matching DatoCMS build trigger found for branch '${WORKERS_CI_BRANCH}'`);
     return;
   }
 

@@ -46,7 +46,7 @@ const llmLinks = llmOptions.map((option) => {
       <Icon name="chevron-down" />
     </button>
   </div>
-  <ul popover id={popoverId} data-placement="bottom-start">
+  <ul popover id={popoverId}>
     <li>
       <a href={markdownHref}>
         {t('open_as_markdown')}
@@ -78,9 +78,17 @@ const llmLinks = llmOptions.map((option) => {
     display: inline-flex;
   }
 
+  [data-button-group] {
+    anchor-name: --open-in-llm-anchor;
+  }
+
   [popover] {
     margin: 0;
-    inset: auto;
+    margin-inline-end: 8px;
     width: max-content;
+    position: fixed;
+    position-anchor: --open-in-llm-anchor;
+    position-area: bottom span-left;
+    position-try: flip-block, flip-inline;
   }
 </style>

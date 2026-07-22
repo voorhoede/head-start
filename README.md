@@ -30,7 +30,7 @@ The site is created as lightweight progressively enhanced website connected to a
 
 - [Astro](https://astro.build/) - web framework to structure this project. Astro is selected because it embraces web standards, is designed for performance, and supports all our favourite UI frameworks (React, Vue and Svelte).
 - [DatoCMS](https://www.datocms.com/) - a headless CMS is connected to manage web content. DatoCMS is selected for its modular and structured content options, advanced image service, multi-language support and GraphQL API.
-- [Cloudflare Pages](https://pages.cloudflare.com/) - is a JAMstack hosting platform. Cloudflare Pages is selected for its reliable CDN, zero cold-start workers, green hosting and affordable pricing.
+- [Cloudflare Workers](https://workers.cloudflare.com/) - is a serverless hosting platform. Cloudflare Workers is selected for its reliable CDN, zero cold-start runtime, green hosting and affordable pricing.
 
 ```mermaid
 %%{
@@ -52,7 +52,7 @@ flowchart LR
 
 
         CMS[(DatoCMS)]
-        Hosting(Cloudflare Pages)
+        Hosting(Cloudflare Workers)
         CMS -- publish --> Hosting
 
     Repository -- git commit --> Hosting
@@ -94,7 +94,8 @@ All commands are run from the root of the project, from a terminal:
 |:------------------------| :-----------------------------------------------
 | `dev`                   | Starts local dev server at `localhost:4323` (head in T9)
 | `build`                 | Build your production site to `./dist/`
-| `preview`               | Preview your build locally, before deploying
+| `preview`               | Preview your build locally with `wrangler dev`, before deploying
+| `deploy`                | Deploy to Cloudflare Workers with `wrangler deploy`
 | `astro ...`             | Run commands like `astro add` (see `astro -- --help`)
 | `create`                | Scaffold new Block, Component, API or Page route
 | `analyze`               | Analyze and visualise both client & server bundles

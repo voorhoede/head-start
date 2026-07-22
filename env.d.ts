@@ -2,9 +2,9 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       CI?: string;
-      CF_PAGES?: string;
-      CF_PAGES_BRANCH?: string;
-      CF_PAGES_URL?: string;
+      WORKERS_CI?: string;
+      WORKERS_CI_BRANCH?: string;
+      WORKERS_CI_COMMIT_SHA?: string;
       DATOCMS_API_TOKEN: string;
       DATOCMS_READONLY_API_TOKEN: string;
       HEAD_START_PREVIEW?: string;

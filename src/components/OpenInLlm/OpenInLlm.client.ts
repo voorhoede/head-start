@@ -1,19 +1,13 @@
-import { autoUpdate, computePosition, flip, shift } from '@floating-ui/dom';
-import type { Placement } from '@floating-ui/dom';
-
 class OpenInLlm extends HTMLElement {
   #copyButton: HTMLButtonElement | null = null;
   #dropdownButton: HTMLButtonElement | null = null;
-  #buttonGroup: HTMLElement | null = null;
   #popover: HTMLElement | null = null;
   #originalLabel = '';
-  #stopAutoUpdate: (() => void) | null = null;
 
   connectedCallback() {
     this.#copyButton = this.querySelector<HTMLButtonElement>('[data-copy-button]');
     this.#dropdownButton =
       this.querySelector<HTMLButtonElement>('[popovertarget]');
-    this.#buttonGroup = this.querySelector<HTMLElement>('[data-button-group]');
     this.#originalLabel =
       this.#copyButton?.querySelector('[data-copy-label]')?.textContent ?? '';
 
@@ -29,8 +23,6 @@ class OpenInLlm extends HTMLElement {
   disconnectedCallback() {
     this.#copyButton?.removeEventListener('click', this.#handleCopy);
     this.#popover?.removeEventListener('toggle', this.#handleToggle);
-    this.#stopAutoUpdate?.();
-    this.#stopAutoUpdate = null;
   }
 
   #handleToggle = (event: Event) => {
@@ -38,43 +30,6 @@ class OpenInLlm extends HTMLElement {
     this.#dropdownButton?.setAttribute(
       'aria-expanded',
       isOpen ? 'true' : 'false',
-    );
-
-    this.#stopAutoUpdate?.();
-    this.#stopAutoUpdate = null;
-
-    if (!isOpen || !this.#popover || !this.#buttonGroup) return;
-
-    const placement = (this.#popover.getAttribute('data-placement') ??
-      'bottom-start') as Placement;
-    const initialScrollY = window.scrollY;
-    const initialScrollX = window.scrollX;
-    this.#popover.style.visibility = 'hidden';
-    this.#stopAutoUpdate = autoUpdate(
-      this.#buttonGroup,
-      this.#popover,
-      () => {
-        if (!this.#popover || !this.#buttonGroup) return;
-        if (
-          window.scrollY !== initialScrollY ||
-          window.scrollX !== initialScrollX
-        ) {
-          this.#popover.hidePopover();
-          return;
-        }
-        computePosition(this.#buttonGroup, this.#popover, {
-          strategy: 'fixed',
-          placement,
-          middleware: [flip(), shift({ padding: 8 })],
-        }).then(({ x, y }) => {
-          if (!this.#popover) return;
-          Object.assign(this.#popover.style, {
-            left: `${x}px`,
-            top: `${y}px`,
-            visibility: 'visible',
-          });
-        });
-      },
     );
   };
 

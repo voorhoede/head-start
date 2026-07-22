@@ -12,6 +12,7 @@ import { getItemPopoverId } from './AppMenu';
 
 export interface Props {
   item: MenuItem;
+  style?: string;
 }
 const { item, ...props } = Astro.props as Props & Record<string, unknown>;
 const popoverId = getItemPopoverId(item.id);

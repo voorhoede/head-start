@@ -10,13 +10,13 @@ import { output } from './config/output';
 import serviceWorker from './config/astro/service-worker-integration.ts';
 
 const isAnalyseMode = process.env.ANALYZE === 'true';
-const productionUrl = `https://${pkg.name}.pages.dev`; // overwrite if you have a custom domain
+const productionUrl = `https://${pkg.name}.voorhoede.workers.dev`; // overwrite if you have a custom domain
 const localhostPort = 4323; // 4323 is "head" in T9
 
-export const siteUrl = process.env.CF_PAGES
-  ? (process.env.CF_PAGES_BRANCH === 'main')
-    ? productionUrl
-    : process.env.CF_PAGES_URL
+// Workers Builds injects WORKERS_CI=1 and WORKERS_CI_BRANCH but has no per-deploy
+// preview URL equivalent to CF_PAGES_URL, so non-main branches fall back to productionUrl.
+export const siteUrl = process.env.WORKERS_CI
+  ? productionUrl
   : `http://localhost:${localhostPort}`;
 
 // https://astro.build/config

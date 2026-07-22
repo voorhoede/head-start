@@ -1,6 +1,3 @@
-import { computePosition } from '@floating-ui/dom';
-import type { Placement } from '@floating-ui/dom';
-
 class AppMenu extends HTMLElement {
   #menuButton: HTMLButtonElement;
   #dialog: HTMLDialogElement;
@@ -24,20 +21,6 @@ class AppMenu extends HTMLElement {
 
     if (isBackdropClick || isCloseButtonClick || isLinkClick) {
       this.close();
-    }
-  };
-
-  #onMenuListClick = (event: Event) => {
-    const button = (event.target as HTMLElement).closest('[popovertarget]') as HTMLElement;
-    if (!button) return;
-
-    const popoverId = button.getAttribute('popovertarget');
-    const popover = popoverId ? this.querySelector(`#${popoverId}`) as HTMLElement : null;
-    const menuItem = button.closest('[data-menu-item], [data-submenu-item]') as HTMLElement | null;
-    const reference = menuItem ?? button;
-
-    if (popover) {
-      this.#positionPopover(reference, popover);
     }
   };
 
@@ -119,13 +102,6 @@ class AppMenu extends HTMLElement {
     this.#menuButton.focus();
   }
 
-  #positionPopover(reference: HTMLElement, popover: HTMLElement) {
-    const placement = (popover.getAttribute('data-placement') ?? 'bottom-start') as Placement;
-    computePosition(reference, popover, { placement }).then(({ x, y }) => {
-      Object.assign(popover.style, { left: `${x}px`, top: `${y}px` });
-    });
-  }
-
   #showPopover(menuItem: HTMLElement) {
     const button = menuItem.querySelector('[popovertarget]') as HTMLElement;
     if (!button) return;
@@ -135,8 +111,6 @@ class AppMenu extends HTMLElement {
 
     const popover = this.querySelector(`#${popoverId}`) as HTMLElement;
     if (!popover) return;
-
-    this.#positionPopover(menuItem, popover);
 
     try {
       if (!popover.matches(':popover-open')) {
@@ -175,9 +149,6 @@ class AppMenu extends HTMLElement {
     this.#menuButton.addEventListener('click', this.#onMenuButtonClick);
     this.#dialog.addEventListener('click', this.#onDialogClick);
 
-    // Position popovers on click
-    this.#menuList.addEventListener('click', this.#onMenuListClick);
-
     if (this.#supportsHover) {
       // Add hover support for menu items
       const menuItems = this.#menuList.querySelectorAll('[data-menu-item]');
@@ -201,7 +172,6 @@ class AppMenu extends HTMLElement {
   disconnectedCallback() {
     this.#menuButton.removeEventListener('click', this.#onMenuButtonClick);
     this.#dialog.removeEventListener('click', this.#onDialogClick);
-    this.#menuList.removeEventListener('click', this.#onMenuListClick);
     if (this.#supportsHover) {
       this.#menuList.querySelectorAll('[data-menu-item]').forEach((item) => {
         item.removeEventListener('mouseenter', this.#onMenuItemMouseEnter);
