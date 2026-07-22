@@ -10,7 +10,7 @@ import { output } from './config/output';
 import serviceWorker from './config/astro/service-worker-integration.ts';
 
 const isAnalyseMode = process.env.ANALYZE === 'true';
-const productionUrl = `https://${pkg.name}.workers.dev`; // overwrite if you have a custom domain
+const productionUrl = `https://${pkg.name}.voorhoede.workers.dev`; // overwrite if you have a custom domain
 const localhostPort = 4323; // 4323 is "head" in T9
 
 // Workers Builds injects WORKERS_CI=1 and WORKERS_CI_BRANCH but has no per-deploy
