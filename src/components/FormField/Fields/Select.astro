@@ -1,0 +1,17 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Option = { label: string; value: string };
+
+type Props = Omit<HTMLAttributes<'select'>, 'type'> & {
+  options?: Option[];
+};
+
+const { options = [], value, ...props } = Astro.props;
+---
+
+<select {...props}>
+  {options.map((option) => (
+    <option value={option.value} selected={value === option.value}>{option.label}</option>
+  ))}
+</select>

@@ -1,0 +1,30 @@
+---
+type Option = { label: string; value: string };
+
+type Props = {
+  name: string;
+  id: string;
+  options?: Option[];
+  value?: string;
+  required?: boolean;
+  class?: string;
+};
+
+const { name, id, options = [], value, required, class: className } = Astro.props;
+---
+
+<div class:list={['radio-group', className]} role="radiogroup">
+  {options.map((option, index) => (
+    <label class="radio-group__item">
+      <input
+        type="radio"
+        id={`${id}-${index}`}
+        name={name}
+        value={option.value}
+        checked={value === option.value}
+        required={required && index === 0}
+      />
+      {option.label}
+    </label>
+  ))}
+</div>
