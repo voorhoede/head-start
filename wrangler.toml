@@ -1,1 +1,11 @@
 name = "head-start"
+main = "./dist/_worker.js/index.js"
+compatibility_date = "2026-07-03"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+
+[observability]
+enabled = true
