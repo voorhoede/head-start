@@ -7,7 +7,7 @@ export interface Props {
 }
 
 const { block } = Astro.props;
-const items = block.items as StackBlockFragment['items'];
+const items = block.stackItems as StackBlockFragment['stackItems'];
 ---
 
 { items.map((item) => (

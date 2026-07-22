@@ -9,7 +9,7 @@
 fragment StackBlock on StackBlockRecord {
   id
   isTitled
-  items {
+  stackItems: items {
     __typename
     ... on StackItemRecord {
       ...StackItem

@@ -39,7 +39,7 @@ describe('StackBlock', () => {
         block: {
           id: 'stack-test-1',
           isTitled: false,
-          items,
+          stackItems: items,
         },
       },
     });
@@ -54,7 +54,7 @@ describe('StackBlock', () => {
         block: {
           id: 'stack-test-2',
           isTitled: true,
-          items,
+          stackItems: items,
         },
       },
     });
@@ -70,7 +70,7 @@ describe('StackBlock', () => {
         block: {
           id: 'stack-test-3',
           isTitled: true,
-          items: [{ ...items[0], title: '' }],
+          stackItems: [{ ...items[0], title: '' }],
         },
       },
     });
