@@ -1,0 +1,1 @@
+Groups multiple blocks stacked one after the other. Optionally shows each item's title as a heading.

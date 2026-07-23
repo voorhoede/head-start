@@ -10,9 +10,10 @@ export interface Props {
 }
 
 const { block } = Astro.props;
-const items = block.items;
+const items = block.items  as GroupingBlockFragment['items'];
 const layout = stripStega(block.layout);
 const isLayout = (value: GroupingBlockFragment['layout']) => layout === value;
+
 ---
 { isLayout('stack-titled') && (
   items.map((item) => (

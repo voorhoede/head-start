@@ -6,7 +6,8 @@ import { blocksByTypename } from './blocksByTypename';
 interface Props {
   blocks: AnyBlock[];
 }
-const { blocks } = Astro.props;
+
+const { blocks } = Astro.props as Props;
 
 const raise = (message: string) => {
   if (!PUBLIC_IS_PRODUCTION) {

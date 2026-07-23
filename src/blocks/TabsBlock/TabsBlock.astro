@@ -1,0 +1,21 @@
+---
+import Blocks from '~/blocks/Blocks.astro';
+import { Tabs, TabsPanel, TabsTab } from '~/components/Tabs';
+import type { TabsBlockFragment } from '~/lib/datocms/types';
+
+export interface Props {
+  block: TabsBlockFragment;
+}
+
+const { block } = Astro.props;
+const items = block.items as TabsBlockFragment['items'];
+---
+
+<Tabs>
+  { items.map((item) => (<>
+    <TabsTab>{ item.title }</TabsTab>
+    <TabsPanel>
+      <Blocks blocks={ item.blocks } />
+    </TabsPanel>
+  </>))}
+</Tabs>

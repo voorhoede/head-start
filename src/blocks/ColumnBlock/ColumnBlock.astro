@@ -1,0 +1,21 @@
+---
+import Blocks from '~/blocks/Blocks.astro';
+import { Column, Columns } from '~/components/Columns';
+import type { ColumnBlockFragment } from '~/lib/datocms/types';
+
+export interface Props {
+  block: ColumnBlockFragment;
+}
+
+const { block } = Astro.props;
+const items = block.items as ColumnBlockFragment['items'];
+const count = (block.numberOfColumns ?? 2) as 2 | 3 | 4;
+---
+
+<Columns count={ count }>
+  { items.map((item) => (
+    <Column>
+      <Blocks blocks={ item.blocks } />
+    </Column>
+  ))}
+</Columns>
