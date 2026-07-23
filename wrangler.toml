@@ -1,5 +1,5 @@
 name = "head-start"
-main = "./dist/_worker.js/index.js"
+main = "@astrojs/cloudflare/entrypoints/server"
 compatibility_date = "2026-07-03"
 compatibility_flags = ["nodejs_compat"]
 

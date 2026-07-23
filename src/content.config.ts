@@ -1,7 +1,7 @@
-// Astro expects a content/config.ts file, therefore we export the collections here.
-import AppCollection from './App';
-import PagePartialCollection from './PagePartials';
-import PageCollection from './Pages';
+// Astro expects a src/content.config.ts file, therefore we export the collections here.
+import AppCollection from './content/App';
+import PagePartialCollection from './content/PagePartials';
+import PageCollection from './content/Pages';
 
 export const collectionMap = {
   // Add your collections here
