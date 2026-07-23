@@ -1,0 +1,24 @@
+---
+import Blocks from '~/blocks/Blocks.astro';
+import type { StackBlockFragment } from '~/lib/datocms/types';
+
+export interface Props {
+  block: StackBlockFragment;
+}
+
+const { block } = Astro.props;
+const items = block.stackItems as StackBlockFragment['stackItems'];
+---
+
+{ items.map((item) => (
+  block.isTitled && item.title
+    ? (
+      <section>
+        <h2>{ item.title }</h2>
+        <Blocks blocks={ item.blocks } />
+      </section>
+    )
+    : (
+      <Blocks blocks={ item.blocks } />
+    )
+))}

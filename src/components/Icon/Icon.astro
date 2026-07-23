@@ -1,27 +1,24 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
 import type { IconName } from '~/assets/icon-sprite';
+
 export { iconNames } from '~/assets/icon-sprite';
 
 interface Props extends HTMLAttributes<'svg'> {
   name: IconName;
-};
+}
 
-const { 
-  name,
-  'aria-label': ariaLabel, 
-  ...props 
-} = Astro.props;
+const { name, 'aria-label': ariaLabel, ...props } = Astro.props;
 ---
 
-<svg 
-  data-icon={name} 
-  role={ariaLabel ? 'img' : 'presentation'} 
-  aria-hidden={!ariaLabel} 
-  aria-label={ariaLabel} 
+<svg
+  data-icon={name}
+  role={ariaLabel ? 'img' : 'presentation'}
+  aria-hidden={!ariaLabel}
+  aria-label={ariaLabel}
   {...props}
 >
-  <use href={`#${name}`} />
+  <use href={`#${name}`}></use>
 </svg>
 
 <style>

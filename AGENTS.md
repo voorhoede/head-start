@@ -8,7 +8,7 @@ Head Start is a starter kit by [De Voorhoede](https://www.voorhoede.nl/en/) for 
 
 - **Framework:** [Astro](https://astro.build/) (v5, `output: 'server'` via Cloudflare adapter).
 - **CMS:** [DatoCMS](https://www.datocms.com/) — content is fetched via GraphQL; schema is managed through migrations in [`config/datocms/migrations/`](./config/datocms/migrations/).
-- **Hosting:** [Cloudflare Pages](https://pages.cloudflare.com/) (Workers runtime). Local preview uses `wrangler`.
+- **Hosting:** [Cloudflare Workers](https://workers.cloudflare.com/) with static assets. Deployed via Workers Builds (`npm run cloudflare:build` + `wrangler deploy`). Local preview uses `wrangler dev`.
 - **Philosophy:** no default JS framework, no default styling, progressively enhanced, fully accessible, highly performant. See [README › Philosophy](./README.md#philosophy) before suggesting new dependencies.
 
 The repo is a small monorepo: the root is the Astro app; [`config/datocms/`](./config/datocms/) is an npm workspace for CMS-side tooling.
@@ -48,7 +48,8 @@ Run everything from the repo root:
 | `npm install` | Install deps (also runs `husky` hooks install). |
 | `npm run dev` | Start Astro dev server at <http://localhost:4323> plus GraphQL/icon/translation watchers in parallel. |
 | `npm run build` | Runs `prep` (clean, download CMS data, generate types, build icon sprite) then `astro build`. |
-| `npm run preview` | Serve the built `dist/` with `wrangler pages dev` (closest to production). |
+| `npm run preview` | Serve the built `dist/` with `wrangler dev` (closest to production). |
+| `npm run deploy` | Deploy to Cloudflare Workers with `wrangler deploy`. |
 | `npm run lint` | Runs `astro check` + ESLint + `html-validate` over `dist/`. `lint:html` requires a build first. |
 | `npm run test` / `npm run test:unit` | Vitest unit tests (`*.test.ts`). Depends on `prep`. |
 | `npm run analyze` | Build with Sonda bundle analyzer (writes to `reports/`). |
