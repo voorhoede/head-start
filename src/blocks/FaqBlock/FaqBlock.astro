@@ -1,0 +1,20 @@
+---
+import AccordionBlock from '~/blocks/AccordionBlock/AccordionBlock.astro';
+import type { AccordionBlockFragment, FaqBlockFragment } from '~/lib/datocms/types';
+
+export interface Props {
+  block: FaqBlockFragment
+}
+const { block } = Astro.props;
+
+const items = block.items
+  .map((faq) => faq.item)
+  .filter((item) => item !== undefined && item !== null) as AccordionBlockFragment['items'];
+---
+{ block.groupTitle && <h2>{ block.groupTitle }</h2> }
+
+<AccordionBlock block={{
+  id: block.id,
+  isFirstItemOpenOnStart: false,
+  items,
+}} />

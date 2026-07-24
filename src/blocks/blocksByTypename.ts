@@ -14,6 +14,7 @@ import VideoBlock from './VideoBlock/VideoBlock.astro';
 import VideoEmbedBlock from './VideoEmbedBlock/VideoEmbedBlock.astro';
 import SearchFormBlock from './SearchFormBlock/SearchFormBlock.astro';
 import AccordionBlock from './AccordionBlock/AccordionBlock.astro';
+import FaqBlock from './FaqBlock/FaqBlock.astro';
 import StackBlock from './StackBlock/StackBlock.astro';
 import TabsBlock from './TabsBlock/TabsBlock.astro';
 import ColumnBlock from './ColumnBlock/ColumnBlock.astro';
@@ -34,6 +35,7 @@ export const blocksByTypename = {
   VideoBlockRecord: VideoBlock,
   VideoEmbedBlockRecord: VideoEmbedBlock,
   AccordionBlockRecord: AccordionBlock,
+  FaqBlockRecord: FaqBlock,
   StackBlockRecord: StackBlock,
   TabsBlockRecord: TabsBlock,
   SearchFormBlockRecord: SearchFormBlock,

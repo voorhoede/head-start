@@ -1,0 +1,17 @@
+#import '~/blocks/AccordionBlock/AccordionBlock.fragment.graphql'
+
+fragment FaqBlock on FaqBlockRecord {
+  __typename
+  id
+  groupTitle
+  items {
+    id
+    slug
+    item {
+      __typename
+      ... on AccordionItemRecord {
+        ...AccordionItem
+      }
+    }
+  }
+}
