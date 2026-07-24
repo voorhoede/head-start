@@ -1,10 +1,15 @@
-import { Client } from '@datocms/lib/cma-client-node';
+import { Client, SimpleSchemaTypes } from '@datocms/cli/lib/cma-client-node';
 
 export default async function (client: Client) {
+  //@ts-expect-error rich_text_blocks is only available on Modular Content fields
+  const homeBodyBlocks = (await client.fields.find('home_page::body_blocks')).validators.rich_text_blocks?.item_types as string[];
+  //@ts-expect-error rich_text_blocks is only available on Modular Content fields
+  const pageBodyBlocks = (await client.fields.find('page::body_blocks')).validators.rich_text_blocks?.item_types as string[];
+
   console.log('Create new models/block models');
 
   console.log('Create block model "\u2753 FAQ Block" (`faq_block`)');
-  await client.itemTypes.create(
+  const faqBlock = await client.itemTypes.create(
     {
       id: 'bwnEedmZRLCodyteEudcIQ',
       name: '\u2753 FAQ Block',
@@ -53,7 +58,6 @@ export default async function (client: Client) {
       parameters: { heading: false, placeholder: null },
     },
     default_value: null,
-    content_link_enabled: true,
   });
 
   console.log(
@@ -78,31 +82,6 @@ export default async function (client: Client) {
       parameters: { filters: [] },
     },
     default_value: null,
-    content_link_enabled: true,
-  });
-
-  console.log(
-    'Create Modular Content (Single block) field "Question and Answer" (`question_and_answer`) in model "\u2753 FAQ" (`faq`)',
-  );
-  // NOTE: `item_types` below references the "Accordion Item" block model.
-  // This id must match the Accordion Item block in the environment this
-  // migration runs against. Verify it before applying.
-  await client.fields.create('Wp8-9-o4Tc2uFPn01WwxYQ', {
-    id: 'ObBfAPRKQKqulCO-p4ZiAw',
-    label: 'Question and Answer',
-    field_type: 'single_block',
-    api_key: 'question_and_answer',
-    validators: {
-      single_block_blocks: { item_types: ['NzOqAAh2Ra2DfyEMrsF-DQ'] },
-      required: {},
-    },
-    appearance: {
-      addons: [],
-      editor: 'framed_single_block',
-      parameters: { start_collapsed: false },
-    },
-    default_value: null,
-    content_link_enabled: true,
   });
 
   console.log(
@@ -124,7 +103,60 @@ export default async function (client: Client) {
       parameters: { url_prefix: null, placeholder: null },
     },
     default_value: null,
-    content_link_enabled: true,
+  });
+
+  console.log(
+    'Create Modular Content (Single block) field "Question and Answer" (`question_and_answer`) in model "\u2753 FAQ" (`faq`)',
+  );
+  // The answer links to the existing "Accordion Item" block model, whose id
+  // differs per environment. Resolve it by api_key instead of hardcoding.
+  const accordionItem = (await client.itemTypes.list()).find(
+    (itemType: SimpleSchemaTypes.ItemType) => itemType.api_key === 'accordion_item',
+  );
+  if (!accordionItem) {
+    throw new Error(
+      'Could not find the "accordion_item" block model required by the FAQ "Question and Answer" field.',
+    );
+  }
+  await client.fields.create('Wp8-9-o4Tc2uFPn01WwxYQ', {
+    id: 'ObBfAPRKQKqulCO-p4ZiAw',
+    label: 'Question and Answer',
+    field_type: 'single_block',
+    api_key: 'question_and_answer',
+    validators: {
+      single_block_blocks: { item_types: [accordionItem.id] },
+      required: {},
+    },
+    appearance: {
+      addons: [],
+      editor: 'framed_single_block',
+      parameters: { start_collapsed: false },
+    },
+    default_value: null,
+  });
+
+  console.log('Update existing fields/fieldsets');
+
+  console.log(
+    'Update Modular Content (Multiple blocks) field "Body" (`body_blocks`) in model "\ud83d\udcd1 Page" (`page`)',
+  );
+  await client.fields.update('Q-z1nyMsQtC8Sr6w6J2oGw', {
+    validators: {
+      rich_text_blocks: {
+        item_types: [...pageBodyBlocks, faqBlock.id],
+      },
+    },
+  });
+
+  console.log(
+    'Update Modular Content (Multiple blocks) field "Body" (`body_blocks`) in model "\ud83c\udfe0 Home" (`home_page`)',
+  );
+  await client.fields.update('pUj2PObgTyC-8X4lvZLMBA', {
+    validators: {
+      rich_text_blocks: {
+        item_types: [...homeBodyBlocks, faqBlock.id],
+      },
+    },
   });
 
   console.log('Finalize models/block models');
