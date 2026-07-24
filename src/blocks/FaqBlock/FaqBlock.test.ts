@@ -61,4 +61,10 @@ describe('FaqBlock', () => {
     const fragment = await renderBlock();
     expect(fragment.textContent).toContain('Answer A');
   });
+
+  test('exposes each question by its slug for deep-linking', async () => {
+    const fragment = await renderBlock();
+    expect(fragment.querySelector('details#question-a')).toBeTruthy();
+    expect(fragment.querySelector('details#question-b')).toBeTruthy();
+  });
 });
