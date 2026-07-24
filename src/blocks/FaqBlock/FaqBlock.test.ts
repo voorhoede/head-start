@@ -26,7 +26,7 @@ const textBlock = (value: string) => ({
 const faqItem = (slug: string, question: string, answer: string) => ({
   id: slug,
   slug,
-  item: { __typename: ACCORDION_ITEM_RECORD, title: question, blocks: [textBlock(answer)] },
+  questionAndAnswer: { __typename: ACCORDION_ITEM_RECORD, title: question, blocks: [textBlock(answer)] },
 });
 
 describe('FaqBlock', () => {
@@ -36,7 +36,7 @@ describe('FaqBlock', () => {
         __typename: 'FaqBlockRecord',
         id: 'faq-block-1',
         groupTitle: 'Frequently asked questions',
-        items: [
+        questionAndAnswers: [
           faqItem('question-a', 'Question A', 'Answer A'),
           faqItem('question-b', 'Question B', 'Answer B'),
         ],

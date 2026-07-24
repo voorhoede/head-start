@@ -4,10 +4,10 @@ fragment FaqBlock on FaqBlockRecord {
   __typename
   id
   groupTitle
-  items {
+  questionAndAnswers {
     id
     slug
-    item {
+    questionAndAnswer {
       __typename
       ... on AccordionItemRecord {
         ...AccordionItem

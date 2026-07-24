@@ -7,8 +7,8 @@ export interface Props {
 }
 const { block } = Astro.props;
 
-const items = block.items
-  .map((faq) => faq.item)
+const items = block.questionAndAnswers
+  .map((faq) => faq.questionAndAnswer)
   .filter((item) => item !== undefined && item !== null) as AccordionBlockFragment['items'];
 ---
 { block.groupTitle && <h2>{ block.groupTitle }</h2> }
