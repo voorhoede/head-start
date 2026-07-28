@@ -1,0 +1,122 @@
+name: Bug report
+description: Something in Head Start is broken or behaves unexpectedly.
+title: "[bug]: "
+type: Bug
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug. Please fill in as much as you can - a reproduction link especially helps us fix things faster.
+
+        Before submitting, please [search existing issues](https://github.com/voorhoede/head-start/issues?q=is%3Aissue) to avoid duplicates.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened
+      description: A clear description of the bug. What did you do, what did you see?
+      placeholder: |
+        e.g. when I open a page with a File block, the file 404s instead of downloading.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+      description: What did you expect to happen instead?
+    validations:
+      required: true
+
+  - type: input
+    id: repro-link
+    attributes:
+      label: Reproduction link
+      description: |
+        A link that demonstrates the bug. Preferred order:
+        1. A page on [head-start.pages.dev](https://head-start.pages.dev) that shows the issue.
+        2. A minimal fork or branch that reproduces it.
+        3. A failing test in this repo.
+      placeholder: https://head-start.pages.dev/en/demos/...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Numbered steps if not obvious from the link above.
+      placeholder: |
+        1. Go to ...
+        2. Click ...
+        3. See error ...
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of Head Start is affected? Pick the closest match - we'll relabel during triage.
+      options:
+        - "🚏 Routing & Rendering"
+        - "🧱 Common components"
+        - "🌐 Internationalisation (i18n)"
+        - "🌈 Accessibility (a11y)"
+        - "🧑‍💻 CMS Editor Experience"
+        - "🧑‍💻 Developer Experience (DX)"
+        - "🌱 Seed content"
+        - "📚 Documentation"
+        - "📊 Data Viz"
+        - "📝 Forms"
+        - "🗂️ Collections"
+        - "🔒 Security"
+        - "🫆 Analytics & Consent"
+        - "🤖 AI Enhancements"
+        - "⚡️ Performance"
+        - "🧹 Tidy up"
+        - Not sure / other
+
+  - type: dropdown
+    id: astro-version
+    attributes:
+      label: Astro version
+      description: From `package.json` or `npx astro --version`.
+      options:
+        - 5.13.x (current)
+        - 5.12.x or earlier
+        - I'm on a fork/older clone
+        - Not sure
+
+  - type: dropdown
+    id: node-version
+    attributes:
+      label: Node version
+      description: Output of `node --version`.
+      options:
+        - 22.x (LTS)
+        - 20.x (LTS)
+        - 18.x
+        - Other (please mention below)
+        - Not sure
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser (only if browser-specific)
+      description: e.g. Safari 17 on macOS. Skip if the bug is at build, server, or CMS level.
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Extra context
+      description: Logs, screenshots, error messages, links to source lines. Drag images straight into this field.
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing issues for duplicates.
+          required: true
+        - label: I can reproduce this on the latest `main` (or have noted the version above).
+          required: true
