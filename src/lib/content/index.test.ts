@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
 import { getCollection, getEntry, combine, split } from './index';
-import type { collectionMap } from '~/content/config';
+import type { collectionMap } from '~/content.config';
 
 function mockEntry(id: string, locale?: string) {
   const meta = locale ? { locale } : {};
@@ -23,7 +23,7 @@ vi.mock('~/lib/i18n', () => {
   };
 });
 
-vi.mock('~/content/config', async () => {
+vi.mock('~/content.config', async () => {
   const { locales } = await import('~/lib/i18n');
   const localizedItems = ['a', 'b', 'c'].flatMap(id =>
     locales.map(locale => mockEntry(id, locale))
@@ -50,7 +50,7 @@ vi.mock('~/content/config', async () => {
 
 // Mocking the Astro content module to simulate collections,
 vi.mock('astro:content', async () => {
-  const { collectionMap } = await import('~/content/config');
+  const { collectionMap } = await import('~/content.config');
 
   return {
     getCollection: async (
@@ -75,7 +75,7 @@ vi.mock('astro:env/server', () => ({
 }));
 
 describe('getCollection', async () => {
-  const { collectionMap } = await import('~/content/config');
+  const { collectionMap } = await import('~/content.config');
   const { locales, getLocale } = await import('~/lib/i18n');
   test('filters by locale by default', async () => {
     const collection = 'LocalizedItems' as keyof typeof collectionMap;
