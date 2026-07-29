@@ -14,7 +14,7 @@ const faqs = block.questionAndAnswers.filter((faq) => faq.questionAndAnswer);
 
 <Accordion>
   { faqs.map((faq) => (
-    <AccordionItem id={ faq.slug ?? undefined } name={ faq.slug ?? undefined }>
+    <AccordionItem id={ faq.slug ?? undefined }>
       <Fragment slot="heading">{ faq.questionAndAnswer.title }</Fragment>
       <Fragment slot="body">
         <Blocks blocks={ faq.questionAndAnswer.blocks } />

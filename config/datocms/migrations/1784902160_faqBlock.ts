@@ -45,11 +45,11 @@ export default async function (client: Client) {
   console.log('Creating new fields/fieldsets');
 
   console.log(
-    'Create Single-line string field "Group title " (`group_title`) in block model "\u2753 FAQ Block" (`faq_block`)',
+    'Create Single-line string field "Group title" (`group_title`) in block model "\u2753 FAQ Block" (`faq_block`)',
   );
   await client.fields.create('bwnEedmZRLCodyteEudcIQ', {
     id: 'FuciaLmuRR6sm_G3eZ1kaA',
-    label: 'Group title ',
+    label: 'Group title',
     field_type: 'string',
     api_key: 'group_title',
     appearance: {
