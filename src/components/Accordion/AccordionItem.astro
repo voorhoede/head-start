@@ -2,14 +2,15 @@
 import Icon from '~/components/Icon';
 
 export interface Props {
-  name: string;
+  name?: string;
   open?: boolean;
+  id?: string;
 }
 
-const { name, open } = Astro.props;
-const attributes = { name, open };
+const { name, open, id } = Astro.props;
+const attributes = { name, open, id };
 ---
-{ /* HTMLDetailsElement name attribute is new, using spread to bypass valiation error */ }
+{ /* HTMLDetailsElement name attribute is new, using spread to bypass validation error */ }
 <details {...attributes}>
   <summary>
     <slot name="heading" />
