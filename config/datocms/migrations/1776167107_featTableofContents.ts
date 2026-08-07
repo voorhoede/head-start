@@ -6,7 +6,9 @@ export default async function (client: Client) {
   console.log(
     'Create Boolean field "Has Table of Contents" (`has_table_of_contents`) in model "\uD83D\uDCD1 Page" (`page`)',
   );
-  await client.fields.create('LjXdkuCdQxCFT4hv8_ayew', {
+  // The Page model is created without a fixed ID, so its ID differs per
+  // project. Target it by API key instead of hardcoding the ID.
+  await client.fields.create('page', {
     id: 'O1GwGpnqTO2dtee2OIhKyQ',
     label: 'Has Table of Contents',
     field_type: 'boolean',
