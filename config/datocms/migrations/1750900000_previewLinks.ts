@@ -5,8 +5,18 @@ export default async function (client: Client) {
   console.log('Manage upload filters');
 
   console.log('Install plugin "Model Deployment Links"');
-  const previewApiToken = await createPreviewToken(client);
-  
+  // Plans with a low access token limit cannot create the "Preview" token.
+  // The plugin is still installed, but has to be configured manually then.
+  let previewApiToken: Awaited<ReturnType<typeof createPreviewToken>> | undefined;
+  try {
+    previewApiToken = await createPreviewToken(client);
+  } catch (error) {
+    console.warn(
+      'Could not create the "Preview" API token: %s\nSkipping configuration of the Model Deployment Links plugin. See docs/getting-started.md > "Configure DatoCMS plugins" to configure it manually.',
+      error instanceof Error ? error.message : error,
+    );
+  }
+
   // Check if plugin already exists
   const existingPlugins = await client.plugins.list();
   let plugin = existingPlugins.find((p) => p.package_name === 'datocms-plugin-model-deployment-links');
@@ -17,9 +27,11 @@ export default async function (client: Client) {
     });
   }
   
-  await client.plugins.update(plugin.id, {
-    parameters: { datoApiToken: previewApiToken.token },
-  });
+  if (previewApiToken) {
+    await client.plugins.update(plugin.id, {
+      parameters: { datoApiToken: previewApiToken.token },
+    });
+  }
 
   console.log('Creating new fields/fieldsets');
 
