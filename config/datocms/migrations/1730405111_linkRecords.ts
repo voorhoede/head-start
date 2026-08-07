@@ -113,27 +113,24 @@ export default async function (client: Client) {
     notFoundMenuItem = menuItems.find(item => item.label === '\uD83E\uDD37 404 Page');
 
   if (
-    !schemaMigrationMenuItem ||
     !translationMenuItem ||
     !pagesMenuItem ||
     !homeMenuItem ||
     !notFoundMenuItem
   )
-    throw new Error(`Expected menu items to consist of: [
-    "Schema Migration", 
-    "Translation", 
-    "Pages", 
-    "Home", 
-    "404 Page", 
-    "Redirect Rules", 
-    "Image Block", 
-    "Table Block", and 
-    "Video Embed Block",
+    throw new Error(`Expected menu items to include: [
+    "🌐 Translation",
+    "📑 Pages",
+    "🏠 Home", and
+    "🤷 404 Page",
     ] but received: [
     ${menuItems.map(item => `    "${item.label}"`).join(',\n')}
     ]`);
 
-  await client.menuItems.destroy(schemaMigrationMenuItem.id);
+  // Only @datocms/cli v3 and below add a menu item for the schema migration
+  // model, so there is nothing to delete on newer versions.
+  if (schemaMigrationMenuItem)
+    await client.menuItems.destroy(schemaMigrationMenuItem.id);
 
   console.log('Update menu item "\uD83C\uDF10 Translations"');
   await client.menuItems.update(translationMenuItem.id, {

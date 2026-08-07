@@ -3,15 +3,18 @@ import { getLocale } from '~/lib/i18n';
 import { globalSeo } from '~/lib/site.json';
 import aiRobotsTxt from './ai.robots.txt?raw';
 
-/** 
+const emptySeo = { siteName: '', titleSuffix: '' };
+
+/**
   * `globalSeo` _should_ have a key per available locale. When there is only one
   * locale configured in Dato, that key is missing. Therefore we fallback to the
-  * `globalSeo` object 
+  * `globalSeo` object. A project without SEO settings has no `globalSeo` at all,
+  * in which case we fallback to empty strings.
   */
 const localeSeo = () => {
   const locale = getLocale();
-  const localeSeoData = globalSeo[locale as keyof typeof globalSeo];
-  return localeSeoData || globalSeo;
+  const localeSeoData = globalSeo?.[locale as keyof typeof globalSeo];
+  return localeSeoData || globalSeo || emptySeo;
 };
 
 export const siteName: () => string = () => localeSeo().siteName;
