@@ -2,7 +2,7 @@
 
 **Head Start is a starterkit to easily bootstrap your next web project. Here's how to get started.**
 
-## Prequisites
+## Prerequisites
 
 Head Start requires Node.js to be installed. See [.node-version](../.node-version) for the correct version.
 
@@ -130,9 +130,9 @@ The deploy workflow reports each deploy's result to the build trigger whose payl
 
 ## Enable AI agent discovery (DNS-AID) (optional)
 
-Head Start serves an agent registry at [`/.well-known/agents/index.json`](../src/pages/.well-known/agents/index.json.ts) (see [SEO → Agent discovery](./seo.md#agent-discovery-dns-aid)). To make it discoverable via [DNS for AI Discovery (DNS-AID)](https://datatracker.ietf.org/doc/draft-mozleywilliams-dnsop-dnsaid/), add DNS records on your own domain. This is optional and only applies once you use a custom domain on Cloudflare.
+Head Start serves an agent registry at [`/.well-known/agents/index.json`](../src/pages/.well-known/agents/index.json.ts) (see [SEO → Agent discovery](./seo.md#agent-discovery-dns-aid)). To make it discoverable via [DNS for AI Discovery (DNS-AID)](https://datatracker.ietf.org/doc/draft-mozleywilliams-dnsop-dnsaid/), add DNS records on your own domain. This is optional and only applies once you use a custom domain.
 
-1. **Publish DNS records.** In your Cloudflare DNS settings, add [`SVCB`/`HTTPS`](https://www.rfc-editor.org/rfc/rfc9460) records under `_agents.<domain>`. The `_index._agents.<domain>` record points clients to where the registry is served; service-specific records (e.g. `_a2a._agents.<domain>`) point to individual agents:
+1. **Publish DNS records.** At your DNS provider, add [`SVCB`/`HTTPS`](https://www.rfc-editor.org/rfc/rfc9460) records under `_agents.<domain>`. The `_index._agents.<domain>` record points clients to where the registry is served; service-specific records (e.g. `_a2a._agents.<domain>`) point to individual agents:
 
    ```dns
    _index._agents.example.com.  3600 IN SVCB 1 example.com. alpn="h2" port=443
@@ -141,7 +141,7 @@ Head Start serves an agent registry at [`/.well-known/agents/index.json`](../src
 
    Point the `_index` record's target (and `well-known` path, if used) at your site, so `_index._agents.<domain>` resolves to `/.well-known/agents/index.json`.
 
-2. **Enable DNSSEC.** Sign the zone so validating resolvers return authenticated data. On Cloudflare this is a [one-click setting](https://developers.cloudflare.com/dns/dnssec/) under DNS → Settings. This is the part a DNS-AID/DNSSEC audit checks — it cannot be set in application code.
+2. **Enable DNSSEC.** Sign the zone so validating resolvers return authenticated data. Most DNS providers, including [Bunny DNS](https://bunny.net/docs/dns/dnssec), offer this as a setting. This is the part a DNS-AID/DNSSEC audit checks, and it cannot be set in application code.
 
 ## What's next?
 

@@ -52,10 +52,12 @@ flowchart LR
 
 
         CMS[(DatoCMS)]
+        Deploy(GitHub Actions)
         Hosting(Bunny.net)
-        CMS -- publish --> Hosting
+        CMS -- publish --> Deploy
+        Deploy -- deploy --> Hosting
 
-    Repository -- git commit --> Hosting
+    Repository -- git commit --> Deploy
 
     Repository -. migrate .-> CMS
 
@@ -98,7 +100,7 @@ All commands are run from the root of the project, from a terminal:
 | `astro ...`             | Run commands like `astro add` (see `astro -- --help`)
 | `create`                | Scaffold new Block, Component, API or Page route
 | `analyze`               | Analyze and visualise both client & server bundles
-| `lint`                  | Check code style and valide HTML output
+| `lint`                  | Check code style and validate HTML output
 | `test`                  | Runs the test suite, individual tests are available using `test:...`
 
 ## Contributing

@@ -17,11 +17,11 @@ Host Head Start on Bunny.net: pages that render on demand run as a Bunny Edge Sc
 - The adapter's list of built files is off (`assetManifest: false`). It is taken before `@astrojs/sitemap` and the service worker integration write their files, which would make those files unreachable.
 - Shiki is kept out of the Edge Script (`config/astro/without-shiki.ts`). `@datocms/astro` pulls in Astro's `<Code>` for a code node that `Text.astro` replaces, and Shiki alone would push the script past Bunny's 10 MB limit.
 - The DatoCMS token and preview secret are read from the Edge Script's secrets at runtime instead of being compiled into the server code.
-- Workers Builds is replaced by `.github/workflows/deploy.yml`; `WORKERS_CI*` variables by `GITHUB_ACTIONS` and `GITHUB_REF_NAME`.
+- Workers Builds is replaced by `.github/workflows/deploy.yml`; `WORKERS_CI*` variables by `GITHUB_ACTIONS`, `GITHUB_REF_NAME` and `GITHUB_HEAD_REF`.
+- A DatoCMS build trigger starts the deploy workflow through GitHub's `repository_dispatch` when editors publish.
 
 ## Consequences
 
 - `/x` and `/x/` both answer 200 with the same page; the Workers static assets redirected one to the other. Canonical tags keep search engines on one URL.
 - Files other than HTML, such as `robots.txt` and `llms.txt`, are served with the adapter's immutable one-year `Cache-Control`. Every deploy purges the CDN, but not browsers.
-- Rebuilding when editors publish in DatoCMS still has to be connected to the deploy workflow.
-- Preview deployments per branch are not set up; each would need its own Edge Script and pull zone.
+- The `preview` branch is not deployed, so preview mode, the DatoCMS preview links and visual editing only work locally. A preview deployment needs its own Edge Script and pull zone, since the deploy workflow deploys everything to the production ones.
