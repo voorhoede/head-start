@@ -33,7 +33,7 @@
     "prep:download-translations": "node scripts/download-translations.ts",
     "prep:download-item-types": "node scripts/download-item-types.ts",
     "prep:icons": "svg-sprite --svg-doctype=false --symbol --symbol-dest='src/assets' --symbol-sprite=icon-sprite.svg src/assets/icons/*.svg && jiti scripts/icon-types.ts",
-    "preview": "astro preview",
+    "preview": "node --env-file-if-exists=.env node_modules/astro/bin/astro.mjs preview",
     "lint": "run-s lint:* --print-label",
     "lint:astro": "astro check",
     "lint:eslint": "eslint .",
