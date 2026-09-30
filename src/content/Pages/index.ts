@@ -16,7 +16,8 @@ import {
   type PageUrl,
 } from '~/lib/routing';
 import { getPagePath, getParentPages } from '~/lib/routing/page';
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { z } from 'astro/zod';
 
 type Meta<T extends PageCollectionEntryQuery['record']> = {
   recordId: string; // The record ID of the entry in DatoCMS
