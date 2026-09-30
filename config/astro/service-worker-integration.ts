@@ -6,7 +6,7 @@ import type { Plugin } from 'vite';
 
 const filenamePath = (filename: string) => fileURLToPath(new URL(join('../../', filename), import.meta.url));
 const srcFilename = filenamePath('src/assets/service-worker.ts');
-const outFilename = filenamePath('dist/service-worker.js');
+const outFilename = filenamePath('dist/client/service-worker.js');
 
 const buildConfig = {
   entryPoints: [srcFilename],
@@ -20,11 +20,6 @@ const buildConfig = {
 
 /**
  * Serves `/service-worker.js` during `astro dev`.
- *
- * We run esbuild in a Vite dev middleware rather than an on-demand Astro route
- * because, since Astro 6 + `@astrojs/cloudflare` v13, dev routes execute in the
- * Cloudflare `workerd` runtime. esbuild relies on Node APIs (e.g. `__filename`)
- * that don't exist there. Vite's dev server middleware still runs in Node.
  */
 function serviceWorkerDevPlugin(): Plugin {
   return {
@@ -51,10 +46,7 @@ function serviceWorkerDevPlugin(): Plugin {
           next(e);
         }
       };
-      // Prepend to the middleware stack so this runs before the Cloudflare
-      // plugin's catch-all, which otherwise forwards `/service-worker.js` to
-      // `workerd` and 404s.
-      server.middlewares.stack.unshift({ route: '/service-worker.js', handle });
+      server.middlewares.use('/service-worker.js', handle);
     },
   };
 }

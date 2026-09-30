@@ -14,6 +14,11 @@ See [documentation on Upgrading](docs/upgrading.md#find-the-changes).
 ### Changed
 
 - Upgraded to Astro 7. Whitespace between inline elements is now removed the way JSX does it (`compressHTML: 'jsx'`); `LinkToFile` adds its space explicitly.
+- Moved hosting from Cloudflare Workers to Bunny.net, with [Bunny's Astro adapter](https://github.com/BunnyWay/bunny-adapters/tree/main/packages/astro) and a GitHub Actions deploy workflow (`.github/workflows/deploy.yml`). See the [decision log](docs/decision-log/2026-09-30-workers-to-bunny.md).
+- `npm run preview` now runs `astro preview`, which needs Deno 2. `npm run deploy`, `npm run cloudflare:build` and `wrangler` are removed.
+- Build environment variables `WORKERS_CI` / `WORKERS_CI_BRANCH` replaced by GitHub's `GITHUB_ACTIONS` / `GITHUB_REF_NAME`.
+- `DATOCMS_READONLY_API_TOKEN` and `HEAD_START_PREVIEW_SECRET` are no longer compiled into the server code; they are set as secrets on the Edge Script.
+- The service worker is now deployed. It was written outside the directory the host serves, so `/service-worker.js` answered 404.
 - Migrated hosting from Cloudflare Pages to Cloudflare Workers with static assets. Deployment now uses `wrangler deploy` via Cloudflare Workers Builds instead of the legacy Pages deployment pipeline.
 - `npm run preview` now uses `wrangler dev` instead of `wrangler pages dev ./dist`.
 - `npm run deploy` added as the explicit deploy command.

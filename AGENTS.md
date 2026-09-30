@@ -6,9 +6,9 @@ Instructions for AI coding agents working in this repository. Human contributors
 
 Head Start is a starter kit by [De Voorhoede](https://www.voorhoede.nl/en/) for building content-driven **websites** (not web apps) on top of a headless stack:
 
-- **Framework:** [Astro](https://astro.build/) (v5, `output: 'server'` via Cloudflare adapter).
+- **Framework:** [Astro](https://astro.build/) (v7, `output: 'static'` with on-demand routes, via [Bunny's Astro adapter](https://github.com/BunnyWay/bunny-adapters/tree/main/packages/astro)).
 - **CMS:** [DatoCMS](https://www.datocms.com/) — content is fetched via GraphQL; schema is managed through migrations in [`config/datocms/migrations/`](./config/datocms/migrations/).
-- **Hosting:** [Cloudflare Workers](https://workers.cloudflare.com/) with static assets. Deployed via Workers Builds (`npm run cloudflare:build` + `wrangler deploy`). Local preview uses `wrangler dev`.
+- **Hosting:** [Bunny.net](https://bunny.net/). Astro's server runs as a Bunny Edge Script behind a pull zone and reads the built files from Bunny Storage. Deployed by [`.github/workflows/deploy.yml`](./.github/workflows/deploy.yml) with [bunny-edge-deploy](https://github.com/voorhoede/bunny-edge-deploy). Local preview uses `astro preview`, which needs Deno 2.
 - **Philosophy:** no default JS framework, no default styling, progressively enhanced, fully accessible, highly performant. See [README › Philosophy](./README.md#philosophy) before suggesting new dependencies.
 
 The repo is a small monorepo: the root is the Astro app; [`config/datocms/`](./config/datocms/) is an npm workspace for CMS-side tooling.
@@ -37,7 +37,6 @@ MCP servers are configured in [`.mcp.json`](./.mcp.json) at the repo root and pi
 - Node.js version is pinned in [.node-version](./.node-version) (currently `v25`). Use the matching version.
 - Package manager: `npm` (see [package.json](./package.json) `workspaces`). Do not introduce `pnpm`/`yarn` lockfiles.
 - Copy [.env.example](./.env.example) to `.env` and fill it in. Most scripts require `DATOCMS_READONLY_API_TOKEN`, `DATOCMS_API_TOKEN`, and `HEAD_START_PREVIEW_SECRET`. Never commit real values.
-- A `.dev.vars` file is auto-created by `npm run prep:cloudflare-env` for `wrangler`.
 
 ## Build, run, test
 
@@ -48,8 +47,7 @@ Run everything from the repo root:
 | `npm install` | Install deps (also runs `husky` hooks install). |
 | `npm run dev` | Start Astro dev server at <http://localhost:4323> plus GraphQL/icon/translation watchers in parallel. |
 | `npm run build` | Runs `prep` (clean, download CMS data, generate types, build icon sprite) then `astro build`. |
-| `npm run preview` | Serve the built `dist/` with `wrangler dev` (closest to production). |
-| `npm run deploy` | Deploy to Cloudflare Workers with `wrangler deploy`. |
+| `npm run preview` | Run the built Edge Script locally on Deno 2 behind a local storage emulator (closest to production). |
 | `npm run lint` | Runs `astro check` + ESLint + `html-validate` over `dist/`. `lint:html` requires a build first. |
 | `npm run test` / `npm run test:unit` | Vitest unit tests (`*.test.ts`). Depends on `prep`. |
 | `npm run analyze` | Build with Sonda bundle analyzer (writes to `reports/`). |
@@ -72,7 +70,7 @@ Enforced by [eslint.config.mjs](./eslint.config.mjs) — run `npm run lint:eslin
   - Blocks and components: `PascalCase/` directory with matching `PascalCase.astro`, plus optional `*.fragment.graphql`, `*.client.ts`, `*.test.ts`, `*.preview.txt|png`.
   - Library/helpers/scripts: `kebab-case.ts`.
   - Pages follow Astro file-system routing under [`src/pages/[locale]/`](./src/pages/).
-- Don't edit generated files: `src/lib/datocms/types.ts`, `src/assets/icon-sprite.svg`, anything under `.astro/`, `dist/`, or `functions/` (all ignored by ESLint).
+- Don't edit generated files: `src/lib/datocms/types.ts`, `src/assets/icon-sprite.svg`, anything under `.astro/` or `dist/` (all ignored by ESLint).
 - Prefer Astro components and web standards over adding a UI framework. If a component genuinely needs interactivity, add a sibling `*.client.ts` — see existing blocks for the pattern.
 
 ## GraphQL & CMS
@@ -84,7 +82,7 @@ Enforced by [eslint.config.mjs](./eslint.config.mjs) — run `npm run lint:eslin
 
 ## Security considerations
 
-- Treat everything in `.env` / `.dev.vars` as a secret. Don't print tokens in logs, commit messages, or error output.
+- Treat everything in `.env` as a secret. Don't print tokens in logs, commit messages, or error output.
 - `DATOCMS_API_TOKEN` has full CMS write access; scripts in [`scripts/`](./scripts/) use it. Avoid invoking them against the primary DatoCMS environment unless explicitly asked.
 - `HEAD_START_PREVIEW_SECRET` gates preview mode; rotate it if leaked. See [`docs/preview-mode.md`](./docs/preview-mode.md) and the [preview-ssr-branch decision](./docs/decision-log/2023-11-18-preview-ssr-branch.md).
 - All user-facing output must remain XSS-safe — prefer Astro's default escaping and the structured-text renderer over `set:html` unless content is already sanitised CMS output.
@@ -98,13 +96,13 @@ Hard rules. If you're unsure whether an action is covered, stop and ask the user
 
 Never run these without explicit, in-context confirmation from the user (a prior "yes" from a different task does not carry over):
 
-- `rm -rf`, `find … -delete`, or any recursive delete outside `node_modules/`, `dist/`, `.astro/`, `reports/`, or `functions/` (these are safe to wipe).
+- `rm -rf`, `find … -delete`, or any recursive delete outside `node_modules/`, `dist/`, `.astro/`, `.bunny/`, or `reports/` (these are safe to wipe).
 - `git push --force` / `--force-with-lease`, `git reset --hard` on a branch that has been pushed, `git clean -fdx`, rewriting or amending commits that are already on the remote, deleting branches or tags (local or remote).
 - `git checkout .` / `git restore` over uncommitted work you didn't create this session — it may be the user's in-progress changes.
 - `npm run cms:environments:destroy`, `cms:environments:promote`, or any `cms:*` script targeting the **primary** DatoCMS environment. Always operate on a fresh non-primary environment unless the user explicitly names the primary one.
 - Anything that writes to DatoCMS production content, uploads, or access tokens (including `cms:upload-block-previews` against primary).
-- Rotating, printing, or committing secrets from `.env`, `.dev.vars`, or `wrangler` — even redacted.
-- Touching Cloudflare Pages settings, deploy hooks, DNS, or repository secrets.
+- Rotating, printing, or committing secrets from `.env` or the Bunny dashboard — even redacted.
+- Touching Bunny storage zone, Edge Script or pull zone settings, deploy triggers, DNS, or repository secrets.
 - `npm install <new-dep>` for a runtime dependency, a UI framework, or a styling system — these cut against the [project philosophy](./README.md#philosophy). Dev-only tooling with a clear justification is fine to propose, but confirm before installing.
 - `--no-verify` on commits, disabling ESLint/`astro check`, or editing generated files to bypass errors (see [Code style](#code-style)).
 
@@ -126,7 +124,7 @@ If you find yourself repeating the same action, stop and re-plan instead of retr
 
 - Keep PRs focused; discuss larger changes in an issue first ([CONTRIBUTING](./.github/CONTRIBUTING.md)).
 - PRs use [`.github/PULL_REQUEST_TEMPLATE.md`](./.github/PULL_REQUEST_TEMPLATE.md) — fill it in.
-- CI runs lint + HTML validation + tests and needs `DATOCMS_API_TOKEN` / `DATOCMS_READONLY_API_TOKEN` repository secrets to be set.
+- CI runs lint + HTML validation + tests and needs `DATOCMS_API_TOKEN` / `DATOCMS_READONLY_API_TOKEN` repository secrets to be set. The deploy workflow also needs `BUNNY_API_KEY` and `HEAD_START_PREVIEW_SECRET`.
 - Record meaningful architectural decisions in [`docs/decision-log/`](./docs/decision-log/) using the existing `YYYY-MM-DD-slug.md` pattern.
 - Update [`CHANGELOG.md`](./CHANGELOG.md) for user-visible changes.
 

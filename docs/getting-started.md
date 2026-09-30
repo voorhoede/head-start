@@ -90,7 +90,7 @@ Go to your repository's Settings > Secrets and Variables > Actions > Repository 
 
 Your PR's will now be able to run the pre-configured GitHub Actions.
 
-The next step is creating a Cloudflare Pages application so your project can be deployed to the cloud.
+The next step is deploying your project to Bunny.net.
 
 ## Add mandatory content to your DatoCMS project
 
@@ -98,35 +98,32 @@ The next step is creating a Cloudflare Pages application so your project can be 
 - Add the required items for the `SEO` and `Social Card`.
 **If the above items are not set, your page will not be able to build**
 
-## Create a Cloudflare Pages application
+## Deploy to Bunny.net
 
-- [Signup](https://dash.cloudflare.com/sign-up) or [login](https://dash.cloudflare.com/login) to your Cloudflare Dashboard.
-- Go to Workers & Pages and hit 'Create application' and select 'Pages' (`/<your-cloudflare>/workers-and-pages/create/pages`).
-- Connect to Git(Hub), select your repository and hit 'Begin setup'.
-- Set 'Build command' to `npm run cloudflare:build`.
-- Set 'Build output directory' to `dist/`.
-- Under 'Environment variables' add the variables from your `.env` file.
-- Hit 'Save and deploy'.
+Head Start deploys with the [deploy workflow](../.github/workflows/deploy.yml), which runs [bunny-edge-deploy](https://github.com/voorhoede/bunny-edge-deploy) after `npm run build`.
 
-You're project is now deployed and will automatically be deployed on every git commit. To ensure changes in the CMS also redeploy the project, we need to connect DatoCMS to Cloudflare.
+- Create a [bunny.net](https://bunny.net/) account and copy its account API key from the dashboard.
+- Go to your repository's Settings > Secrets and Variables > Actions > Repository Secrets and add `BUNNY_API_KEY` and `HEAD_START_PREVIEW_SECRET`, next to the DatoCMS tokens.
+- Set the branches that deploy under `on.push.branches` in the deploy workflow.
+- Push to one of those branches, or run the workflow by hand from the Actions tab.
 
-## Connect DatoCMS to Cloudflare Pages
+The first run creates a storage zone, an Edge Script and a pull zone, all named after your repository, and the site is live at `https://<repository-name>.b-cdn.net`. Set `productionUrl` in [`astro.config.ts`](../astro.config.ts) to that address, or to your custom domain once you have added it to the pull zone in the Bunny dashboard.
 
-- Go to your Cloudflare Pages application > Settings > Builds & deployments and hit '[Add deploy hook](https://developers.cloudflare.com/pages/configuration/deploy-hooks/)'.
-- Name the deploy hook "DatoCMS - Production" and set the branch to `main`.
-- Copy the deploy hook URL.
+Rebuilding when editors publish in DatoCMS is not wired up for Bunny yet.
+
+## Connect DatoCMS site search
+
 - Go to your DatoCMS project > Project settings > Build triggers (`/project_settings/build_triggers/`) and hit 'Add new build triggers'.
 - Select 'Custom webook'.
 - Set 'build trigger name' to "Production".
-- Set 'Website frontend URL' to your production domain (like `https://<project-name>.pages.dev/` or a custom domain).
+- Set 'Website frontend URL' to your production domain (like `https://<repository-name>.b-cdn.net/` or a custom domain).
 - Enable site search.
-- Paste the deploy hook under 'Trigger URL'.
 - Set 'JSON payload' to `{ "branch": "main" }`.
 - Hit 'Save settings'.
 - Copy the build trigger ID from the page URL `/project_settings/build_triggers/<id>/edit` (like `30535`).
 - Open `/datocms-environment.ts` and set the `buildTriggerId` there, to connect the search functionality to the indexed deployment.
 
-That's it. Now deployments are automatically triggered from both git and when editors hit 'Build now' in the CMS. If you add additional build triggers in the future, you can repeat those steps. Note that `buildTriggerId` in `/datocms-environment.ts` should always be set to the production build trigger.
+The deploy workflow reports each deploy's result to the build trigger whose payload `branch` matches the deployed branch. Note that `buildTriggerId` in `/datocms-environment.ts` should always be set to the production build trigger.
 
 ## Enable AI agent discovery (DNS-AID) (optional)
 

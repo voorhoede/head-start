@@ -12,7 +12,7 @@
     "prebuild": "run-s prep",
     "build": "astro build",
     "postbuild": "npm run post",
-    "cloudflare:build": "jiti scripts/build.ts",
+    "ci:notify-datocms": "jiti scripts/notify-datocms.ts",
     "create": "plop --plopfile config/plop/plopfile.mjs",
     "create:api": "plop --plopfile config/plop/plopfile.mjs api",
     "create:block": "plop --plopfile config/plop/plopfile.mjs block",
@@ -26,7 +26,6 @@
     "dev:translations": "node scripts/watch-translations.ts",
     "prep": "run-s prep:* --print-label",
     "prep:clean-astro-env": "rm -rf node_modules/.astro",
-    "prep:cloudflare-env": "touch .dev.vars",
     "prep:datocms-types": "graphql-codegen --config .graphqlrc.ts",
     "prep:download-file-proxy-map": "node scripts/download-file-proxy-map.ts",
     "prep:download-redirects": "node scripts/download-redirects.ts",
@@ -34,8 +33,7 @@
     "prep:download-translations": "node scripts/download-translations.ts",
     "prep:download-item-types": "node scripts/download-item-types.ts",
     "prep:icons": "svg-sprite --svg-doctype=false --symbol --symbol-dest='src/assets' --symbol-sprite=icon-sprite.svg src/assets/icons/*.svg && jiti scripts/icon-types.ts",
-    "deploy": "wrangler deploy",
-    "preview": "wrangler dev",
+    "preview": "astro preview",
     "lint": "run-s lint:* --print-label",
     "lint:astro": "astro check",
     "lint:eslint": "eslint .",
@@ -57,8 +55,8 @@
   },
   "dependencies": {
     "@astrojs/check": "^0.9.10",
-    "@astrojs/cloudflare": "^14.3.3",
     "@astrojs/sitemap": "^3.7.4",
+    "@bunny.net/astro-adapter": "0.1.0",
     "@datocms/astro": "^0.6.13",
     "@datocms/content-link": "^0.3.23",
     "@fontsource/archivo": "^5.1.0",
@@ -112,6 +110,7 @@
     "chokidar-cli": "^3.0.0",
     "datocms-listen": "^0.1.15",
     "dotenv-safe": "^9.1.0",
+    "esbuild": "^0.28.2",
     "eslint": "^10.6.0",
     "eslint-plugin-astro": "^1.7.0",
     "eslint-plugin-depend": "^1.5.0",
@@ -130,8 +129,7 @@
     "svg-sprite": "^2.0.2",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.62.1",
-    "vitest": "^4.1.10",
-    "wrangler": "^4.99.0"
+    "vitest": "^4.1.10"
   },
   "nano-staged": {
     "*.{astro,js,ts}": "npm run lint:eslint -- --fix --max-warnings 0"

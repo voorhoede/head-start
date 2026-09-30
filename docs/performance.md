@@ -9,7 +9,7 @@ Head Start has selected Astro as its web framework, for one reason Astro being z
 
 ## Pre and Edge rendering
 
-Head Start is configured to pre-render all routes by default (using [Astro's `output: 'static'`](https://docs.astro.build/en/reference/configuration-reference/#output)). This means every route is cached as a static file by default. Which is great for performance. Routes that require [on-demand rendering](https://docs.astro.build/en/guides/on-demand-rendering/), opt-out of pre-rendering using `export const prerender = false`. These routes are then executed runtime on Cloudflare edge workers. These are faster than traditional serverless functions with a Node.js runtime. While a bit less powerful these Cloudflare Workers are great for performance. If you use on-demand rendering we advice you to [configure cache for runtime routes](#tip-cache-runtime-routes) for more performance.
+Head Start is configured to pre-render all routes by default (using [Astro's `output: 'static'`](https://docs.astro.build/en/reference/configuration-reference/#output)). This means every route is cached as a static file by default. Which is great for performance. Routes that require [on-demand rendering](https://docs.astro.build/en/guides/on-demand-rendering/), opt-out of pre-rendering using `export const prerender = false`. These routes are then executed at runtime in a Bunny Edge Script, on the CDN node closest to the visitor. If you use on-demand rendering we advice you to [configure cache for runtime routes](#tip-cache-runtime-routes) for more performance.
 
 
 ## DatoCMS image service
@@ -24,7 +24,7 @@ Head Start uses the facade pattern for embeds like videos. This means a placehol
 
 ## Assets caching
 
-Head Start is configured to serve all generated [assets](./assets.md) (in `/_astro/`) with immutable caching headers (see `public/_headers`). This means subsequent requests can always use the browser's network cache, which significantly speeds up page rendering.
+Head Start is configured to serve all generated [assets](./assets.md) (in `/_astro/`) with immutable caching headers (set by the Bunny adapter's `assetCacheControl`). This means subsequent requests can always use the browser's network cache, which significantly speeds up page rendering.
 
 
 ## Resource hints
@@ -66,7 +66,7 @@ Note: this may be integrated into Head Start in the future. See [#198: Cache run
 
 ## Tip: add Astro prefetch
 
-[Astro provides a configurable prefetch behaviour](https://docs.astro.build/en/guides/prefetch/) to improve performance of loading the next page. The prefetching is speculative and trades extra requests and server load for a better user experience. The behaviour doesn't fully work in every browser as Cloudflare does not provide an etag header on pages. While we see the benefits of the Astro prefetch behaviour, we haven't set a default. We advice you to try the feature in your project and configure a setting that works for you.
+[Astro provides a configurable prefetch behaviour](https://docs.astro.build/en/guides/prefetch/) to improve performance of loading the next page. The prefetching is speculative and trades extra requests and server load for a better user experience. The behaviour doesn't fully work in every browser. While we see the benefits of the Astro prefetch behaviour, we haven't set a default. We advice you to try the feature in your project and configure a setting that works for you.
 
 Note: this may be integrated into Head Start in the future. See [#201: Configure Astro prefetch behaviour](https://github.com/voorhoede/head-start/issues/201).
 
