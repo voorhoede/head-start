@@ -2,7 +2,7 @@ type BunnyRuntime = import('@bunny.net/astro-adapter').BunnyRuntime;
 
 declare namespace App {
   interface Locals {
-    runtime: BunnyRuntime;
+    runtime?: BunnyRuntime;
     datocmsEnvironment: string;
     datocmsToken: string;
     isPreview: boolean;

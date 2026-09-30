@@ -58,9 +58,9 @@ Head Start uses [Bunny's Astro adapter](https://github.com/BunnyWay/bunny-adapte
 
 ```ts
 export function GET ({ locals }) {
-  const { country } = locals.runtime;
+  const country = locals.runtime?.country;
   return new Response(JSON.stringify({ country }, null, 2));
 }
 ```
 
-The adapter exposes the country, not the city or coordinates.
+The adapter exposes the country, not the city or coordinates. `locals.runtime` is not set while prerendering, so it is optional.
