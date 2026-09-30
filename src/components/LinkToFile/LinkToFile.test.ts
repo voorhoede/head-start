@@ -84,7 +84,7 @@ describe('LinkToFile', async () => {
     });
   });
   
-  const linkMetaRegex = new RegExp(/\(.+\)$/m);
+  const linkMetaRegex = new RegExp(/\(.+\)\s*$/m);
 
   test('includes file meta between brackets', () => {
     fileScenarios.forEach((component) => {

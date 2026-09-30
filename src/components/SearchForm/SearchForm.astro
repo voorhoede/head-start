@@ -27,7 +27,7 @@ const hasHint = query && !hasValidQuery(query);
       </a>
     )
   }
-  <label for={`search-${blockId}`}>{t('search_label')}</label>
+  <label for={`search-${blockId}`}>{t('search_label')}</label>{' '}
   <input
     type="search"
     id={`search-${blockId}`}
@@ -37,6 +37,6 @@ const hasHint = query && !hasValidQuery(query);
     minlength={minQueryLength}
     aria-describedby={hasHint ? `search-${blockId}-hint` : undefined}
     required
-  />
+  />{' '}
   <button type="submit">{t('search')}</button>
 </form>
