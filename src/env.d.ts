@@ -8,7 +8,7 @@ declare namespace App {
     isPreview: boolean;
     isPreviewAuthOk: boolean;
     editModeOn: boolean;
-    previewSecret: string;
+    previewSecret?: string;
   }
 }
 

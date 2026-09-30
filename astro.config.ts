@@ -37,6 +37,7 @@ export default defineConfig({
       HEAD_START_PREVIEW_SECRET: envField.string({
         context: 'server',
         access: 'secret',
+        optional: true,
       }),
       HEAD_START_PREVIEW: envField.boolean({
         context: 'server',
