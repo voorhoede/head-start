@@ -69,6 +69,7 @@
     "datocms-structured-text-utils": "^6.0.0",
     "get-video-id": "^4.2.0",
     "github-slugger": "^2.0.0",
+    "graphql": "^16.14.0",
     "hast-util-from-html": "^2.0.3",
     "hast-util-select": "^6.0.4",
     "hast-util-to-html": "^9.0.5",
@@ -90,6 +91,7 @@
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0",
     "workbox-cacheable-response": "^7.4.1",
+    "workbox-core": "^7.4.1",
     "workbox-expiration": "^7.4.1",
     "workbox-routing": "^7.4.1",
     "workbox-strategies": "^7.4.1"
@@ -103,9 +105,11 @@
     "@graphql-codegen/typescript": "^6.0.2",
     "@graphql-codegen/typescript-document-nodes": "^6.0.1",
     "@graphql-codegen/typescript-operations": "^6.0.4",
+    "@inquirer/confirm": "^6.1.1",
     "@stylistic/eslint-plugin": "^5.10.0",
     "@types/accept-language-parser": "^1.5.6",
     "@types/dotenv-safe": "^9.1.0",
+    "@types/hast": "^3.0.5",
     "@types/jsdom": "^28.0.3",
     "chokidar-cli": "^3.0.0",
     "datocms-listen": "^0.1.15",
@@ -129,6 +133,7 @@
     "svg-sprite": "^2.0.2",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.62.1",
+    "vite": "^8.3.1",
     "vitest": "^4.1.10"
   },
   "nano-staged": {
