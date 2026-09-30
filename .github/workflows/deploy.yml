@@ -46,7 +46,7 @@ jobs:
         run: npm run build
 
       - name: Deploy to Bunny
-        uses: voorhoede/bunny-edge-deploy@7b5931a7941a702ace144cdcd0dfa1b661f47f51 # feat/build-manifest-deploy
+        uses: voorhoede/bunny-edge-deploy@120fbb68be0d2a8596c7a5360c459b87ad56f3bf # feat/build-manifest-deploy
         with:
           bunny-api-key: ${{ secrets.BUNNY_API_KEY }}
           # `/` redirects to a locale, and the smoke test expects a 2xx.
