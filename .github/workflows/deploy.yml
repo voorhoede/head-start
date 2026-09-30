@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: read
+  deployments: write # records each deploy in the repository's Environments
 
 # One deploy at a time; a running deploy is never cancelled, so its upload and publish finish together.
 concurrency:
@@ -49,7 +50,7 @@ jobs:
         run: npm run build
 
       - name: Deploy to Bunny
-        uses: voorhoede/bunny-edge-deploy@fb8f18a43d729af49d0f7988ba8e1abc26f0aed1 # feat/build-manifest-deploy
+        uses: voorhoede/bunny-edge-deploy@f41ee753a07dae8d575cf81c800a7c193529161a # feat/build-manifest-deploy
         with:
           bunny-api-key: ${{ secrets.BUNNY_API_KEY }}
           secrets: |
