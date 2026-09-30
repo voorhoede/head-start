@@ -1,13 +1,8 @@
 ---
-import siteDataUntyped from '~/lib/site.json';
+import { datocmsInternalDomain } from '~/lib/datocms';
 
-type SiteData = {
-  internalDomain?: string;
-};
-
-const siteData = siteDataUntyped as SiteData;
 const { datocmsEnvironment, datocmsToken, isPreview, editModeOn } = Astro.locals;
-const projectName = siteData.internalDomain?.split('.')[0] || null;
+const projectName = datocmsInternalDomain?.split('.')[0] || null;
 ---
 <preview-mode
   data-datocms-environment={ datocmsEnvironment }
