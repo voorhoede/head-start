@@ -49,11 +49,9 @@ jobs:
         run: npm run build
 
       - name: Deploy to Bunny
-        uses: voorhoede/bunny-edge-deploy@120fbb68be0d2a8596c7a5360c459b87ad56f3bf # feat/build-manifest-deploy
+        uses: voorhoede/bunny-edge-deploy@ea9588aed8ae5c4e0b11b93e7235cd1e0150e1f8 # feat/build-manifest-deploy
         with:
           bunny-api-key: ${{ secrets.BUNNY_API_KEY }}
-          # `/` redirects to a locale, and the smoke test expects a 2xx.
-          smoke-route: /en/
           secrets: |
             DATOCMS_READONLY_API_TOKEN=${{ secrets.DATOCMS_READONLY_API_TOKEN }}
             HEAD_START_PREVIEW_SECRET=${{ secrets.HEAD_START_PREVIEW_SECRET }}
