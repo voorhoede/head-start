@@ -4,9 +4,9 @@
 
 ## `src/assets/` vs `public/` assets
 
-[Astro copies all assets in `public/` to the web root](https://docs.astro.build/en/basics/project-structure/#public) (`dist/`). Using [the `public/` directory](../public/) is suitable for static assets that don't require a build step and should be available as is. For example a some `.wellknown` file.
+[Astro copies all assets in `public/` to the web root](https://docs.astro.build/en/basics/project-structure/#public) (`dist/client/`). Using [the `public/` directory](../public/) is suitable for static assets that don't require a build step and should be available as is. For example a some `.wellknown` file.
 
-Head Start uses [the `src/assets/` directory](../src/assets/) to organise raw assets that do require a build step. You are responsible for the processing and importing of these assets. Head Start provides a pre-configured setup for [fonts](#fonts) and [icons](#icons). These assets are eventually compiled to `dist/_astro/` and are configured to be served with immutable cache headers for performance.
+Head Start uses [the `src/assets/` directory](../src/assets/) to organise raw assets that do require a build step. You are responsible for the processing and importing of these assets. Head Start provides a pre-configured setup for [fonts](#fonts) and [icons](#icons). These assets are eventually compiled to `dist/client/_astro/` and are configured to be served with immutable cache headers for performance.
 
 
 ## Fonts

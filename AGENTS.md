@@ -8,7 +8,7 @@ Head Start is a starter kit by [De Voorhoede](https://www.voorhoede.nl/en/) for 
 
 - **Framework:** [Astro](https://astro.build/) (v7, `output: 'static'` with on-demand routes, via [Bunny's Astro adapter](https://github.com/BunnyWay/bunny-adapters/tree/main/packages/astro)).
 - **CMS:** [DatoCMS](https://www.datocms.com/) — content is fetched via GraphQL; schema is managed through migrations in [`config/datocms/migrations/`](./config/datocms/migrations/).
-- **Hosting:** [Bunny.net](https://bunny.net/). Astro's server runs as a Bunny Edge Script behind a pull zone and reads the built files from Bunny Storage. Deployed by [`.github/workflows/deploy.yml`](./.github/workflows/deploy.yml) with [bunny-edge-deploy](https://github.com/voorhoede/bunny-edge-deploy). Local preview uses `astro preview`, which needs Deno 2.
+- **Hosting:** [Bunny.net](https://bunny.net/). Astro's server runs as a Bunny Edge Script behind a pull zone and reads the built files from Bunny Storage. Deployed by [`.github/workflows/deploy.yml`](./.github/workflows/deploy.yml) with [bunny-edge-deploy](https://github.com/voorhoede/bunny-edge-deploy). Local preview uses `astro preview`, which needs Deno 2. Preview branches (preview mode) are not deployed yet: never run the deploy workflow on one, since it deploys to the production Edge Script.
 - **Philosophy:** no default JS framework, no default styling, progressively enhanced, fully accessible, highly performant. See [README › Philosophy](./README.md#philosophy) before suggesting new dependencies.
 
 The repo is a small monorepo: the root is the Astro app; [`config/datocms/`](./config/datocms/) is an npm workspace for CMS-side tooling.
@@ -132,7 +132,6 @@ If you find yourself repeating the same action, stop and re-plan instead of retr
 
 Flagging these so agents don't faithfully replicate them:
 
-- **Docs have typos.** [`docs/getting-started.md`](./docs/getting-started.md) contains "Prequisites" (should be "Prerequisites") and "You're project is now deployed" (should be "Your"). [README › Commands](./README.md#commands) describes `lint` as "valide HTML output" (should be "validate"). Fix opportunistically when editing those files, but don't open a PR solely for typo churn.
 - **`astro -- --help` hint is misleading.** The README suggests `astro -- --help`; the working invocations are `npm run astro -- --help` or `npx astro --help`.
 - **Getting-started seed gap.** [Issue #27](https://github.com/voorhoede/head-start/issues/27) — the project still requires manual creation of SEO / Home / 404 content in DatoCMS after running migrations or the build will fail. Mention this when guiding a new setup.
 - **`docs/testing.md` is out of date** (it says e2e is "planned"). Check the repo for whatever is actually wired up before asserting test coverage to the user.

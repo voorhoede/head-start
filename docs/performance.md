@@ -34,7 +34,7 @@ Head Start uses resource hints to improve perceived page speed. `link[rel=precon
 
 ## Service Worker
 
-Head Start adds a basic Service Worker with a network-first strategy for pages and a cache-first strategy for assets. This ensures visited pages always load within a few seconds, even when the server can't be reached. The Service Worker setup acts as a foundation for future performance improvements.
+Head Start adds a basic Service Worker with a network-first strategy for pages. This ensures visited pages always load within a few seconds, even when the server can't be reached. The Service Worker setup acts as a foundation for future performance improvements.
 
 
 ## Tip: cache runtime routes
@@ -66,7 +66,7 @@ Note: this may be integrated into Head Start in the future. See [#198: Cache run
 
 ## Tip: add Astro prefetch
 
-[Astro provides a configurable prefetch behaviour](https://docs.astro.build/en/guides/prefetch/) to improve performance of loading the next page. The prefetching is speculative and trades extra requests and server load for a better user experience. The behaviour doesn't fully work in every browser. While we see the benefits of the Astro prefetch behaviour, we haven't set a default. We advice you to try the feature in your project and configure a setting that works for you.
+[Astro provides a configurable prefetch behaviour](https://docs.astro.build/en/guides/prefetch/) to improve performance of loading the next page. The prefetching is speculative and trades extra requests and server load for a better user experience. [Safari and Firefox only use a prefetched page when it has cache headers](https://docs.astro.build/en/guides/prefetch/#browser-support). Prerendered pages are served with `Cache-Control` and an `ETag`; for on-demand routes you [set these yourself](#tip-cache-runtime-routes). While we see the benefits of the Astro prefetch behaviour, we haven't set a default. We advice you to try the feature in your project and configure a setting that works for you.
 
 Note: this may be integrated into Head Start in the future. See [#201: Configure Astro prefetch behaviour](https://github.com/voorhoede/head-start/issues/201).
 

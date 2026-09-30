@@ -9,8 +9,7 @@ import { defineMiddleware } from 'astro:middleware';
  * @see https://www.rfc-editor.org/rfc/rfc8288 (Web Linking)
  * @see https://www.iana.org/assignments/link-relations/link-relations.xhtml
  *
- * ⚠️ These headers are only applied to runtime responses, so keep these rules in sync
- *    with their static counterparts in public/_headers
+ * ⚠️ Prerendered pages get these headers too, but files that are not pages (such as /_astro/*) do not.
  */
 const linkHeader = '</llms.txt>; rel="describedby"; type="text/plain"';
 

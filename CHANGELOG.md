@@ -13,17 +13,18 @@ See [documentation on Upgrading](docs/upgrading.md#find-the-changes).
 
 ### Changed
 
-- Upgraded to Astro 7. Whitespace between inline elements is now removed the way JSX does it (`compressHTML: 'jsx'`); `LinkToFile` adds its space explicitly.
-- Moved hosting from Cloudflare Workers to Bunny.net, with [Bunny's Astro adapter](https://github.com/BunnyWay/bunny-adapters/tree/main/packages/astro) and a GitHub Actions deploy workflow (`.github/workflows/deploy.yml`). See the [decision log](docs/decision-log/2026-09-30-workers-to-bunny.md).
-- `npm run preview` now runs `astro preview`, which needs Deno 2. `npm run deploy`, `npm run cloudflare:build` and `wrangler` are removed.
-- Build environment variables `WORKERS_CI` / `WORKERS_CI_BRANCH` replaced by GitHub's `GITHUB_ACTIONS` / `GITHUB_REF_NAME`.
-- `DATOCMS_READONLY_API_TOKEN` and `HEAD_START_PREVIEW_SECRET` are no longer compiled into the server code; they are set as secrets on the Edge Script.
+- Upgraded to Astro 7. Whitespace between inline elements is now removed the way JSX does it (`compressHTML: 'jsx'`). Components that need a space between inline elements, such as `LinkToFile`, `SearchForm`, `OpenInLlm` and `AppMenuItem`, add it explicitly with `{' '}`.
+- Moved hosting from Cloudflare (Pages, and more recently Workers) to Bunny.net, with [Bunny's Astro adapter](https://github.com/BunnyWay/bunny-adapters/tree/main/packages/astro) and a GitHub Actions deploy workflow (`.github/workflows/deploy.yml`). See the [decision log](docs/decision-log/2026-09-30-workers-to-bunny.md).
+  - The default production URL is now `https://<repository-name>.b-cdn.net` (override with a custom domain as before).
+  - A DatoCMS build trigger starts the deploy workflow through GitHub's `repository_dispatch`. See [getting started](docs/getting-started.md#connect-datocms-to-the-deploy-workflow).
+  - `npm run preview` now runs `astro preview`, which needs Deno 2. `npm run deploy`, `npm run cloudflare:build` and `wrangler` are removed.
+  - Build environment variables `CF_PAGES*` and `WORKERS_CI*` are replaced by GitHub's `GITHUB_ACTIONS`, `GITHUB_REF_NAME` and `GITHUB_HEAD_REF`.
+  - **Breaking:** `locals.runtime.cf` is replaced by `locals.runtime.country`, and `locals.runtime` is only set on routes that render on demand. City and coordinates are not available.
+  - `DATOCMS_READONLY_API_TOKEN` and `HEAD_START_PREVIEW_SECRET` are no longer compiled into the server code; they are set as secrets on the Edge Script.
+  - The preview branch is not deployed yet. Preview mode still works locally.
+  - `/x` and `/x/` both answer 200 with the same page, where Cloudflare redirected one to the other. Canonical tags keep search engines on one URL.
+  - Files other than HTML, such as `robots.txt`, are served with a one-year immutable `Cache-Control`. Every deploy purges the CDN cache.
 - The service worker is now deployed. It was written outside the directory the host serves, so `/service-worker.js` answered 404.
-- Migrated hosting from Cloudflare Pages to Cloudflare Workers with static assets. Deployment now uses `wrangler deploy` via Cloudflare Workers Builds instead of the legacy Pages deployment pipeline.
-- `npm run preview` now uses `wrangler dev` instead of `wrangler pages dev ./dist`.
-- `npm run deploy` added as the explicit deploy command.
-- Build environment variables updated: `CF_PAGES` / `CF_PAGES_BRANCH` / `CF_PAGES_URL` replaced by `WORKERS_CI` / `WORKERS_CI_BRANCH` / `WORKERS_CI_COMMIT_SHA`.
-- Default production URL changed from `*.pages.dev` to `*.workers.dev` (override with a custom domain as before).
 
 - `AccordionBlock` (formerly `GroupingBlock` `accordion-open`): now only the **first** item starts expanded when "Open first item on load" is enabled. Previously all items were opened simultaneously, which was a bug.
 - `GroupingBlock` is deprecated and will be removed in a future release. Use the new dedicated blocks for new content. Existing `GroupingBlock` records in the CMS should be migrated before removing the model.
