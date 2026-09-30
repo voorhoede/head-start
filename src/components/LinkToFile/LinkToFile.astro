@@ -31,7 +31,7 @@ const metaText = [localeText, format, size].filter(Boolean).join(', ');
   type={file.mimeType}
   {...props}
 >
-  <span class="title"><slot>{title}</slot></span>
+  <span class="title"><slot>{title}</slot></span>{' '}
   ({metaText})
   <Icon class="icon" name="download" /></a
 >

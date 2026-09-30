@@ -13,6 +13,7 @@ See [documentation on Upgrading](docs/upgrading.md#find-the-changes).
 
 ### Changed
 
+- Upgraded to Astro 7. Whitespace between inline elements is now removed the way JSX does it (`compressHTML: 'jsx'`); `LinkToFile` adds its space explicitly.
 - Migrated hosting from Cloudflare Pages to Cloudflare Workers with static assets. Deployment now uses `wrangler deploy` via Cloudflare Workers Builds instead of the legacy Pages deployment pipeline.
 - `npm run preview` now uses `wrangler dev` instead of `wrangler pages dev ./dist`.
 - `npm run deploy` added as the explicit deploy command.

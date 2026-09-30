@@ -93,6 +93,13 @@ describe('LinkToFile', async () => {
     });
   });
 
+  test('separates the title from the meta data with a space', () => {
+    fileScenarios.forEach((component, index) => {
+      const { title } = fileScenariosProps[index].record;
+      expect(component.querySelector('a')?.textContent).toContain(`${title} (`);
+    });
+  });
+
   test('renders the file\'s format capitalised as meta data', () => {
     fileScenarios.forEach((component, index) => {
       const format = fileScenariosProps[index].record.file.format;
