@@ -30,7 +30,7 @@ The site is created as lightweight progressively enhanced website connected to a
 
 - [Astro](https://astro.build/) - web framework to structure this project. Astro is selected because it embraces web standards, is designed for performance, and supports all our favourite UI frameworks (React, Vue and Svelte).
 - [DatoCMS](https://www.datocms.com/) - a headless CMS is connected to manage web content. DatoCMS is selected for its modular and structured content options, advanced image service, multi-language support and GraphQL API.
-- [Cloudflare Workers](https://workers.cloudflare.com/) - is a serverless hosting platform. Cloudflare Workers is selected for its reliable CDN, zero cold-start runtime, green hosting and affordable pricing.
+- [Bunny.net](https://bunny.net/) - is a CDN with edge compute. Pages that render on demand run as a [Bunny Edge Script](https://bunny.net/docs/scripting), and the built files are served from Bunny Storage. See the [decision to move to Bunny](docs/decision-log/2026-09-30-workers-to-bunny.md).
 
 ```mermaid
 %%{
@@ -52,7 +52,7 @@ flowchart LR
 
 
         CMS[(DatoCMS)]
-        Hosting(Cloudflare Workers)
+        Hosting(Bunny.net)
         CMS -- publish --> Hosting
 
     Repository -- git commit --> Hosting
@@ -94,8 +94,7 @@ All commands are run from the root of the project, from a terminal:
 |:------------------------| :-----------------------------------------------
 | `dev`                   | Starts local dev server at `localhost:4323` (head in T9)
 | `build`                 | Build your production site to `./dist/`
-| `preview`               | Preview your build locally with `wrangler dev`, before deploying
-| `deploy`                | Deploy to Cloudflare Workers with `wrangler deploy`
+| `preview`               | Preview your build locally as a Bunny Edge Script (needs [Deno 2](https://deno.com/)), before deploying
 | `astro ...`             | Run commands like `astro add` (see `astro -- --help`)
 | `create`                | Scaffold new Block, Component, API or Page route
 | `analyze`               | Analyze and visualise both client & server bundles

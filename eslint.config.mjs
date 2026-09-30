@@ -60,7 +60,6 @@ export default defineConfig([
     '**/.astro/**',
     '.agents/skills/**',
     'dist/*',
-    'functions/*',
     'src/lib/datocms/types.ts',
     '!**/.graphqlrc.ts',
   ]),

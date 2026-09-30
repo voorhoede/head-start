@@ -1,6 +1,6 @@
 # Routing
 
-**Head Start leverages [Astro file-based routing](https://docs.astro.build/en/core-concepts/routing/#_top) combined with Cloudflare features for redirects and page not found behaviour. The setup is enhanced with i18n routing, API routing, nested page routing and helpers to resolve routes.**
+**Head Start leverages [Astro file-based routing](https://docs.astro.build/en/core-concepts/routing/#_top) combined with middleware for redirects and page not found behaviour. The setup is enhanced with i18n routing, API routing, nested page routing and helpers to resolve routes.**
 
 ## Routing middleware
 
@@ -52,13 +52,15 @@ Head Start supports redirect rules which are editable and [sortable](https://www
 
 \* See [decision entry on redirects](./decision-log/2024-09-24-redirects-middleware.md) for motivation.
 
-## Cloudflare runtime
+## Bunny runtime
 
-Head Start uses the [Astro Cloudflare adapter](https://docs.astro.build/en/guides/integrations-guide/cloudflare/) to deploy to Cloudflare Pages. This means routes have access to the [Cloudflare runtime](https://docs.astro.build/en/guides/integrations-guide/cloudflare/#cloudflare-runtime) via `locals.runtime`. For example, each dynamic route, has access to geo information of the request:
+Head Start uses [Bunny's Astro adapter](https://github.com/BunnyWay/bunny-adapters/tree/main/packages/astro) to run on a Bunny Edge Script. Routes that render on demand have access to what the Bunny network knows about a request via `locals.runtime`: the visitor's `country`, the `requestId`, the `clientAddress`, `waitUntil`, the edge `caches` and `env`. For example:
 
 ```ts
 export function GET ({ locals }) {
-  const { city, latitude, longitude } = locals.runtime.cf;
-  return new Response(JSON.stringify({ city, latitude, longitude }, null, 2));
+  const { country } = locals.runtime;
+  return new Response(JSON.stringify({ country }, null, 2));
 }
 ```
+
+The adapter exposes the country, not the city or coordinates.
