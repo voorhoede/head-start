@@ -5,6 +5,9 @@ on:
     branches:
       - feat/bunny
   workflow_dispatch:
+  # Sent by a DatoCMS build trigger when editors publish; see docs/getting-started.md.
+  repository_dispatch:
+    types: [datocms-publish]
 
 permissions:
   contents: read

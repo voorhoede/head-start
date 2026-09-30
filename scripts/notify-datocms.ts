@@ -15,8 +15,8 @@ async function notifyDatocms({ status }: { status: 'success' | 'error' }) {
   const client = buildClient({ apiToken: DATOCMS_API_TOKEN! });
   const triggers = await client.buildTriggers.list();
   const matchingTrigger = triggers.find(trigger => {
-    const payload = trigger.adapter_settings?.payload as { branch?: string };
-    return payload?.branch === GITHUB_REF_NAME;
+    const payload = trigger.adapter_settings?.payload as { branch?: string, client_payload?: { branch?: string } };
+    return (payload?.client_payload?.branch ?? payload?.branch) === GITHUB_REF_NAME;
   });
   if (!matchingTrigger) {
     console.log(`No matching DatoCMS build trigger found for branch '${GITHUB_REF_NAME}'`);

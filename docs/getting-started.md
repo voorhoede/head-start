@@ -109,21 +109,24 @@ Head Start deploys with the [deploy workflow](../.github/workflows/deploy.yml), 
 
 The first run creates a storage zone, an Edge Script and a pull zone, all named after your repository, and the site is live at `https://<repository-name>.b-cdn.net`. Set `productionUrl` in [`astro.config.ts`](../astro.config.ts) to that address, or to your custom domain once you have added it to the pull zone in the Bunny dashboard.
 
-Rebuilding when editors publish in DatoCMS is not wired up for Bunny yet.
+## Connect DatoCMS to the deploy workflow
 
-## Connect DatoCMS site search
+A DatoCMS build trigger starts the deploy workflow when editors publish, and powers site search.
 
+- Create a GitHub personal access token that can create repository dispatch events for your repository (a classic token needs the `repo` scope).
 - Go to your DatoCMS project > Project settings > Build triggers (`/project_settings/build_triggers/`) and hit 'Add new build triggers'.
-- Select 'Custom webook'.
+- Select 'Custom webhook'.
 - Set 'build trigger name' to "Production".
 - Set 'Website frontend URL' to your production domain (like `https://<repository-name>.b-cdn.net/` or a custom domain).
 - Enable site search.
-- Set 'JSON payload' to `{ "branch": "main" }`.
+- Set 'Trigger URL' to `https://api.github.com/repos/<owner>/<repository>/dispatches`.
+- Add the headers `Authorization: Bearer <token>`, `Accept: application/vnd.github+json` and `User-Agent: datocms`.
+- Set 'JSON payload' to `{ "event_type": "datocms-publish", "client_payload": { "branch": "main" } }`.
 - Hit 'Save settings'.
 - Copy the build trigger ID from the page URL `/project_settings/build_triggers/<id>/edit` (like `30535`).
 - Open `/datocms-environment.ts` and set the `buildTriggerId` there, to connect the search functionality to the indexed deployment.
 
-The deploy workflow reports each deploy's result to the build trigger whose payload `branch` matches the deployed branch. Note that `buildTriggerId` in `/datocms-environment.ts` should always be set to the production build trigger.
+The deploy workflow reports each deploy's result to the build trigger whose payload `client_payload.branch` matches the deployed branch. Note that `buildTriggerId` in `/datocms-environment.ts` should always be set to the production build trigger.
 
 ## Enable AI agent discovery (DNS-AID) (optional)
 
