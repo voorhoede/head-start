@@ -49,7 +49,7 @@ jobs:
         run: npm run build
 
       - name: Deploy to Bunny
-        uses: voorhoede/bunny-edge-deploy@ea9588aed8ae5c4e0b11b93e7235cd1e0150e1f8 # feat/build-manifest-deploy
+        uses: voorhoede/bunny-edge-deploy@fb8f18a43d729af49d0f7988ba8e1abc26f0aed1 # feat/build-manifest-deploy
         with:
           bunny-api-key: ${{ secrets.BUNNY_API_KEY }}
           secrets: |
