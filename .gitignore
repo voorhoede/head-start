@@ -1,7 +1,6 @@
 # build output
 dist/
-functions/
-.wrangler/
+.bunny/
 
 # generated types
 .astro/
@@ -10,7 +9,6 @@ functions/
 node_modules/
 
 # environment variables
-.dev.vars
 .env
 .env.production
 

@@ -14,5 +14,5 @@ function getGitBranch() {
 }
 
 export const isPreview = previewBranches.includes(
-  process.env.WORKERS_CI_BRANCH || getGitBranch(),
+  process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF_NAME || getGitBranch(),
 );

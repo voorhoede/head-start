@@ -84,12 +84,19 @@ describe('LinkToFile', async () => {
     });
   });
   
-  const linkMetaRegex = new RegExp(/\(.+\)$/m);
+  const linkMetaRegex = new RegExp(/\(.+\)\s*$/m);
 
   test('includes file meta between brackets', () => {
     fileScenarios.forEach((component) => {
       const linkMeta = component.querySelector('a')?.textContent?.match(linkMetaRegex)?.[0] || '';
       expect(linkMeta).toMatch(linkMetaRegex);
+    });
+  });
+
+  test('separates the title from the meta data with a space', () => {
+    fileScenarios.forEach((component, index) => {
+      const { title } = fileScenariosProps[index].record;
+      expect(component.querySelector('a')?.textContent).toContain(`${title} (`);
     });
   });
 

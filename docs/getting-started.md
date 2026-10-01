@@ -2,7 +2,7 @@
 
 **Head Start is a starterkit to easily bootstrap your next web project. Here's how to get started.**
 
-## Prequisites
+## Prerequisites
 
 Head Start requires Node.js to be installed. See [.node-version](../.node-version) for the correct version.
 
@@ -90,7 +90,7 @@ Go to your repository's Settings > Secrets and Variables > Actions > Repository 
 
 Your PR's will now be able to run the pre-configured GitHub Actions.
 
-The next step is creating a Cloudflare Pages application so your project can be deployed to the cloud.
+The next step is deploying your project to Bunny.net.
 
 ## Add mandatory content to your DatoCMS project
 
@@ -98,41 +98,41 @@ The next step is creating a Cloudflare Pages application so your project can be 
 - Add the required items for the `SEO` and `Social Card`.
 **If the above items are not set, your page will not be able to build**
 
-## Create a Cloudflare Pages application
+## Deploy to Bunny.net
 
-- [Signup](https://dash.cloudflare.com/sign-up) or [login](https://dash.cloudflare.com/login) to your Cloudflare Dashboard.
-- Go to Workers & Pages and hit 'Create application' and select 'Pages' (`/<your-cloudflare>/workers-and-pages/create/pages`).
-- Connect to Git(Hub), select your repository and hit 'Begin setup'.
-- Set 'Build command' to `npm run cloudflare:build`.
-- Set 'Build output directory' to `dist/`.
-- Under 'Environment variables' add the variables from your `.env` file.
-- Hit 'Save and deploy'.
+Head Start deploys with the [deploy workflow](../.github/workflows/deploy.yml), which runs [bunny-edge-deploy](https://github.com/voorhoede/bunny-edge-deploy) after `npm run build`.
 
-You're project is now deployed and will automatically be deployed on every git commit. To ensure changes in the CMS also redeploy the project, we need to connect DatoCMS to Cloudflare.
+- Create a [bunny.net](https://bunny.net/) account and copy its account API key from the dashboard.
+- Go to your repository's Settings > Secrets and Variables > Actions > Repository Secrets and add `BUNNY_API_KEY` and `HEAD_START_PREVIEW_SECRET`, next to the DatoCMS tokens.
+- Set the branches that deploy under `on.push.branches` in the deploy workflow.
+- Push to one of those branches, or run the workflow by hand from the Actions tab.
 
-## Connect DatoCMS to Cloudflare Pages
+The first run creates a storage zone, an Edge Script and a pull zone, all named after your repository, and the site is live at `https://<repository-name>.b-cdn.net`. Set `productionUrl` in [`astro.config.ts`](../astro.config.ts) to that address, or to your custom domain once you have added it to the pull zone in the Bunny dashboard.
 
-- Go to your Cloudflare Pages application > Settings > Builds & deployments and hit '[Add deploy hook](https://developers.cloudflare.com/pages/configuration/deploy-hooks/)'.
-- Name the deploy hook "DatoCMS - Production" and set the branch to `main`.
-- Copy the deploy hook URL.
+## Connect DatoCMS to the deploy workflow
+
+A DatoCMS build trigger starts the deploy workflow when editors publish, and powers site search.
+
+- Create a GitHub personal access token that can create repository dispatch events for your repository (a classic token needs the `repo` scope).
 - Go to your DatoCMS project > Project settings > Build triggers (`/project_settings/build_triggers/`) and hit 'Add new build triggers'.
-- Select 'Custom webook'.
+- Select 'Custom webhook'.
 - Set 'build trigger name' to "Production".
-- Set 'Website frontend URL' to your production domain (like `https://<project-name>.pages.dev/` or a custom domain).
+- Set 'Website frontend URL' to your production domain (like `https://<repository-name>.b-cdn.net/` or a custom domain).
 - Enable site search.
-- Paste the deploy hook under 'Trigger URL'.
-- Set 'JSON payload' to `{ "branch": "main" }`.
+- Set 'Trigger URL' to `https://api.github.com/repos/<owner>/<repository>/dispatches`.
+- Add the headers `Authorization: Bearer <token>`, `Accept: application/vnd.github+json` and `User-Agent: datocms`.
+- Set 'JSON payload' to `{ "event_type": "datocms-publish", "client_payload": { "branch": "main" } }`.
 - Hit 'Save settings'.
 - Copy the build trigger ID from the page URL `/project_settings/build_triggers/<id>/edit` (like `30535`).
 - Open `/datocms-environment.ts` and set the `buildTriggerId` there, to connect the search functionality to the indexed deployment.
 
-That's it. Now deployments are automatically triggered from both git and when editors hit 'Build now' in the CMS. If you add additional build triggers in the future, you can repeat those steps. Note that `buildTriggerId` in `/datocms-environment.ts` should always be set to the production build trigger.
+The deploy workflow reports each deploy's result to the build trigger whose payload `client_payload.branch` matches the deployed branch. Note that `buildTriggerId` in `/datocms-environment.ts` should always be set to the production build trigger.
 
 ## Enable AI agent discovery (DNS-AID) (optional)
 
-Head Start serves an agent registry at [`/.well-known/agents/index.json`](../src/pages/.well-known/agents/index.json.ts) (see [SEO → Agent discovery](./seo.md#agent-discovery-dns-aid)). To make it discoverable via [DNS for AI Discovery (DNS-AID)](https://datatracker.ietf.org/doc/draft-mozleywilliams-dnsop-dnsaid/), add DNS records on your own domain. This is optional and only applies once you use a custom domain on Cloudflare.
+Head Start serves an agent registry at [`/.well-known/agents/index.json`](../src/pages/.well-known/agents/index.json.ts) (see [SEO → Agent discovery](./seo.md#agent-discovery-dns-aid)). To make it discoverable via [DNS for AI Discovery (DNS-AID)](https://datatracker.ietf.org/doc/draft-mozleywilliams-dnsop-dnsaid/), add DNS records on your own domain. This is optional and only applies once you use a custom domain.
 
-1. **Publish DNS records.** In your Cloudflare DNS settings, add [`SVCB`/`HTTPS`](https://www.rfc-editor.org/rfc/rfc9460) records under `_agents.<domain>`. The `_index._agents.<domain>` record points clients to where the registry is served; service-specific records (e.g. `_a2a._agents.<domain>`) point to individual agents:
+1. **Publish DNS records.** At your DNS provider, add [`SVCB`/`HTTPS`](https://www.rfc-editor.org/rfc/rfc9460) records under `_agents.<domain>`. The `_index._agents.<domain>` record points clients to where the registry is served; service-specific records (e.g. `_a2a._agents.<domain>`) point to individual agents:
 
    ```dns
    _index._agents.example.com.  3600 IN SVCB 1 example.com. alpn="h2" port=443
@@ -141,7 +141,7 @@ Head Start serves an agent registry at [`/.well-known/agents/index.json`](../src
 
    Point the `_index` record's target (and `well-known` path, if used) at your site, so `_index._agents.<domain>` resolves to `/.well-known/agents/index.json`.
 
-2. **Enable DNSSEC.** Sign the zone so validating resolvers return authenticated data. On Cloudflare this is a [one-click setting](https://developers.cloudflare.com/dns/dnssec/) under DNS → Settings. This is the part a DNS-AID/DNSSEC audit checks — it cannot be set in application code.
+2. **Enable DNSSEC.** Sign the zone so validating resolvers return authenticated data. Most DNS providers, including [Bunny DNS](https://bunny.net/docs/dns/dnssec), offer this as a setting. This is the part a DNS-AID/DNSSEC audit checks, and it cannot be set in application code.
 
 ## What's next?
 

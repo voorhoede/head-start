@@ -11,6 +11,7 @@ import siteData from '~/lib/site.json';
 const wait = (milliSeconds: number) => new Promise((resolve) => setTimeout(resolve, milliSeconds));
 
 export const datocmsAssetsOrigin = 'https://www.datocms-assets.com/';
+export const datocmsInternalDomain = (siteData as { internalDomain?: string | null }).internalDomain ?? null;
 export const datocmsGraphqlOrigin = 'https://graphql.datocms.com/';
 
 type DatocmsRequest = {
@@ -60,9 +61,8 @@ export async function datocmsRequest<
     // Enable stega encoding for visual editing (click-to-edit overlays)
     // @see https://www.datocms.com/docs/astro/visual-editing
     headers.append('X-Visual-Editing', 'v1');
-    const baseEditingUrl = (siteData as { internalDomain?: string }).internalDomain;
-    if (baseEditingUrl) {
-      headers.append('X-Base-Editing-Url', `https://${baseEditingUrl}`);
+    if (datocmsInternalDomain) {
+      headers.append('X-Base-Editing-Url', `https://${datocmsInternalDomain}`);
     }
   }
 

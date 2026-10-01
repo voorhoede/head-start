@@ -2,8 +2,7 @@ import { defineMiddleware } from 'astro:middleware';
 
 /**
  * Security Headers:
- * ⚠️ These headers are only applied to runtime responses, so keep these rules in sync 
- *    with their static counterparts in public/_headers
+ * ⚠️ Prerendered pages get these headers too, but files that are not pages (such as /_astro/*) do not.
  * 
  * Can be teste with: https://securityheaders.com/
  */
