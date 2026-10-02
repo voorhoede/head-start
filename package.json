@@ -56,7 +56,7 @@
   "dependencies": {
     "@astrojs/check": "^0.9.10",
     "@astrojs/sitemap": "^3.7.4",
-    "@bunny.net/astro-adapter": "0.1.0",
+    "@bunny.net/astro-adapter": "file:vendor/bunny.net-astro-adapter-0.1.0-middleware.785a7ee.tgz",
     "@datocms/astro": "^0.6.13",
     "@datocms/content-link": "^0.3.23",
     "@fontsource/archivo": "^5.1.0",
