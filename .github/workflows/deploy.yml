@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - bunny-full-edge
+      - poc/bunny-full-edge
   workflow_dispatch:
 
 permissions:
