@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - feat/bunny
+      - poc/bunny
   workflow_dispatch:
   # Sent by a DatoCMS build trigger when editors publish; see docs/getting-started.md.
   repository_dispatch:
