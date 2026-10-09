@@ -1,13 +1,14 @@
-type Runtime = import('@astrojs/cloudflare').Runtime<Env>;
+type BunnyRuntime = import('@bunny.net/astro-adapter').BunnyRuntime;
 
 declare namespace App {
-  interface Locals extends Runtime {
+  interface Locals {
+    runtime?: BunnyRuntime;
     datocmsEnvironment: string;
     datocmsToken: string;
     isPreview: boolean;
     isPreviewAuthOk: boolean;
     editModeOn: boolean;
-    previewSecret: string;
+    previewSecret?: string;
   }
 }
 

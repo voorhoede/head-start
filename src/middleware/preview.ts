@@ -12,10 +12,10 @@ export const hashSecret = async (secret: string) => {
 };
 
 export const preview = defineMiddleware(async ({ cookies, locals }, next) => {
-  const previewSecret = HEAD_START_PREVIEW_SECRET!;
+  const previewSecret = HEAD_START_PREVIEW_SECRET;
   Object.assign(locals, {
     isPreview: HEAD_START_PREVIEW,
-    isPreviewAuthOk: Boolean(previewSecret) && cookies.get(previewCookieName)?.value === await hashSecret(previewSecret),
+    isPreviewAuthOk: previewSecret ? cookies.get(previewCookieName)?.value === await hashSecret(previewSecret) : false,
     // Edit mode (click-to-edit overlays) is on by default; the preview bar toggle
     // flips a cookie so the choice persists across page navigations.
     editModeOn: cookies.get(editModeCookieName)?.value !== '0',
