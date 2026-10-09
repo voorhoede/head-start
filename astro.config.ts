@@ -35,7 +35,7 @@ export default defineConfig({
   adapter: isTest
     ? undefined
     : cloudflare({
-      imageService: 'compile',
+      imageService: 'passthrough',
     }),
   env: {
     schema: {
@@ -80,6 +80,7 @@ export default defineConfig({
   ],
   output: (isPreview && !isTest) ? 'server' : output, // @see `/config/output.ts``
   server: { port: localhostPort },
+  session: false,
   site: siteUrl,
   vite: {
     build: {
