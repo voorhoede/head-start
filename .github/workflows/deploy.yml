@@ -3,11 +3,8 @@ name: Deploy
 on:
   push:
     branches:
-      - poc/bunny
+      - poc/bunny-full-edge
   workflow_dispatch:
-  # Sent by a DatoCMS build trigger when editors publish; see docs/getting-started.md.
-  repository_dispatch:
-    types: [datocms-publish]
 
 permissions:
   contents: read
@@ -15,7 +12,7 @@ permissions:
 
 # One deploy at a time; a running deploy is never cancelled, so its upload and publish finish together.
 concurrency:
-  group: deploy
+  group: deploy-full-edge
   cancel-in-progress: false
 
 jobs:
@@ -50,13 +47,14 @@ jobs:
         run: npm run build
 
       - name: Deploy to Bunny
-        uses: voorhoede/bunny-edge-deploy@f7f8797575ce61749ae249f5b8160ac08f1b9aeb # feat/build-manifest-deploy
+        uses: voorhoede/bunny-edge-deploy@b6160a5ecc85a6bd9e5c99821268f86bc8958bb8 # feat/middleware-deploy
         with:
           bunny-api-key: ${{ secrets.BUNNY_API_KEY }}
+          name: head-start-full-edge
+          github-environment: full-edge
+          storage-tier: edge
+          replication-regions: UK, ES, CZ, SE, LA, MI, NY, WA, HK, SG, SYD, JP, BR, JH
+          pricing-regions: EU, US, ASIA, SA, AF
           secrets: |
             DATOCMS_READONLY_API_TOKEN=${{ secrets.DATOCMS_READONLY_API_TOKEN }}
             HEAD_START_PREVIEW_SECRET=${{ secrets.HEAD_START_PREVIEW_SECRET }}
-
-      - name: Notify DatoCMS
-        if: always()
-        run: npm run ci:notify-datocms -- ${{ job.status }}

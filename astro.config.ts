@@ -23,6 +23,7 @@ export const siteUrl = process.env.GITHUB_ACTIONS
 // https://astro.build/config
 export default defineConfig({
   adapter: bunny({
+    script: "middleware",
     sessions: false,
     // The adapter lists client files before @astrojs/sitemap and the service worker integration write theirs.
     assetManifest: false,
