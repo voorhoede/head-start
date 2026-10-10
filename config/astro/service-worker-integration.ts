@@ -6,11 +6,9 @@ import type { Plugin } from 'vite';
 
 const filenamePath = (filename: string) => fileURLToPath(new URL(join('../../', filename), import.meta.url));
 const srcFilename = filenamePath('src/assets/service-worker.ts');
-const outFilename = filenamePath('dist/service-worker.js');
 
 const buildConfig = {
   entryPoints: [srcFilename],
-  outfile: outFilename,
   target: ['es2020'],
   bundle: true,
   minify: true,
@@ -69,10 +67,11 @@ export default function serviceWorkerIntegration(): AstroIntegration {
           updateConfig({ vite: { plugins: [serviceWorkerDevPlugin()] } });
         }
       },
-      'astro:build:done': async () => {
+      'astro:build:done': async ({ dir }) => {
         try {
           await esbuild.build({
             ...buildConfig,
+            outfile: fileURLToPath(new URL('service-worker.js', dir)),
             write: true,
           });
         } catch (e) {

@@ -2,7 +2,7 @@
 import siteDataUntyped from '~/lib/site.json';
 
 type SiteData = {
-  internalDomain?: string;
+  internalDomain?: string | null;
 };
 
 const siteData = siteDataUntyped as SiteData;

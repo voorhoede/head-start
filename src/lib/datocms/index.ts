@@ -60,7 +60,7 @@ export async function datocmsRequest<
     // Enable stega encoding for visual editing (click-to-edit overlays)
     // @see https://www.datocms.com/docs/astro/visual-editing
     headers.append('X-Visual-Editing', 'v1');
-    const baseEditingUrl = (siteData as { internalDomain?: string }).internalDomain;
+    const baseEditingUrl = (siteData as { internalDomain?: string | null }).internalDomain;
     if (baseEditingUrl) {
       headers.append('X-Base-Editing-Url', `https://${baseEditingUrl}`);
     }
