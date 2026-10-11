@@ -70,6 +70,10 @@ a {
 [data-status="error"]:before {
   content: "🔴";
 }
+[data-status="updating"]:before {
+  content: "🟡";
+  animation: pulseAnimation 1s infinite;
+}
 
 @keyframes pulseAnimation {
   0%   { opacity: 1; }

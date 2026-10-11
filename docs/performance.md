@@ -36,6 +36,8 @@ Head Start uses resource hints to improve perceived page speed. `link[rel=precon
 
 Head Start adds a basic Service Worker with a network-first strategy for pages and a cache-first strategy for assets. This ensures visited pages always load within a few seconds, even when the server can't be reached. The Service Worker setup acts as a foundation for future performance improvements.
 
+The Service Worker is not used in [preview mode](./preview-mode.md#preview-mode-subscriptions): a preview must always show live content, and the network-first strategy falls back to a cached page when the server takes more than a few seconds.
+
 
 ## Tip: cache runtime routes
 

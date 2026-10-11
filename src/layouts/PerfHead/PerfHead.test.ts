@@ -25,6 +25,23 @@ describe('PerfHead', async () => {
     });
   });
 
+  test('registers the service worker', () => {
+    const script = fragment.querySelector('script[data-service-worker="register"]');
+    expect(script?.textContent).toContain('.register(\'/service-worker.js\')');
+    expect(fragment.querySelector('script[data-service-worker="unregister"]')).toBeNull();
+  });
+
+  test('removes the service worker in preview mode, so reloads on content changes are never served from its cache', async () => {
+    const previewFragment = await renderToFragment(PerfHead, {
+      props: {},
+      locals: { isPreview: true } as App.Locals,
+    });
+    const script = previewFragment.querySelector('script[data-service-worker="unregister"]');
+    expect(script?.textContent).toContain('.unregister()');
+    expect(script?.textContent).toContain('caches.delete(');
+    expect(previewFragment.querySelector('script[data-service-worker="register"]')).toBeNull();
+  });
+
   test('inlines font declarations as critical CSS', () => {
     const styleText = fragment.querySelector('style')?.textContent ?? '';
     const fontFaceDeclarations = styleText.match(/@font-face\s*{[^}]*}/g) ?? [];
