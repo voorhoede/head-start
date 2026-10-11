@@ -22,3 +22,11 @@ declare module '*.fragment.graphql' {
   const value: DocumentNode;
   export default value;
 }
+
+/**
+ * Bindings of the Cloudflare Worker, see src/pages/api/content/[...path].md.ts.
+ * @see https://developers.cloudflare.com/workers/runtime-apis/bindings/#how-to-access-env
+ */
+declare module 'cloudflare:workers' {
+  export const env: Record<string, unknown>;
+}

@@ -33,7 +33,7 @@ const llmLinks = llmOptions.map((option) => {
       data-label-error={t('copy_page_error')}
       aria-live="polite"
     >
-      <Icon name="share" />{' '}
+      <Icon name="copy" />
       <span data-copy-label>{t('copy_page')}</span>
     </button>
     <button
@@ -48,10 +48,7 @@ const llmLinks = llmOptions.map((option) => {
   </div>
   <ul popover id={popoverId}>
     <li>
-      <a href={markdownHref}>
-        {t('open_as_markdown')}{' '}
-        <Icon name="external" />
-      </a>
+      <a href={markdownHref}>{t('open_as_markdown')}</a>
     </li>
     {
       llmLinks.map((link) => (
@@ -62,8 +59,7 @@ const llmLinks = llmOptions.map((option) => {
               ? { target: '_blank', rel: 'noopener noreferrer' }
               : {})}
           >
-            {link.title}{' '}
-            <Icon name="external" />
+            {link.title}
           </a>
         </li>
       ))
@@ -79,7 +75,15 @@ const llmLinks = llmOptions.map((option) => {
   }
 
   [data-button-group] {
+    display: inline-flex;
+    align-items: center;
     anchor-name: --open-in-llm-anchor;
+  }
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
   }
 
   [popover] {

@@ -1,4 +1,4 @@
-import type { APIRoute } from 'astro';
+import type { APIContext, APIRoute } from 'astro';
 import rehypeParse from 'rehype-parse';
 import rehypeRemark from 'rehype-remark';
 import remarkGfm from 'remark-gfm';
@@ -18,7 +18,69 @@ const cache = new Map<string, { md: string; noindex: boolean; timestamp: number 
 const CACHE_TTL = 60000 * 5;
 const MAX_CACHE_SIZE = 500;
 
-export const GET: APIRoute = async ({ params, site, locals }) => {
+type AssetsBinding = { fetch: (input: URL | Request) => Promise<Response> };
+
+/**
+ * The Cloudflare ASSETS binding serving the static build, if running on Cloudflare.
+ * Imported dynamically, like @astrojs/cloudflare does, so prerendering in Node keeps working.
+ */
+async function getAssetsBinding(): Promise<AssetsBinding | undefined> {
+  try {
+    const { env } = await import('cloudflare:workers');
+    return (env as { ASSETS?: AssetsBinding }).ASSETS;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Gets the rendered HTML of a page without a network request:
+ * - a prerendered page is read from the static build through the ASSETS binding,
+ *   as Astro can't render a prerendered page at run-time;
+ * - an on-demand page (`prerender = false`) is rendered in-process with Astro's `rewrite()`.
+ * Fetching the page over HTTP is not an option: a Cloudflare Worker can't `fetch()`
+ * a URL it serves itself (the request fails with a 522).
+ * Except in `astro dev`: there nothing is prerendered yet and Astro forbids a rewrite to a
+ * prerendered page, so the page is fetched from the dev server itself.
+ */
+async function fetchPageHtml(pageUrl: URL, requestUrl: URL, rewrite: APIContext['rewrite']): Promise<Response> {
+  if (import.meta.env.DEV) {
+    return fetch(new URL(pageUrl.pathname, requestUrl.origin), {
+      headers: { Accept: 'text/html' },
+      redirect: 'manual',
+    });
+  }
+  const assets = await getAssetsBinding();
+  if (assets) {
+    const response = await assets.fetch(
+      new Request(pageUrl, { headers: { Accept: 'text/html' }, redirect: 'manual' }),
+    );
+    if (response.status !== 404) return response;
+  }
+  try {
+    return await rewrite(pageUrl.pathname);
+  } catch (error) {
+    if (isMissingPageError(error)) {
+      return new Response(null, { status: 404 });
+    }
+    throw error;
+  }
+}
+
+/**
+ * A rewrite to a page that only exists as a prerendered file fails, as Astro has no
+ * module for it in the server build. In a static build the prerendered catch-all
+ * page route matches any path, so after the ASSETS binding found no file this means
+ * there is no such page. Astro signals it with `ForbiddenRewrite`, or with a plain
+ * error from its module lookup when the route validator runs first (Astro 7).
+ */
+function isMissingPageError(error: unknown): boolean {
+  const { name, message } = (error ?? {}) as { name?: string; message?: string };
+  return name === 'ForbiddenRewrite'
+    || Boolean(message?.startsWith('Unexpectedly unable to find a component instance for route'));
+}
+
+export const GET: APIRoute = async ({ params, site, locals, rewrite, url }) => {
   const app = await getApp();
   if (!app.allowAiBots || app.noIndex || locals.isPreview) {
     return new Response('Not found', {
@@ -55,14 +117,10 @@ export const GET: APIRoute = async ({ params, site, locals }) => {
   pageUrl.pathname = params.path ? `/${params.path}/` : '/';
   let response: Response;
   try {
-    response = await fetch(pageUrl, {
-      headers: { Accept: 'text/html' },
-      signal: AbortSignal.timeout(10_000),
-      redirect: 'manual',
-    });
+    response = await fetchPageHtml(pageUrl, url, rewrite);
   } catch {
-    return new Response('Upstream timeout', {
-      status: 504,
+    return new Response('Unable to render page', {
+      status: 500,
       headers: { 'Content-Type': 'text/plain; charset=utf-8' },
     });
   }
