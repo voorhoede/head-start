@@ -136,10 +136,5 @@
   },
   "nano-staged": {
     "*.{astro,js,ts}": "npm run lint:eslint -- --fix --max-warnings 0"
-  },
-  "overrides": {
-    "tty-table": {
-      "csv": "^6.6.4"
-    }
   }
 }
