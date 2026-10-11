@@ -13,6 +13,7 @@
     "build": "astro build",
     "postbuild": "npm run post",
     "cloudflare:build": "jiti scripts/build.ts",
+    "cloudflare:deploy": "jiti scripts/deploy.ts",
     "create": "plop --plopfile config/plop/plopfile.mjs",
     "create:api": "plop --plopfile config/plop/plopfile.mjs api",
     "create:block": "plop --plopfile config/plop/plopfile.mjs block",

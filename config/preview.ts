@@ -1,18 +1,9 @@
-import { execSync } from 'node:child_process';
-
-export const previewBranches = [
-  'preview',
-  'feat/pages-content-collection',
-  'feat/new-ui-test',
-];
-
-function getGitBranch() {
-  const branch = execSync('git rev-parse --abbrev-ref HEAD', {
-    encoding: 'utf-8',
-  }).trim();
-  return branch;
-}
-
-export const isPreview = previewBranches.includes(
-  process.env.WORKERS_CI_BRANCH || getGitBranch(),
+/**
+ * Preview mode renders every page on request (`output: 'server'`) and includes
+ * draft content. It is switched on with the `HEAD_START_PREVIEW` environment
+ * variable, which the preview Worker sets as a build variable
+ * (see docs/preview-mode.md). Locally, set it in `.env`.
+ */
+export const isPreview = ['true', '1'].includes(
+  (process.env.HEAD_START_PREVIEW || '').toLowerCase(),
 );

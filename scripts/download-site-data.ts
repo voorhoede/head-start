@@ -29,11 +29,17 @@ function renameKeys<T>(obj: T): RenameKeys<T> {
 }
 
 async function downloadSiteData() {
+  // The full-access token is preferred: the read-only role does not expose
+  // `internal_domain`, which preview builds need as base editing URL for
+  // visual editing (see src/lib/datocms/index.ts).
   const client = buildClient({
-    apiToken: process.env.DATOCMS_READONLY_API_TOKEN!,
+    apiToken: (process.env.DATOCMS_API_TOKEN || process.env.DATOCMS_READONLY_API_TOKEN)!,
     environment: datocmsEnvironment,
   });
   const site = await client.site.find();
+  if (!site.internal_domain) {
+    console.warn('⚠️ Site data has no internal_domain, so visual editing is disabled in preview mode. Is DATOCMS_API_TOKEN set?');
+  }
   await writeFile('./src/lib/site.json', JSON.stringify(renameKeys(site), null, 2));
 }
 

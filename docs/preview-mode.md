@@ -4,12 +4,19 @@
 
 ## Enable preview mode
 
-To enable preview mode for a git branch, you must add it to [`config/preview.ts`](../config/preview.ts). Preview branches will deploy as `output: 'server'` rather than `output: 'hybrid'`, ignoring all `getStaticPaths()` and always rendering the page during run-time. The `preview` branch is configured as one of the preview branches and is automatically kept in sync with the `main` branch, so it can be used as preview equivalent, for example from the CMS.
+Preview mode is switched on with the `HEAD_START_PREVIEW=true` environment variable (see [`config/preview.ts`](../config/preview.ts)). A preview build deploys as `output: 'server'` rather than `output: 'static'`, ignoring all `getStaticPaths()` and always rendering the page during run-time, with draft content included.
+
+The preview deployment is a second Cloudflare Worker (`head-start-preview` in this template), connected to the same repository and built from the same `main` branch as production by Workers Builds, with these settings:
+
+- build command `npm run cloudflare:build`, deploy command `npm run cloudflare:deploy` (same as production), builds for non-production branches off;
+- build variables `HEAD_START_PREVIEW=true` and `CLOUDFLARE_ENV=preview` (selects the `[env.preview]` section of [`wrangler.toml`](../wrangler.toml), so the build targets the preview Worker), plus `DATOCMS_API_TOKEN`, `DATOCMS_READONLY_API_TOKEN` and `HEAD_START_PREVIEW_SECRET`;
+- its deploy hook is the trigger URL of the "Preview" build trigger in DatoCMS, with JSON payload `{ "branch": "main", "env": "preview" }`.
+
+Workers Builds runs the build command and the deploy command as separate steps. `scripts/build.ts` only reports a *failed* build to the matching DatoCMS build trigger; `scripts/deploy.ts` runs `wrangler deploy` and then reports success or failure, so the build status in DatoCMS reflects the deployment. Triggers are matched on `branch` and `env` in their payload (see [`notify-datocms.ts`](../scripts/lib/notify-datocms.ts)).
 
 > [!TIP]
 > To enable preview mode during local development:
-> - Make sure your current git branch is included in [`config/preview.ts`](../config/preview.ts).
-> - Set `HEAD_START_PREVIEW_SECRET` and `DATOCMS_READONLY_API_TOKEN` in your local `.env`.
+> - Set `HEAD_START_PREVIEW=true`, `HEAD_START_PREVIEW_SECRET` and `DATOCMS_READONLY_API_TOKEN` in your local `.env`.
 > - Enter preview mode via `/api/preview/enter/?secret=...` (or the preview login form).
 
 To protect a part of the page that must only be available in preview mode, you can wrap it in the `PreviewModeProvider`, as is done in the [`Default.astro` layout](../src/layouts/Default.astro):
@@ -24,7 +31,7 @@ import PreviewModeProvider from '~/components/PreviewMode/PreviewModeProvider.as
 </PreviewModeProvider>
 ```
 
-Note: all preview branches are automatically set to `noindex` to prevent them from turning up in any search results.
+Note: preview deployments are automatically set to `noindex` to prevent them from turning up in any search results.
 
 ## Enter / exit preview mode
 
@@ -60,7 +67,7 @@ Depending on the layout of your project you may want to move the bar to a differ
 
 ## Preview mode subscriptions
 
-In preview mode the web page listens for content changes and automatically reloads to re-render on updates. To configure which content changes to listen to you can add one or more `PreviewModeSubscription` components, which accept the same `query` and `variables` properties you use to request the initial data:
+In preview mode the web page listens for content changes and automatically reloads to re-render on updates. The reload waits until the server renders the page differently from the version on screen (the Real-time Updates API pushes a change before the Content Delivery API serves it), for at most about 20 seconds; the preview bar shows "CMS updated, reloading when the change is available" meanwhile. The [`Default.astro` layout](../src/layouts/Default.astro) subscribes to its own query, so changes to the menu also reload the page. To configure which content changes to listen to you can add one or more `PreviewModeSubscription` components, which accept the same `query` and `variables` properties you use to request the initial data:
 
 ```astro
 ---
@@ -76,6 +83,9 @@ const { page } = await datocmsRequest<PageQuery>({ query, variables });
 />
 <h1>{page.title}</h1>
 ```
+
+> [!NOTE]
+> The [service worker](./performance.md#service-worker) is not registered in preview mode, and one left by an earlier visit is removed (see [`PerfHead.astro`](../src/layouts/PerfHead/PerfHead.astro)). Its network-first strategy answers a page navigation from its cache when the server takes more than a few seconds, which happens right after a save, so the reload above would show the page as it was before the change. Inside the DatoCMS Web Previews iframe it is worse: the service worker's fetch of the reloaded page does not carry the (partitioned) preview cookie, so the reload lands on the preview login form.
 
 ## Preview links from the CMS
 
@@ -117,7 +127,7 @@ The plugin is installed and configured automatically via the [`featVisualEditing
 | **Enable Draft Mode route** | `{siteUrl}/api/draft-mode/enable?token={token}` |
 
 > [!WARNING]
-> `siteUrl` is hardcoded in the migration to `https://preview.head-start.pages.dev` (the `preview` branch alias in this template). If your project uses a different domain, update the `siteUrl` constant in the migration **before** running it - otherwise the plugin will point at the wrong deployment.
+> `siteUrl` is hardcoded in the migration to `https://preview.head-start.pages.dev` (the former `preview` branch alias in this template). Set it to the URL of your preview Worker (like `https://<project-name>-preview.<subdomain>.workers.dev`). If your project uses a different domain, update the `siteUrl` constant in the migration **before** running it - otherwise the plugin will point at the wrong deployment.
 
 `token` is read from `HEAD_START_PREVIEW_SECRET` at migration time. If the env var is set when you run the migration, the real secret is baked into the plugin config. If it isn't, the literal string `REPLACE_WITH_PREVIEW_SECRET` is written instead.
 
@@ -127,6 +137,8 @@ The plugin is installed and configured automatically via the [`featVisualEditing
 ## Visual Editing
 
 **Visual Editing** is the overlay that runs inside the Web Previews iframe - it lets CMS editors hover over the page and see which field produced each element, then click to jump straight to that field in DatoCMS. It is active **only in preview mode** (see [Enable preview mode](#enable-preview-mode)).
+
+Stega encoding is requested with the `X-Visual-Editing` and `X-Base-Editing-Url` headers (see [`src/lib/datocms/index.ts`](../src/lib/datocms/index.ts)). The base editing URL is the project's internal domain (`<project>.admin.datocms.com`) from `src/lib/site.json`, which [`download-site-data.ts`](../scripts/download-site-data.ts) downloads with the full-access `DATOCMS_API_TOKEN`: the read-only role does not expose `internal_domain`. DatoCMS rejects visual editing requests without a base editing URL (`422 INVALID_X_BASE_EDITING_URL_HEADER`), so without an internal domain the headers are skipped and no element is editable.
 
 It relies on two mechanisms that always work together:
 

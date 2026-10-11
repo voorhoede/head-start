@@ -9,6 +9,7 @@ import query from './default.query.graphql';
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs.astro';
 import IconSprite from '~/components/Icon/IconSprite.astro';
 import PreviewModeProvider from '~/components/PreviewMode/PreviewModeProvider.astro';
+import PreviewModeSubscription from '~/components/PreviewMode/PreviewModeSubscription.astro';
 import { ContentLink } from '@datocms/astro/ContentLink';
 import StructuredData from '~/components/StructuredData/StructuredData.astro';
 import SkipLink from '~/components/SkipLink/SkipLink.astro';
@@ -59,6 +60,8 @@ const llmOptions = data.app?.openPageInLlmOption ?? app.openPageInLlmOption ?? [
       <ContentLink enableClickToEdit={editModeOn ? { hoverOnly: true } : undefined} />
     )}
     <PreviewModeProvider>
+      {/* Reload the preview when the layout's content (like the App menu) changes, not only the page */}
+      <PreviewModeSubscription query={query} variables={{ locale }} />
       <SkipLink targetId={mainContentId} />
       <div {...datocmsNoIndex}>
         <AppHeader {menuItems} {pageUrls} />

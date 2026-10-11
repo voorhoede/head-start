@@ -9,3 +9,15 @@ binding = "ASSETS"
 
 [observability]
 enabled = true
+
+# Preview deployment: the same code built from `main` with HEAD_START_PREVIEW=true
+# and CLOUDFLARE_ENV=preview, deployed to its own Worker, see docs/preview-mode.md
+[env.preview]
+name = "head-start-preview"
+
+[env.preview.assets]
+directory = "./dist"
+binding = "ASSETS"
+
+[env.preview.observability]
+enabled = true

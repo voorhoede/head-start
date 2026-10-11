@@ -128,6 +128,8 @@ You're project is now deployed and will automatically be deployed on every git c
 
 That's it. Now deployments are automatically triggered from both git and when editors hit 'Build now' in the CMS. If you add additional build triggers in the future, you can repeat those steps. Note that `buildTriggerId` in `/datocms-environment.ts` should always be set to the production build trigger.
 
+To let editors preview draft content, add a second Worker for the preview deployment, with its own "Preview" build trigger. See [Preview mode › Enable preview mode](./preview-mode.md#enable-preview-mode) for its settings.
+
 ## Enable AI agent discovery (DNS-AID) (optional)
 
 Head Start serves an agent registry at [`/.well-known/agents/index.json`](../src/pages/.well-known/agents/index.json.ts) (see [SEO → Agent discovery](./seo.md#agent-discovery-dns-aid)). To make it discoverable via [DNS for AI Discovery (DNS-AID)](https://datatracker.ietf.org/doc/draft-mozleywilliams-dnsop-dnsaid/), add DNS records on your own domain. This is optional and only applies once you use a custom domain on Cloudflare.

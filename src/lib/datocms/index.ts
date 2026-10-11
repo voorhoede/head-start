@@ -57,11 +57,14 @@ export async function datocmsRequest<
   });
   if (HEAD_START_PREVIEW) {
     headers.append('X-Include-Drafts', 'true');
-    // Enable stega encoding for visual editing (click-to-edit overlays)
+    // Enable stega encoding for visual editing (click-to-edit overlays).
+    // DatoCMS rejects visual editing requests (422) without a base editing URL,
+    // so it is only enabled when the project's internal domain is known
+    // (downloaded by scripts/download-site-data.ts, full-access token required).
     // @see https://www.datocms.com/docs/astro/visual-editing
-    headers.append('X-Visual-Editing', 'v1');
     const baseEditingUrl = (siteData as { internalDomain?: string | null }).internalDomain;
     if (baseEditingUrl) {
+      headers.append('X-Visual-Editing', 'v1');
       headers.append('X-Base-Editing-Url', `https://${baseEditingUrl}`);
     }
   }

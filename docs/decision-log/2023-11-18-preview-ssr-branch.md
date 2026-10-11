@@ -5,6 +5,7 @@
 - Date: 2023-11-18
 - Alternatives Considered: Secondary Cloudflare Pages instance for preview deployments
 - Decision Made By: [Jasper](https://github.com/jbmoelker)
+- Superseded by: [Preview as a second Worker](./2026-10-11-preview-worker.md)
 
 ## Decision
 

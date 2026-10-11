@@ -2,11 +2,13 @@ import type { ConnectionStatus as DatocmsConnectionStatus } from 'datocms-listen
 import { subscribeToQuery } from 'datocms-listen';
 import { atom, map } from 'nanostores';
 
-type ConnectionStatus = DatocmsConnectionStatus | 'error';
+type ConnectionStatus = DatocmsConnectionStatus | 'error' | 'updating';
 type Connection = { [key: string]: ConnectionStatus };
 type Query = string;
 type Variables = { [key: string]: string };
 type QueryVariables = { query: Query; variables?: Variables };
+
+const wait = (milliseconds: number) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
 /**
  * Each web page can have multiple preview mode subscriptions.
@@ -23,6 +25,9 @@ class PreviewMode extends HTMLElement {
   $updateCounts = map<{ [key: string]: number }>({});
   #datocmsToken: string = '';
   #datocmsEnvironment: string = '';
+  /** The page as the server rendered it on load, to tell a stale render from a fresh one before reloading */
+  #renderedHtml: Promise<string | null> = Promise.resolve(null);
+  #reloading = false;
 
   /**
    * Generates a hashed key for the map tracking subscriptions.
@@ -58,6 +63,7 @@ class PreviewMode extends HTMLElement {
     }
     this.#datocmsEnvironment = datocmsEnvironment;
     this.#datocmsToken = datocmsToken;
+    this.#renderedHtml = this.#fetchHtml();
 
     this.$connections.listen((connections) => {
       // set overall connection status to lowest of all connections:
@@ -86,7 +92,7 @@ class PreviewMode extends HTMLElement {
       for (const [key, count] of Object.entries(updateCounts)) {
         const instanceCount = instances[key];
         if (count > instanceCount) {
-          window.location.reload();
+          this.reloadWhenChanged();
         }
       }
     });
@@ -96,6 +102,38 @@ class PreviewMode extends HTMLElement {
       this.subscribe({ query, variables });
     });
 
+  }
+
+  /**
+   * Reloads the page once the server renders it differently from the version on screen.
+   * The Real-time Updates API pushes a change before the Content Delivery API, which the
+   * server renders from, serves it. Reloading right away then shows the page as it was
+   * before the change, and as the new subscription only reports changes after that, the
+   * page stays stale until a manual refresh. So the page is fetched (same URL, no cache)
+   * until its HTML differs from the HTML rendered on load, for at most ~20 seconds.
+   */
+  async reloadWhenChanged () {
+    if (this.#reloading) return;
+    this.#reloading = true;
+    this.barElement.setStatus('updating');
+    const renderedHtml = await this.#renderedHtml;
+    const delays = [0, 1000, 1000, 2000, 2000, 3000, 3000, 4000, 4000];
+    for (const delay of delays) {
+      if (delay) await wait(delay);
+      const html = await this.#fetchHtml();
+      // without a baseline or a response there is nothing to compare: reload as before
+      if (!renderedHtml || !html || html !== renderedHtml) break;
+    }
+    window.location.reload();
+  }
+
+  async #fetchHtml () {
+    try {
+      const response = await fetch(window.location.href, { cache: 'no-store', credentials: 'same-origin' });
+      return response.ok ? await response.text() : null;
+    } catch {
+      return null;
+    }
   }
 
   getSubscriptionConfigs () {
@@ -147,6 +185,7 @@ class PreviewModeBar extends HTMLElement {
     connecting: 'CMS connecting ...',
     connected: 'CMS connected, receiving live updates',
     error: 'CMS connection error (refresh for updates)',
+    updating: 'CMS updated, reloading when the change is available ...',
   };
 
   constructor() {
