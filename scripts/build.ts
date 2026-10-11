@@ -23,6 +23,10 @@ async function notifyDatocms({ status }: { status: 'success' | 'error' }) {
     console.log(`No matching DatoCMS build trigger found for branch '${WORKERS_CI_BRANCH}'`);
     return;
   }
+  if (!matchingTrigger.webhook_url) {
+    console.log(`DatoCMS build trigger for branch '${WORKERS_CI_BRANCH}' has no webhook URL`);
+    return;
+  }
 
   try {
     await fetch(matchingTrigger.webhook_url, {
