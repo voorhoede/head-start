@@ -130,7 +130,7 @@
     "sonda": "^0.14.0",
     "svg-sprite": "^2.0.2",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.62.1",
+    "typescript-eslint": "^8.71.1",
     "vitest": "^4.1.10",
     "wrangler": "^4.99.0"
   },
