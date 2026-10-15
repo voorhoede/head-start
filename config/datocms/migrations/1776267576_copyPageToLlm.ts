@@ -1,6 +1,11 @@
 import { Client } from '@datocms/cli/lib/cma-client-node';
 
 export default async function (client: Client) {
+  // A localized default value has to cover exactly the locales of the project,
+  // so only the primary locale gets the default prompt.
+  const { locales } = await client.site.find();
+  const [primaryLocale] = locales;
+
   console.log('Creating new fields/fieldsets');
 
   console.log(
@@ -27,10 +32,14 @@ export default async function (client: Client) {
       editor: 'single_line',
       parameters: { heading: false, placeholder: null },
     },
-    default_value: {
-      en: 'Read from this URL: { pageUrl } and explain it to me.',
-      nl: null,
-    },
+    default_value: Object.fromEntries(
+      locales.map((locale) => [
+        locale,
+        locale === primaryLocale
+          ? 'Read from this URL: { pageUrl } and explain it to me.'
+          : null,
+      ]),
+    ),
     fieldset: { id: 'ZOpXqRatSJ674Lw_5pn7ew', type: 'fieldset' },
   });
 

@@ -53,7 +53,7 @@ describe('getFileHref', () => {
 describe('getHomeHref', () => {
   test('returns the home href for a given locale', () => {
     expect(getHomeHref({ locale: 'en' })).toBe('/en/');
-    expect(getHomeHref({ locale: 'nl' })).toBe('/nl/');
+    expect(getHomeHref({ locale: 'nl' as SiteLocale })).toBe('/nl/');
   });
 
   test('returns the home href for current locale if no locale is provided', () => {

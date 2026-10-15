@@ -1,6 +1,14 @@
 import { Client } from '@datocms/cli/lib/cma-client-node';
 
 export default async function (client: Client) {
+  // The Page and Home models are created without a fixed ID, so their ID
+  // differs per project. Look them up by API key instead of hardcoding it.
+  const page = await client.itemTypes.find('page');
+  const homePage = await client.itemTypes.find('home_page');
+
+  // A localized default value has to cover exactly the locales of the project.
+  const { locales } = await client.site.find();
+
   console.log('Create new models/block models');
 
   console.log(
@@ -95,8 +103,8 @@ export default async function (client: Client) {
         on_reference_delete_strategy: 'delete_references',
         item_types: [
           'GjWw8t-hTFaYYWyc53FeIg',
-          'LjXdkuCdQxCFT4hv8_ayew',
-          'X_tZn3TxQY28ltSyjZUGHQ',
+          page.id,
+          homePage.id,
         ],
       },
     },
@@ -127,8 +135,8 @@ export default async function (client: Client) {
         on_reference_delete_strategy: 'delete_references',
         item_types: [
           'GjWw8t-hTFaYYWyc53FeIg',
-          'LjXdkuCdQxCFT4hv8_ayew',
-          'X_tZn3TxQY28ltSyjZUGHQ',
+          page.id,
+          homePage.id,
         ],
       },
     },
@@ -139,7 +147,9 @@ export default async function (client: Client) {
   );
   await client.fields.update('DihXGTqXQoia4qtLLVmuQA', {
     localized: true,
-    default_value: { en: null, nl: null },
+    default_value: Object.fromEntries(
+      locales.map((locale) => [locale, null]),
+    ),
   });
 
   console.log('Finalize models/block models');
