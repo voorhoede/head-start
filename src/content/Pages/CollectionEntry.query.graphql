@@ -9,6 +9,7 @@
 #import '~/blocks/VideoBlock/VideoBlock.fragment.graphql'
 #import '~/blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
 #import '~/blocks/AccordionBlock/AccordionBlock.fragment.graphql'
+#import '~/blocks/FaqBlock/FaqBlock.fragment.graphql'
 #import '~/blocks/GroupingBlock/GroupingBlock.fragment.graphql'
 #import '~/blocks/ListBlock/ListBlockFragment.graphql'
 #import '~/blocks/SearchFormBlock/SearchFormBlock.fragment.graphql'
@@ -32,6 +33,9 @@ query PageCollectionEntry($locale: SiteLocale!, $slug: String!) {
       }
       ... on AccordionBlockRecord {
         ...AccordionBlock
+      }
+      ... on FaqBlockRecord {
+        ...FaqBlock
       }
       ... on ColumnBlockRecord {
         ...ColumnBlock

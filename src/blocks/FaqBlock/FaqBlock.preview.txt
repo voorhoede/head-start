@@ -1,0 +1,1 @@
+Renders reusable FAQ records as an accordion of questions and answers, with an optional group heading.

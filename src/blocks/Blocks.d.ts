@@ -18,6 +18,7 @@ import type {
   TabsBlockFragment,
   AccordionBlockFragment,
   ColumnBlockFragment,
+  FaqBlockFragment,
 } from '~/lib/datocms/types';
 import type { VariableBlockRecord } from '~/lib/datocms/schema';
 
@@ -42,5 +43,6 @@ export type AnyBlock = Omit<
     | TabsBlockFragment
     | AccordionBlockFragment
     | ColumnBlockFragment
+    | FaqBlockFragment
   ), '__typename' // Allow for any __typename so that missing blocks can be reported on.
 > & { __typename: string };
