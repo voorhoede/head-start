@@ -2,7 +2,7 @@
 
 **Head Starts provides loaders and helpers to fetch content from DatoCMS.**
 
-In most cases you want to fetch content per page via GraphQL queries, as is described below. In some cases however, you might want to use Astro's Content Collections. See the [documentation on Content Collections](./content-collections.md) to learn how it is implemented in Head Start.
+Site content is loaded into Astro's Content Collections using the GraphQL queries and helpers described below, so the production site doesn't query DatoCMS at runtime. See the [documentation on Content Collections](./content-collections.md) to learn how it is implemented in Head Start.
 
 ## Configuration
 
@@ -14,7 +14,7 @@ export const datocmsEnvironment = 'your-environment-name';
 
 ## GraphQL files
 
-Head Start uses the [DatoCMS Content Delivery API](https://www.datocms.com/docs/content-delivery-api), which uses [GraphQL](https://graphql.org/). Head Start has a pre-configured GraphQL loader, so you can use and directly import `.graphql` files. As a convention Head Start puts [GraphQL Query](https://graphql.org/learn/queries/) files (like `_page-name.query.graphql`) directly next to their related Astro pages, and [GraphQL Fragment](https://graphql.org/learn/queries/) files (like `block-name.fragment.graphql`) directly next to their related block components:
+Head Start uses the [DatoCMS Content Delivery API](https://www.datocms.com/docs/content-delivery-api), which uses [GraphQL](https://graphql.org/). Head Start has a pre-configured GraphQL loader, so you can use and directly import `.graphql` files. As a convention Head Start puts [GraphQL Query](https://graphql.org/learn/queries/) files (like `CollectionEntry.query.graphql`) directly next to their related content collection, and [GraphQL Fragment](https://graphql.org/learn/queries/) files (like `block-name.fragment.graphql`) directly next to their related block components:
 
 ```
 src/
@@ -24,10 +24,10 @@ src/
 │       ├── SomeContentBlock.astro
 │       └── SomeContentBlock.fragment.graphql
 |
-└── pages/
-    └── [locale]/
-        ├── index.astro
-        └── _index.query.graphql
+└── content/
+    └── HomePage/
+        ├── index.ts
+        └── CollectionEntry.query.graphql
 ```
 
 You can import GraphQL Fragment files:

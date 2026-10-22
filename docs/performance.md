@@ -12,6 +12,11 @@ Head Start has selected Astro as its web framework, for one reason Astro being z
 Head Start is configured to pre-render all routes by default (using [Astro's `output: 'static'`](https://docs.astro.build/en/reference/configuration-reference/#output)). This means every route is cached as a static file by default. Which is great for performance. Routes that require [on-demand rendering](https://docs.astro.build/en/guides/on-demand-rendering/), opt-out of pre-rendering using `export const prerender = false`. These routes are then executed runtime on Cloudflare edge workers. These are faster than traditional serverless functions with a Node.js runtime. While a bit less powerful these Cloudflare Workers are great for performance. If you use on-demand rendering we advice you to [configure cache for runtime routes](#tip-cache-runtime-routes) for more performance.
 
 
+## No runtime CMS requests
+
+All site content is loaded into [content collections](./content-collections.md) at build time. So routes rendered on demand (like 404) read content locally instead of waiting on a request to DatoCMS, and DatoCMS latency, rate limits or outages don't affect the live site.
+
+
 ## DatoCMS image service
 
 Head Start uses DatoCMS which comes with its own [image service](https://www.datocms.com/docs/asset-api/images) powered by Imgix, a super-fast CDN optimized for image delivery, which provides on-the-fly image manipulations and caching. Image transformations can be configured entirely through the image URL. By requesting the right size, format, quality and compression the performance can be greatly improved.
