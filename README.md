@@ -82,6 +82,7 @@ All documentation is located in [`./docs/`](docs/):
 - [Routing](./docs/routing.md)
 - [Search](./docs/search.md)
 - [Search Engine Optimisation (SEO)](./docs/seo.md)
+- [Security](./docs/security.md)
 - [Testing](./docs/testing.md)
 - [Upgrading](./docs/upgrading.md)
 - [Working with AI](./docs/working-with-ai.md)

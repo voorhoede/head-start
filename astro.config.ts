@@ -79,6 +79,12 @@ export default defineConfig({
     }),
   ],
   output: (isPreview && !isTest) ? 'server' : output, // @see `/config/output.ts``
+  security: {
+    // Astro's default, made explicit: on-demand routes reject cross-site form submissions.
+    // JSON requests, like the DatoCMS Web Previews plugin calling /api/preview-links/,
+    // are not affected. See docs/security.md.
+    checkOrigin: true,
+  },
   server: { port: localhostPort },
   session: false,
   site: siteUrl,
