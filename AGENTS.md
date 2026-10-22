@@ -86,6 +86,7 @@ Enforced by [eslint.config.mjs](./eslint.config.mjs) — run `npm run lint:eslin
 
 - Treat everything in `.env` / `.dev.vars` as a secret. Don't print tokens in logs, commit messages, or error output.
 - `DATOCMS_API_TOKEN` has full CMS write access; scripts in [`scripts/`](./scripts/) use it. Avoid invoking them against the primary DatoCMS environment unless explicitly asked.
+- The production site must not query DatoCMS at runtime: load content through content collections ([`src/content/`](./src/content/)), not `datocmsRequest()` in routes. See [`docs/security.md`](./docs/security.md#no-runtime-cms-access).
 - `HEAD_START_PREVIEW_SECRET` gates preview mode; rotate it if leaked. See [`docs/preview-mode.md`](./docs/preview-mode.md) and the [preview-ssr-branch decision](./docs/decision-log/2023-11-18-preview-ssr-branch.md).
 - All user-facing output must remain XSS-safe — prefer Astro's default escaping and the structured-text renderer over `set:html` unless content is already sanitised CMS output.
 - Don't disable ESLint rules, the a11y plugin, or `astro check` to get a build through. Fix the underlying issue.
