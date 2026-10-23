@@ -5,6 +5,7 @@ import {
   getOpenSearchName,
   getOpenSearchPathname,
 } from '~/lib/search';
+import type { SiteLocale } from '~/lib/datocms/schema';
 
 vi.mock('~/lib/site.json', () => ({
   globalSeo: {
@@ -40,16 +41,16 @@ describe('search', () => {
 
   test('"getSearchPathname" should return correct search pathname for a specific locale', () => {
     expect(getSearchPathname('en')).toBe('/en/search/');
-    expect(getSearchPathname('nl')).toBe('/nl/search/');
+    expect(getSearchPathname('nl' as SiteLocale)).toBe('/nl/search/');
   });
 
   test('"getOpenSearchName" should return correct OpenSearch name for a specific locale', () => {
     expect(getOpenSearchName('en')).toBe('My Site (en)');
-    expect(getOpenSearchName('nl')).toBe('Mijn Website (nl)');
+    expect(getOpenSearchName('nl' as SiteLocale)).toBe('Mijn Website (nl)');
   });
 
   test('"getOpenSearchPathname" should return correct OpenSearch pathname for a specific locale', () => {
     expect(getOpenSearchPathname('en')).toBe('/en/search/opensearch.xml');
-    expect(getOpenSearchPathname('nl')).toBe('/nl/search/opensearch.xml');
+    expect(getOpenSearchPathname('nl' as SiteLocale)).toBe('/nl/search/opensearch.xml');
   });
 });
