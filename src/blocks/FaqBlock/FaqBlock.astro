@@ -1,0 +1,26 @@
+---
+import Blocks from '~/blocks/Blocks.astro';
+import { Accordion, AccordionItem } from '~/components/Accordion';
+import type { FaqBlockFragment } from '~/lib/datocms/types';
+
+export interface Props {
+  block: FaqBlockFragment
+}
+const { block } = Astro.props;
+
+const faqs = block.questionAndAnswers.filter((faq) => faq.questionAndAnswer);
+---
+{ block.groupTitle && <h2>{ block.groupTitle }</h2> }
+
+<Accordion>
+  { faqs.map((faq) => (
+    <AccordionItem id={ faq.slug ?? undefined }>
+      <Fragment slot="heading">{ faq.questionAndAnswer.title }</Fragment>
+      <Fragment slot="body">
+        <Blocks blocks={ faq.questionAndAnswer.blocks } />
+      </Fragment>
+    </AccordionItem>
+  )) }
+</Accordion>
+
+<script src="./FaqBlock.client.ts"></script>
