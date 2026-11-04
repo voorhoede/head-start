@@ -28,7 +28,7 @@ function watchTranslations() {
     eventSourceClass: EventSource,
     environment: datocmsEnvironment,
     token: process.env.DATOCMS_READONLY_API_TOKEN!,
-    preview: true,
+    includeDrafts: true,
     onUpdate: () => {
       updates++;
       if (updates <= 1) {

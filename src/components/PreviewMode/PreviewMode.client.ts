@@ -161,7 +161,7 @@ class PreviewMode extends HTMLElement {
       variables,
       environment: this.#datocmsEnvironment,
       token: this.#datocmsToken,
-      preview: true,
+      includeDrafts: true,
       onUpdate: () => {
         const count = this.$updateCounts.get()[key];
         this.$updateCounts.setKey(key, count + 1);
