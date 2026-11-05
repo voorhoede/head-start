@@ -6,9 +6,11 @@ import UnstyledList from '~/components/UnstyledList/UnstyledList.astro';
 import '~/assets/a11y.css';
 
 export interface Props {
+  /** Unique per page, so the ids in the selector are too. */
+  id: string;
   pageUrls: PageUrl[];
 }
-const { pageUrls } = Astro.props;
+const { id, pageUrls } = Astro.props;
 
 const activeLocale = getLocale();
 const getPageHref = (locale: SiteLocale) => {
@@ -17,8 +19,7 @@ const getPageHref = (locale: SiteLocale) => {
     ? new URL(pageUrl.pathname, Astro.site)
     : new URL(`/${locale}/`, Astro.site);
 };
-const instanceId = Math.random().toString(36).substring(2);
-const titleHtmlId = `locale-selector-title-${instanceId}`;
+const titleHtmlId = `locale-selector-title-${id}`;
 ---
 
 <locale-selector>
