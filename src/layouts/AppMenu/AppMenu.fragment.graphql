@@ -170,6 +170,10 @@ fragment MenuItemInternalFields on MenuItemInternalRecord {
     }
     ... on PageRecord {
       ...PageRoute
+      # used as link description in llms.txt
+      seo {
+        description
+      }
     }
   }
 }
