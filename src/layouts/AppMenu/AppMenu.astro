@@ -85,7 +85,7 @@ const { items, pageUrls } = Astro.props;
       </li>
     </UnstyledList>
   </nav>
-  <LocaleSelector pageUrls={pageUrls} />
+  <LocaleSelector id="bar" pageUrls={pageUrls} />
   <IconButton
     icon="menu"
     label={t('open_menu')}
@@ -132,7 +132,7 @@ const { items, pageUrls } = Astro.props;
         <li><SearchLink /></li>
       </UnstyledList>
     </nav>
-    <LocaleSelector pageUrls={pageUrls} />
+    <LocaleSelector id="menu" pageUrls={pageUrls} />
     <IconButton icon="close" label={t('close_menu')} data-menu-close />
   </dialog>
 </app-menu>

@@ -3,7 +3,6 @@ import type { DefaultLayoutQuery } from '~/lib/datocms/types';
 import type { SiteLocale, Tag } from '~/lib/datocms/schema';
 import { datocmsRequest } from '~/lib/datocms';
 import { defaultLocale } from '~/lib/i18n';
-import { datocmsNoIndex } from '~/lib/search';
 import type { Breadcrumb, PageUrl } from '~/lib/routing';
 import query from './default.query.graphql';
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs.astro';
@@ -63,7 +62,7 @@ const llmOptions = data.app?.openPageInLlmOption ?? app.openPageInLlmOption ?? [
       {/* Reload the preview when the layout's content (like the App menu) changes, not only the page */}
       <PreviewModeSubscription query={query} variables={{ locale }} />
       <SkipLink targetId={mainContentId} />
-      <div {...datocmsNoIndex}>
+      <div data-datocms-noindex="">
         <AppHeader {menuItems} {pageUrls} />
       </div>
       {
@@ -71,7 +70,7 @@ const llmOptions = data.app?.openPageInLlmOption ?? app.openPageInLlmOption ?? [
           <div class="page-context">
             {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
             {allowAiBots && (
-              <div {...datocmsNoIndex} data-nosnippet>
+              <div data-datocms-noindex="" data-nosnippet>
                 <Fragment set:html={'<!--googleoff: index-->'} />
                 <OpenInLlm {llmOptions} {prompt} />
                 <Fragment set:html={'<!--googleon: index-->'} />
@@ -86,7 +85,7 @@ const llmOptions = data.app?.openPageInLlmOption ?? app.openPageInLlmOption ?? [
       <main id={mainContentId} tabindex="-1">
         <slot />
       </main>
-      <footer {...datocmsNoIndex}>
+      <footer data-datocms-noindex="">
         <p>Footer</p>
       </footer>
     </PreviewModeProvider>
@@ -138,9 +137,7 @@ const llmOptions = data.app?.openPageInLlmOption ?? app.openPageInLlmOption ?? [
     display: flex;
     align-items: center;
   }
-  /* Push the LLM controls to the end, with or without breadcrumbs.
-     Targeted by attribute to avoid a class on the spread element,
-     which would emit a duplicate `class` (scoped-style hash). */
+  /* Push the LLM controls to the end, with or without breadcrumbs. */
   .page-context > [data-nosnippet] {
     margin-inline-start: auto;
     padding: 1rem; /* same as the breadcrumbs */
