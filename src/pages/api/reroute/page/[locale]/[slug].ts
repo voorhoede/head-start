@@ -5,6 +5,12 @@ import type { SiteLocale } from '~/lib/datocms/schema';
 import { getPageHref } from '~/lib/routing';
 import query from '../../_page.query.graphql';
 
+/**
+ * Redirects links from DatoCMS (like preview links) to the page's URL.
+ * Unlike the rest of the site, this route queries DatoCMS directly instead of
+ * reading from a content collection: it's only used from within DatoCMS,
+ * and must also resolve draft records (in preview) that are not in the collection.
+ */
 export const prerender = false;
 
 const jsonResponse = (data: object, status: number = 200) => {

@@ -3,9 +3,13 @@ import { z } from 'astro/zod';
 import { type AppQuery, App as query } from '~/lib/datocms/types';
 import type { SiteLocale } from '~/lib/datocms/schema';
 import { datocmsRequest } from '~/lib/datocms';
+import { combine } from '~/lib/content';
 import { locales } from '~/lib/i18n';
 
 type Meta = {
+  locale: SiteLocale;
+};
+type QueryVariables = {
   locale: SiteLocale;
 };
 
@@ -13,28 +17,37 @@ export type AppCollectionEntry = AppQuery['app'] & {
   id: string;
   meta: Meta;
   noIndex: boolean;
-  subscription: { variables: Record<string, string> };
+  site: AppQuery['site'];
+  subscription: { variables: QueryVariables };
 };
 
 const name = 'App' as const;
 
 const loadEntry = async (id: string = 'default', locale?: SiteLocale | null) => {
-  const { app, site } = await datocmsRequest<AppQuery>({ query });
+  if (!locale) {
+    return undefined;
+  }
+  const variables = { locale };
+  const { app, site } = await datocmsRequest<AppQuery>({ query, variables });
   if (!app) return undefined;
   return {
     ...app,
-    id,
+    id: combine({ id, locale }),
     meta: {
-      locale: locale ?? locales[0],
+      locale,
     },
     noIndex: site.noIndex ?? false,
-    subscription: { variables: {} },
+    site,
+    subscription: { variables },
   } satisfies AppCollectionEntry;
 };
 
+/**
+ * Loads the App entry for each locale.
+ */
 const loadCollection = async () => {
-  const entry = await loadEntry();
-  return entry ? [entry] : [];
+  const entries = await Promise.all(locales.map((locale) => loadEntry('default', locale)));
+  return entries.filter(entry => entry !== undefined);
 };
 
 const collection = defineCollection({

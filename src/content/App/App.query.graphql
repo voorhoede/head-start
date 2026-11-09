@@ -1,17 +1,30 @@
-query App {
-  app {
+#import '~/layouts/AppMenu/AppMenu.fragment.graphql'
+#import '~/blocks/ActionBlock/ExternalLink.fragment.graphql'
+
+query App($locale: SiteLocale!) {
+  app(locale: $locale) {
+    ...AppMenu
     allowAiBots
+    llmsIntro
     openPageInLlmPrompt
     openPageInLlmOption {
-      __typename
-      id
-      title
-      url
-      openInNewTab
-      style
+      ...ExternalLink
     }
   }
-  site: _site {
+  site: _site(locale: $locale) {
     noIndex
+    favicon {
+      url
+    }
+    faviconMetaTags(variants: [icon, appleTouchIcon, msApplication]) {
+      tag
+      attributes
+    }
+    globalSeo {
+      siteName
+      fallbackSeo {
+        description
+      }
+    }
   }
 }
