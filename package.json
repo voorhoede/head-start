@@ -72,7 +72,7 @@
     "datocms-structured-text-utils": "^6.0.0",
     "get-video-id": "^4.2.0",
     "github-slugger": "^2.0.0",
-    "hast-util-from-html": "^2.0.3",
+    "hast-util-from-html": "^2.1.0",
     "hast-util-select": "^6.0.4",
     "hast-util-to-html": "^9.0.5",
     "hast-util-to-string": "^3.0.1",
