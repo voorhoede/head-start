@@ -7,10 +7,11 @@ import {
   test,
   vi,
 } from 'vitest';
-import { HttpResponse, graphql } from 'msw';
+import { HttpResponse } from 'msw/http';
+import { graphql } from 'msw/graphql';
 import { setupServer } from 'msw/node';
 import { parse } from 'graphql/language';
-import { datocmsRequest } from '~/lib/datocms';
+import { datocmsGraphqlOrigin, datocmsRequest } from '~/lib/datocms';
 
 // these imports will resolve to their mocked counterparts
 import * as env from 'astro:env/server';
@@ -37,9 +38,10 @@ const mockedSingleRecordCollection = [
   },
 ];
 
+const datocms = graphql.link(datocmsGraphqlOrigin);
 const server = setupServer();
 
-beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+beforeAll(() => server.listen({ onUnhandledFrame: 'error' }));
 
 afterEach(() => {
   server.resetHandlers();
@@ -54,7 +56,7 @@ describe('datocmsRequest:', () => {
     const mockData = mockedSingleRecordCollection;
 
     server.use(
-      graphql.query('MockQuery', () => {
+      datocms.query('MockQuery', () => {
         return HttpResponse.json({ data: { mockData } });
       }),
     );
@@ -69,7 +71,7 @@ describe('datocmsRequest:', () => {
     const mockData: [] = [];
 
     server.use(
-      graphql.query('MockQuery', () => {
+      datocms.query('MockQuery', () => {
         return HttpResponse.json({ data: mockData });
       }),
     );
@@ -84,7 +86,7 @@ describe('datocmsRequest:', () => {
     const errorResponse = [{ message: 'Something went wrong' }];
 
     server.use(
-      graphql.query('MockQuery', () => {
+      datocms.query('MockQuery', () => {
         return HttpResponse.json(
           { errors: errorResponse },
           { status: 200 }
@@ -111,7 +113,7 @@ describe('datocmsRequest:', () => {
     let numberOfAttempts = 0;
 
     server.use(
-      graphql.query('MockQuery', () => {
+      datocms.query('MockQuery', () => {
         numberOfAttempts++;
 
         if (numberOfAttempts === 1) {
@@ -137,7 +139,7 @@ describe('datocmsRequest:', () => {
     let requestHeaders: Record<string, string> = {};
 
     server.use(
-      graphql.query('MockQuery', ({ request }) => {
+      datocms.query('MockQuery', ({ request }) => {
         requestHeaders = Object.fromEntries(request.headers);
 
         return HttpResponse.json({ data: { mockData } });

@@ -7,7 +7,7 @@ import {
   test,
   vi,
 } from 'vitest';
-import { http, HttpResponse } from 'msw';
+import { http, HttpResponse } from 'msw/http';
 import { setupServer } from 'msw/node';
 import { datocmsSearch } from '~/lib/datocms';
 import type { SiteLocale } from '~/lib/datocms/schema';
@@ -38,7 +38,7 @@ const mockLocales = ['en', 'nl'] as SiteLocale[];
 
 const server = setupServer();
 
-beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+beforeAll(() => server.listen({ onUnhandledFrame: 'error' }));
 
 afterEach(() => {
   server.resetHandlers();

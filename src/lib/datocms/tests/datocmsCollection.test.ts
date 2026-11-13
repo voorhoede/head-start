@@ -7,19 +7,21 @@ import {
   test,
   vi,
 } from 'vitest';
-import { HttpResponse, graphql } from 'msw';
+import { HttpResponse } from 'msw/http';
+import { graphql } from 'msw/graphql';
 import { setupServer } from 'msw/node';
 import { parse } from 'graphql';
-import { datocmsCollection, type CollectionInfo } from '~/lib/datocms';
+import { datocmsCollection, datocmsGraphqlOrigin, type CollectionInfo } from '~/lib/datocms';
 
 vi.mock('../../../../datocms-environment', () => ({
   datocmsBuildTriggerId: 'mock-build-trigger-id',
   datocmsEnvironment: 'mock-environment',
 }));
 
+const datocms = graphql.link(datocmsGraphqlOrigin);
 const server = setupServer();
 
-beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+beforeAll(() => server.listen({ onUnhandledFrame: 'error' }));
 
 afterEach(() => {
   server.resetHandlers();
@@ -44,14 +46,14 @@ describe('datocmsCollection:', () => {
       title: `Record ${i + 1}`
     }));
 
-    server.use(graphql.query('MyMockCollectionMeta', () => HttpResponse.json({
+    server.use(datocms.query('MyMockCollectionMeta', () => HttpResponse.json({
       data: {
         meta: { count: totalRecords },
         records: [{ __typename: 'MyMockRecord' }],
       } satisfies CollectionInfo,
     })));
 
-    server.use(graphql.query('AllMyMockCollection', () => HttpResponse.json({
+    server.use(datocms.query('AllMyMockCollection', () => HttpResponse.json({
       data: { MyMockCollection: mockCollection }
     })));
 
@@ -68,14 +70,14 @@ describe('datocmsCollection:', () => {
       title: `Record ${i + 1}`
     }));
 
-    server.use(graphql.query('MyMockCollectionMeta', () => HttpResponse.json({
+    server.use(datocms.query('MyMockCollectionMeta', () => HttpResponse.json({
       data: {
         meta: { count: totalRecords },
         records: [{ __typename: 'MyMockRecord' }],
       } satisfies CollectionInfo,
     })));
 
-    server.use(graphql.query('AllMyMockCollection', () => HttpResponse.json({
+    server.use(datocms.query('AllMyMockCollection', () => HttpResponse.json({
       data: { MyMockCollection: mockCollection }
     })));
 
@@ -94,7 +96,7 @@ describe('datocmsCollection:', () => {
     }));
     let requestCount = 0;
 
-    server.use(graphql.query('MyMockCollectionMeta', () => HttpResponse.json({
+    server.use(datocms.query('MyMockCollectionMeta', () => HttpResponse.json({
       data: {
         meta: { count: totalRecords },
         records: [{ __typename: 'MyMockRecord' }],
@@ -103,7 +105,7 @@ describe('datocmsCollection:', () => {
 
 
     server.use(
-      graphql.query('AllMyMockCollection', () => {
+      datocms.query('AllMyMockCollection', () => {
         const skip = requestCount * 100;
         const paginatedData = mockCollection.slice(skip, skip + recordsPerRequest);
 
@@ -122,14 +124,14 @@ describe('datocmsCollection:', () => {
   });
 
   test('should return an empty array if no records are found', async () => {
-    server.use(graphql.query('MyMockCollectionMeta', () => HttpResponse.json({
+    server.use(datocms.query('MyMockCollectionMeta', () => HttpResponse.json({
       data: {
         meta: { count: 0 },
         records: [{ __typename: 'MyMockRecord' }],
       } satisfies CollectionInfo,
     })));
 
-    server.use(graphql.query('AllMyMockCollection', () => HttpResponse.json({
+    server.use(datocms.query('AllMyMockCollection', () => HttpResponse.json({
       data: { MyMockCollection: [] }
     })));
 
@@ -138,14 +140,14 @@ describe('datocmsCollection:', () => {
   });
 
   test('should return an empty array if no records are found when searching with a string fragment', async () => {
-    server.use(graphql.query('MyMockCollectionMeta', () => HttpResponse.json({
+    server.use(datocms.query('MyMockCollectionMeta', () => HttpResponse.json({
       data: {
         meta: { count: 0 },
         records: [{ __typename: 'MyMockRecord' }],
       } satisfies CollectionInfo,
     })));
 
-    server.use(graphql.query('AllMyMockCollection', () => HttpResponse.json({
+    server.use(datocms.query('AllMyMockCollection', () => HttpResponse.json({
       data: { MyMockCollection: [] }
     })));
 
@@ -156,14 +158,14 @@ describe('datocmsCollection:', () => {
   test('should throw an error if the response contains GraphQL errors', async () => {
     const errorResponse = [{ message: 'Something went wrong' }];
 
-    server.use(graphql.query('MyMockCollectionMeta', () => HttpResponse.json({
+    server.use(datocms.query('MyMockCollectionMeta', () => HttpResponse.json({
       data: {
         meta: { count: 1 },
         records: [{ __typename: 'MyMockRecord' }],
       } satisfies CollectionInfo,
     })));
 
-    server.use(graphql.query('AllMyMockCollection', () => HttpResponse.json(
+    server.use(datocms.query('AllMyMockCollection', () => HttpResponse.json(
       { errors: errorResponse },
       { status: 200 }
     )));
