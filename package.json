@@ -104,7 +104,7 @@
     "@eslint/js": "^10.0.1",
     "@graphql-codegen/cli": "^7.4.6",
     "@graphql-codegen/typescript": "^6.1.2",
-    "@graphql-codegen/typescript-document-nodes": "^6.1.1",
+    "@graphql-codegen/typescript-document-nodes": "^7.0.0",
     "@graphql-codegen/typescript-operations": "^6.1.10",
     "@stylistic/eslint-plugin": "^5.10.0",
     "@types/accept-language-parser": "^1.5.6",
