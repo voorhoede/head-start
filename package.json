@@ -60,7 +60,7 @@
     "@astrojs/check": "^0.9.10",
     "@astrojs/cloudflare": "^14.3.3",
     "@astrojs/sitemap": "^3.7.4",
-    "@datocms/astro": "^0.6.16",
+    "@datocms/astro": "^0.7.0",
     "@datocms/content-link": "^0.3.23",
     "@fontsource/archivo": "^5.3.0",
     "@inquirer/prompts": "^8.7.4",
