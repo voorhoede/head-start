@@ -2,6 +2,9 @@ import rosetta from 'rosetta';
 import { stripStega } from '@datocms/content-link';
 import type { TranslationKey } from '~/lib/i18n/types';
 import { type SiteLocale } from '~/lib/datocms/schema';
+// Translations and locales are downloaded as JSON on `prep`, not loaded as content collections:
+// `t()` must be synchronous and is also used in client-side scripts, where collections are unavailable.
+// @see docs/decision-log/2026-10-22-content-collections-only.md
 import messages from '~/lib/i18n/messages.json';
 import { locales as siteLocales } from '~/lib/site.json';
 

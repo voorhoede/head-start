@@ -26,6 +26,10 @@ Check the headers with `curl -sI <url>` or [securityheaders.com](https://securit
 
 Astro's [`security.checkOrigin`](https://docs.astro.build/en/reference/configuration-reference/#securitycheckorigin) (default, made explicit in [`astro.config.ts`](../astro.config.ts)) rejects cross-origin form submissions (`POST`, `PUT`, `PATCH`, `DELETE`) to on-demand routes. Head Start's own forms use `GET`, and the JSON requests of the DatoCMS Web Previews plugin to `/api/preview-links/` are not affected.
 
+## No runtime CMS access
+
+All site content is loaded into [content collections](./content-collections.md) at build time, so the production site doesn't query DatoCMS at runtime. This keeps the CMS and its API token out of the runtime attack surface. Exceptions are search and `/api/reroute/` (see [decision log](./decision-log/2026-10-22-content-collections-only.md)).
+
 ## Secrets
 
 Tokens and `HEAD_START_PREVIEW_SECRET` are only read on the server via `astro:env/server`. Never log them or return them from an API route. See [Preview Mode](./preview-mode.md) for how the preview secret is used.

@@ -1,10 +1,8 @@
 import type { APIRoute } from 'astro';
-import { datocmsRequest } from '~/lib/datocms';
-import type { LlmsTxtQuery } from '~/lib/datocms/types';
+import { getApp } from '~/lib/app';
 import { defaultLocale } from '~/lib/i18n';
 import { getHref, htmlToMarkdownPath } from '~/lib/routing';
 import { llmsTxt, type LlmsTxtItem } from '~/lib/seo';
-import query from './_llms.query.graphql';
 
 export const prerender = true;
 
@@ -45,13 +43,11 @@ const buildItem = (raw: RawMenuItem, siteUrl: string): LlmsTxtItem | null => {
 };
 
 export const GET: APIRoute = async (context) => {
-  const { app, site } = await datocmsRequest<LlmsTxtQuery>({
-    query,
-    variables: { locale: defaultLocale },
-  });
+  const app = await getApp(defaultLocale);
+  const { site } = app;
 
   const siteUrl = context.site!.origin;
-  const items: LlmsTxtItem[] = (app?.menuItems ?? [])
+  const items: LlmsTxtItem[] = (app.menuItems ?? [])
     .map((item) => buildItem(item as RawMenuItem, siteUrl))
     .filter((i): i is LlmsTxtItem => i !== null);
 
@@ -59,8 +55,8 @@ export const GET: APIRoute = async (context) => {
     llmsTxt({
       siteName: site.globalSeo?.siteName ?? '',
       siteSummary: site.globalSeo?.fallbackSeo?.description ?? '',
-      intro: app?.llmsIntro ?? '',
-      allowAiBots: Boolean(app?.allowAiBots),
+      intro: app.llmsIntro ?? '',
+      allowAiBots: Boolean(app.allowAiBots),
       items,
     }),
     { headers: { 'content-type': 'text/plain; charset=utf-8' } },
