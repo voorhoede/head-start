@@ -9,7 +9,7 @@
     "datocms-structured-text-utils": "^6.0.0",
     "dotenv-safe": "^9.1.0",
     "mdast-util-from-markdown": "^2.1.0",
-    "mdast-util-to-hast": "^13.2.0",
+    "mdast-util-to-hast": "^13.2.2",
     "unist-util-visit": "^5.1.0"
   }
 }
