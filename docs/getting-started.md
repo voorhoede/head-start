@@ -77,7 +77,9 @@ npm run dev
 
 Head Start comes with a few DatoCMS plugins pre-installed. The [Model Deployment Links plugin](https://www.datocms.com/marketplace/plugins/i/datocms-plugin-model-deployment-links) is configured automatically when running migrations. It adds preview links to the CMS sidebar so editors can preview pages directly from the CMS.
 
-If you need to configure the plugin manually (e.g. when not using migrations):
+The migration creates an access token named "Preview" for this. Plans with a limited number of access tokens do not allow this: the migration then logs a warning, installs the plugin unconfigured and continues. Preview links start working as soon as you configure the plugin yourself.
+
+If you need to configure the plugin manually (e.g. when not using migrations, or when the migration could not create the access token):
 
 - In your DatoCMS instance go to Project Settings > API Tokens (`/project_settings/access_tokens`) and "Add a new access token". Name it "Preview" (or whatever you prefer), for the "Role associated with this API token" select "Editor" and keep the other settings as is.
 - Go to Environment Configuration > Plugins > Model Deployment Links and enter the newly created access token in the plugin settings under "DatoCMS API Token".

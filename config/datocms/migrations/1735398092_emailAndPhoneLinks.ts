@@ -123,7 +123,6 @@ export default async function (client: Client) {
       addons: [],
       editor: 'textarea',
       parameters: { placeholder: null },
-      type: 'textarea',
     },
     default_value: '',
   });
@@ -198,7 +197,6 @@ export default async function (client: Client) {
       addons: [],
       editor: 'textarea',
       parameters: { placeholder: null },
-      type: 'textarea',
     },
     default_value: '',
   });

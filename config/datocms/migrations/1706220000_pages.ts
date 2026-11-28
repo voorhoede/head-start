@@ -248,7 +248,6 @@ export default async function (client: Client) {
       addons: [],
       editor: 'single_line',
       parameters: { heading: true, placeholder: null },
-      type: 'title',
     },
     default_value: { en: '' },
   });
@@ -315,7 +314,6 @@ export default async function (client: Client) {
       addons: [],
       editor: 'single_line',
       parameters: { heading: true, placeholder: null },
-      type: 'title',
     },
     default_value: { en: '' },
   });
@@ -520,7 +518,7 @@ export default async function (client: Client) {
     api_key: 'image',
     validators: {
       required: {},
-      extension: { extensions: [], predefined_list: 'image' },
+      extension: { predefined_list: 'image' },
       required_alt_title: { title: false, alt: true },
     },
     appearance: { addons: [], editor: 'file', parameters: {} },
@@ -561,7 +559,6 @@ export default async function (client: Client) {
       addons: [],
       editor: 'single_line',
       parameters: { heading: true, placeholder: null },
-      type: 'title',
     },
     default_value: { en: '' },
   });
@@ -995,7 +992,7 @@ export default async function (client: Client) {
     api_key: 'image',
     validators: {
       required: {},
-      extension: { extensions: [], predefined_list: 'image' },
+      extension: { predefined_list: 'image' },
       required_alt_title: { title: false, alt: true },
     },
     appearance: { addons: [], editor: 'file', parameters: {} },

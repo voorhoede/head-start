@@ -1,6 +1,7 @@
 import { afterEach, describe, test, expect, vi } from 'vitest';
 import robotsParser from 'robots-parser';
 import { agentsIndex, llmsTxt, robotsTxt, siteName, titleSuffix, titleTag } from '~/lib/seo';
+import type { SiteLocale } from '~/lib/datocms/schema';
 import { getLocale } from '~/lib/i18n';
 import aiRobotsTxt from './ai.robots.txt?raw';
 
@@ -31,7 +32,7 @@ describe('seo', () => {
     vi.mocked(getLocale).mockReturnValue('en');
     expect(siteName()).toBe('Test Site (English)');
 
-    vi.mocked(getLocale).mockReturnValue('nl');
+    vi.mocked(getLocale).mockReturnValue('nl' as SiteLocale);
     expect(siteName()).toBe('Test Site (Dutch)');
   });
 
@@ -39,7 +40,7 @@ describe('seo', () => {
     vi.mocked(getLocale).mockReturnValue('en');
     expect(titleSuffix()).toBe('| English Site');
 
-    vi.mocked(getLocale).mockReturnValue('nl');
+    vi.mocked(getLocale).mockReturnValue('nl' as SiteLocale);
     expect(titleSuffix()).toBe('| Nederlandse Site');
   });
 
@@ -50,7 +51,7 @@ describe('seo', () => {
       content: 'Test Page | English Site',
     });
 
-    vi.mocked(getLocale).mockReturnValue('nl');
+    vi.mocked(getLocale).mockReturnValue('nl' as SiteLocale);
     expect(titleTag('Testpagina')).toEqual({
       tag: 'title',
       content: 'Testpagina | Nederlandse Site',
